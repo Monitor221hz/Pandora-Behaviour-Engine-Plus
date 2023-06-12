@@ -1,0 +1,3239 @@
+<?xml version="1.0" encoding="ascii"?>
+<hkpackfile classversion="8" contentsversion="hk_2010.2.0-r1" toplevelobject="#0077">
+
+	<hksection name="__data__">
+
+		<hkobject name="#0078" class="hkbBehaviorGraphStringData" signature="0xc713064e">
+			
+			
+			<hkparam name="eventNames" numelements="82">
+				<hkcstring>moveStart</hkcstring>
+				<hkcstring>moveStop</hkcstring>
+				<hkcstring>cannedTurnLeft90</hkcstring>
+				<hkcstring>cannedTurnRight90</hkcstring>
+				<hkcstring>cannedTurnLeft180</hkcstring>
+				<hkcstring>cannedTurnRight180</hkcstring>
+				<hkcstring>cannedTurnStop</hkcstring>
+				<hkcstring>turnRight</hkcstring>
+				<hkcstring>turnLeft</hkcstring>
+				<hkcstring>turnStop</hkcstring>
+				<hkcstring>FootFront</hkcstring>
+				<hkcstring>FootBack</hkcstring>
+				<hkcstring>combatStanceStart</hkcstring>
+				<hkcstring>combatStanceStop</hkcstring>
+				<hkcstring>moveBackward</hkcstring>
+				<hkcstring>moveForward</hkcstring>
+				<hkcstring>weaponDraw</hkcstring>
+				<hkcstring>weaponSheathe</hkcstring>
+				<hkcstring>returnToDefault</hkcstring>
+				<hkcstring>staggerStart</hkcstring>
+				<hkcstring>staggerStop</hkcstring>
+				<hkcstring>recoilStop</hkcstring>
+				<hkcstring>recoilLargeStart</hkcstring>
+				<hkcstring>recoilStart</hkcstring>
+				<hkcstring>preHitFrame</hkcstring>
+				<hkcstring>HitFrame</hkcstring>
+				<hkcstring>SoundPlay</hkcstring>
+				<hkcstring>attackStop</hkcstring>
+				<hkcstring>IdleStop</hkcstring>
+				<hkcstring>Intialize</hkcstring>
+				<hkcstring>SyncLeft</hkcstring>
+				<hkcstring>SyncRight</hkcstring>
+				<hkcstring>bleedOutEnterOut</hkcstring>
+				<hkcstring>bleedOutStart</hkcstring>
+				<hkcstring>bleedOutStop</hkcstring>
+				<hkcstring>PairEnd</hkcstring>
+				<hkcstring>NPCpairedStop</hkcstring>
+				<hkcstring>deathStart</hkcstring>
+				<hkcstring>idleExit</hkcstring>
+				<hkcstring>PickNewIdle</hkcstring>
+				<hkcstring>attackStart_StandingPower</hkcstring>
+				<hkcstring>attackStart_ForwardPower</hkcstring>
+				<hkcstring>attackStart_Attack1</hkcstring>
+				<hkcstring>swimStop</hkcstring>
+				<hkcstring>swimStart</hkcstring>
+				<hkcstring>cannedTurnRight90Flee</hkcstring>
+				<hkcstring>cannedTurnRight180Flee</hkcstring>
+				<hkcstring>cannedTurnLeft90Flee</hkcstring>
+				<hkcstring>cannedTurnLeft180Flee</hkcstring>
+				<hkcstring>attackStart_Attack2</hkcstring>
+				<hkcstring>weaponSwing</hkcstring>
+				<hkcstring>aggroWarningStart</hkcstring>
+				<hkcstring>attackStart_AttackRight1</hkcstring>
+				<hkcstring>attackStart_AttackLeft1</hkcstring>
+				<hkcstring>deathStop</hkcstring>
+				<hkcstring>staggerForwardStart</hkcstring>
+				<hkcstring>CameraShake</hkcstring>
+				<hkcstring>BodyIdle</hkcstring>
+				<hkcstring>EarWagL</hkcstring>
+				<hkcstring>EarWagR</hkcstring>
+				<hkcstring>TailWag</hkcstring>
+				<hkcstring>TrunkIdle</hkcstring>
+				<hkcstring>PickNewTailWag</hkcstring>
+				<hkcstring>PickNewBodyIdle</hkcstring>
+				<hkcstring>PickNewEarWagL</hkcstring>
+				<hkcstring>PickNewEarWagR</hkcstring>
+				<hkcstring>PickNewTrunkIdle</hkcstring>
+				<hkcstring>IdleCount</hkcstring>
+				<hkcstring>SyncPoint</hkcstring>
+				<hkcstring>StartAnimationDriven</hkcstring>
+				<hkcstring>GetUpEnd</hkcstring>
+				<hkcstring>DeathAnimation</hkcstring>
+				<hkcstring>Ragdoll</hkcstring>
+				<hkcstring>AddRagdollToWorld</hkcstring>
+				<hkcstring>GetUpStart</hkcstring>
+				<hkcstring>GetUpBegin</hkcstring>
+				<hkcstring>AddCharacterControllerToWorld</hkcstring>
+				<hkcstring>Getup</hkcstring>
+				<hkcstring>RemoveCharacterControllerFromWorld</hkcstring>
+				<hkcstring>to Fully Ragdoll</hkcstring>
+				<hkcstring>RagdollInstant</hkcstring>
+				<hkcstring>Reanimated</hkcstring>
+			</hkparam>
+			<hkparam name="attributeNames" numelements="0"></hkparam>
+			<hkparam name="variableNames" numelements="79">
+				<hkcstring>iSyncIdleLocomotion</hkcstring>
+				<hkcstring>blendDefault</hkcstring>
+				<hkcstring>fMinSpeed</hkcstring>
+				<hkcstring>Speed</hkcstring>
+				<hkcstring>iSyncTurnState</hkcstring>
+				<hkcstring>iSyncForwardState</hkcstring>
+				<hkcstring>TurnDelta</hkcstring>
+				<hkcstring>fMinTurnDelta</hkcstring>
+				<hkcstring>turnSpeedMult</hkcstring>
+				<hkcstring>iCombatStance</hkcstring>
+				<hkcstring>test</hkcstring>
+				<hkcstring>bHeadTrackingOn</hkcstring>
+				<hkcstring>TargetLocation</hkcstring>
+				<hkcstring>FootIKEnable</hkcstring>
+				<hkcstring>m_onOffGain</hkcstring>
+				<hkcstring>m_groundAscendingGain</hkcstring>
+				<hkcstring>m_groundDescendingGain</hkcstring>
+				<hkcstring>m_footPlantedGain</hkcstring>
+				<hkcstring>m_footRaisedGain</hkcstring>
+				<hkcstring>m_footUnlockGain</hkcstring>
+				<hkcstring>m_worldFromModelFeedbackGain</hkcstring>
+				<hkcstring>m_errorUpDownBias</hkcstring>
+				<hkcstring>m_alignWorldFromModelGain</hkcstring>
+				<hkcstring>m_hipOrientationGain</hkcstring>
+				<hkcstring>m_footPlantedAnkleHeightMS</hkcstring>
+				<hkcstring>m_footRaisedAnkleHeightMS</hkcstring>
+				<hkcstring>m_maxAnkleHeightMS</hkcstring>
+				<hkcstring>m_minAnkleHeightMS</hkcstring>
+				<hkcstring>blendFast</hkcstring>
+				<hkcstring>bAnimationDriven</hkcstring>
+				<hkcstring>bAllowRotation</hkcstring>
+				<hkcstring>bHeadTracking</hkcstring>
+				<hkcstring>bDisableHeadTrack</hkcstring>
+				<hkcstring>IsRecoiling</hkcstring>
+				<hkcstring>IsStaggering</hkcstring>
+				<hkcstring>IsAttacking</hkcstring>
+				<hkcstring>bIsWolf</hkcstring>
+				<hkcstring>staggerMagnitude</hkcstring>
+				<hkcstring>IsBleedingOut</hkcstring>
+				<hkcstring>bIsSynced</hkcstring>
+				<hkcstring>bEquipOK</hkcstring>
+				<hkcstring>bCanHeadTrack</hkcstring>
+				<hkcstring>blendSlow</hkcstring>
+				<hkcstring>isIdleSitting</hkcstring>
+				<hkcstring>bMirroredAttack</hkcstring>
+				<hkcstring>iState</hkcstring>
+				<hkcstring>iState_MammothDefault</hkcstring>
+				<hkcstring>bSkeeverLunge</hkcstring>
+				<hkcstring>iCharacterSelector</hkcstring>
+				<hkcstring>fMinMoveSpeed</hkcstring>
+				<hkcstring>Direction</hkcstring>
+				<hkcstring>iIsCanine</hkcstring>
+				<hkcstring>iTurnMirrored</hkcstring>
+				<hkcstring>IsAttackReady</hkcstring>
+				<hkcstring>TurnDeltaDamped</hkcstring>
+				<hkcstring>IsBashing</hkcstring>
+				<hkcstring>bNoHeadTrack</hkcstring>
+				<hkcstring>camerafromx</hkcstring>
+				<hkcstring>camerafromy</hkcstring>
+				<hkcstring>camerafromz</hkcstring>
+				<hkcstring>walkBackRate</hkcstring>
+				<hkcstring>staggerDirection</hkcstring>
+				<hkcstring>m_footPlantedAnkleHeightMS_Front</hkcstring>
+				<hkcstring>m_footRaisedAnkleHeightMS_Front</hkcstring>
+				<hkcstring>m_maxAnkleHeightMS_Front</hkcstring>
+				<hkcstring>m_hitSomething_0</hkcstring>
+				<hkcstring>m_hitSomething_1</hkcstring>
+				<hkcstring>m_footPlantedAnkleHeightMS_Rear</hkcstring>
+				<hkcstring>m_footRaisedAnkleHeightMS_Rear</hkcstring>
+				<hkcstring>m_maxAnkleHeightMS_Rear</hkcstring>
+				<hkcstring>m_hitSomething_2</hkcstring>
+				<hkcstring>m_errorOut</hkcstring>
+				<hkcstring>m_hitSomething_3</hkcstring>
+				<hkcstring>bLegCastResults</hkcstring>
+				<hkcstring>iGetUpType</hkcstring>
+				<hkcstring>m_velocityGain</hkcstring>
+				<hkcstring>m_positionGain</hkcstring>
+				<hkcstring>m_positionMaxLinearVelocity</hkcstring>
+				<hkcstring>m_snapMaxLinearVelocity</hkcstring>
+			</hkparam>
+			<hkparam name="characterPropertyNames" numelements="0"></hkparam>
+		</hkobject>
+
+		<hkobject name="#0079" class="hkbVariableValueSet" signature="0x27812d8d">
+			
+			
+			<hkparam name="wordVariableValues" numelements="79">
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1045220557</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1084227584</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1137180672</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1065353216</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1065353216</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1045220557</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1056964608</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1056964608</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1065353216</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1056964608</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1065353216</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1061997773</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1065353216</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1108082688</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1111752704</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">-1031012352</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1036831949</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1056964608</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">70</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">70</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">7</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1084227584</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1115118633</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1094897893</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1109112914</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1109655552</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1096912208</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1113534235</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1113849856</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1058642330</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1028443341</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1068708659</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1050253722</hkparam>
+				</hkobject>
+			</hkparam>
+			<hkparam name="quadVariableValues" numelements="1">
+				(0.000000 0.000000 0.000000 0.000000)
+			</hkparam>
+			<hkparam name="variantVariableValues" numelements="0"></hkparam>
+		</hkobject>
+
+		<hkobject name="#0080" class="hkbBehaviorGraphData" signature="0x95aca5d">
+			
+			
+			<hkparam name="attributeDefaults" numelements="0"></hkparam>
+			<hkparam name="variableInfos" numelements="79">
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_INT32</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_INT32</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_INT32</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_INT32</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_VECTOR4</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_INT32</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_INT32</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_INT32</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_INT32</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_INT32</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_INT8</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+			</hkparam>
+			<hkparam name="characterPropertyInfos" numelements="0"></hkparam>
+			<hkparam name="eventInfos" numelements="82">
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">FLAG_SYNC_POINT</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">FLAG_SYNC_POINT</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>
+			</hkparam>
+			<hkparam name="wordMinVariableValues" numelements="0"></hkparam>
+			<hkparam name="wordMaxVariableValues" numelements="0"></hkparam>
+			<hkparam name="variableInitialValues">#0079</hkparam>
+			<hkparam name="stringData">#0078</hkparam>
+		</hkobject>
+
+		<hkobject name="#0081" class="hkbVariableBindingSet" signature="0x338ad4ff">
+			
+			
+			<hkparam name="bindings" numelements="1">
+				<hkobject>
+					<hkparam name="memberPath">duration</hkparam>
+					
+					
+					
+					
+					<hkparam name="variableIndex">42</hkparam>
+					<hkparam name="bitIndex">-1</hkparam>
+					<hkparam name="bindingType">BINDING_TYPE_VARIABLE</hkparam>
+					
+					
+					
+				</hkobject>
+			</hkparam>
+			<hkparam name="indexOfBindingToEnable">-1</hkparam>
+			
+		</hkobject>
+
+		<hkobject name="#0082" class="hkbBlendingTransitionEffect" signature="0xfd8584fe">
+			
+			
+			<hkparam name="variableBindingSet">#0081</hkparam>
+			
+			
+			<hkparam name="userData">0</hkparam>
+			<hkparam name="name">DefaultTransitionEffect_Slow_RESET</hkparam>
+			
+			
+			
+			<hkparam name="selfTransitionMode">SELF_TRANSITION_MODE_RESET</hkparam>
+			<hkparam name="eventMode">EVENT_MODE_DEFAULT</hkparam>
+			
+			<hkparam name="duration">0.000000</hkparam>
+			<hkparam name="toGeneratorStartTimeFraction">0.000000</hkparam>
+			<hkparam name="flags">FLAG_IGNORE_FROM_WORLD_FROM_MODEL</hkparam>
+			<hkparam name="endMode">END_MODE_NONE</hkparam>
+			<hkparam name="blendCurve">BLEND_CURVE_SMOOTH</hkparam>
+			
+			
+			
+			
+			
+			
+			
+		</hkobject>
+
+		<hkobject name="#0085" class="hkbVariableBindingSet" signature="0x338ad4ff">
+			
+			
+			<hkparam name="bindings" numelements="1">
+				<hkobject>
+					<hkparam name="memberPath">duration</hkparam>
+					
+					
+					
+					
+					<hkparam name="variableIndex">42</hkparam>
+					<hkparam name="bitIndex">-1</hkparam>
+					<hkparam name="bindingType">BINDING_TYPE_VARIABLE</hkparam>
+					
+					
+					
+				</hkobject>
+			</hkparam>
+			<hkparam name="indexOfBindingToEnable">-1</hkparam>
+			
+		</hkobject>
+
+		<hkobject name="#0084" class="hkbBlendingTransitionEffect" signature="0xfd8584fe">
+			
+			
+			<hkparam name="variableBindingSet">#0085</hkparam>
+			
+			
+			<hkparam name="userData">0</hkparam>
+			<hkparam name="name">DefaultTransitionEffect_Slow</hkparam>
+			
+			
+			
+			<hkparam name="selfTransitionMode">SELF_TRANSITION_MODE_BLEND</hkparam>
+			<hkparam name="eventMode">EVENT_MODE_DEFAULT</hkparam>
+			
+			<hkparam name="duration">0.000000</hkparam>
+			<hkparam name="toGeneratorStartTimeFraction">0.000000</hkparam>
+			<hkparam name="flags">0</hkparam>
+			<hkparam name="endMode">END_MODE_NONE</hkparam>
+			<hkparam name="blendCurve">BLEND_CURVE_SMOOTH</hkparam>
+			
+			
+			
+			
+			
+			
+			
+		</hkobject>
+
+		<hkobject name="#0083" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
+			
+			
+			<hkparam name="transitions" numelements="3">
+				<hkobject>
+					<hkparam name="triggerInterval">
+						<hkobject>
+							<hkparam name="enterEventId">-1</hkparam>
+							<hkparam name="exitEventId">-1</hkparam>
+							<hkparam name="enterTime">0.000000</hkparam>
+							<hkparam name="exitTime">0.000000</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="initiateInterval">
+						<hkobject>
+							<hkparam name="enterEventId">-1</hkparam>
+							<hkparam name="exitEventId">-1</hkparam>
+							<hkparam name="enterTime">0.000000</hkparam>
+							<hkparam name="exitTime">0.000000</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="transition">#0084</hkparam>
+					<hkparam name="condition">null</hkparam>
+					<hkparam name="eventId">71</hkparam>
+					<hkparam name="toStateId">3</hkparam>
+					<hkparam name="fromNestedStateId">0</hkparam>
+					<hkparam name="toNestedStateId">0</hkparam>
+					<hkparam name="priority">0</hkparam>
+					<hkparam name="flags">FLAG_IS_LOCAL_WILDCARD|FLAG_DISABLE_CONDITION</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="triggerInterval">
+						<hkobject>
+							<hkparam name="enterEventId">-1</hkparam>
+							<hkparam name="exitEventId">-1</hkparam>
+							<hkparam name="enterTime">0.000000</hkparam>
+							<hkparam name="exitTime">0.000000</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="initiateInterval">
+						<hkobject>
+							<hkparam name="enterEventId">-1</hkparam>
+							<hkparam name="exitEventId">-1</hkparam>
+							<hkparam name="enterTime">0.000000</hkparam>
+							<hkparam name="exitTime">0.000000</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="transition">#0082</hkparam>
+					<hkparam name="condition">null</hkparam>
+					<hkparam name="eventId">72</hkparam>
+					<hkparam name="toStateId">4</hkparam>
+					<hkparam name="fromNestedStateId">0</hkparam>
+					<hkparam name="toNestedStateId">0</hkparam>
+					<hkparam name="priority">0</hkparam>
+					<hkparam name="flags">FLAG_IS_LOCAL_WILDCARD|FLAG_DISABLE_CONDITION</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="triggerInterval">
+						<hkobject>
+							<hkparam name="enterEventId">-1</hkparam>
+							<hkparam name="exitEventId">-1</hkparam>
+							<hkparam name="enterTime">0.000000</hkparam>
+							<hkparam name="exitTime">0.000000</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="initiateInterval">
+						<hkobject>
+							<hkparam name="enterEventId">-1</hkparam>
+							<hkparam name="exitEventId">-1</hkparam>
+							<hkparam name="enterTime">0.000000</hkparam>
+							<hkparam name="exitTime">0.000000</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="transition">null</hkparam>
+					<hkparam name="condition">null</hkparam>
+					<hkparam name="eventId">80</hkparam>
+					<hkparam name="toStateId">4</hkparam>
+					<hkparam name="fromNestedStateId">0</hkparam>
+					<hkparam name="toNestedStateId">0</hkparam>
+					<hkparam name="priority">0</hkparam>
+					<hkparam name="flags">FLAG_IS_LOCAL_WILDCARD|FLAG_DISABLE_CONDITION</hkparam>
+				</hkobject>
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0086" class="hkbTimerModifier" signature="0x338b4879">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">0</hkparam>
+			<hkparam name="name">GetUpTimerMod</hkparam>
+			
+			
+			
+			<hkparam name="enable">true</hkparam>
+			
+			<hkparam name="alarmTimeSeconds">0.500000</hkparam>
+			<hkparam name="alarmEvent">
+				<hkobject>
+					<hkparam name="id">74</hkparam>
+					<hkparam name="payload">null</hkparam>
+				</hkobject>
+			</hkparam>
+			
+		</hkobject>
+
+		<hkobject name="#0087" class="hkbBoneWeightArray" signature="0xcd902b77">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="boneWeights" numelements="0"></hkparam>
+		</hkobject>
+
+		<hkobject name="#0088" class="hkbBoneIndexArray" signature="0xaa8619">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="boneIndices" numelements="0"></hkparam>
+		</hkobject>
+
+		<hkobject name="#0089" class="hkbPoweredRagdollControlsModifier" signature="0x7cb54065">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">1</hkparam>
+			<hkparam name="name">PoweredRagdollMatching</hkparam>
+			
+			
+			
+			<hkparam name="enable">true</hkparam>
+			
+			<hkparam name="controlData">
+				<hkobject>
+					<hkparam name="maxForce">200.000000</hkparam>
+					<hkparam name="tau">0.800000</hkparam>
+					<hkparam name="damping">1.000000</hkparam>
+					<hkparam name="proportionalRecoveryVelocity">2.000000</hkparam>
+					<hkparam name="constantRecoveryVelocity">1.000000</hkparam>
+				</hkobject>
+			</hkparam>
+			<hkparam name="bones">#0088</hkparam>
+			<hkparam name="worldFromModelModeData">
+				<hkobject>
+					<hkparam name="poseMatchingBone0">0</hkparam>
+					<hkparam name="poseMatchingBone1">17</hkparam>
+					<hkparam name="poseMatchingBone2">8</hkparam>
+					<hkparam name="mode">WORLD_FROM_MODEL_MODE_COMPUTE</hkparam>
+				</hkobject>
+			</hkparam>
+			<hkparam name="boneWeights">#0087</hkparam>
+		</hkobject>
+
+		<hkobject name="#0090" class="hkbModifierList" signature="0xa4180ca1">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">1</hkparam>
+			<hkparam name="name">MatchAndSendGetup</hkparam>
+			
+			
+			
+			<hkparam name="enable">true</hkparam>
+			
+			<hkparam name="modifiers" numelements="2">
+				#0089 #0086
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0091" class="hkbEventDrivenModifier" signature="0x7ed3f44e">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">1</hkparam>
+			<hkparam name="name">TurnOnMatchingRagdoll</hkparam>
+			
+			
+			
+			<hkparam name="enable">true</hkparam>
+			
+			<hkparam name="modifier">#0090</hkparam>
+			<hkparam name="activateEventId">75</hkparam>
+			<hkparam name="deactivateEventId">-1</hkparam>
+			<hkparam name="activeByDefault">false</hkparam>
+			
+		</hkobject>
+
+		<hkobject name="#0092" class="hkbBoneWeightArray" signature="0xcd902b77">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="boneWeights" numelements="0"></hkparam>
+		</hkobject>
+
+		<hkobject name="#0093" class="hkbBoneIndexArray" signature="0xaa8619">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="boneIndices" numelements="0"></hkparam>
+		</hkobject>
+
+		<hkobject name="#0094" class="hkbPoweredRagdollControlsModifier" signature="0x7cb54065">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">1</hkparam>
+			<hkparam name="name">PoweredRagdoll No Matching</hkparam>
+			
+			
+			
+			<hkparam name="enable">true</hkparam>
+			
+			<hkparam name="controlData">
+				<hkobject>
+					<hkparam name="maxForce">0.000000</hkparam>
+					<hkparam name="tau">0.800000</hkparam>
+					<hkparam name="damping">1.000000</hkparam>
+					<hkparam name="proportionalRecoveryVelocity">2.000000</hkparam>
+					<hkparam name="constantRecoveryVelocity">1.000000</hkparam>
+				</hkobject>
+			</hkparam>
+			<hkparam name="bones">#0093</hkparam>
+			<hkparam name="worldFromModelModeData">
+				<hkobject>
+					<hkparam name="poseMatchingBone0">0</hkparam>
+					<hkparam name="poseMatchingBone1">17</hkparam>
+					<hkparam name="poseMatchingBone2">8</hkparam>
+					<hkparam name="mode">WORLD_FROM_MODEL_MODE_RAGDOLL</hkparam>
+				</hkobject>
+			</hkparam>
+			<hkparam name="boneWeights">#0092</hkparam>
+		</hkobject>
+
+		<hkobject name="#0095" class="hkbEventDrivenModifier" signature="0x7ed3f44e">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">1</hkparam>
+			<hkparam name="name">FullRagdoll</hkparam>
+			
+			
+			
+			<hkparam name="enable">true</hkparam>
+			
+			<hkparam name="modifier">#0094</hkparam>
+			<hkparam name="activateEventId">-1</hkparam>
+			<hkparam name="deactivateEventId">75</hkparam>
+			<hkparam name="activeByDefault">true</hkparam>
+			
+		</hkobject>
+
+		<hkobject name="#0096" class="hkbModifierList" signature="0xa4180ca1">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">1</hkparam>
+			<hkparam name="name">Fully Ragdoll Mod List</hkparam>
+			
+			
+			
+			<hkparam name="enable">true</hkparam>
+			
+			<hkparam name="modifiers" numelements="2">
+				#0095 #0091
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0101" class="hkbBoneWeightArray" signature="0xcd902b77">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="boneWeights" numelements="0"></hkparam>
+		</hkobject>
+
+		<hkobject name="#0103" class="hkbClipTriggerArray" signature="0x59c23a0f">
+			
+			
+			<hkparam name="triggers" numelements="3">
+				<hkobject>
+					<hkparam name="localTime">0.200000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">70</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">false</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">0.200000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">77</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">false</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">0.200000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">76</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">false</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0102" class="hkbClipGenerator" signature="0x333b85b9">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">0</hkparam>
+			<hkparam name="name">GetUpStanding</hkparam>
+			
+			
+			
+			<hkparam name="animationName">Animations\MT_Idle.hkx</hkparam>
+			<hkparam name="triggers">#0103</hkparam>
+			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
+			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
+			<hkparam name="startTime">0.000000</hkparam>
+			<hkparam name="playbackSpeed">1.000000</hkparam>
+			<hkparam name="enforcedDuration">0.000000</hkparam>
+			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
+			<hkparam name="animationBindingIndex">-1</hkparam>
+			<hkparam name="mode">MODE_SINGLE_PLAY</hkparam>
+			<hkparam name="flags">0</hkparam>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		</hkobject>
+
+		<hkobject name="#0100" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="generator">#0102</hkparam>
+			<hkparam name="boneWeights">#0101</hkparam>
+			<hkparam name="weight">1.000000</hkparam>
+			<hkparam name="worldFromModelWeight">1.000000</hkparam>
+		</hkobject>
+
+		<hkobject name="#0105" class="hkbBoneWeightArray" signature="0xcd902b77">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="boneWeights" numelements="0"></hkparam>
+		</hkobject>
+
+		<hkobject name="#0107" class="hkbClipTriggerArray" signature="0x59c23a0f">
+			
+			
+			<hkparam name="triggers" numelements="3">
+				<hkobject>
+					<hkparam name="localTime">0.000000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">77</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">0.000000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">76</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">0.000000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">70</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0106" class="hkbClipGenerator" signature="0x333b85b9">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">0</hkparam>
+			<hkparam name="name">GetUpRight</hkparam>
+			
+			
+			
+			<hkparam name="animationName">Animations\GetUpL.hkx</hkparam>
+			<hkparam name="triggers">#0107</hkparam>
+			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
+			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
+			<hkparam name="startTime">0.000000</hkparam>
+			<hkparam name="playbackSpeed">1.000000</hkparam>
+			<hkparam name="enforcedDuration">0.000000</hkparam>
+			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
+			<hkparam name="animationBindingIndex">-1</hkparam>
+			<hkparam name="mode">MODE_SINGLE_PLAY</hkparam>
+			<hkparam name="flags">0</hkparam>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		</hkobject>
+
+		<hkobject name="#0104" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="generator">#0106</hkparam>
+			<hkparam name="boneWeights">#0105</hkparam>
+			<hkparam name="weight">1.000000</hkparam>
+			<hkparam name="worldFromModelWeight">1.000000</hkparam>
+		</hkobject>
+
+		<hkobject name="#0109" class="hkbBoneWeightArray" signature="0xcd902b77">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="boneWeights" numelements="0"></hkparam>
+		</hkobject>
+
+		<hkobject name="#0111" class="hkbClipTriggerArray" signature="0x59c23a0f">
+			
+			
+			<hkparam name="triggers" numelements="3">
+				<hkobject>
+					<hkparam name="localTime">0.000000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">70</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">0.000000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">77</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">0.000000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">76</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0110" class="hkbClipGenerator" signature="0x333b85b9">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">0</hkparam>
+			<hkparam name="name">GetUpLeft</hkparam>
+			
+			
+			
+			<hkparam name="animationName">Animations\GetUpL.hkx</hkparam>
+			<hkparam name="triggers">#0111</hkparam>
+			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
+			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
+			<hkparam name="startTime">0.000000</hkparam>
+			<hkparam name="playbackSpeed">1.000000</hkparam>
+			<hkparam name="enforcedDuration">0.000000</hkparam>
+			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
+			<hkparam name="animationBindingIndex">-1</hkparam>
+			<hkparam name="mode">MODE_SINGLE_PLAY</hkparam>
+			<hkparam name="flags">0</hkparam>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		</hkobject>
+
+		<hkobject name="#0108" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="generator">#0110</hkparam>
+			<hkparam name="boneWeights">#0109</hkparam>
+			<hkparam name="weight">1.000000</hkparam>
+			<hkparam name="worldFromModelWeight">1.000000</hkparam>
+		</hkobject>
+
+		<hkobject name="#0099" class="hkbPoseMatchingGenerator" signature="0x29e271b4">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">0</hkparam>
+			<hkparam name="name">Get Up Pose Matcher</hkparam>
+			
+			
+			
+			<hkparam name="referencePoseWeightThreshold">0.000000</hkparam>
+			<hkparam name="blendParameter">0.000000</hkparam>
+			<hkparam name="minCyclicBlendParameter">0.000000</hkparam>
+			<hkparam name="maxCyclicBlendParameter">1.000000</hkparam>
+			<hkparam name="indexOfSyncMasterChild">-1</hkparam>
+			<hkparam name="flags">0</hkparam>
+			<hkparam name="subtractLastChild">false</hkparam>
+			<hkparam name="children" numelements="3">
+				#0108 #0104 #0100
+			</hkparam>
+			
+			
+			
+			
+			
+			
+			
+			
+			<hkparam name="worldFromModelRotation">(0.000000 0.000000 0.000000 1.000000)</hkparam>
+			<hkparam name="blendSpeed">3.000000</hkparam>
+			<hkparam name="minSpeedToSwitch">0.200000</hkparam>
+			<hkparam name="minSwitchTimeNoError">0.200000</hkparam>
+			<hkparam name="minSwitchTimeFullError">0.000000</hkparam>
+			<hkparam name="startPlayingEventId">74</hkparam>
+			<hkparam name="startMatchingEventId">72</hkparam>
+			<hkparam name="rootBoneIndex">0</hkparam>
+			<hkparam name="otherBoneIndex">8</hkparam>
+			<hkparam name="anotherBoneIndex">17</hkparam>
+			<hkparam name="pelvisIndex">0</hkparam>
+			<hkparam name="mode">MODE_MATCH</hkparam>
+			
+			
+			
+			
+			
+			
+		</hkobject>
+
+		<hkobject name="#0114" class="hkbBoneWeightArray" signature="0xcd902b77">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="boneWeights" numelements="0"></hkparam>
+		</hkobject>
+
+		<hkobject name="#0116" class="hkbClipTriggerArray" signature="0x59c23a0f">
+			
+			
+			<hkparam name="triggers" numelements="3">
+				<hkobject>
+					<hkparam name="localTime">0.200000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">76</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">false</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">0.200000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">81</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">false</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">0.200000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">70</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">false</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0115" class="hkbClipGenerator" signature="0x333b85b9">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">0</hkparam>
+			<hkparam name="name">ReanimateStanding</hkparam>
+			
+			
+			
+			<hkparam name="animationName">Animations\MT_Idle.hkx</hkparam>
+			<hkparam name="triggers">#0116</hkparam>
+			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
+			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
+			<hkparam name="startTime">0.000000</hkparam>
+			<hkparam name="playbackSpeed">1.000000</hkparam>
+			<hkparam name="enforcedDuration">0.000000</hkparam>
+			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
+			<hkparam name="animationBindingIndex">-1</hkparam>
+			<hkparam name="mode">MODE_SINGLE_PLAY</hkparam>
+			<hkparam name="flags">0</hkparam>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		</hkobject>
+
+		<hkobject name="#0113" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="generator">#0115</hkparam>
+			<hkparam name="boneWeights">#0114</hkparam>
+			<hkparam name="weight">1.000000</hkparam>
+			<hkparam name="worldFromModelWeight">1.000000</hkparam>
+		</hkobject>
+
+		<hkobject name="#0118" class="hkbBoneWeightArray" signature="0xcd902b77">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="boneWeights" numelements="0"></hkparam>
+		</hkobject>
+
+		<hkobject name="#0120" class="hkbClipTriggerArray" signature="0x59c23a0f">
+			
+			
+			<hkparam name="triggers" numelements="3">
+				<hkobject>
+					<hkparam name="localTime">0.000000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">70</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">0.623000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">76</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">false</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">1.000000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">81</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">false</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0119" class="hkbClipGenerator" signature="0x333b85b9">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">0</hkparam>
+			<hkparam name="name">ReanimateRight</hkparam>
+			
+			
+			
+			<hkparam name="animationName">Animations\GetUpL.hkx</hkparam>
+			<hkparam name="triggers">#0120</hkparam>
+			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
+			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
+			<hkparam name="startTime">0.000000</hkparam>
+			<hkparam name="playbackSpeed">1.000000</hkparam>
+			<hkparam name="enforcedDuration">0.000000</hkparam>
+			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
+			<hkparam name="animationBindingIndex">-1</hkparam>
+			<hkparam name="mode">MODE_SINGLE_PLAY</hkparam>
+			<hkparam name="flags">4</hkparam>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		</hkobject>
+
+		<hkobject name="#0117" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="generator">#0119</hkparam>
+			<hkparam name="boneWeights">#0118</hkparam>
+			<hkparam name="weight">1.000000</hkparam>
+			<hkparam name="worldFromModelWeight">1.000000</hkparam>
+		</hkobject>
+
+		<hkobject name="#0122" class="hkbBoneWeightArray" signature="0xcd902b77">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="boneWeights" numelements="0"></hkparam>
+		</hkobject>
+
+		<hkobject name="#0124" class="hkbClipTriggerArray" signature="0x59c23a0f">
+			
+			
+			<hkparam name="triggers" numelements="3">
+				<hkobject>
+					<hkparam name="localTime">0.000000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">70</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">0.623000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">76</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">false</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">1.000000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">81</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">false</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0123" class="hkbClipGenerator" signature="0x333b85b9">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">0</hkparam>
+			<hkparam name="name">ReanimateLeft</hkparam>
+			
+			
+			
+			<hkparam name="animationName">Animations\GetUpL.hkx</hkparam>
+			<hkparam name="triggers">#0124</hkparam>
+			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
+			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
+			<hkparam name="startTime">0.000000</hkparam>
+			<hkparam name="playbackSpeed">1.000000</hkparam>
+			<hkparam name="enforcedDuration">0.000000</hkparam>
+			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
+			<hkparam name="animationBindingIndex">-1</hkparam>
+			<hkparam name="mode">MODE_SINGLE_PLAY</hkparam>
+			<hkparam name="flags">0</hkparam>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		</hkobject>
+
+		<hkobject name="#0121" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="generator">#0123</hkparam>
+			<hkparam name="boneWeights">#0122</hkparam>
+			<hkparam name="weight">1.000000</hkparam>
+			<hkparam name="worldFromModelWeight">1.000000</hkparam>
+		</hkobject>
+
+		<hkobject name="#0112" class="hkbPoseMatchingGenerator" signature="0x29e271b4">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">0</hkparam>
+			<hkparam name="name">Reanimate Pose Matcher</hkparam>
+			
+			
+			
+			<hkparam name="referencePoseWeightThreshold">0.000000</hkparam>
+			<hkparam name="blendParameter">0.000000</hkparam>
+			<hkparam name="minCyclicBlendParameter">0.000000</hkparam>
+			<hkparam name="maxCyclicBlendParameter">1.000000</hkparam>
+			<hkparam name="indexOfSyncMasterChild">-1</hkparam>
+			<hkparam name="flags">0</hkparam>
+			<hkparam name="subtractLastChild">false</hkparam>
+			<hkparam name="children" numelements="3">
+				#0121 #0117 #0113
+			</hkparam>
+			
+			
+			
+			
+			
+			
+			
+			
+			<hkparam name="worldFromModelRotation">(0.000000 0.000000 0.000000 1.000000)</hkparam>
+			<hkparam name="blendSpeed">3.000000</hkparam>
+			<hkparam name="minSpeedToSwitch">0.200000</hkparam>
+			<hkparam name="minSwitchTimeNoError">0.200000</hkparam>
+			<hkparam name="minSwitchTimeFullError">0.000000</hkparam>
+			<hkparam name="startPlayingEventId">74</hkparam>
+			<hkparam name="startMatchingEventId">72</hkparam>
+			<hkparam name="rootBoneIndex">0</hkparam>
+			<hkparam name="otherBoneIndex">8</hkparam>
+			<hkparam name="anotherBoneIndex">17</hkparam>
+			<hkparam name="pelvisIndex">0</hkparam>
+			<hkparam name="mode">MODE_MATCH</hkparam>
+			
+			
+			
+			
+			
+			
+		</hkobject>
+
+		<hkobject name="#0125" class="hkbVariableBindingSet" signature="0x338ad4ff">
+			
+			
+			<hkparam name="bindings" numelements="1">
+				<hkobject>
+					<hkparam name="memberPath">selectedGeneratorIndex</hkparam>
+					
+					
+					
+					
+					<hkparam name="variableIndex">74</hkparam>
+					<hkparam name="bitIndex">-1</hkparam>
+					<hkparam name="bindingType">BINDING_TYPE_VARIABLE</hkparam>
+					
+					
+					
+				</hkobject>
+			</hkparam>
+			<hkparam name="indexOfBindingToEnable">-1</hkparam>
+			
+		</hkobject>
+
+		<hkobject name="#0098" class="hkbManualSelectorGenerator" signature="0xd932fab8">
+			
+			
+			<hkparam name="variableBindingSet">#0125</hkparam>
+			
+			
+			<hkparam name="userData">0</hkparam>
+			<hkparam name="name">PoseMatching MSG</hkparam>
+			
+			
+			
+			<hkparam name="generators" numelements="2">
+				#0112 #0099
+			</hkparam>
+			<hkparam name="selectedGeneratorIndex">0</hkparam>
+			<hkparam name="currentGeneratorIndex">0</hkparam>
+		</hkobject>
+
+		<hkobject name="#0097" class="hkbModifierGenerator" signature="0x1f81fae6">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">1</hkparam>
+			<hkparam name="name">Fully Ragdoll Mod Gen</hkparam>
+			
+			
+			
+			<hkparam name="modifier">#0096</hkparam>
+			<hkparam name="generator">#0098</hkparam>
+		</hkobject>
+
+		<hkobject name="#0126" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
+			
+			
+			<hkparam name="transitions" numelements="1">
+				<hkobject>
+					<hkparam name="triggerInterval">
+						<hkobject>
+							<hkparam name="enterEventId">-1</hkparam>
+							<hkparam name="exitEventId">-1</hkparam>
+							<hkparam name="enterTime">0.000000</hkparam>
+							<hkparam name="exitTime">0.000000</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="initiateInterval">
+						<hkobject>
+							<hkparam name="enterEventId">-1</hkparam>
+							<hkparam name="exitEventId">-1</hkparam>
+							<hkparam name="enterTime">0.000000</hkparam>
+							<hkparam name="exitTime">0.000000</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="transition">null</hkparam>
+					<hkparam name="condition">null</hkparam>
+					<hkparam name="eventId">74</hkparam>
+					<hkparam name="toStateId">5</hkparam>
+					<hkparam name="fromNestedStateId">0</hkparam>
+					<hkparam name="toNestedStateId">0</hkparam>
+					<hkparam name="priority">0</hkparam>
+					<hkparam name="flags">FLAG_DISABLE_CONDITION</hkparam>
+				</hkobject>
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0127" class="hkbStateMachineEventPropertyArray" signature="0xb07b4388">
+			
+			
+			<hkparam name="events" numelements="1">
+				<hkobject>
+					<hkparam name="id">78</hkparam>
+					<hkparam name="payload">null</hkparam>
+				</hkobject>
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0128" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="listeners" numelements="0"></hkparam>
+			<hkparam name="enterNotifyEvents">#0127</hkparam>
+			<hkparam name="exitNotifyEvents">null</hkparam>
+			<hkparam name="transitions">#0126</hkparam>
+			<hkparam name="generator">#0097</hkparam>
+			<hkparam name="name">Fully Ragdoll</hkparam>
+			<hkparam name="stateId">4</hkparam>
+			<hkparam name="probability">1.000000</hkparam>
+			<hkparam name="enable">true</hkparam>
+		</hkobject>
+
+		<hkobject name="#0129" class="hkbClipTriggerArray" signature="0x59c23a0f">
+			
+			
+			<hkparam name="triggers" numelements="1">
+				<hkobject>
+					<hkparam name="localTime">0.000000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">72</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0130" class="hkbClipGenerator" signature="0x333b85b9">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">0</hkparam>
+			<hkparam name="name">Death</hkparam>
+			
+			
+			
+			<hkparam name="animationName">Animations\Deathpose.hkx</hkparam>
+			<hkparam name="triggers">#0129</hkparam>
+			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
+			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
+			<hkparam name="startTime">0.000000</hkparam>
+			<hkparam name="playbackSpeed">1.000000</hkparam>
+			<hkparam name="enforcedDuration">0.000000</hkparam>
+			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
+			<hkparam name="animationBindingIndex">-1</hkparam>
+			<hkparam name="mode">MODE_SINGLE_PLAY</hkparam>
+			<hkparam name="flags">0</hkparam>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		</hkobject>
+
+		<hkobject name="#0131" class="hkbBoneIndexArray" signature="0xaa8619">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="boneIndices" numelements="6">
+				0 1 2 7 3 6
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0132" class="BSRagdollContactListenerModifier" signature="0x8003d8ce">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">2</hkparam>
+			<hkparam name="name">CollisionListener</hkparam>
+			
+			
+			
+			<hkparam name="enable">true</hkparam>
+			
+			<hkparam name="contactEvent">
+				<hkobject>
+					<hkparam name="id">72</hkparam>
+					<hkparam name="payload">null</hkparam>
+				</hkobject>
+			</hkparam>
+			<hkparam name="bones">#0131</hkparam>
+			
+			
+		</hkobject>
+
+		<hkobject name="#0133" class="hkbBoneIndexArray" signature="0xaa8619">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="boneIndices" numelements="31">
+				0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+				16 17 18 19 20 21 22 23 24 25 26 27 28 29 30
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0134" class="hkbKeyframeBonesModifier" signature="0x95f66629">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">1</hkparam>
+			<hkparam name="name">KeyframeFullRagdoll</hkparam>
+			
+			
+			
+			<hkparam name="enable">true</hkparam>
+			
+			<hkparam name="keyframeInfo" numelements="0"></hkparam>
+			<hkparam name="keyframedBonesList">#0133</hkparam>
+		</hkobject>
+
+		<hkobject name="#0137" class="hkbBoneIndexArray" signature="0xaa8619">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="boneIndices" numelements="0"></hkparam>
+		</hkobject>
+
+		<hkobject name="#0136" class="hkbRigidBodyRagdollControlsModifier" signature="0xaa87d1eb">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">1</hkparam>
+			<hkparam name="name">DriveRagdollRB</hkparam>
+			
+			
+			
+			<hkparam name="enable">true</hkparam>
+			
+			<hkparam name="controlData">
+				<hkobject>
+					<hkparam name="keyFrameHierarchyControlData">
+						<hkobject>
+							<hkparam name="hierarchyGain">0.170000</hkparam>
+							<hkparam name="velocityDamping">0.000000</hkparam>
+							<hkparam name="accelerationGain">1.000000</hkparam>
+							<hkparam name="velocityGain">0.600000</hkparam>
+							<hkparam name="positionGain">0.050000</hkparam>
+							<hkparam name="positionMaxLinearVelocity">1.400000</hkparam>
+							<hkparam name="positionMaxAngularVelocity">1.800000</hkparam>
+							<hkparam name="snapGain">0.100000</hkparam>
+							<hkparam name="snapMaxLinearVelocity">0.300000</hkparam>
+							<hkparam name="snapMaxAngularVelocity">0.300000</hkparam>
+							<hkparam name="snapMaxLinearDistance">0.030000</hkparam>
+							<hkparam name="snapMaxAngularDistance">0.100000</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="durationToBlend">0.500000</hkparam>
+				</hkobject>
+			</hkparam>
+			<hkparam name="bones">#0137</hkparam>
+		</hkobject>
+
+		<hkobject name="#0135" class="hkbModifierList" signature="0xa4180ca1">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">1</hkparam>
+			<hkparam name="name">AnimateToRagdoll ModList</hkparam>
+			
+			
+			
+			<hkparam name="enable">true</hkparam>
+			
+			<hkparam name="modifiers" numelements="3">
+				#0134 #0136 #0132
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0138" class="hkbModifierGenerator" signature="0x1f81fae6">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">1</hkparam>
+			<hkparam name="name">AnimateToRagdoll Mod Gen</hkparam>
+			
+			
+			
+			<hkparam name="modifier">#0135</hkparam>
+			<hkparam name="generator">#0130</hkparam>
+		</hkobject>
+
+		<hkobject name="#0139" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
+			
+			
+			<hkparam name="transitions" numelements="1">
+				<hkobject>
+					<hkparam name="triggerInterval">
+						<hkobject>
+							<hkparam name="enterEventId">-1</hkparam>
+							<hkparam name="exitEventId">-1</hkparam>
+							<hkparam name="enterTime">0.000000</hkparam>
+							<hkparam name="exitTime">0.000000</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="initiateInterval">
+						<hkobject>
+							<hkparam name="enterEventId">-1</hkparam>
+							<hkparam name="exitEventId">-1</hkparam>
+							<hkparam name="enterTime">0.000000</hkparam>
+							<hkparam name="exitTime">0.000000</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="transition">#0084</hkparam>
+					<hkparam name="condition">null</hkparam>
+					<hkparam name="eventId">72</hkparam>
+					<hkparam name="toStateId">4</hkparam>
+					<hkparam name="fromNestedStateId">0</hkparam>
+					<hkparam name="toNestedStateId">0</hkparam>
+					<hkparam name="priority">0</hkparam>
+					<hkparam name="flags">FLAG_DISABLE_CONDITION</hkparam>
+				</hkobject>
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0140" class="hkbStateMachineEventPropertyArray" signature="0xb07b4388">
+			
+			
+			<hkparam name="events" numelements="1">
+				<hkobject>
+					<hkparam name="id">73</hkparam>
+					<hkparam name="payload">null</hkparam>
+				</hkobject>
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0141" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="listeners" numelements="0"></hkparam>
+			<hkparam name="enterNotifyEvents">#0140</hkparam>
+			<hkparam name="exitNotifyEvents">null</hkparam>
+			<hkparam name="transitions">#0139</hkparam>
+			<hkparam name="generator">#0138</hkparam>
+			<hkparam name="name">AnimateToRagdoll</hkparam>
+			<hkparam name="stateId">3</hkparam>
+			<hkparam name="probability">1.000000</hkparam>
+			<hkparam name="enable">true</hkparam>
+		</hkobject>
+
+		<hkobject name="#0142" class="hkbBehaviorReferenceGenerator" signature="0xfcb5423">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">0</hkparam>
+			<hkparam name="name">QuadrupedBFR</hkparam>
+			
+			
+			
+			<hkparam name="behaviorName">Behaviors\QuadrupedBehavior.hkx</hkparam>
+			
+		</hkobject>
+
+		<hkobject name="#0145" class="hkbBoneIndexArray" signature="0xaa8619">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="boneIndices" numelements="31">
+				1 2 5 6 7 9 11 12 14 15 17 18 3 0 8 13
+				19 21 23 25 27 29 30 4 10 16 20 22 24 26 28
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0144" class="hkbKeyframeBonesModifier" signature="0x95f66629">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">1</hkparam>
+			<hkparam name="name">KeyframeLowerBody</hkparam>
+			
+			
+			
+			<hkparam name="enable">true</hkparam>
+			
+			<hkparam name="keyframeInfo" numelements="0"></hkparam>
+			<hkparam name="keyframedBonesList">#0145</hkparam>
+		</hkobject>
+
+		<hkobject name="#0143" class="hkbModifierList" signature="0xa4180ca1">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">1</hkparam>
+			<hkparam name="name">Root Mod List</hkparam>
+			
+			
+			
+			<hkparam name="enable">true</hkparam>
+			
+			<hkparam name="modifiers" numelements="2">
+				#0144 #0136
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0146" class="hkbModifierGenerator" signature="0x1f81fae6">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">1</hkparam>
+			<hkparam name="name">Root Mod Gen</hkparam>
+			
+			
+			
+			<hkparam name="modifier">#0143</hkparam>
+			<hkparam name="generator">#0142</hkparam>
+		</hkobject>
+
+		<hkobject name="#0147" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="listeners" numelements="0"></hkparam>
+			<hkparam name="enterNotifyEvents">null</hkparam>
+			<hkparam name="exitNotifyEvents">null</hkparam>
+			<hkparam name="transitions">null</hkparam>
+			<hkparam name="generator">#0146</hkparam>
+			<hkparam name="name">RootAnimState</hkparam>
+			<hkparam name="stateId">2</hkparam>
+			<hkparam name="probability">1.000000</hkparam>
+			<hkparam name="enable">true</hkparam>
+		</hkobject>
+
+		<hkobject name="#0148" class="hkbVariableBindingSet" signature="0x338ad4ff">
+			
+			
+			<hkparam name="bindings" numelements="1">
+				<hkobject>
+					<hkparam name="memberPath">bIsActive0</hkparam>
+					
+					
+					
+					
+					<hkparam name="variableIndex">29</hkparam>
+					<hkparam name="bitIndex">-1</hkparam>
+					<hkparam name="bindingType">BINDING_TYPE_VARIABLE</hkparam>
+					
+					
+					
+				</hkobject>
+			</hkparam>
+			<hkparam name="indexOfBindingToEnable">-1</hkparam>
+			
+		</hkobject>
+
+		<hkobject name="#0149" class="BSIsActiveModifier" signature="0xb0fde45a">
+			
+			
+			<hkparam name="variableBindingSet">#0148</hkparam>
+			
+			
+			<hkparam name="userData">2</hkparam>
+			<hkparam name="name">BSIAM_bAnimationDriven</hkparam>
+			
+			
+			
+			<hkparam name="enable">true</hkparam>
+			
+			<hkparam name="bIsActive0">false</hkparam>
+			<hkparam name="bInvertActive0">false</hkparam>
+			<hkparam name="bIsActive1">false</hkparam>
+			<hkparam name="bInvertActive1">false</hkparam>
+			<hkparam name="bIsActive2">false</hkparam>
+			<hkparam name="bInvertActive2">false</hkparam>
+			<hkparam name="bIsActive3">false</hkparam>
+			<hkparam name="bInvertActive3">false</hkparam>
+			<hkparam name="bIsActive4">false</hkparam>
+			<hkparam name="bInvertActive4">false</hkparam>
+		</hkobject>
+
+		<hkobject name="#0150" class="hkbGetUpModifier" signature="0x61cb7ac0">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">0</hkparam>
+			<hkparam name="name">Get Up Modifier</hkparam>
+			
+			
+			
+			<hkparam name="enable">true</hkparam>
+			
+			<hkparam name="groundNormal">(0.000000 0.000000 1.000000 0.000000)</hkparam>
+			<hkparam name="duration">1.000000</hkparam>
+			<hkparam name="alignWithGroundDuration">0.250000</hkparam>
+			<hkparam name="rootBoneIndex">0</hkparam>
+			<hkparam name="otherBoneIndex">11</hkparam>
+			<hkparam name="anotherBoneIndex">10</hkparam>
+			
+			
+			
+		</hkobject>
+
+		<hkobject name="#0151" class="hkbModifierList" signature="0xa4180ca1">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">1</hkparam>
+			<hkparam name="name">GetUp Mod List</hkparam>
+			
+			
+			
+			<hkparam name="enable">true</hkparam>
+			
+			<hkparam name="modifiers" numelements="4">
+				#0150 #0144 #0136 #0149
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0152" class="hkbModifierGenerator" signature="0x1f81fae6">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">1</hkparam>
+			<hkparam name="name">GetUp Mod Gen</hkparam>
+			
+			
+			
+			<hkparam name="modifier">#0151</hkparam>
+			<hkparam name="generator">#0098</hkparam>
+		</hkobject>
+
+		<hkobject name="#0153" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
+			
+			
+			<hkparam name="transitions" numelements="1">
+				<hkobject>
+					<hkparam name="triggerInterval">
+						<hkobject>
+							<hkparam name="enterEventId">-1</hkparam>
+							<hkparam name="exitEventId">-1</hkparam>
+							<hkparam name="enterTime">0.000000</hkparam>
+							<hkparam name="exitTime">0.000000</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="initiateInterval">
+						<hkobject>
+							<hkparam name="enterEventId">-1</hkparam>
+							<hkparam name="exitEventId">-1</hkparam>
+							<hkparam name="enterTime">0.000000</hkparam>
+							<hkparam name="exitTime">0.000000</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="transition">#0084</hkparam>
+					<hkparam name="condition">null</hkparam>
+					<hkparam name="eventId">70</hkparam>
+					<hkparam name="toStateId">2</hkparam>
+					<hkparam name="fromNestedStateId">0</hkparam>
+					<hkparam name="toNestedStateId">0</hkparam>
+					<hkparam name="priority">0</hkparam>
+					<hkparam name="flags">FLAG_DISABLE_CONDITION</hkparam>
+				</hkobject>
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0154" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="listeners" numelements="0"></hkparam>
+			<hkparam name="enterNotifyEvents">null</hkparam>
+			<hkparam name="exitNotifyEvents">null</hkparam>
+			<hkparam name="transitions">#0153</hkparam>
+			<hkparam name="generator">#0152</hkparam>
+			<hkparam name="name">GetUpFromRagdoll</hkparam>
+			<hkparam name="stateId">5</hkparam>
+			<hkparam name="probability">1.000000</hkparam>
+			<hkparam name="enable">true</hkparam>
+		</hkobject>
+
+		<hkobject name="#0155" class="hkbStateMachine" signature="0x816c1dcb">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">0</hkparam>
+			<hkparam name="name">MammothRootBehavior</hkparam>
+			
+			
+			
+			<hkparam name="eventToSendWhenStateOrTransitionChanges">
+				<hkobject>
+					<hkparam name="id">-1</hkparam>
+					<hkparam name="payload">null</hkparam>
+					
+				</hkobject>
+			</hkparam>
+			<hkparam name="startStateChooser">null</hkparam>
+			<hkparam name="startStateId">2</hkparam>
+			<hkparam name="returnToPreviousStateEventId">-1</hkparam>
+			<hkparam name="randomTransitionEventId">-1</hkparam>
+			<hkparam name="transitionToNextHigherStateEventId">-1</hkparam>
+			<hkparam name="transitionToNextLowerStateEventId">-1</hkparam>
+			<hkparam name="syncVariableIndex">-1</hkparam>
+			
+			<hkparam name="wrapAroundStateId">false</hkparam>
+			<hkparam name="maxSimultaneousTransitions">32</hkparam>
+			<hkparam name="startStateMode">START_STATE_MODE_DEFAULT</hkparam>
+			<hkparam name="selfTransitionMode">SELF_TRANSITION_MODE_NO_TRANSITION</hkparam>
+			
+			<hkparam name="states" numelements="4">
+				#0154 #0147 #0141 #0128
+			</hkparam>
+			<hkparam name="wildcardTransitions">#0083</hkparam>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		</hkobject>
+
+		<hkobject name="#0156" class="hkbBehaviorGraph" signature="0xb1218f86">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">0</hkparam>
+			<hkparam name="name">MammothBehavior.hkb</hkparam>
+			
+			
+			
+			<hkparam name="variableMode">VARIABLE_MODE_DISCARD_WHEN_INACTIVE</hkparam>
+			
+			
+			
+			
+			<hkparam name="rootGenerator">#0155</hkparam>
+			<hkparam name="data">#0080</hkparam>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		</hkobject>
+
+		<hkobject name="#0077" class="hkRootLevelContainer" signature="0x2772c11e">
+			<hkparam name="namedVariants" numelements="1">
+				<hkobject>
+					<hkparam name="name">hkbBehaviorGraph</hkparam>
+					<hkparam name="className">hkbBehaviorGraph</hkparam>
+					<hkparam name="variant">#0156</hkparam>
+				</hkobject>
+			</hkparam>
+		</hkobject>
+
+	</hksection>
+
+</hkpackfile>

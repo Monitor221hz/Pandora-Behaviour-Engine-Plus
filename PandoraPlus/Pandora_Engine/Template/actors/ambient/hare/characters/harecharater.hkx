@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="ascii"?>
+<hkpackfile classversion="8" contentsversion="hk_2010.2.0-r1" toplevelobject="#0022">
+
+	<hksection name="__data__">
+
+		<hkobject name="#0023" class="hkbMirroredSkeletonInfo" signature="0xc6c2da4f">
+			
+			
+			<hkparam name="mirrorAxis">(1.000000 0.000000 0.000000 0.000000)</hkparam>
+			<hkparam name="bonePairMap" numelements="32">
+				0 1 2 3 4 5 6 7 8 9 11 10 13 12 15 14
+				17 16 19 18 21 20 23 22 25 24 27 26 29 28 30 31
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0024" class="hkbCharacterStringData" signature="0x655b42bc">
+			
+			
+			<hkparam name="deformableSkinNames" numelements="0"></hkparam>
+			<hkparam name="rigidSkinNames" numelements="0"></hkparam>
+			<hkparam name="animationNames" numelements="18">
+				<hkcstring>Animations\AggroWarning1.hkx</hkcstring>
+				<hkcstring>Animations\AggroWarning2.hkx</hkcstring>
+				<hkcstring>Animations\GetUP.HKX</hkcstring>
+				<hkcstring>Animations\Idle_EarFromt.HKX</hkcstring>
+				<hkcstring>Animations\Idle_EarLeft.HKX</hkcstring>
+				<hkcstring>Animations\Idle_Foraging.HKX</hkcstring>
+				<hkcstring>Animations\Idle_Lay.HKX</hkcstring>
+				<hkcstring>Animations\Idle_LayDown.HKX</hkcstring>
+				<hkcstring>Animations\Idle_UpLay.HKX</hkcstring>
+				<hkcstring>Animations\IdleSitLookL.HKX</hkcstring>
+				<hkcstring>Animations\IdleStanceLookL.HKX</hkcstring>
+				<hkcstring>Animations\MT_Idle.HKX</hkcstring>
+				<hkcstring>Animations\RunForward.HKX</hkcstring>
+				<hkcstring>Animations\TurnCannedFleeL180.HKX</hkcstring>
+				<hkcstring>Animations\TurnCannedFleeL90.HKX</hkcstring>
+				<hkcstring>Animations\TurnCannedL180.HKX</hkcstring>
+				<hkcstring>Animations\TurnCannedL90.HKX</hkcstring>
+				<hkcstring>Animations\Walkforward.HKX</hkcstring>
+			</hkparam>
+			<hkparam name="animationFilenames" numelements="0"></hkparam>
+			<hkparam name="characterPropertyNames" numelements="0"></hkparam>
+			<hkparam name="retargetingSkeletonMapperFilenames" numelements="0"></hkparam>
+			<hkparam name="lodNames" numelements="0"></hkparam>
+			<hkparam name="mirroredSyncPointSubstringsA" numelements="0"></hkparam>
+			<hkparam name="mirroredSyncPointSubstringsB" numelements="0"></hkparam>
+			<hkparam name="name">HareCharater</hkparam>
+			<hkparam name="rigName">Character Assets\skeleton.HKX</hkparam>
+			<hkparam name="ragdollName">Character Assets\skeleton.HKX</hkparam>
+			<hkparam name="behaviorFilename">Behaviors\HareBehavior.hkx</hkparam>
+		</hkobject>
+
+		<hkobject name="#0025" class="hkbVariableValueSet" signature="0x27812d8d">
+			
+			
+			<hkparam name="wordVariableValues" numelements="0"></hkparam>
+			<hkparam name="quadVariableValues" numelements="0"></hkparam>
+			<hkparam name="variantVariableValues" numelements="0"></hkparam>
+		</hkobject>
+
+		<hkobject name="#0026" class="hkbCharacterData" signature="0x300d6808">
+			
+			
+			<hkparam name="characterControllerInfo">
+				<hkobject>
+					<hkparam name="capsuleHeight">1.700000</hkparam>
+					<hkparam name="capsuleRadius">0.400000</hkparam>
+					<hkparam name="collisionFilterInfo">1</hkparam>
+					<hkparam name="characterControllerCinfo">null</hkparam>
+				</hkobject>
+			</hkparam>
+			<hkparam name="modelUpMS">(0.000000 0.000000 1.000000 0.000000)</hkparam>
+			<hkparam name="modelForwardMS">(1.000000 0.000000 0.000000 0.000000)</hkparam>
+			<hkparam name="modelRightMS">(-0.000000 -1.000000 -0.000000 0.000000)</hkparam>
+			<hkparam name="characterPropertyInfos" numelements="0"></hkparam>
+			<hkparam name="numBonesPerLod" numelements="0"></hkparam>
+			<hkparam name="characterPropertyValues">#0025</hkparam>
+			<hkparam name="footIkDriverInfo">null</hkparam>
+			<hkparam name="handIkDriverInfo">null</hkparam>
+			<hkparam name="stringData">#0024</hkparam>
+			<hkparam name="mirroredSkeletonInfo">#0023</hkparam>
+			<hkparam name="scale">1.000000</hkparam>
+			
+			
+		</hkobject>
+
+		<hkobject name="#0022" class="hkRootLevelContainer" signature="0x2772c11e">
+			<hkparam name="namedVariants" numelements="1">
+				<hkobject>
+					<hkparam name="name">hkbCharacterData</hkparam>
+					<hkparam name="className">hkbCharacterData</hkparam>
+					<hkparam name="variant">#0026</hkparam>
+				</hkobject>
+			</hkparam>
+		</hkobject>
+
+	</hksection>
+
+</hkpackfile>

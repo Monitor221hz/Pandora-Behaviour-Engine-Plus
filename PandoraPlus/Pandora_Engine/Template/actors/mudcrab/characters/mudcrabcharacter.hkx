@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="ascii"?>
+<hkpackfile classversion="8" contentsversion="hk_2010.2.0-r1" toplevelobject="#0022">
+
+	<hksection name="__data__">
+
+		<hkobject name="#0023" class="hkbMirroredSkeletonInfo" signature="0xc6c2da4f">
+			
+			
+			<hkparam name="mirrorAxis">(1.000000 0.000000 0.000000 0.000000)</hkparam>
+			<hkparam name="bonePairMap" numelements="40">
+				0 1 3 2 5 4 7 6 9 8 11 10 13 12 15 14
+				17 16 19 18 21 20 23 22 25 24 27 26 29 28 31 30
+				33 32 35 34 37 36 39 38
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0024" class="hkbCharacterStringData" signature="0x655b42bc">
+			
+			
+			<hkparam name="deformableSkinNames" numelements="0"></hkparam>
+			<hkparam name="rigidSkinNames" numelements="0"></hkparam>
+			<hkparam name="animationNames" numelements="33">
+				<hkcstring>Animations\Attack_ComboChop.HKX</hkcstring>
+				<hkcstring>Animations\Attack_ForwardJunp.HKX</hkcstring>
+				<hkcstring>Animations\Attack_LeftChop.HKX</hkcstring>
+				<hkcstring>Animations\AttackLeft_Side.HKX</hkcstring>
+				<hkcstring>Animations\Backward_Run.HKX</hkcstring>
+				<hkcstring>Animations\Backward_Walk.HKX</hkcstring>
+				<hkcstring>Animations\CombatIdle.HKX</hkcstring>
+				<hkcstring>Animations\CombatIdle1.HKX</hkcstring>
+				<hkcstring>Animations\CombatIdle2.HKX</hkcstring>
+				<hkcstring>Animations\DigInStart.HKX</hkcstring>
+				<hkcstring>Animations\DigOut.HKX</hkcstring>
+				<hkcstring>Animations\Forward_Run.HKX</hkcstring>
+				<hkcstring>Animations\Forward_Walk.HKX</hkcstring>
+				<hkcstring>Animations\GetUp.HKX</hkcstring>
+				<hkcstring>Animations\GetUpBack.HKX</hkcstring>
+				<hkcstring>Animations\Idle Mouth.HKX</hkcstring>
+				<hkcstring>Animations\Idle Mouth2.HKX</hkcstring>
+				<hkcstring>Animations\Idle_Antenna.HKX</hkcstring>
+				<hkcstring>Animations\Idle_DiginSleep.HKX</hkcstring>
+				<hkcstring>Animations\Idle_Feed.HKX</hkcstring>
+				<hkcstring>Animations\Idle_LookLeft.HKX</hkcstring>
+				<hkcstring>Animations\Idle_LookRight.HKX</hkcstring>
+				<hkcstring>Animations\Left.HKX</hkcstring>
+				<hkcstring>Animations\Left_Run.HKX</hkcstring>
+				<hkcstring>Animations\MainIdle.HKX</hkcstring>
+				<hkcstring>Animations\RecoilLChop.HKX</hkcstring>
+				<hkcstring>Animations\Right.HKX</hkcstring>
+				<hkcstring>Animations\Right_Run.HKX</hkcstring>
+				<hkcstring>Animations\Stagger_Back.HKX</hkcstring>
+				<hkcstring>Animations\Stagger_Med.HKX</hkcstring>
+				<hkcstring>Animations\Stagger_Small.HKX</hkcstring>
+				<hkcstring>Animations\StaggerDirectional.HKX</hkcstring>
+				<hkcstring>Animations\TurnLeft90.HKX</hkcstring>
+			</hkparam>
+			<hkparam name="animationFilenames" numelements="0"></hkparam>
+			<hkparam name="characterPropertyNames" numelements="0"></hkparam>
+			<hkparam name="retargetingSkeletonMapperFilenames" numelements="0"></hkparam>
+			<hkparam name="lodNames" numelements="0"></hkparam>
+			<hkparam name="mirroredSyncPointSubstringsA" numelements="0"></hkparam>
+			<hkparam name="mirroredSyncPointSubstringsB" numelements="0"></hkparam>
+			<hkparam name="name">MudcrabCharacter</hkparam>
+			<hkparam name="rigName">Character Assets\skeleton.HKX</hkparam>
+			<hkparam name="ragdollName">Character Assets\skeleton.HKX</hkparam>
+			<hkparam name="behaviorFilename">Behaviors\MudcrabBehavior.hkx</hkparam>
+		</hkobject>
+
+		<hkobject name="#0025" class="hkbVariableValueSet" signature="0x27812d8d">
+			
+			
+			<hkparam name="wordVariableValues" numelements="0"></hkparam>
+			<hkparam name="quadVariableValues" numelements="0"></hkparam>
+			<hkparam name="variantVariableValues" numelements="0"></hkparam>
+		</hkobject>
+
+		<hkobject name="#0026" class="hkbCharacterData" signature="0x300d6808">
+			
+			
+			<hkparam name="characterControllerInfo">
+				<hkobject>
+					<hkparam name="capsuleHeight">1.700000</hkparam>
+					<hkparam name="capsuleRadius">0.400000</hkparam>
+					<hkparam name="collisionFilterInfo">1</hkparam>
+					<hkparam name="characterControllerCinfo">null</hkparam>
+				</hkobject>
+			</hkparam>
+			<hkparam name="modelUpMS">(0.000000 0.000000 1.000000 0.000000)</hkparam>
+			<hkparam name="modelForwardMS">(1.000000 0.000000 0.000000 0.000000)</hkparam>
+			<hkparam name="modelRightMS">(-0.000000 -1.000000 -0.000000 0.000000)</hkparam>
+			<hkparam name="characterPropertyInfos" numelements="0"></hkparam>
+			<hkparam name="numBonesPerLod" numelements="0"></hkparam>
+			<hkparam name="characterPropertyValues">#0025</hkparam>
+			<hkparam name="footIkDriverInfo">null</hkparam>
+			<hkparam name="handIkDriverInfo">null</hkparam>
+			<hkparam name="stringData">#0024</hkparam>
+			<hkparam name="mirroredSkeletonInfo">#0023</hkparam>
+			<hkparam name="scale">1.000000</hkparam>
+			
+			
+		</hkobject>
+
+		<hkobject name="#0022" class="hkRootLevelContainer" signature="0x2772c11e">
+			<hkparam name="namedVariants" numelements="1">
+				<hkobject>
+					<hkparam name="name">hkbCharacterData</hkparam>
+					<hkparam name="className">hkbCharacterData</hkparam>
+					<hkparam name="variant">#0026</hkparam>
+				</hkobject>
+			</hkparam>
+		</hkobject>
+
+	</hksection>
+
+</hkpackfile>

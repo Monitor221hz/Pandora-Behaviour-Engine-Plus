@@ -1,0 +1,36 @@
+﻿<Window x:Class="Pandora.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Pandora"
+        xmlns:views="clr-namespace:Pandora.MVVM.View"
+        xmlns:controls="clr-namespace:Pandora.MVVM.View.Controls"
+        mc:Ignorable="d"
+        
+        Title="Pandora Behavior Engine" Height="700" Width="500"
+        ResizeMode="CanResizeWithGrip"
+        AllowsTransparency="True"
+        Background="Transparent"
+        WindowStyle="None">
+
+    <Border CornerRadius="20">
+        <Border.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                <GradientStop Color="#292537" Offset="0.0" />
+
+                <GradientStop Color="Purple" Offset="4" />
+            </LinearGradientBrush>
+        </Border.Background>
+        
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <views:EngineView Grid.Row="1"></views:EngineView>
+        </Grid>
+        
+    </Border>
+</Window>

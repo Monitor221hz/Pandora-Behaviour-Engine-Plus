@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="ascii"?>
+<hkpackfile classversion="8" contentsversion="hk_2010.2.0-r1" toplevelobject="#0022">
+
+	<hksection name="__data__">
+
+		<hkobject name="#0023" class="hkbMirroredSkeletonInfo" signature="0xc6c2da4f">
+			
+			
+			<hkparam name="mirrorAxis">(1.000000 0.000000 0.000000 0.000000)</hkparam>
+			<hkparam name="bonePairMap" numelements="0"></hkparam>
+		</hkobject>
+
+		<hkobject name="#0024" class="hkbCharacterStringData" signature="0x655b42bc">
+			
+			
+			<hkparam name="deformableSkinNames" numelements="0"></hkparam>
+			<hkparam name="rigidSkinNames" numelements="0"></hkparam>
+			<hkparam name="animationNames" numelements="32">
+				<hkcstring>Animations\Attack_L1.HKX</hkcstring>
+				<hkcstring>Animations\Attack_R1.HKX</hkcstring>
+				<hkcstring>Animations\Bash.HKX</hkcstring>
+				<hkcstring>Animations\BlockHit.HKX</hkcstring>
+				<hkcstring>Animations\BlockIdle.HKX</hkcstring>
+				<hkcstring>Animations\CombatIdle.HKX</hkcstring>
+				<hkcstring>Animations\CombatIdle02.HKX</hkcstring>
+				<hkcstring>Animations\Dispel.HKX</hkcstring>
+				<hkcstring>Animations\Equip.HKX</hkcstring>
+				<hkcstring>Animations\Idle.HKX</hkcstring>
+				<hkcstring>Animations\PowerAttack_L1.HKX</hkcstring>
+				<hkcstring>Animations\PowerAttack_R1.HKX</hkcstring>
+				<hkcstring>Animations\PowerBash.HKX</hkcstring>
+				<hkcstring>Animations\Recoil_L1.HKX</hkcstring>
+				<hkcstring>Animations\Recoil_R1.HKX</hkcstring>
+				<hkcstring>Animations\RunB.HKX</hkcstring>
+				<hkcstring>Animations\RunF.HKX</hkcstring>
+				<hkcstring>Animations\RunL.HKX</hkcstring>
+				<hkcstring>Animations\RunR.HKX</hkcstring>
+				<hkcstring>Animations\Stagger_Large.HKX</hkcstring>
+				<hkcstring>Animations\Stagger_Small.HKX</hkcstring>
+				<hkcstring>Animations\StaggerForward.HKX</hkcstring>
+				<hkcstring>Animations\Summon.HKX</hkcstring>
+				<hkcstring>Animations\TurnL_180.HKX</hkcstring>
+				<hkcstring>Animations\TurnL_90.HKX</hkcstring>
+				<hkcstring>Animations\TurnR_180.HKX</hkcstring>
+				<hkcstring>Animations\TurnR_90.HKX</hkcstring>
+				<hkcstring>Animations\UnEquip.HKX</hkcstring>
+				<hkcstring>Animations\WalkB.HKX</hkcstring>
+				<hkcstring>Animations\WalkF.HKX</hkcstring>
+				<hkcstring>Animations\WalkL.HKX</hkcstring>
+				<hkcstring>Animations\WalkR.HKX</hkcstring>
+			</hkparam>
+			<hkparam name="animationFilenames" numelements="0"></hkparam>
+			<hkparam name="characterPropertyNames" numelements="0"></hkparam>
+			<hkparam name="retargetingSkeletonMapperFilenames" numelements="0"></hkparam>
+			<hkparam name="lodNames" numelements="0"></hkparam>
+			<hkparam name="mirroredSyncPointSubstringsA" numelements="0"></hkparam>
+			<hkparam name="mirroredSyncPointSubstringsB" numelements="0"></hkparam>
+			<hkparam name="name">AtronachFrostCharacter</hkparam>
+			<hkparam name="rigName">Character Assets\skeleton.HKX</hkparam>
+			<hkparam name="ragdollName">Character Assets\skeleton.HKX</hkparam>
+			<hkparam name="behaviorFilename">Behaviors\AtronachFrostBehavior.hkx</hkparam>
+		</hkobject>
+
+		<hkobject name="#0025" class="hkbFootIkDriverInfo" signature="0xc6a09dbf">
+			
+			
+			<hkparam name="legs" numelements="2">
+				<hkobject>
+					
+					<hkparam name="kneeAxisLS">(-1.000000 0.000000 0.000000 0.000000)</hkparam>
+					<hkparam name="footEndLS">(0.000000 0.000000 0.000000 0.000000)</hkparam>
+					<hkparam name="footPlantedAnkleHeightMS">0.000000</hkparam>
+					<hkparam name="footRaisedAnkleHeightMS">70.000000</hkparam>
+					<hkparam name="maxAnkleHeightMS">98.000000</hkparam>
+					<hkparam name="minAnkleHeightMS">-28.000000</hkparam>
+					<hkparam name="maxKneeAngleDegrees">180.000000</hkparam>
+					<hkparam name="minKneeAngleDegrees">0.000000</hkparam>
+					<hkparam name="maxAnkleAngleDegrees">45.000000</hkparam>
+					<hkparam name="hipIndex">6</hkparam>
+					<hkparam name="kneeIndex">7</hkparam>
+					<hkparam name="ankleIndex">8</hkparam>
+				</hkobject>
+				<hkobject>
+					
+					<hkparam name="kneeAxisLS">(-1.000000 0.000000 0.000000 0.000000)</hkparam>
+					<hkparam name="footEndLS">(0.000000 0.000000 0.000000 0.000000)</hkparam>
+					<hkparam name="footPlantedAnkleHeightMS">0.000000</hkparam>
+					<hkparam name="footRaisedAnkleHeightMS">70.000000</hkparam>
+					<hkparam name="maxAnkleHeightMS">98.000000</hkparam>
+					<hkparam name="minAnkleHeightMS">-28.000000</hkparam>
+					<hkparam name="maxKneeAngleDegrees">180.000000</hkparam>
+					<hkparam name="minKneeAngleDegrees">0.000000</hkparam>
+					<hkparam name="maxAnkleAngleDegrees">45.000000</hkparam>
+					<hkparam name="hipIndex">9</hkparam>
+					<hkparam name="kneeIndex">10</hkparam>
+					<hkparam name="ankleIndex">11</hkparam>
+				</hkobject>
+			</hkparam>
+			<hkparam name="raycastDistanceUp">0.500000</hkparam>
+			<hkparam name="raycastDistanceDown">0.800000</hkparam>
+			<hkparam name="originalGroundHeightMS">0.000000</hkparam>
+			<hkparam name="verticalOffset">0.000000</hkparam>
+			<hkparam name="collisionFilterInfo">3</hkparam>
+			<hkparam name="forwardAlignFraction">1.000000</hkparam>
+			<hkparam name="sidewaysAlignFraction">0.000000</hkparam>
+			<hkparam name="sidewaysSampleWidth">0.200000</hkparam>
+			<hkparam name="lockFeetWhenPlanted">false</hkparam>
+			<hkparam name="useCharacterUpVector">false</hkparam>
+			<hkparam name="isQuadrupedNarrow">false</hkparam>
+		</hkobject>
+
+		<hkobject name="#0026" class="hkbVariableValueSet" signature="0x27812d8d">
+			
+			
+			<hkparam name="wordVariableValues" numelements="0"></hkparam>
+			<hkparam name="quadVariableValues" numelements="0"></hkparam>
+			<hkparam name="variantVariableValues" numelements="0"></hkparam>
+		</hkobject>
+
+		<hkobject name="#0027" class="hkbCharacterData" signature="0x300d6808">
+			
+			
+			<hkparam name="characterControllerInfo">
+				<hkobject>
+					<hkparam name="capsuleHeight">1.700000</hkparam>
+					<hkparam name="capsuleRadius">0.400000</hkparam>
+					<hkparam name="collisionFilterInfo">1</hkparam>
+					<hkparam name="characterControllerCinfo">null</hkparam>
+				</hkobject>
+			</hkparam>
+			<hkparam name="modelUpMS">(0.000000 0.000000 1.000000 0.000000)</hkparam>
+			<hkparam name="modelForwardMS">(1.000000 0.000000 0.000000 0.000000)</hkparam>
+			<hkparam name="modelRightMS">(-0.000000 -1.000000 -0.000000 0.000000)</hkparam>
+			<hkparam name="characterPropertyInfos" numelements="0"></hkparam>
+			<hkparam name="numBonesPerLod" numelements="0"></hkparam>
+			<hkparam name="characterPropertyValues">#0026</hkparam>
+			<hkparam name="footIkDriverInfo">#0025</hkparam>
+			<hkparam name="handIkDriverInfo">null</hkparam>
+			<hkparam name="stringData">#0024</hkparam>
+			<hkparam name="mirroredSkeletonInfo">#0023</hkparam>
+			<hkparam name="scale">1.000000</hkparam>
+			
+			
+		</hkobject>
+
+		<hkobject name="#0022" class="hkRootLevelContainer" signature="0x2772c11e">
+			<hkparam name="namedVariants" numelements="1">
+				<hkobject>
+					<hkparam name="name">hkbCharacterData</hkparam>
+					<hkparam name="className">hkbCharacterData</hkparam>
+					<hkparam name="variant">#0027</hkparam>
+				</hkobject>
+			</hkparam>
+		</hkobject>
+
+	</hksection>
+
+</hkpackfile>

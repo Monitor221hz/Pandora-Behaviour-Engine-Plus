@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="ascii"?>
+<hkpackfile classversion="8" contentsversion="hk_2010.2.0-r1" toplevelobject="#0022">
+
+	<hksection name="__data__">
+
+		<hkobject name="#0023" class="hkbMirroredSkeletonInfo" signature="0xc6c2da4f">
+			
+			
+			<hkparam name="mirrorAxis">(1.000000 0.000000 0.000000 0.000000)</hkparam>
+			<hkparam name="bonePairMap" numelements="43">
+				0 1 2 3 4 5 6 36 37 38 39 40 41 42 20 21
+				22 23 24 25 14 15 16 17 18 19 31 32 33 34 35 26
+				27 28 29 30 7 8 9 10 11 12 13
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0024" class="hkbCharacterStringData" signature="0x655b42bc">
+			
+			
+			<hkparam name="deformableSkinNames" numelements="0"></hkparam>
+			<hkparam name="rigidSkinNames" numelements="0"></hkparam>
+			<hkparam name="animationNames" numelements="14">
+				<hkcstring>Animations\Netch_AggroIdle.HKX</hkcstring>
+				<hkcstring>Animations\Netch_attackPowerStanding.HKX</hkcstring>
+				<hkcstring>Animations\Netch_attackRight.HKX</hkcstring>
+				<hkcstring>Animations\Netch_GetUpBack.HKX</hkcstring>
+				<hkcstring>Animations\Netch_GetUpFace.HKX</hkcstring>
+				<hkcstring>Animations\Netch_Idle.HKX</hkcstring>
+				<hkcstring>Animations\Netch_IdleCombat.HKX</hkcstring>
+				<hkcstring>Animations\Netch_RecoilRight.HKX</hkcstring>
+				<hkcstring>Animations\Netch_RunForward.HKX</hkcstring>
+				<hkcstring>Animations\Netch_SpecialIdleA.HKX</hkcstring>
+				<hkcstring>Animations\Netch_SprintForward.HKX</hkcstring>
+				<hkcstring>Animations\Netch_StaggerLarge.HKX</hkcstring>
+				<hkcstring>Animations\Netch_StaggerSmall.HKX</hkcstring>
+				<hkcstring>Animations\Netch_TurnLeft180.HKX</hkcstring>
+			</hkparam>
+			<hkparam name="animationFilenames" numelements="0"></hkparam>
+			<hkparam name="characterPropertyNames" numelements="0"></hkparam>
+			<hkparam name="retargetingSkeletonMapperFilenames" numelements="0"></hkparam>
+			<hkparam name="lodNames" numelements="0"></hkparam>
+			<hkparam name="mirroredSyncPointSubstringsA" numelements="0"></hkparam>
+			<hkparam name="mirroredSyncPointSubstringsB" numelements="0"></hkparam>
+			<hkparam name="name">NetchCharacter</hkparam>
+			<hkparam name="rigName">CharacterAssets\Skeleton.hkx</hkparam>
+			<hkparam name="ragdollName">CharacterAssets\Skeleton.hkx</hkparam>
+			<hkparam name="behaviorFilename">Behaviors\NetchBehavior.hkx</hkparam>
+		</hkobject>
+
+		<hkobject name="#0025" class="hkbVariableValueSet" signature="0x27812d8d">
+			
+			
+			<hkparam name="wordVariableValues" numelements="0"></hkparam>
+			<hkparam name="quadVariableValues" numelements="0"></hkparam>
+			<hkparam name="variantVariableValues" numelements="0"></hkparam>
+		</hkobject>
+
+		<hkobject name="#0026" class="hkbCharacterData" signature="0x300d6808">
+			
+			
+			<hkparam name="characterControllerInfo">
+				<hkobject>
+					<hkparam name="capsuleHeight">1.700000</hkparam>
+					<hkparam name="capsuleRadius">0.400000</hkparam>
+					<hkparam name="collisionFilterInfo">1</hkparam>
+					<hkparam name="characterControllerCinfo">null</hkparam>
+				</hkobject>
+			</hkparam>
+			<hkparam name="modelUpMS">(0.000000 0.000000 1.000000 0.000000)</hkparam>
+			<hkparam name="modelForwardMS">(1.000000 0.000000 0.000000 0.000000)</hkparam>
+			<hkparam name="modelRightMS">(-0.000000 -1.000000 -0.000000 0.000000)</hkparam>
+			<hkparam name="characterPropertyInfos" numelements="0"></hkparam>
+			<hkparam name="numBonesPerLod" numelements="0"></hkparam>
+			<hkparam name="characterPropertyValues">#0025</hkparam>
+			<hkparam name="footIkDriverInfo">null</hkparam>
+			<hkparam name="handIkDriverInfo">null</hkparam>
+			<hkparam name="stringData">#0024</hkparam>
+			<hkparam name="mirroredSkeletonInfo">#0023</hkparam>
+			<hkparam name="scale">1.000000</hkparam>
+			
+			
+		</hkobject>
+
+		<hkobject name="#0022" class="hkRootLevelContainer" signature="0x2772c11e">
+			<hkparam name="namedVariants" numelements="1">
+				<hkobject>
+					<hkparam name="name">hkbCharacterData</hkparam>
+					<hkparam name="className">hkbCharacterData</hkparam>
+					<hkparam name="variant">#0026</hkparam>
+				</hkobject>
+			</hkparam>
+		</hkobject>
+
+	</hksection>
+
+</hkpackfile>

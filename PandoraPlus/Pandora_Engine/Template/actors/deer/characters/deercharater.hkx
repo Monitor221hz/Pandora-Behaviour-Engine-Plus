@@ -1,0 +1,560 @@
+<?xml version="1.0" encoding="ascii"?>
+<hkpackfile classversion="8" contentsversion="hk_2010.2.0-r1" toplevelobject="#0027">
+
+	<hksection name="__data__">
+
+		<hkobject name="#0028" class="hkbMirroredSkeletonInfo" signature="0xc6c2da4f">
+			
+			
+			<hkparam name="mirrorAxis">(1.000000 0.000000 0.000000 0.000000)</hkparam>
+			<hkparam name="bonePairMap" numelements="42">
+				0 1 2 7 8 9 10 3 4 5 6 11 12 13 14 25
+				26 27 28 29 20 21 22 23 24 15 16 17 18 19 31 30
+				33 32 34 35 36 39 40 37 38 41
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0029" class="hkbCharacterStringData" signature="0x655b42bc">
+			
+			
+			<hkparam name="deformableSkinNames" numelements="0"></hkparam>
+			<hkparam name="rigidSkinNames" numelements="0"></hkparam>
+			<hkparam name="animationNames" numelements="30">
+				<hkcstring>Animations\AggroWarning1.HKX</hkcstring>
+				<hkcstring>Animations\Attack1.HKX</hkcstring>
+				<hkcstring>Animations\Attack2.HKX</hkcstring>
+				<hkcstring>Animations\CombatIdle.HKX</hkcstring>
+				<hkcstring>Animations\GetUP.HKX</hkcstring>
+				<hkcstring>Animations\Idle_Feeding.HKX</hkcstring>
+				<hkcstring>Animations\Idle_Forage.HKX</hkcstring>
+				<hkcstring>Animations\Idle_LookRight3.HKX</hkcstring>
+				<hkcstring>Animations\MT_Idle.HKX</hkcstring>
+				<hkcstring>Animations\Recoil.HKX</hkcstring>
+				<hkcstring>Animations\RunForward.HKX</hkcstring>
+				<hkcstring>Animations\RunForwardL.HKX</hkcstring>
+				<hkcstring>Animations\RunForwardR.HKX</hkcstring>
+				<hkcstring>Animations\StaggerBackLarge.HKX</hkcstring>
+				<hkcstring>Animations\StaggerBackMedium.HKX</hkcstring>
+				<hkcstring>Animations\StaggerBackSmall.HKX</hkcstring>
+				<hkcstring>Animations\StaggerForward.HKX</hkcstring>
+				<hkcstring>Animations\SwimForward.HKX</hkcstring>
+				<hkcstring>Animations\TrotForward.HKX</hkcstring>
+				<hkcstring>Animations\TrotForwardL.hkx</hkcstring>
+				<hkcstring>Animations\TrotForwardR.hkx</hkcstring>
+				<hkcstring>Animations\TurnCannedL180.HKX</hkcstring>
+				<hkcstring>Animations\TurnCannedL180Flee.HKX</hkcstring>
+				<hkcstring>Animations\TurnCannedL90.HKX</hkcstring>
+				<hkcstring>Animations\TurnCannedL90Flee.HKX</hkcstring>
+				<hkcstring>Animations\TurnLoopingL.HKX</hkcstring>
+				<hkcstring>Animations\WalkBackward.HKX</hkcstring>
+				<hkcstring>Animations\WalkForward.HKX</hkcstring>
+				<hkcstring>Animations\WalkForwardL.HKX</hkcstring>
+				<hkcstring>Animations\WalkForwardR.HKX</hkcstring>
+			</hkparam>
+			<hkparam name="animationFilenames" numelements="0"></hkparam>
+			<hkparam name="characterPropertyNames" numelements="26">
+				<hkcstring>IsSkeever</hkcstring>
+				<hkcstring>IsCanine</hkcstring>
+				<hkcstring>IsSabreCat</hkcstring>
+				<hkcstring>IsCow</hkcstring>
+				<hkcstring>IsHorse</hkcstring>
+				<hkcstring>IsBear</hkcstring>
+				<hkcstring>IsDeer</hkcstring>
+				<hkcstring>IsGoat</hkcstring>
+				<hkcstring>IsHorker</hkcstring>
+				<hkcstring>IsMammoth</hkcstring>
+				<hkcstring>bAnimationDrivenAttacks</hkcstring>
+				<hkcstring>m_worldFromModelFeedbackGain</hkcstring>
+				<hkcstring>m_alignWorldFromModelGain</hkcstring>
+				<hkcstring>m_errorUpDownBias</hkcstring>
+				<hkcstring>m_ankleOrientationGain</hkcstring>
+				<hkcstring>Head</hkcstring>
+				<hkcstring>Tail</hkcstring>
+				<hkcstring>Body</hkcstring>
+				<hkcstring>FootIKDisable_AttackStandard</hkcstring>
+				<hkcstring>FootIKDisable_AttackPowerForwardShort</hkcstring>
+				<hkcstring>FootIKDisable_AttackPowerForward</hkcstring>
+				<hkcstring>FootIKDisable_AttackPowerStanding</hkcstring>
+				<hkcstring>FootIKDisable_AttackSpecial</hkcstring>
+				<hkcstring>FootIKDisable_IdleCombat</hkcstring>
+				<hkcstring>FootIKDisable_Recoil</hkcstring>
+				<hkcstring>FootIKDisable_RecoilLarge</hkcstring>
+			</hkparam>
+			<hkparam name="retargetingSkeletonMapperFilenames" numelements="0"></hkparam>
+			<hkparam name="lodNames" numelements="0"></hkparam>
+			<hkparam name="mirroredSyncPointSubstringsA" numelements="0"></hkparam>
+			<hkparam name="mirroredSyncPointSubstringsB" numelements="0"></hkparam>
+			<hkparam name="name">DeerCharater</hkparam>
+			<hkparam name="rigName">Character Assets\skeleton.HKX</hkparam>
+			<hkparam name="ragdollName">Character Assets\skeleton.HKX</hkparam>
+			<hkparam name="behaviorFilename">Behaviors\DeerBehavior.hkx</hkparam>
+		</hkobject>
+
+		<hkobject name="#0030" class="hkbFootIkDriverInfo" signature="0xc6a09dbf">
+			
+			
+			<hkparam name="legs" numelements="4">
+				<hkobject>
+					
+					<hkparam name="kneeAxisLS">(1.000000 0.000000 0.000000 0.000000)</hkparam>
+					<hkparam name="footEndLS">(0.000000 0.000000 0.000000 0.000000)</hkparam>
+					<hkparam name="footPlantedAnkleHeightMS">12.300000</hkparam>
+					<hkparam name="footRaisedAnkleHeightMS">29.700001</hkparam>
+					<hkparam name="maxAnkleHeightMS">54.000000</hkparam>
+					<hkparam name="minAnkleHeightMS">-54.000000</hkparam>
+					<hkparam name="maxKneeAngleDegrees">180.000000</hkparam>
+					<hkparam name="minKneeAngleDegrees">0.000000</hkparam>
+					<hkparam name="maxAnkleAngleDegrees">30.000000</hkparam>
+					<hkparam name="hipIndex">26</hkparam>
+					<hkparam name="kneeIndex">28</hkparam>
+					<hkparam name="ankleIndex">29</hkparam>
+				</hkobject>
+				<hkobject>
+					
+					<hkparam name="kneeAxisLS">(1.000000 0.000000 0.000000 0.000000)</hkparam>
+					<hkparam name="footEndLS">(0.000000 0.000000 0.000000 0.000000)</hkparam>
+					<hkparam name="footPlantedAnkleHeightMS">10.100000</hkparam>
+					<hkparam name="footRaisedAnkleHeightMS">33.599998</hkparam>
+					<hkparam name="maxAnkleHeightMS">64.000000</hkparam>
+					<hkparam name="minAnkleHeightMS">-64.000000</hkparam>
+					<hkparam name="maxKneeAngleDegrees">180.000000</hkparam>
+					<hkparam name="minKneeAngleDegrees">0.000000</hkparam>
+					<hkparam name="maxAnkleAngleDegrees">30.000000</hkparam>
+					<hkparam name="hipIndex">8</hkparam>
+					<hkparam name="kneeIndex">9</hkparam>
+					<hkparam name="ankleIndex">10</hkparam>
+				</hkobject>
+				<hkobject>
+					
+					<hkparam name="kneeAxisLS">(1.000000 0.000000 0.000000 0.000000)</hkparam>
+					<hkparam name="footEndLS">(0.000000 0.000000 0.000000 0.000000)</hkparam>
+					<hkparam name="footPlantedAnkleHeightMS">10.100000</hkparam>
+					<hkparam name="footRaisedAnkleHeightMS">33.599998</hkparam>
+					<hkparam name="maxAnkleHeightMS">64.000000</hkparam>
+					<hkparam name="minAnkleHeightMS">-64.000000</hkparam>
+					<hkparam name="maxKneeAngleDegrees">180.000000</hkparam>
+					<hkparam name="minKneeAngleDegrees">0.000000</hkparam>
+					<hkparam name="maxAnkleAngleDegrees">30.000000</hkparam>
+					<hkparam name="hipIndex">4</hkparam>
+					<hkparam name="kneeIndex">5</hkparam>
+					<hkparam name="ankleIndex">6</hkparam>
+				</hkobject>
+				<hkobject>
+					
+					<hkparam name="kneeAxisLS">(1.000000 0.000000 0.000000 0.000000)</hkparam>
+					<hkparam name="footEndLS">(0.000000 0.000000 0.000000 0.000000)</hkparam>
+					<hkparam name="footPlantedAnkleHeightMS">12.300000</hkparam>
+					<hkparam name="footRaisedAnkleHeightMS">29.700001</hkparam>
+					<hkparam name="maxAnkleHeightMS">54.000000</hkparam>
+					<hkparam name="minAnkleHeightMS">-54.000000</hkparam>
+					<hkparam name="maxKneeAngleDegrees">180.000000</hkparam>
+					<hkparam name="minKneeAngleDegrees">0.000000</hkparam>
+					<hkparam name="maxAnkleAngleDegrees">30.000000</hkparam>
+					<hkparam name="hipIndex">16</hkparam>
+					<hkparam name="kneeIndex">18</hkparam>
+					<hkparam name="ankleIndex">19</hkparam>
+				</hkobject>
+			</hkparam>
+			<hkparam name="raycastDistanceUp">64.000000</hkparam>
+			<hkparam name="raycastDistanceDown">192.000000</hkparam>
+			<hkparam name="originalGroundHeightMS">0.000000</hkparam>
+			<hkparam name="verticalOffset">0.000000</hkparam>
+			<hkparam name="collisionFilterInfo">3</hkparam>
+			<hkparam name="forwardAlignFraction">1.000000</hkparam>
+			<hkparam name="sidewaysAlignFraction">0.000000</hkparam>
+			<hkparam name="sidewaysSampleWidth">0.000000</hkparam>
+			<hkparam name="lockFeetWhenPlanted">false</hkparam>
+			<hkparam name="useCharacterUpVector">false</hkparam>
+			<hkparam name="isQuadrupedNarrow">true</hkparam>
+		</hkobject>
+
+		<hkobject name="#0031" class="hkbBoneWeightArray" signature="0xcd902b77">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="boneWeights" numelements="0"></hkparam>
+		</hkobject>
+
+		<hkobject name="#0032" class="hkbBoneWeightArray" signature="0xcd902b77">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="boneWeights" numelements="0"></hkparam>
+		</hkobject>
+
+		<hkobject name="#0033" class="hkbBoneWeightArray" signature="0xcd902b77">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="boneWeights" numelements="0"></hkparam>
+		</hkobject>
+
+		<hkobject name="#0034" class="hkbVariableValueSet" signature="0x27812d8d">
+			
+			
+			<hkparam name="wordVariableValues" numelements="26">
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1059481190</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1036831949</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1053609165</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1028443341</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">1</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">2</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
+			</hkparam>
+			<hkparam name="quadVariableValues" numelements="0"></hkparam>
+			<hkparam name="variantVariableValues" numelements="3">
+				#0033 #0032 #0031
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0035" class="hkbCharacterData" signature="0x300d6808">
+			
+			
+			<hkparam name="characterControllerInfo">
+				<hkobject>
+					<hkparam name="capsuleHeight">1.700000</hkparam>
+					<hkparam name="capsuleRadius">0.400000</hkparam>
+					<hkparam name="collisionFilterInfo">1</hkparam>
+					<hkparam name="characterControllerCinfo">null</hkparam>
+				</hkobject>
+			</hkparam>
+			<hkparam name="modelUpMS">(0.000000 0.000000 1.000000 0.000000)</hkparam>
+			<hkparam name="modelForwardMS">(0.000000 1.000000 0.000000 0.000000)</hkparam>
+			<hkparam name="modelRightMS">(1.000000 -0.000000 -0.000000 0.000000)</hkparam>
+			<hkparam name="characterPropertyInfos" numelements="26">
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_POINTER</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_POINTER</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_POINTER</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+				</hkobject>
+			</hkparam>
+			<hkparam name="numBonesPerLod" numelements="0"></hkparam>
+			<hkparam name="characterPropertyValues">#0034</hkparam>
+			<hkparam name="footIkDriverInfo">#0030</hkparam>
+			<hkparam name="handIkDriverInfo">null</hkparam>
+			<hkparam name="stringData">#0029</hkparam>
+			<hkparam name="mirroredSkeletonInfo">#0028</hkparam>
+			<hkparam name="scale">1.000000</hkparam>
+			
+			
+		</hkobject>
+
+		<hkobject name="#0027" class="hkRootLevelContainer" signature="0x2772c11e">
+			<hkparam name="namedVariants" numelements="1">
+				<hkobject>
+					<hkparam name="name">hkbCharacterData</hkparam>
+					<hkparam name="className">hkbCharacterData</hkparam>
+					<hkparam name="variant">#0035</hkparam>
+				</hkobject>
+			</hkparam>
+		</hkobject>
+
+	</hksection>
+
+</hkpackfile>
