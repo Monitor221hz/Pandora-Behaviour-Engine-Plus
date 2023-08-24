@@ -5,24 +5,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Pandora.MVVM.Model;
-namespace Pandora.MVVM.Data
-{
-    public interface IModInfoProvider
-    {
-        public Task<List<ModInfo>> GetInstalledMods(string folderPath);
-    }
+namespace Pandora.MVVM.Data;
 
-    public class ModInfoProvider : IModInfoProvider
+
+
+public interface IModInfoProvider
+{
+    public Task<List<NemesisModInfo>> GetInstalledMods(string folderPath);
+}
+
+public class ModInfoProvider : IModInfoProvider
+{
+    public async Task<List<NemesisModInfo>> GetInstalledMods(string folderPath)
     {
-        public async Task<List<ModInfo>> GetInstalledMods(string folderPath)
+        List<NemesisModInfo> infoList = new List<NemesisModInfo>();
+        string[] folders = Directory.GetDirectories(folderPath);
+        foreach (string folder in folders)
         {
-            List<ModInfo> infoList = new List<ModInfo>();
-            string[] folders = Directory.GetDirectories(folderPath);
-            foreach (string folder in folders)
-            {
-                infoList.Add(new ModInfo(folder));
-            }
-            return infoList;
+            infoList.Add(new NemesisModInfo(folder));
         }
+        return infoList;
     }
 }

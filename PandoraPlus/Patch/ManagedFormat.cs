@@ -9,7 +9,8 @@ namespace PandoraPlus.Patch
     public enum HkxPatchFormat
     {
         SSE,
-        FO4
+        FO4, 
+        SFD
     }
 
 }

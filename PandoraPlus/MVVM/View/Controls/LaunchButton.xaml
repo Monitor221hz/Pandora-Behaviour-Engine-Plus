@@ -8,36 +8,13 @@
              d:DesignHeight="64" d:DesignWidth="256">
     <Grid>
         <Button 
-            FontFamily="Corbet" 
-            FontSize="24"
-            BorderThickness="0"
-            Command="{Binding LaunchCommand}">
-            <Button.Style>
-                <Style TargetType="{x:Type Button}">
-                    <Style.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="Red"/>
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </Button.Style>
-            <Button.Foreground>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                    <GradientStop Color="White" Offset="0.0" />
-
-                    <GradientStop Color="Pink" Offset="1" />
-                </LinearGradientBrush>
-            </Button.Foreground>
-            <Button.Resources>
-                <Style TargetType="Border">
-                    <Setter Property="CornerRadius" Value="20"/>
-                </Style>
-            </Button.Resources>
+            Background="{StaticResource ControlColor}"
+            Foreground="{StaticResource HeaderTextGradient}"
+            Command="{Binding LaunchCommand}"
+            HorizontalAlignment="Stretch"
+            Style="{StaticResource PrimaryButtonStyle}">
             Launch
-            <Button.Background>
-                <SolidColorBrush Color="#212121"  
-                             Opacity=".5"></SolidColorBrush>
-            </Button.Background>
+
         </Button>
     </Grid>
 </UserControl>

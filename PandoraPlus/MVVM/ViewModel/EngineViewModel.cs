@@ -29,7 +29,7 @@ namespace Pandora.MVVM.ViewModel
         public RelayCommand LaunchCommand { get; }
         public RelayCommand ExitCommand { get; }
 
-        public ObservableCollection<ModInfo> Mods { get; set; } = new ObservableCollection<ModInfo>();
+        public ObservableCollection<NemesisModInfo> Mods { get; set; } = new ObservableCollection<NemesisModInfo>();
 
         public string LogText { 
             get => logText;

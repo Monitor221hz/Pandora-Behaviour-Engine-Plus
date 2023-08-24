@@ -8,29 +8,19 @@
         xmlns:controls="clr-namespace:Pandora.MVVM.View.Controls"
         mc:Ignorable="d"
         
-        Title="Pandora Behavior Engine" Height="700" Width="500"
+        Title="Pandora Behavior Engine" Height="700" Width="780"
         ResizeMode="CanResizeWithGrip"
         AllowsTransparency="True"
         Background="Transparent"
         WindowStyle="None">
 
-    <Border CornerRadius="20">
-        <Border.Background>
-            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                <GradientStop Color="#292537" Offset="0.0" />
-
-                <GradientStop Color="Purple" Offset="4" />
-            </LinearGradientBrush>
-        </Border.Background>
-        
+    <Border CornerRadius="20" Background="{StaticResource BackgroundHorizontalGradient}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
-
             <views:EngineView Grid.Row="1"></views:EngineView>
         </Grid>
-        
     </Border>
 </Window>

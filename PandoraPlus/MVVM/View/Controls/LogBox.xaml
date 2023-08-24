@@ -8,24 +8,15 @@
              d:DesignHeight="450" d:DesignWidth="800">
     
     
-    <Border CornerRadius="10">
-        <Border.Background>
-            <SolidColorBrush Color="#212121"  
-                             Opacity=".5"></SolidColorBrush>
-        </Border.Background>
+    <Border CornerRadius="10" Background="{StaticResource ControlColor}">
+
         <TextBox Background="Transparent" 
+                 Foreground="{StaticResource HeaderTextGradient}"
                  Margin ="5 5 5 5" 
                  BorderThickness="0"
                  FontFamily="Corbet"
                  FontSize="13"
                  Text="{ Binding LogText,UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
-            <TextBox.Foreground>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                    <GradientStop Color="White" Offset="0.0" />
-
-                    <GradientStop Color="Pink" Offset="1" />
-                </LinearGradientBrush>
-            </TextBox.Foreground>
         </TextBox>
     </Border>
 </UserControl>

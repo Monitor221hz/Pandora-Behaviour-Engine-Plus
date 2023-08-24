@@ -9,10 +9,8 @@
 
 
 
-    <Border CornerRadius="10">
-        <Border.Background>
-            <SolidColorBrush Color="#212121" Opacity=".5"></SolidColorBrush>
-        </Border.Background>
+    <Border CornerRadius="10" Background="{StaticResource ControlColor}">
+
         <ListView x:Name ="ModListView" 
                   Background="Transparent" 
                   Margin="5 5 5 5" 
@@ -20,82 +18,20 @@
                   ItemsSource="{Binding Mods}"
                   ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                   ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                  Focusable="False">
-            <ListView.ItemContainerStyle>
-                <Style TargetType="{x:Type ListViewItem}">
-                    <Setter Property="Focusable" Value="false"/>
-                    <Style.Triggers>
-                        <Trigger Property="IsSelected"
-                         Value="True">
-                            <Setter Property="Background"
-                            Value="{x:Null}" />
-                            <Setter Property="BorderBrush"
-                            Value="{x:Null}" />
-                        </Trigger>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background"
-                            Value="MediumPurple" />
-                            <Setter Property="BorderBrush"
-                            Value="{x:Null}" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </ListView.ItemContainerStyle>
+                  Focusable="False"
+                  ItemContainerStyle="{StaticResource ListViewItemStyle}"
+                  >
+            
             <ListView.View>
-                <GridView>
-                    <GridView.ColumnHeaderContainerStyle>
-                        <Style TargetType="{x:Type GridViewColumnHeader}">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type GridViewColumnHeader}">
-                                        <TextBlock Text="{TemplateBinding Content}" Padding="5" Width="{TemplateBinding Width}" TextAlignment="Center">
-                                            <TextBlock.Background>
-                                                <LinearGradientBrush StartPoint="1,0" EndPoint="0,0">
-                                                    <GradientStop Color="#292537" Offset="0.0" />
-
-                                                    <GradientStop Color="Purple" Offset="4" />
-                                                </LinearGradientBrush>
-                                            </TextBlock.Background>
-                                        </TextBlock>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                            <Setter Property="OverridesDefaultStyle" Value="True" />
-                            <Setter Property="Background" Value="Green" />
-                            <Setter Property="Foreground">
-                                <Setter.Value>
-                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                        <GradientStop Color="White" Offset="0.0" />
-
-                                        <GradientStop Color="Pink" Offset="1" />
-                                    </LinearGradientBrush>
-                                </Setter.Value>
-                            </Setter>
-                            <Setter Property="FontSize" Value="12" />
-                            <Setter Property="Background">
-                                <Setter.Value>
-                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                        <GradientStop Offset="0.0" Color="White" />
-                                        <GradientStop Offset="1.0" Color="White" />
-                                    </LinearGradientBrush>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </GridView.ColumnHeaderContainerStyle>
+                <GridView ColumnHeaderContainerStyle="{StaticResource ColumnHeaderStyle}">
                     <GridViewColumn Header="Mod" Width="275">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
                                     <CheckBox Margin="5 0 5 0" IsChecked="{Binding Active}">
                                     </CheckBox>
-                                    <TextBlock Text="{Binding Path=Name}" >
-                                        <TextBlock.Foreground>
-                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                                <GradientStop Color="White" Offset="0.0" />
+                                    <TextBlock Text="{Binding Path=Name}"  Foreground = "{StaticResource HeaderTextGradient}" >
 
-                                                <GradientStop Color="MediumPurple" Offset="3" />
-                                            </LinearGradientBrush>
-                                        </TextBlock.Foreground>
                                     </TextBlock>
                                 </StackPanel>
                             </DataTemplate>
@@ -106,32 +42,18 @@
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding Path=Author}" >
-                                        <TextBlock.Foreground>
-                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                                <GradientStop Color="White" Offset="0.0" />
-
-                                                <GradientStop Color="MediumPurple" Offset="3" />
-                                            </LinearGradientBrush>
-                                        </TextBlock.Foreground>
+                                    <TextBlock Text="{Binding Path=Author}"  Foreground="{StaticResource HeaderTextGradient}">
                                     </TextBlock>
                                 </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                         
                     </GridViewColumn>
-                    <GridViewColumn Header="Version" Width="90">
+                    <GridViewColumn Header="Version">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding Path=URL}" >
-                                        <TextBlock.Foreground>
-                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                                <GradientStop Color="White" Offset="0.0" />
-
-                                                <GradientStop Color="MediumPurple" Offset="3" />
-                                            </LinearGradientBrush>
-                                        </TextBlock.Foreground>
+                                    <TextBlock Text="{Binding Path=URL}" Foreground="{StaticResource HeaderTextGradient}" >
                                     </TextBlock>
                                 </StackPanel>
                             </DataTemplate>
