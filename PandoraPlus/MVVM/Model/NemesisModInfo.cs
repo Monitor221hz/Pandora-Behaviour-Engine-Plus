@@ -16,10 +16,10 @@ namespace Pandora.MVVM.Model
 
         public Dictionary<string, string> Properties { get; private set; } = new Dictionary<string, string>();
 
-        //public string Name { get; set; } = "Default";
+        public string Name { get; set; } = "Default";
 
-        //public string Author { get; set; } = "Default";
-        //public string URL { get; set; } = "Default";
+        public string Author { get; set; } = "Default";
+        public string URL { get; set; } = "Default";
 
         internal string Code { get; set; } = "Default";
 
@@ -53,10 +53,21 @@ namespace Pandora.MVVM.Model
 					args = s.Split("=");
 					if (args.Length > 1)
 					{
-                        Properties.Add(args[0].Trim(), args[1].Trim()); 
+                        Properties.Add(args[0].ToLower().Trim(), args[1].Trim()); 
 					}
 				}
 			}
+            string name;
+            string author;
+            string url; 
+            Properties.TryGetValue("name", out name); 
+            Properties.TryGetValue("author", out author);
+            Properties.TryGetValue("url", out url);
+
+            if (name != null) { Name = name; }
+            if (author != null) { Author = author; }
+            if (url != null) { URL  = url; }
+            Valid = true;
 			//add metadata later
 		}
     }

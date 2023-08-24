@@ -62,6 +62,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\HKX2-Library\HKX2 WPF\HKX2.csproj" />
+    <ProjectReference Include="..\..\XML Cake\XML Cake\XML Cake.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Pandora_Engine\ProjectDefinitions\DefaultFemale.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
