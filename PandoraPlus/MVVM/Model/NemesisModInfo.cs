@@ -5,43 +5,64 @@ using System.Linq;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
+using Pandora.Core;
 
 namespace Pandora.MVVM.Model
 {
-    public class NemesisModInfo
+    public class NemesisModInfo : IModInfo
     {
 
         public bool Active { get; set; } = false;
-        internal string FolderPath { get; set; }
 
-        public Dictionary<string, string> Properties { get; private set; } = new Dictionary<string, string>();
+        public DirectoryInfo Folder { get; private set;  }
+
+        public Dictionary<string, string> StringProperties { get; private set; } = new Dictionary<string, string>();
 
         public string Name { get; set; } = "Default";
 
         public string Author { get; set; } = "Default";
         public string URL { get; set; } = "Default";
 
-        internal string Code { get; set; } = "Default";
+        public string Code { get; set; } = "Default";
+
+        public Version Version { get; } = new Version(1,0,0);
 
         //internal string Auto { get; set; } = "Default";
         //internal string RequiredFile { get; set; } = "Default";
         //internal string FileToCopy { get; set; } = "Default";
         //internal bool Hidden { get; set; } = false;
         public bool Valid { get; set; } = false;
-        internal NemesisModInfo(string path)
+
+        public NemesisModInfo()
         {
-            StringBuilder pathBuilder = new StringBuilder(path);
+            Valid = false;
+            Folder = new DirectoryInfo(Directory.GetCurrentDirectory()); 
+        }
+        public NemesisModInfo(DirectoryInfo folder, string name, string author, string url, Dictionary<string, string> properties)
+        { 
+            Folder = folder;
+            Name = name;
+            Author = author; 
+            URL  = url;
+            StringProperties = properties;  
+            Code = Folder.Name;
+            Valid = true; 
+        }
+        public static NemesisModInfo ParseMetadata(DirectoryInfo folder)
+        {
+
+            StringBuilder pathBuilder = new StringBuilder(folder.FullName);
             pathBuilder.Append('\\');
             pathBuilder.Append("info.ini");
+			Dictionary<string, string> properties = new Dictionary<string, string>();
 
-            string infoPath = pathBuilder.ToString();
-            FolderPath = path;
-            Code = Path.GetFileName(path);
+			string infoPath = pathBuilder.ToString();
+
+            
 
             if (!File.Exists(infoPath))
             {
-                Valid = false;
-                return; 
+                return new NemesisModInfo();
             }
 			using (StreamReader reader = new StreamReader(infoPath))
 			{
@@ -53,21 +74,18 @@ namespace Pandora.MVVM.Model
 					args = s.Split("=");
 					if (args.Length > 1)
 					{
-                        Properties.Add(args[0].ToLower().Trim(), args[1].Trim()); 
+                        properties.Add(args[0].ToLower().Trim(), args[1].Trim()); 
 					}
 				}
 			}
-            string name;
-            string author;
-            string url; 
-            Properties.TryGetValue("name", out name); 
-            Properties.TryGetValue("author", out author);
-            Properties.TryGetValue("url", out url);
+            string? name;
+            string? author;
+            string? url; 
+            properties.TryGetValue("name", out name); 
+            properties.TryGetValue("author", out author);
+            properties.TryGetValue("site", out url);
 
-            if (name != null) { Name = name; }
-            if (author != null) { Author = author; }
-            if (url != null) { URL  = url; }
-            Valid = true;
+            return (name != null && author != null && url != null) ? new NemesisModInfo(folder, name, author, url, properties) : new NemesisModInfo();
 			//add metadata later
 		}
     }

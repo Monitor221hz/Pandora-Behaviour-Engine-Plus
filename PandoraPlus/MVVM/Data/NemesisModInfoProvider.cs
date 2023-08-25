@@ -14,7 +14,7 @@ public interface IModInfoProvider
     public Task<List<NemesisModInfo>> GetInstalledMods(string folderPath);
 }
 
-public class ModInfoProvider : IModInfoProvider
+public class NemesisModInfoProvider : IModInfoProvider
 {
     public async Task<List<NemesisModInfo>> GetInstalledMods(string folderPath)
     {
@@ -22,7 +22,7 @@ public class ModInfoProvider : IModInfoProvider
         string[] folders = Directory.GetDirectories(folderPath);
         foreach (string folder in folders)
         {
-            infoList.Add(new NemesisModInfo(folder));
+            infoList.Add(NemesisModInfo.ParseMetadata(new DirectoryInfo(folder)));
         }
         return infoList;
     }

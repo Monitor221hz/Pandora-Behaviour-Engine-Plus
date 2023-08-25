@@ -1,7 +1,7 @@
 ﻿using Pandora.MVVM.Data;
 using Pandora.MVVM.Model;
 using Pandora.Command;
-using Pandora.Patch;
+using Pandora.Core;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -23,8 +23,8 @@ namespace Pandora.MVVM.ViewModel
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public bool? DialogResult { get; set; } = true;
-        private PatchEngine engine { get; set; }
 
+        public BehaviourEngine Engine { get; private set; } = new BehaviourEngine();
 
         public RelayCommand LaunchCommand { get; }
         public RelayCommand ExitCommand { get; }
@@ -48,7 +48,7 @@ namespace Pandora.MVVM.ViewModel
             this.modinfoProvider = modinfoProvider;
             LaunchCommand = new RelayCommand(LaunchEngine);
             ExitCommand = new RelayCommand(Exit);
-            engine = new PatchEngine();
+
             
         }
         public async Task LoadAsync()
@@ -81,17 +81,17 @@ namespace Pandora.MVVM.ViewModel
 
         private async void LaunchEngine(object? parameter)
         {
+            Engine = new BehaviourEngine(); 
             logText= string.Empty;
-            engine = new PatchEngine();
+
             await WriteLogBoxLine("Engine launched.");
             Stopwatch timer = Stopwatch.StartNew();
-            await engine.Update(Mods.Where(x => x.Active==true).Select(x => x.FolderPath).ToList());
+
             timer.Stop();
-            await WriteLogBoxLine(await engine.GetUpdateLog());
+
             await WriteLogBoxLine($"Update finished in {Math.Round(timer.ElapsedMilliseconds/1000.0,2)} seconds");
             timer.Restart();
-            await engine.Launch();
-            await engine.Export();
+            Engine.Launch(Mods.Where(x => x.Active).ToList<IModInfo>()); 
             timer.Stop();
             await WriteLogBoxLine($"Launch finished in {Math.Round(timer.ElapsedMilliseconds / 1000.0, 2)} seconds");
         }
