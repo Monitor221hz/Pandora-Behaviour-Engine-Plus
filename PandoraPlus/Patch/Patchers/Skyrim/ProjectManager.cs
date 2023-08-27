@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pandora.Patch.Patchers.Skyrim.Hkx;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -35,22 +36,33 @@ namespace Pandora.Core.Patchers.Skyrim
 			}
 		}
 
-		private FileInfo LookupNestedFile(string name)
+		private PackFile LookupNestedPackFile(string name)
 		{
 			string[] sections = name.Split('~'); 
 
 			var targetProject = projectMap[sections[0]];
-			return targetProject.LookupFileHandle(sections[1]); 
-		}
-		public FileInfo LookupFile(string name)
-		{
-			name = name.ToLower();
-			return name.Contains('~') ? LookupNestedFile(name) : fileProjectMap[name].LookupFileHandle(name);	
+			return targetProject.LookupPackFile(sections[1]); 
 		}
 
-		public bool ContainsFile(string name)
+		private bool ContainsNestedPackFile(string name)
 		{
-			return name.Contains('~')
+			string[] sections = name.Split('~');
+
+			Project targetProject;
+
+			if (!projectMap.TryGetValue(sections[0], out targetProject!)) return false; 
+
+			return targetProject.ContainsPackFile(sections[1]);
+		}
+		public PackFile LookupPackFile(string name)
+		{
+			name = name.ToLower();
+			return name.Contains('~') ? LookupNestedPackFile(name) : fileProjectMap[name].LookupPackFile(name);	
+		}
+
+		public bool ContainsPackFile(string name)
+		{
+			return name.Contains('~') ? ContainsNestedPackFile(name) : fileProjectMap.ContainsKey(name) && fileProjectMap[name].ContainsPackFile(name);
 		}
 		
 	}

@@ -1,4 +1,5 @@
 ﻿using Pandora.Core.Patchers.Skyrim;
+using Pandora.Patch.Patchers.Skyrim.Hkx;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,13 +22,17 @@ public class NemesisAssembler : IAssembler
 
     private XPathLookup lookup = new XPathLookup();
 
-    List<XMatchCollection> matchGroups = new List<XMatchCollection>();
+    List<XMatchCollection> replaceMatchGroups = new List<XMatchCollection>();
+
+    List<XMatchCollection> insertMatchGroups = new List<XMatchCollection>();
+    
+    List<PackFile> packFiles = new List<PackFile>();
 
     private ProjectManager projectManager = new ProjectManager();
     
     public void Apply(PackFile packFile)
     {
-        foreach (var matchGroup in matchGroups)
+        foreach (var matchGroup in replaceMatchGroups)
         {
             foreach (var match in matchGroup)
             {
@@ -61,19 +66,39 @@ public class NemesisAssembler : IAssembler
         }
     }
 
-    public bool MatchForEdits(FileInfo file)
+    public bool MatchReplacePattern(XElement element)
     {
-        XElement element = XElement.Load(file.FullName);
+        
         var nodes = lookup.MapFromElement(element);
         XMatchCollection matchCollection = replacePattern.Matches(nodes);
         if (!matchCollection.Success) return false;
-        matchGroups.Add(matchCollection);
+        replaceMatchGroups.Add(matchCollection);
         return true;
     }
 
+    public bool MatchInsertPattern(XElement element)
+    {
+		
+		var nodes = lookup.MapFromElement(element);
+		XMatchCollection matchCollection = replacePattern.Matches(nodes);
+		if (!matchCollection.Success) return false;
+		replaceMatchGroups.Add(matchCollection);
+		return true;
+	}
+
 	public void AssemblePatch(DirectoryInfo folder)
 	{
-		projectManager.LookupFile(folder.Name)
+        if (!projectManager.ContainsPackFile(folder.Name)) return;
+
+        var targetPackFile = projectManager.LookupPackFile(folder.Name);
+
+        FileInfo[] editFiles = folder.GetFiles("#*.txt");
+
+        foreach (FileInfo editFile in editFiles )
+        {
+            XElement element = XElement.Load(editFile.FullName); 
+            if (!MatchReplacePattern(element)) MatchInsertPattern(element);
+        }
 	}
 
 	public void LoadResources()
