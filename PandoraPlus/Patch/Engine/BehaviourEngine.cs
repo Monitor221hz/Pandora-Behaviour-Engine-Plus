@@ -18,7 +18,15 @@ namespace Pandora.Core
 			Configuration.Patcher.SetTarget(mods); 
 
 			Configuration.Patcher.Update(); 
-			Configuration.Patcher.Apply();
+			Configuration.Patcher.Write();
+		}
+
+		public async Task LaunchAsync(List<IModInfo> mods)
+		{
+			Configuration.Patcher.SetTarget(mods);
+			await Configuration.Patcher.UpdateAsync();
+
+			Configuration.Patcher.Write(); 
 		}
 	}
 
