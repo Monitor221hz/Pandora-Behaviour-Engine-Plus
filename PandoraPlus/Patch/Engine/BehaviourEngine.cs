@@ -18,7 +18,7 @@ namespace Pandora.Core
 			Configuration.Patcher.SetTarget(mods); 
 
 			Configuration.Patcher.Update(); 
-			Configuration.Patcher.Write();
+			Configuration.Patcher.Run();
 		}
 
 		public async Task LaunchAsync(List<IModInfo> mods)
@@ -26,7 +26,7 @@ namespace Pandora.Core
 			Configuration.Patcher.SetTarget(mods);
 			await Configuration.Patcher.UpdateAsync();
 
-			Configuration.Patcher.Write(); 
+			Configuration.Patcher.Run(); 
 		}
 	}
 
