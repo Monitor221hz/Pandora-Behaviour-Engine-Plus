@@ -20,21 +20,37 @@ public class NemesisPatcher : IPatcher
     public void SetTarget(List<IModInfo> mods) => activeMods = mods;
 
 
-    private ProjectManager projectManager { get; set; } = new ProjectManager();
 
-    private IDispatcher<XMap, XPathLookup, List<XNode>>  dispatcher { get; set; } = new HkxDispatcher();
+
+
 
     private IAssembler assembler { get; set; } = new NemesisAssembler();
-    public void Apply()
+
+    private IDispatcher<List<XNode>> dispatcher {  get; set; }  
+    public void Run()
     {
-        return;
+        assembler.ApplyPatches();
+    }
+
+    public async Task UpdateAsync()
+    {
+        assembler.LoadResources();
+        List<Task> assembleTasks = new List<Task>();
+        foreach(var mod in activeMods)
+        {
+            assembleTasks.Add(Task.Run(() => { assembler.AssemblePatch(mod.Folder); })); 
+        }
+        await Task.WhenAll(assembleTasks);
+    }
+
+    public async Task WriteAsync()
+    {
+
     }
 
     public void Update()
     {
 
     }
-
-
 
 }
