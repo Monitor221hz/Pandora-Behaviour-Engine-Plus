@@ -12,6 +12,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Linq;
 using System.Threading.Channels;
+using System.Windows.Media.Animation;
 
 namespace Pandora.MVVM.ViewModel
 {
@@ -31,6 +32,8 @@ namespace Pandora.MVVM.ViewModel
 
         public ObservableCollection<NemesisModInfo> Mods { get; set; } = new ObservableCollection<NemesisModInfo>();
 
+        private bool engineRunning = false;
+
         public string LogText { 
             get => logText;
             set
@@ -46,7 +49,7 @@ namespace Pandora.MVVM.ViewModel
         public EngineViewModel(IModInfoProvider modinfoProvider)
         {
             this.modinfoProvider = modinfoProvider;
-            LaunchCommand = new RelayCommand(LaunchEngine);
+            LaunchCommand = new RelayCommand(LaunchEngine, CanLaunchEngine);
             ExitCommand = new RelayCommand(Exit);
 
             
@@ -81,19 +84,25 @@ namespace Pandora.MVVM.ViewModel
 
         private async void LaunchEngine(object? parameter)
         {
+            engineRunning = true;
             Engine = new BehaviourEngine(); 
             logText= string.Empty;
 
             await WriteLogBoxLine("Engine launched.");
             Stopwatch timer = Stopwatch.StartNew();
-
-            timer.Stop();
-
-            await WriteLogBoxLine($"Update finished in {Math.Round(timer.ElapsedMilliseconds/1000.0,2)} seconds");
-            timer.Restart();
-            Engine.Launch(Mods.Where(x => x.Active).ToList<IModInfo>()); 
+            await Task.Run(async () => { await Engine.LaunchAsync(Mods.Where(x => x.Active).ToList<IModInfo>()); }); 
+            
             timer.Stop();
             await WriteLogBoxLine($"Launch finished in {Math.Round(timer.ElapsedMilliseconds / 1000.0, 2)} seconds");
+
+            engineRunning = false; 
+        }
+
+        private bool CanLaunchEngine(object? parameter)
+        {
+
+            return !engineRunning;
+            
         }
     }
 }
