@@ -26,7 +26,6 @@ public class NemesisPatcher : IPatcher
 
     private IAssembler assembler { get; set; } = new NemesisAssembler();
 
-    private IDispatcher<List<XNode>> dispatcher {  get; set; }  
     public void Run()
     {
         assembler.ApplyPatches();
