@@ -27,14 +27,14 @@ namespace Pandora.Core.Patchers.Skyrim
 
 		public Project()
 		{
-#if DEBUG
-			throw new InvalidDataException("Could not initialize project because of invalid data"); 
-#endif
 			Valid = false;
 			projectFile = new PackFile("");
 			characterFile = projectFile; 
 			skeletonFile = characterFile; 
 			behaviorFile = skeletonFile;
+#if DEBUG
+			throw new InvalidDataException("Could not initialize project because of invalid data");
+#endif
 		}
 		public Project(PackFile projectfile, PackFile characterfile, PackFile skeletonfile, PackFile behaviorfile)
 		{

@@ -17,6 +17,8 @@ namespace Pandora.Core.Patchers.Skyrim
 
 		public DirectoryInfo TemplateFolder = new DirectoryInfo(Directory.GetCurrentDirectory() + "\\Pandora_Engine\\Skyrim\\Template");
 
+		public  HashSet<PackFile> ActivePackFiles { get; private set;  } =  new HashSet<PackFile>();
+
 		
 		public void LoadProject(string projectFilePath)
 		{
@@ -63,6 +65,21 @@ namespace Pandora.Core.Patchers.Skyrim
 		public bool ContainsPackFile(string name)
 		{
 			return name.Contains('~') ? ContainsNestedPackFile(name) : fileProjectMap.ContainsKey(name) && fileProjectMap[name].ContainsPackFile(name);
+		}
+
+		public PackFile ActivatePackFile(string name)
+		{
+			
+			PackFile packFile = LookupPackFile(name);
+			lock(packFile)
+			{
+				if (ActivePackFiles.Contains(packFile)) return packFile;
+				ActivePackFiles.Add(packFile);
+				packFile.Map.MapLayer("__data__", true);
+
+				
+			}
+			return packFile;
 		}
 		
 	}
