@@ -15,6 +15,16 @@ namespace Pandora.Core.Patchers
 
 		public void Update();
 
-		public void Apply();
+		public void Run();
+
+		public async Task UpdateAsync()
+		{
+			await Task.Run(() => { Update(); }); 
+		}
+
+		public async Task RunAsync()
+		{
+			await Task.Run(() => { Run(); });
+		}
 	}
 }
