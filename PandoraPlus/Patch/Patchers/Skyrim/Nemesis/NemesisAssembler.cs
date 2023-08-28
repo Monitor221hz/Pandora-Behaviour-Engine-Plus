@@ -21,31 +21,40 @@ public class NemesisAssembler : IAssembler
     private IXExpression insertPattern = new XWrapExpression(new XStep(XmlNodeType.Comment, "OPEN"), new XStep(XmlNodeType.Comment, "CLOSE")); 
 
     private XPathLookup lookup = new XPathLookup();
-
-    List<XMatchCollection> replaceMatchGroups = new List<XMatchCollection>();
-
-    List<XMatchCollection> insertMatchGroups = new List<XMatchCollection>();
     
     List<PackFile> packFiles = new List<PackFile>();
 
     private ProjectManager projectManager = new ProjectManager();
+
     
-    public void Apply(PackFile packFile)
-    {
-        foreach (var matchGroup in replaceMatchGroups)
+
+	public void LoadResources()
+	{
+		projectManager.LoadProject("actors\\character\\defaultmale.hkx");
+		projectManager.LoadProject("actors\\character\\defaultfemale.hkx");
+
+	}
+	public void AssemblePatch(DirectoryInfo folder)
+	{
+		DirectoryInfo[] subFolders = folder.GetDirectories();
+
+		foreach (DirectoryInfo subFolder in subFolders)
+		{
+			AssemblePackFilePatch(subFolder);
+		}
+	}
+    
+	public void ApplyPatches()
+	{
+        foreach(PackFile packFile in projectManager.ActivePackFiles)
         {
-            foreach (var match in matchGroup)
-            {
-
-            }
+			packFile.ApplyChanges();
+			packFile.Map.Save(Path.Join(Directory.GetCurrentDirectory(), packFile.Handle.Name));
         }
-    }
-
-
-    public void Replace(XMatch match)
+	}
+    public void ForwardReplaceEdit(PackFile packFile, XMatch match)
     {
         List<XNode> newNodes = new List<XNode>();
-        List<XNode> originalNodes = new List<XNode>();
         int separatorIndex = match.Count;
         for (int i = 1; i < separatorIndex; i++)
         {
@@ -59,51 +68,122 @@ public class NemesisAssembler : IAssembler
             newNodes.Add(node);
 
         }
-        for (int i = separatorIndex + 1; i < match.Count - 1; i++)
+        if (newNodes.Count > 0)
         {
-            XNode node = match[i];
-            originalNodes.Add(node);
-        }
-    }
+			for (int i = separatorIndex + 1; i < match.Count - 1; i++)
+			{
+				XNode node = match[i];
 
-    public bool MatchReplacePattern(XElement element)
+
+				switch (node.NodeType)
+				{
+					case XmlNodeType.Text:
+						packFile.Editor.QueueReplaceText(lookup.LookupPath(node), ((XText)node).Value, ((XText)newNodes[i - separatorIndex - 1]).Value);
+						break;
+					case XmlNodeType.Element:
+						packFile.Editor.QueueReplaceElement(lookup.LookupPath(node), (XElement)newNodes[i - separatorIndex - 1]);
+						break;
+					default:
+						break;
+				}
+			}
+            return; 
+		}
+		for (int i = separatorIndex + 1; i < match.Count - 1; i++)
+		{
+			XNode node = match[i];
+
+
+			switch (node.NodeType)
+			{
+				case XmlNodeType.Text:
+					packFile.Editor.QueueRemoveText(lookup.LookupPath(node), ((XText)node).Value);
+					break;
+				case XmlNodeType.Element:
+					packFile.Editor.QueueRemoveElement(lookup.LookupPath(node));
+					break;
+				default:
+					break;
+			}
+		}
+
+	}
+
+    public void ForwardInsertEdit(PackFile packFile, XMatch match)
     {
+        List<XNode> newNodes = match.nodes;
+		newNodes.RemoveAt(0);
+		newNodes.RemoveAt(newNodes.Count - 1);
         
-        var nodes = lookup.MapFromElement(element);
+        foreach(XNode node in newNodes)
+        {
+            switch(node.NodeType)
+            {
+                case XmlNodeType.Text:
+                    packFile.Editor.QueueInsertText(lookup.LookupPath(node), ((XText)node).Value);
+                    break; 
+                case XmlNodeType.Element:
+                    packFile.Editor.QueueInsertElement(lookup.LookupPath(node), (XElement)node);
+                    break;
+                default:
+                    break;
+            }
+        }
+	}
+
+    public bool MatchReplacePattern(PackFile packFile, List<XNode> nodes)
+    {
         XMatchCollection matchCollection = replacePattern.Matches(nodes);
         if (!matchCollection.Success) return false;
-        replaceMatchGroups.Add(matchCollection);
+        foreach(XMatch match in matchCollection)
+        {
+            ForwardReplaceEdit(packFile, match);
+        }
         return true;
     }
 
-    public bool MatchInsertPattern(XElement element)
+    public bool MatchInsertPattern(PackFile packFile, List<XNode> nodes)
     {
-		
-		var nodes = lookup.MapFromElement(element);
-		XMatchCollection matchCollection = replacePattern.Matches(nodes);
+		XMatchCollection matchCollection = insertPattern.Matches(nodes);
 		if (!matchCollection.Success) return false;
-		replaceMatchGroups.Add(matchCollection);
+		foreach(XMatch match in matchCollection)
+        {
+            ForwardInsertEdit(packFile, match); 
+        }
 		return true;
 	}
 
-	public void AssemblePatch(DirectoryInfo folder)
-	{
-        if (!projectManager.ContainsPackFile(folder.Name)) return;
 
-        var targetPackFile = projectManager.LookupPackFile(folder.Name);
 
-        FileInfo[] editFiles = folder.GetFiles("#*.txt");
+	private void AssemblePackFilePatch(DirectoryInfo folder)
+    {
+		if (!projectManager.ContainsPackFile(folder.Name)) return;
 
-        foreach (FileInfo editFile in editFiles )
-        {
-            XElement element = XElement.Load(editFile.FullName); 
-            if (!MatchReplacePattern(element)) MatchInsertPattern(element);
-        }
+		var targetPackFile = projectManager.ActivatePackFile(folder.Name);
+
+		FileInfo[] editFiles = folder.GetFiles("#*.txt");
+
+		foreach (FileInfo editFile in editFiles)
+		{
+			XElement element = XElement.Load(editFile.FullName);
+			List<XNode> nodes = lookup.MapFromElement(element);
+            targetPackFile.MapNode(Path.GetFileNameWithoutExtension(editFile.Name));
+
+			if (!MatchReplacePattern(targetPackFile, nodes) && !MatchInsertPattern(targetPackFile, nodes))
+            {
+                targetPackFile.TopLevelInsertElements.Add(element);
+            }
+		}
 	}
 
-	public void LoadResources()
+	public List<(FileInfo inFile, FileInfo outFile)> GetExportFiles()
 	{
-		projectManager.LoadProject("actors\\character\\defaultmale.hkx");
-		projectManager.LoadProject("actors\\character\\defaultfemale.hkx");
+		List < (FileInfo inFile, FileInfo outFile) > exportFiles = new List<(FileInfo inFile, FileInfo outFile)> ();
+		foreach (PackFile packFile in projectManager.ActivePackFiles)
+        {
+            exportFiles.Add((packFile.Handle, new FileInfo(Path.Join(Directory.GetCurrentDirectory(), packFile.Handle.Name)))); 
+        }
+
+        return exportFiles; 
 	}
 }
