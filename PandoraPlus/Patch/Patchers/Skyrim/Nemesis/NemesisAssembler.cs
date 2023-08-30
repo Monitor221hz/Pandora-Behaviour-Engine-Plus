@@ -78,10 +78,12 @@ public class NemesisAssembler : IAssembler
 				switch (node.NodeType)
 				{
 					case XmlNodeType.Text:
-						packFile.Editor.QueueReplaceText(lookup.LookupPath(node), ((XText)node).Value, ((XText)newNodes[i - separatorIndex - 1]).Value);
+						//packFile.Editor.QueueReplaceText(lookup.LookupPath(node), ((XText)node).Value, ((XText)newNodes[i - separatorIndex - 1]).Value);
+						packFile.edits.AddChange(new ReplaceTextChange(lookup.LookupPath(node), ((XText)node).Value, ((XText)newNodes[i - separatorIndex - 1]).Value));
 						break;
 					case XmlNodeType.Element:
-						packFile.Editor.QueueReplaceElement(lookup.LookupPath(node), (XElement)newNodes[i - separatorIndex - 1]);
+						//packFile.Editor.QueueReplaceElement(lookup.LookupPath(node), (XElement)newNodes[i - separatorIndex - 1]);
+						packFile.edits.AddChange(new ReplaceElementChange(lookup.LookupPath(node), (XElement)newNodes[i - separatorIndex - 1]));
 						break;
 					default:
 						break;
@@ -97,10 +99,12 @@ public class NemesisAssembler : IAssembler
 			switch (node.NodeType)
 			{
 				case XmlNodeType.Text:
-					packFile.Editor.QueueRemoveText(lookup.LookupPath(node), ((XText)node).Value);
+					//packFile.Editor.QueueRemoveText(lookup.LookupPath(node), ((XText)node).Value);
+					packFile.edits.AddChange(new RemoveTextChange(lookup.LookupPath(node), ((XText)node).Value));
 					break;
 				case XmlNodeType.Element:
-					packFile.Editor.QueueRemoveElement(lookup.LookupPath(node));
+					//packFile.Editor.QueueRemoveElement(lookup.LookupPath(node));
+					packFile.edits.AddChange(new RemoveElementChange(lookup.LookupPath(node)));
 					break;
 				default:
 					break;
@@ -120,10 +124,12 @@ public class NemesisAssembler : IAssembler
             switch(node.NodeType)
             {
                 case XmlNodeType.Text:
-                    packFile.Editor.QueueInsertText(lookup.LookupPath(node), ((XText)node).Value);
+					//packFile.Editor.QueueInsertText(lookup.LookupPath(node), ((XText)node).Value);
+					packFile.edits.AddChange(new InsertTextChange(lookup.LookupPath(node), ((XText)node).Value));
                     break; 
                 case XmlNodeType.Element:
-                    packFile.Editor.QueueInsertElement(lookup.LookupPath(node), (XElement)node);
+					//packFile.Editor.QueueInsertElement(lookup.LookupPath(node), (XElement)node);
+					packFile.edits.AddChange(new InsertElementChange(lookup.LookupPath(node), (XElement)node));
                     break;
                 default:
                     break;
@@ -171,7 +177,7 @@ public class NemesisAssembler : IAssembler
 
 			if (!MatchReplacePattern(targetPackFile, nodes) && !MatchInsertPattern(targetPackFile, nodes))
             {
-                targetPackFile.TopLevelInsertElements.Add(element);
+				targetPackFile.Editor.QueueTopLevelInsert(element);	
             }
 		}
 	}

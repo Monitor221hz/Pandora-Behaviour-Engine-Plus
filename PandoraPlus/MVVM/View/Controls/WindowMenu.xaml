@@ -14,14 +14,14 @@
         </Grid.ColumnDefinitions>
         <Rectangle Grid.Column="0" Grid.ColumnSpan="3" Height="30"
                    VerticalAlignment="Top"
-                   Fill="#212121"
+                   Fill="Black"
                    RadiusX="5"
                    RadiusY="5">
         </Rectangle>
         <Rectangle Grid.Column="2" Height="25" Width="25"
                    HorizontalAlignment="Right"
                    VerticalAlignment="Center"
-                   Fill="#303030"
+                   Fill="{StaticResource ControlColor}"
                    RadiusX="5"
                    RadiusY="5">
         </Rectangle>

@@ -25,9 +25,9 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 
 		private List<(string path, string insertValue)> TextInsertEdits { get; set; } = new List<(string path, string insertValue)>();
 
-		private List<(string path, string removeValue)> TextRemoveEdits { get; set; } = new List<(string path, string removeValue)>(); 
+		private List<(string path, string removeValue)> TextRemoveEdits { get; set; } = new List<(string path, string removeValue)>();
 
-
+		private List<XElement> TopLevelInserts { get; set; } = new List<XElement>(); 
 
 
 
@@ -44,7 +44,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 
 		public void QueueRemoveText(string path, string removeValue) => TextRemoveEdits.Add((path, removeValue));
 
-
+		public void QueueTopLevelInsert(XElement element) => TopLevelInserts.Add(element);
 
 		private void ApplyReplaceEdits(PackFile packFile)
 		{
@@ -61,6 +61,14 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 				InsertElement(packFile, edit.path, edit.element);
 			}
 		}
+
+		private void ApplyRemoveEdits(PackFile packFile)
+		{
+			foreach(var edit in RemoveEdits)
+			{
+				RemoveElement(packFile, edit);
+			}
+		}
 		private void ApplyTextReplaceEdits(PackFile packFile)
 		{
 			foreach (var edit in TextReplaceEdits)
@@ -74,17 +82,42 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 		{
 			foreach (var edit in TextInsertEdits)
 			{
+				InsertText(packFile, edit.path, edit.insertValue);
+			}
+		}
+
+		private void ApplyTextRemoveEdits(PackFile packFile)
+		{
+			foreach (var edit in TextRemoveEdits)
+			{
+				RemoveText(packFile, edit.path, edit.removeValue);
+			}
+		}
+
+		private void ApplyTopInsertEdits(PackFile packFile)
+		{
+			//validate strings through regex here, can also assign new id if needed.
+			foreach(var edit in TopLevelInserts)
+			{
+				InsertElementTop(packFile, edit); 
 			}
 		}
 		public void ApplyEdits(PackFile packFile)
 		{
+			ApplyRemoveEdits(packFile);
+
 			ApplyReplaceEdits(packFile);
 
-			ApplyInsertEdits(packFile); 
+			ApplyInsertEdits(packFile);
+
+			ApplyTextRemoveEdits(packFile); 
 
 			ApplyTextReplaceEdits(packFile);
 
 			ApplyTextInsertEdits(packFile);
+
+			ApplyTopInsertEdits(packFile);
+			
 
 		}
 		
