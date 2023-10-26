@@ -13,6 +13,8 @@ using System.Runtime.CompilerServices;
 using System.Linq;
 using System.Threading.Channels;
 using System.Windows.Media.Animation;
+using System.IO;
+using System.Collections.Generic;
 
 namespace Pandora.MVVM.ViewModel
 {
@@ -30,7 +32,7 @@ namespace Pandora.MVVM.ViewModel
         public RelayCommand LaunchCommand { get; }
         public RelayCommand ExitCommand { get; }
 
-        public ObservableCollection<NemesisModInfo> Mods { get; set; } = new ObservableCollection<NemesisModInfo>();
+        public ObservableCollection<IModInfo> Mods { get; set; } = new ObservableCollection<IModInfo>();
 
         private bool engineRunning = false;
 
@@ -56,8 +58,15 @@ namespace Pandora.MVVM.ViewModel
         }
         public async Task LoadAsync()
         {
-            var modInfos = await modinfoProvider?.GetInstalledMods("C:\\Games\\Skyrim Modding\\Creation Tools\\Skyrim.Behavior.Tool\\PandoraTEST\\Nemesis_Engine\\mod")!;
-            foreach (var modInfo in modInfos)
+
+            List<IModInfo> modInfos;
+#if DEBUG
+            modInfos = await modinfoProvider?.GetInstalledMods("C:\\Games\\Skyrim Modding\\Creation Tools\\Skyrim.Behavior.Tool\\PandoraTEST\\Nemesis_Engine\\mod")!;
+#else
+            modInfos =  await modinfoProvider?.GetInstalledMods(Directory.GetCurrentDirectory()+ "\\Nemesis_Engine\\mod")!;
+#endif
+
+			foreach (var modInfo in modInfos)
             {
                 Mods.Add(modInfo);
             }
@@ -71,7 +80,7 @@ namespace Pandora.MVVM.ViewModel
         internal async Task WriteLogBoxLine(string text)
         {
             StringBuilder sb = new StringBuilder(LogText);
-            if (LogText.Length > 0) sb.Append('\n');
+            if (LogText.Length > 0) sb.Append(Environment.NewLine);
             sb.Append(text);
             LogText = sb.ToString();
         }
@@ -94,6 +103,8 @@ namespace Pandora.MVVM.ViewModel
             
             timer.Stop();
             await WriteLogBoxLine($"Launch finished in {Math.Round(timer.ElapsedMilliseconds / 1000.0, 2)} seconds");
+
+            await WriteLogBoxLine(Engine.GetMessages());
 
             engineRunning = false; 
         }

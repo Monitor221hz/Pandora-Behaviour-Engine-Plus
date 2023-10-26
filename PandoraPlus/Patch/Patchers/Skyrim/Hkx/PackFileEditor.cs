@@ -14,6 +14,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 	public partial class PackFileEditor
 	{
 		//these tuples are gross, pretend this implementation doesn't exist
+		//deprecated
 
 		private List<(string path, XElement element)> ReplaceEdits { get; set; } = new List<(string path, XElement element)>();
 

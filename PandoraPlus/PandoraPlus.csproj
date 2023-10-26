@@ -67,11 +67,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="NLog" Version="5.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\HKX2-Library\HKX2 WPF\HKX2.csproj" />
     <ProjectReference Include="..\..\XML Cake\XML Cake\XML Cake.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Pandora_Engine\Skyrim\Template\actors\ambient\chicken\behaviors\chickenbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

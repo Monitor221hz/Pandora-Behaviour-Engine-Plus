@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pandora.Core;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,11 +19,11 @@ namespace Pandora.Patch.Patchers
 			await Task.Run(() => LoadResources());
 		}
 
-		public void AssemblePatch(DirectoryInfo folder);
+		public void AssemblePatch(IModInfo mod);
 
-		public async Task AssemblePatchAsync(DirectoryInfo folder)
+		public async Task AssemblePatchAsync(IModInfo mod)
 		{
-			await Task.Run(() => AssemblePatch(folder));	
+			await Task.Run(() => AssemblePatch(mod));	
 		}
 		public void ApplyPatches();
 

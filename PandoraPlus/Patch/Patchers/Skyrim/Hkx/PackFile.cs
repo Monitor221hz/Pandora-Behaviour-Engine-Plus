@@ -8,20 +8,31 @@ using System.Xml.Linq;
 using XmlCake.Linq;
 using XmlCake.Linq.Expressions;
 using XmlCake.String;
+using HKX2;
+using NLog;
+using NLog.LayoutRenderers.Wrappers;
+using System.Xml.Serialization;
 
 namespace Pandora.Patch.Patchers.Skyrim.Hkx
 {
-	public class PackFile
+	public class PackFile : IPatchFile
 	{
 		public XMap Map { get; private set; }
 
-		public FileInfo Handle { get; private set;  }
+		public static readonly string ROOT_CONTAINER_NAME = "__data__";
+		public FileInfo InputHandle { get; private set;  }
+
+		public FileInfo OutputHandle {  get; private set; }
+
+		public static bool DebugFiles { get; set; } = true; 
 
 		public PackFileEditor Editor {  get; private set; } = new PackFileEditor();
 
 		public XElement ContainerNode { get; private set; } 
 
-		public PackFileHistory edits { get; private set; } = new PackFileHistory();
+		public PackFileDispatcher edits { get; private set; } = new PackFileDispatcher();
+
+		private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
 		public void ApplyChanges() => edits.ApplyChanges(this);
 
@@ -29,7 +40,8 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 
 		public PackFile(FileInfo file)
 		{
-			Handle = file;
+			InputHandle = file;
+			OutputHandle = new FileInfo(file.FullName.Replace("Template", "meshes").Replace("\\Pandora_Engine\\Skyrim",""));
 			Map = XMap.Load(file.FullName);
 			ContainerNode = Map.NavigateTo("__data__");
 		}
@@ -45,7 +57,71 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			Map.MapSlice(nodeName);
 		}
 
+		public void Export()
+		{
+			if (OutputHandle.Directory == null) return; 
+			if (!OutputHandle.Directory.Exists) { OutputHandle.Directory.Create(); }
+			if (OutputHandle.Exists) { OutputHandle.Delete();  }
+			using (var writeStream = OutputHandle.OpenWrite())
+			{
+				Map.Save(writeStream);
+			}
+			HKXHeader header = HKXHeader.SkyrimSE();
+			IHavokObject rootObject;
+			try
+			{
+			using (var readStream = OutputHandle.OpenRead())
+			{
+				var deserializer = new XmlDeserializer();
+				rootObject = deserializer.Deserialize(readStream, header, false);
+			}
+			using (var writeStream = OutputHandle.Create())
+			{
+				var binaryWriter = new BinaryWriterEx(writeStream);
+				var serializer = new PackFileSerializer();
+				serializer.Serialize(rootObject, binaryWriter, header);
+			}
+				if (DebugFiles)
+				{
+					var debugOuputHandle = new FileInfo(OutputHandle.FullName + ".xml");
+					if (debugOuputHandle.Exists) { debugOuputHandle.Delete(); }
+					using (var writeStream = debugOuputHandle.Create())
+					{
 
+						var xmlSerializer = new HKX2.XmlSerializer();
+						xmlSerializer.Serialize(rootObject, header, writeStream);
+					}
+
+				}
+
+			}
+			catch(Exception ex) 
+			{
+				Logger.Fatal($"Export > {OutputHandle.Name} > FAILED > {ex.Message}");
+				using (var writeStream = OutputHandle.Create())
+				{
+					Map.Save(writeStream);
+				}
+			}
+
+			
+#if DEBUG
+			//if (debugOuputHandle.Exists) { debugOuputHandle.Delete(); }
+			//using (var readStream = OutputHandle.OpenRead())
+			//{
+			//	var binaryReader = new BinaryReaderEx(readStream);
+			//	var deserializer = new PackFileDeserializer();
+			//	rootObject = deserializer.Deserialize(binaryReader, false);
+			//}
+			//using (var writeStream = debugOuputHandle.Create())
+			//{
+			//	var xmlSerializer = new HKX2.XmlSerializer();
+			//	xmlSerializer.Serialize(rootObject, header, writeStream);
+			//}
+#endif
+
+
+		}
 
 
 

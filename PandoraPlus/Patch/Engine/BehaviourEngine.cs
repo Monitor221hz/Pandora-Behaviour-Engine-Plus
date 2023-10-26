@@ -16,7 +16,6 @@ namespace Pandora.Core
 		{
 
 			Configuration.Patcher.SetTarget(mods); 
-
 			Configuration.Patcher.Update(); 
 			Configuration.Patcher.Run();
 		}
@@ -27,6 +26,11 @@ namespace Pandora.Core
 			await Configuration.Patcher.UpdateAsync();
 
 			Configuration.Patcher.Run(); 
+		}
+
+		public string GetMessages()
+		{
+			return Configuration.Patcher.GetPostRunMessages();
 		}
 	}
 

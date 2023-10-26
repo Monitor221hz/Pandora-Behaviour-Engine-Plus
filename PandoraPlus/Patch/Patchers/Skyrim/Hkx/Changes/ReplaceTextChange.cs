@@ -13,11 +13,14 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 
 		private string newValue { get; set; }
 
-		public ReplaceTextChange(string path, string oldvalue, string newvalue)
+		public string ModName { get; private set; }
+
+		public ReplaceTextChange(string path, string oldvalue, string newvalue, string modName)
 		{
 			Path = path;
 			oldValue = oldvalue;
 			newValue = newvalue;
+			ModName = modName;
 		}
 		public bool Apply(PackFile packFile)
 		{

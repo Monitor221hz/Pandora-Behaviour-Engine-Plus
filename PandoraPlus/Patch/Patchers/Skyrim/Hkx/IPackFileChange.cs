@@ -18,6 +18,8 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 		public XmlNodeType AssociatedType { get; }
 		
 		public string Path { get; }
+
+		public string ModName { get; }
 	}
 
 

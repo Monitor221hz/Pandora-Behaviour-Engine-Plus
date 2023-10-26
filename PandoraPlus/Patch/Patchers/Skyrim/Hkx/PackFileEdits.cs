@@ -20,7 +20,12 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 		}
 		public static string InsertElement(PackFile packFile, string path, XElement element)
 		{
-			return packFile.Map.AppendElement(path.Substring(0, path.LastIndexOf('/')), element); 
+			return packFile.Map.InsertElement(path, element, true);
+		}
+
+		public static string AppendElement(PackFile packFile, string path, XElement element)
+		{
+			return packFile.Map.AppendElement(path, element);
 		}
 
 		public static XElement RemoveElement(PackFile packFile, string path) => packFile.Map.RemoveElement(path); 

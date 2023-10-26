@@ -10,10 +10,13 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 
 		public string Path { get; private set; }
 		private string value { get; set; }
-		public RemoveTextChange(string path, string value)
+
+		public string ModName { get; private set; }
+		public RemoveTextChange(string path, string value, string modName)
 		{
 			Path = path;
 			this.value = value;
+			ModName = modName;
 		}
 
 		public bool Apply(PackFile packFile)

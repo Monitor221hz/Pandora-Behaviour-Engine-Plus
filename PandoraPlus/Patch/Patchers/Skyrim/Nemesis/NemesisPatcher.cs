@@ -26,6 +26,18 @@ public class NemesisPatcher : IPatcher
 
     private IAssembler assembler { get; set; } = new NemesisAssembler();
 
+    public string GetPostRunMessages()
+    {
+        StringBuilder logBuilder = new StringBuilder("Resources loaded successfully.\r\n");
+
+		for (int i = 0; i < activeMods.Count; i++)
+        {
+			IModInfo mod = activeMods[i];
+			logBuilder.AppendLine($"Mod {i+1} : {mod.Name} - v.{mod.Version}");
+        }
+        return logBuilder.ToString();
+    }
+
     public void Run()
     {
         assembler.ApplyPatches();
@@ -37,7 +49,7 @@ public class NemesisPatcher : IPatcher
         List<Task> assembleTasks = new List<Task>();
         foreach(var mod in activeMods)
         {
-            assembleTasks.Add(Task.Run(() => { assembler.AssemblePatch(mod.Folder); })); 
+            assembleTasks.Add(Task.Run(() => { assembler.AssemblePatch(mod); })); 
         }
         await Task.WhenAll(assembleTasks);
     }

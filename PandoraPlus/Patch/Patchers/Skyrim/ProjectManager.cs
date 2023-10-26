@@ -71,11 +71,12 @@ namespace Pandora.Core.Patchers.Skyrim
 		{
 			
 			PackFile packFile = LookupPackFile(name);
+			lock(ActivePackFiles) 
 			lock(packFile)
 			{
 				if (ActivePackFiles.Contains(packFile)) return packFile;
 				ActivePackFiles.Add(packFile);
-				packFile.Map.MapLayer("__data__", true);
+				packFile.Map.MapLayer(PackFile.ROOT_CONTAINER_NAME, true);
 
 				
 			}

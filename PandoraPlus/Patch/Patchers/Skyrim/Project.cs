@@ -43,7 +43,7 @@ namespace Pandora.Core.Patchers.Skyrim
 			skeletonFile = skeletonfile;
 			behaviorFile = behaviorfile;
 
-			Identifier = Path.GetFileNameWithoutExtension(projectFile.Handle.Name);
+			Identifier = Path.GetFileNameWithoutExtension(projectFile.InputHandle.Name);
 			Valid = true;
 		}
 		
@@ -53,7 +53,7 @@ namespace Pandora.Core.Patchers.Skyrim
 
 		public List<string> MapFiles()
 		{
-			DirectoryInfo? behaviorFolder = behaviorFile.Handle.Directory;
+			DirectoryInfo? behaviorFolder = behaviorFile.InputHandle.Directory;
 			if (behaviorFolder == null) return new List<string>();
 
 			var behaviorFiles = behaviorFolder.GetFiles();
@@ -66,18 +66,18 @@ namespace Pandora.Core.Patchers.Skyrim
 		}
 		public static Project Load(PackFile projectFile)
 		{
-			if (!projectFile.Handle.Exists) return new Project(); 
+			if (!projectFile.InputHandle.Exists) return new Project(); 
 
 			PackFile characterFile = GetCharacterFile(projectFile); 
-			if (!characterFile.Handle.Exists) return new Project();
+			if (!characterFile.InputHandle.Exists) return new Project();
 
 			var rigBehaviorPair = GetSkeletonAndBehaviorFile(projectFile, characterFile);
 
 			PackFile skeletonFile = rigBehaviorPair.skeleton; 
-			if (!skeletonFile.Handle.Exists) return new Project();
+			if (!skeletonFile.InputHandle.Exists) return new Project();
 
 			PackFile behaviorFile = rigBehaviorPair.behavior; 
-			if (!behaviorFile.Handle.Exists) return new Project();
+			if (!behaviorFile.InputHandle.Exists) return new Project();
 
 			return new Project(projectFile, characterFile, skeletonFile, behaviorFile);
 		}
@@ -94,7 +94,7 @@ namespace Pandora.Core.Patchers.Skyrim
 			projectMap.MapSlice(projectData, true);
 
 			string characterFilePath = projectMap.Lookup("characterFilenames").Value;
-			PackFile characterFile = new PackFile(Path.Combine(projectFile.Handle.DirectoryName!, characterFilePath));
+			PackFile characterFile = new PackFile(Path.Combine(projectFile.InputHandle.DirectoryName!, characterFilePath));
 			//{C:\Users\Monitor\source\repos\Pandora-Plus-Behavior-Engine\PandoraPlus\bin\Debug\net7.0-windows\Pandora_Engine\Skyrim\Template\actors\character\Characters\Character Assets\skeleton.HKX}
 			return characterFile; 
 		}
@@ -109,7 +109,7 @@ namespace Pandora.Core.Patchers.Skyrim
 
 			string behaviorFilePath = characterMap.NavigateTo("behaviorFilename", characterStringDataNode).Value;
 
-			return (new PackFile(Path.Combine(projectFile.Handle.DirectoryName!, skeletonFilePath)), new PackFile(Path.Combine(projectFile.Handle.DirectoryName!, behaviorFilePath)));
+			return (new PackFile(Path.Combine(projectFile.InputHandle.DirectoryName!, skeletonFilePath)), new PackFile(Path.Combine(projectFile.InputHandle.DirectoryName!, behaviorFilePath)));
 
 		}
 

@@ -9,11 +9,15 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 		public XmlNodeType AssociatedType { get; } = XmlNodeType.Text;
 
 		public string Path { get; private set; } 
-		private string value { get; set; }	
-		public InsertTextChange(string path, string value)
+		private string value { get; set; }
+
+		public string ModName { get; private set; }
+
+		public InsertTextChange(string path, string value, string modName)
 		{
 			Path = path; 
 			this.value = value;
+			ModName = modName;
 		}
 
 		public bool Apply(PackFile packFile)

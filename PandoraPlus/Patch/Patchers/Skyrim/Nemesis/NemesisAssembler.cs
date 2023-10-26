@@ -1,4 +1,6 @@
-﻿using Pandora.Core.Patchers.Skyrim;
+﻿using NLog;
+using Pandora.Core;
+using Pandora.Core.Patchers.Skyrim;
 using Pandora.Patch.Patchers.Skyrim.Hkx;
 using System;
 using System.Collections.Generic;
@@ -7,6 +9,7 @@ using System.Linq;
 using System.Security.RightsManagement;
 using System.Text;
 using System.Threading.Tasks;
+
 using System.Xml;
 using System.Xml.Linq;
 using XmlCake.Linq;
@@ -16,9 +19,11 @@ namespace Pandora.Patch.Patchers.Skyrim.Nemesis;
 
 public class NemesisAssembler : IAssembler
 {
+	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger(); //to do: move logger into inheritable base class
 
-    private IXExpression replacePattern = new XWrapExpression(new XStep(XmlNodeType.Comment, "OPEN"), new XStep(XmlNodeType.Comment, "ORIGINAL"), new XStep(XmlNodeType.Comment, "CLOSE"));
-    private IXExpression insertPattern = new XWrapExpression(new XStep(XmlNodeType.Comment, "OPEN"), new XStep(XmlNodeType.Comment, "CLOSE")); 
+
+	private IXExpression replacePattern = new XWrapExpression(new XStep(XmlNodeType.Comment, "OPEN"), new XStep(XmlNodeType.Comment, "ORIGINAL"), new XStep(XmlNodeType.Comment, "CLOSE"));
+    private IXExpression insertPattern = new XSkipWrapExpression(new XStep(XmlNodeType.Comment, "ORIGINAL"), new XStep(XmlNodeType.Comment, "OPEN"), new XStep(XmlNodeType.Comment, "CLOSE")); 
 
     private XPathLookup lookup = new XPathLookup();
     
@@ -26,21 +31,22 @@ public class NemesisAssembler : IAssembler
 
     private ProjectManager projectManager = new ProjectManager();
 
-    
 
-	public void LoadResources()
+
+    public void LoadResources()
 	{
 		projectManager.LoadProject("actors\\character\\defaultmale.hkx");
 		projectManager.LoadProject("actors\\character\\defaultfemale.hkx");
 
 	}
-	public void AssemblePatch(DirectoryInfo folder)
+	public void AssemblePatch(IModInfo mod)
 	{
+		DirectoryInfo folder = mod.Folder;
 		DirectoryInfo[] subFolders = folder.GetDirectories();
 
 		foreach (DirectoryInfo subFolder in subFolders)
 		{
-			AssemblePackFilePatch(subFolder);
+			AssemblePackFilePatch(subFolder,mod.Name);
 		}
 	}
     
@@ -49,10 +55,14 @@ public class NemesisAssembler : IAssembler
         foreach(PackFile packFile in projectManager.ActivePackFiles)
         {
 			packFile.ApplyChanges();
-			packFile.Map.Save(Path.Join(Directory.GetCurrentDirectory(), packFile.Handle.Name));
+			//packFile.Map.Save(Path.Join(Directory.GetCurrentDirectory(), packFile.InputHandle.Name));
+			packFile.Export();
         }
 	}
-    public void ForwardReplaceEdit(PackFile packFile, XMatch match)
+	//to-fix: certain excerpts being misclassified as single replace edit when it is actually a replace and insert edit
+
+	//
+    public void ForwardReplaceEdit(PackFile packFile, XMatch match, string modName)
     {
         List<XNode> newNodes = new List<XNode>();
         int separatorIndex = match.Count;
@@ -79,11 +89,11 @@ public class NemesisAssembler : IAssembler
 				{
 					case XmlNodeType.Text:
 						//packFile.Editor.QueueReplaceText(lookup.LookupPath(node), ((XText)node).Value, ((XText)newNodes[i - separatorIndex - 1]).Value);
-						packFile.edits.AddChange(new ReplaceTextChange(lookup.LookupPath(node), ((XText)node).Value, ((XText)newNodes[i - separatorIndex - 1]).Value));
+						lock (packFile.edits) packFile.edits.AddChange(new ReplaceTextChange(lookup.LookupPath(node), ((XText)node).Value, ((XText)newNodes[i - separatorIndex - 1]).Value,modName));
 						break;
 					case XmlNodeType.Element:
 						//packFile.Editor.QueueReplaceElement(lookup.LookupPath(node), (XElement)newNodes[i - separatorIndex - 1]);
-						packFile.edits.AddChange(new ReplaceElementChange(lookup.LookupPath(node), (XElement)newNodes[i - separatorIndex - 1]));
+						lock (packFile.edits) packFile.edits.AddChange(new ReplaceElementChange(lookup.LookupPath(node), (XElement)newNodes[i - separatorIndex - 1],modName));
 						break;
 					default:
 						break;
@@ -100,11 +110,11 @@ public class NemesisAssembler : IAssembler
 			{
 				case XmlNodeType.Text:
 					//packFile.Editor.QueueRemoveText(lookup.LookupPath(node), ((XText)node).Value);
-					packFile.edits.AddChange(new RemoveTextChange(lookup.LookupPath(node), ((XText)node).Value));
+					lock (packFile.edits) packFile.edits.AddChange(new RemoveTextChange(lookup.LookupPath(node), ((XText)node).Value, modName));
 					break;
 				case XmlNodeType.Element:
 					//packFile.Editor.QueueRemoveElement(lookup.LookupPath(node));
-					packFile.edits.AddChange(new RemoveElementChange(lookup.LookupPath(node)));
+					lock (packFile.edits) packFile.edits.AddChange(new RemoveElementChange(lookup.LookupPath(node),modName));
 					break;
 				default:
 					break;
@@ -113,7 +123,7 @@ public class NemesisAssembler : IAssembler
 
 	}
 
-    public void ForwardInsertEdit(PackFile packFile, XMatch match)
+    public void ForwardInsertEdit(PackFile packFile, XMatch match, string modName)
     {
         List<XNode> newNodes = match.nodes;
 		newNodes.RemoveAt(0);
@@ -121,47 +131,58 @@ public class NemesisAssembler : IAssembler
         
         foreach(XNode node in newNodes)
         {
+			string nodePath = lookup.LookupPath(node);
             switch(node.NodeType)
             {
                 case XmlNodeType.Text:
 					//packFile.Editor.QueueInsertText(lookup.LookupPath(node), ((XText)node).Value);
-					packFile.edits.AddChange(new InsertTextChange(lookup.LookupPath(node), ((XText)node).Value));
+					lock (packFile.edits) packFile.edits.AddChange(new InsertTextChange(nodePath, ((XText)node).Value, modName));
                     break; 
                 case XmlNodeType.Element:
 					//packFile.Editor.QueueInsertElement(lookup.LookupPath(node), (XElement)node);
-					packFile.edits.AddChange(new InsertElementChange(lookup.LookupPath(node), (XElement)node));
-                    break;
-                default:
-                    break;
+					lock (packFile.edits)
+					{
+						if (packFile.Map.PathExists(nodePath))
+						{
+							packFile.edits.AddChange(new InsertElementChange(nodePath, (XElement)node, modName));
+						}
+						else
+						{
+							packFile.edits.AddChange(new AppendElementChange(nodePath.Substring(0, nodePath.LastIndexOf('/')), (XElement)node, modName));
+						}
+					}
+					break;
+				default:
+					break;
             }
         }
 	}
 
-    public bool MatchReplacePattern(PackFile packFile, List<XNode> nodes)
+    public bool MatchReplacePattern(PackFile packFile, List<XNode> nodes, string modName)
     {
         XMatchCollection matchCollection = replacePattern.Matches(nodes);
         if (!matchCollection.Success) return false;
         foreach(XMatch match in matchCollection)
         {
-            ForwardReplaceEdit(packFile, match);
+            ForwardReplaceEdit(packFile, match, modName);
         }
         return true;
     }
 
-    public bool MatchInsertPattern(PackFile packFile, List<XNode> nodes)
+    public bool MatchInsertPattern(PackFile packFile, List<XNode> nodes, string modName)
     {
 		XMatchCollection matchCollection = insertPattern.Matches(nodes);
 		if (!matchCollection.Success) return false;
 		foreach(XMatch match in matchCollection)
         {
-            ForwardInsertEdit(packFile, match); 
+            ForwardInsertEdit(packFile, match, modName); 
         }
 		return true;
 	}
 
 
 
-	private void AssemblePackFilePatch(DirectoryInfo folder)
+	private void AssemblePackFilePatch(DirectoryInfo folder, string modName)
     {
 		if (!projectManager.ContainsPackFile(folder.Name)) return;
 
@@ -171,13 +192,29 @@ public class NemesisAssembler : IAssembler
 
 		foreach (FileInfo editFile in editFiles)
 		{
-			XElement element = XElement.Load(editFile.FullName);
-			List<XNode> nodes = lookup.MapFromElement(element);
-            targetPackFile.MapNode(Path.GetFileNameWithoutExtension(editFile.Name));
-
-			if (!MatchReplacePattern(targetPackFile, nodes) && !MatchInsertPattern(targetPackFile, nodes))
+			List<XNode> nodes =new List<XNode>();
+			string nodeName = Path.GetFileNameWithoutExtension(editFile.Name);
+			XElement element;
+			try
+			{
+				element = XElement.Load(editFile.FullName);
+			}
+			catch(XmlException e)
+			{
+				Logger.Error($"File {editFile.FullName} > Load > FAILED > {e.Message}");
+				continue;
+			}
+			
+			lock(lookup)
+			{
+				nodes = lookup.MapFromElement(element);
+			}
+            targetPackFile.MapNode(nodeName);
+			bool hasReplacements = MatchReplacePattern(targetPackFile, nodes, modName);
+			bool hasInserts = MatchInsertPattern(targetPackFile, nodes, modName);
+			if (!hasReplacements && !hasInserts)
             {
-				targetPackFile.Editor.QueueTopLevelInsert(element);	
+				targetPackFile.edits.AddChange(new InsertElementChange(PackFile.ROOT_CONTAINER_NAME+"/top", element, modName));
             }
 		}
 	}
@@ -187,7 +224,7 @@ public class NemesisAssembler : IAssembler
 		List < (FileInfo inFile, FileInfo outFile) > exportFiles = new List<(FileInfo inFile, FileInfo outFile)> ();
 		foreach (PackFile packFile in projectManager.ActivePackFiles)
         {
-            exportFiles.Add((packFile.Handle, new FileInfo(Path.Join(Directory.GetCurrentDirectory(), packFile.Handle.Name)))); 
+            exportFiles.Add((packFile.InputHandle, new FileInfo(Path.Join(Directory.GetCurrentDirectory(), packFile.InputHandle.Name)))); 
         }
 
         return exportFiles; 
