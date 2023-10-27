@@ -1,4 +1,5 @@
-﻿using Pandora.Patch.Patchers.Skyrim.Hkx;
+﻿using Pandora.Patch.Patchers.Skyrim.AnimData;
+using Pandora.Patch.Patchers.Skyrim.Hkx;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -24,6 +25,9 @@ namespace Pandora.Core.Patchers.Skyrim
 		private PackFile characterFile { get; set; } 
 		private PackFile skeletonFile { get; set; }
 		private PackFile behaviorFile { get; set; } 
+
+		public ProjectAnimData AnimData { get; set; }
+
 
 		public Project()
 		{
@@ -58,9 +62,12 @@ namespace Pandora.Core.Patchers.Skyrim
 
 			var behaviorFiles = behaviorFolder.GetFiles();
 
+			filesByName.Add(skeletonFile.Name,skeletonFile );
+			filesByName.Add(characterFile.Name,characterFile );
 			foreach ( var behaviorFile in behaviorFiles)
 			{
-				filesByName.Add(Path.GetFileNameWithoutExtension(behaviorFile.Name), new PackFile(behaviorFile)); 
+				var packFile = new PackFile(behaviorFile);
+				filesByName.Add(packFile.Name, packFile); 
 			}
 			return filesByName.Keys.ToList();
 		}

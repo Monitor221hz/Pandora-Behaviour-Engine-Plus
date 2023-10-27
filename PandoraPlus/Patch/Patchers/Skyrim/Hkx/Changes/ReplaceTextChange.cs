@@ -4,7 +4,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 {
 	public class ReplaceTextChange : IPackFileChange
 	{
-		public IPackFileChange.ChangeType Type { get; } = IPackFileChange.ChangeType.Remove;
+		public IPackFileChange.ChangeType Type { get; } = IPackFileChange.ChangeType.Replace;
 
 		public XmlNodeType AssociatedType { get; } = XmlNodeType.Text;
 

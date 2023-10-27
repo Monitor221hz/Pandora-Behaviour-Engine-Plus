@@ -37,7 +37,7 @@ namespace Pandora.Core.Patchers.Skyrim
 				if (!fileProjectMap.ContainsKey(file)) fileProjectMap.Add(file, project);
 			}
 		}
-
+		
 		private PackFile LookupNestedPackFile(string name)
 		{
 			string[] sections = name.Split('~'); 
@@ -56,6 +56,10 @@ namespace Pandora.Core.Patchers.Skyrim
 
 			return targetProject.ContainsPackFile(sections[1]);
 		}
+
+		public bool ProjectLoaded(string name) => fileProjectMap.ContainsKey(name);
+		public Project LookupProject(string name) => fileProjectMap[name];
+
 		public PackFile LookupPackFile(string name)
 		{
 			name = name.ToLower();
@@ -77,8 +81,6 @@ namespace Pandora.Core.Patchers.Skyrim
 				if (ActivePackFiles.Contains(packFile)) return packFile;
 				ActivePackFiles.Add(packFile);
 				packFile.Map.MapLayer(PackFile.ROOT_CONTAINER_NAME, true);
-
-				
 			}
 			return packFile;
 		}

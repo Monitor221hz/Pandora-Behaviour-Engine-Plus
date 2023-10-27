@@ -36,10 +36,15 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			}
 		}
 
-
+		public void SortChanges()
+		{
+			elementChanges = elementChanges.OrderBy(x => (int)x.Type).ToList();
+			textChanges = textChanges.OrderBy(x => (int) x.Type).ToList();
+		}
 		public void ApplyChanges(PackFile packFile)
 		{
-			Logger.Info("Pack File Dispatcher > STARTED > APPLY CHANGES");
+			Logger.Info($"Dispatcher > {packFile.Name} > APPLY CHANGES");
+			SortChanges();
 			foreach(IPackFileChange change in elementChanges)
 			{
 				if (!change.Apply(packFile))

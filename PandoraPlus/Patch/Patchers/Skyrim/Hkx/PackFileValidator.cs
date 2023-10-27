@@ -30,20 +30,22 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 		}
 		private bool ValidateEventsAndVariables(PackFile packFile)
 		{
-			XElement stringDataContainer = packFile.GetNodeByClass("hkbBehaviorGraphStringData");
+			XElement? stringDataContainer = packFile.GetNodeByClass("hkbBehaviorGraphStringData");
 			if (stringDataContainer == null) return false;
 
-			XElement variableValueSetContainer = packFile.GetNodeByClass("hkbVariableValueSet");
+			XElement? variableValueSetContainer = packFile.GetNodeByClass("hkbVariableValueSet");
 			if (variableValueSetContainer == null) return false;
 
-			XElement graphDataContainer = packFile.GetNodeByClass("hkbBehaviorGraphData");
+			XElement? graphDataContainer = packFile.GetNodeByClass("hkbBehaviorGraphData");
 			if (graphDataContainer == null) return false;	
 
-			XElement eventNameContainer = stringDataContainer.Elements().First();
+			XElement? eventNameContainer = stringDataContainer.Elements().FirstOrDefault();
+			if (eventNameContainer == null) return false;
+
 			XElement eventFlagContainer = graphDataContainer.Elements().ElementAt(3);
 
 			XElement variableNameContainer = stringDataContainer.Elements().ElementAt(2);
-			XElement variableValueContainer = variableValueSetContainer.Elements().First();
+			XElement variableValueContainer = variableValueSetContainer.Elements().FirstOrDefault();
 			XElement variableTypeContainer = graphDataContainer.Elements().ElementAt(1);
 
 			var eventNameElements = eventNameContainer.Elements().ToList();

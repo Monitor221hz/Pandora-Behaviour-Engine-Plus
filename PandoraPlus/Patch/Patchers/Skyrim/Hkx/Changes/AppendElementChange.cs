@@ -6,7 +6,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 {
 	public class AppendElementChange : IPackFileChange
 	{
-		public IPackFileChange.ChangeType Type { get; } = IPackFileChange.ChangeType.Insert;
+		public IPackFileChange.ChangeType Type { get; } = IPackFileChange.ChangeType.Append;
 
 		public XmlNodeType AssociatedType { get; } = XmlNodeType.Element;
 

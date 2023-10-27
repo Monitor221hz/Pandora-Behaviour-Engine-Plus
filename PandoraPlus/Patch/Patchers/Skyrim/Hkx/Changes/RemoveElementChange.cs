@@ -6,7 +6,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 {
 	public class RemoveElementChange : IPackFileChange
 	{
-		public IPackFileChange.ChangeType Type { get; } = IPackFileChange.ChangeType.Insert;
+		public IPackFileChange.ChangeType Type { get; } = IPackFileChange.ChangeType.Remove;
 
 		public XmlNodeType AssociatedType { get; } = XmlNodeType.Element;
 

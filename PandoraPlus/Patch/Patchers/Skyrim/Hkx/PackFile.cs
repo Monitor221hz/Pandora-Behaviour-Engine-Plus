@@ -20,6 +20,8 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 		public XMap Map { get; private set; }
 
 		public static readonly string ROOT_CONTAINER_NAME = "__data__";
+
+		public string Name { get; private set; }
 		public FileInfo InputHandle { get; private set;  }
 
 		public FileInfo OutputHandle {  get; private set; }
@@ -44,6 +46,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			OutputHandle = new FileInfo(file.FullName.Replace("Template", "meshes").Replace("\\Pandora_Engine\\Skyrim",""));
 			Map = XMap.Load(file.FullName);
 			ContainerNode = Map.NavigateTo("__data__");
+			Name = Path.GetFileNameWithoutExtension(InputHandle.Name).ToLower();
 		}
 
 		public PackFile(string filePath) : this(new FileInfo(filePath)) { }

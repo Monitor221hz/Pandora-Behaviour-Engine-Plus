@@ -8,6 +8,7 @@ using System.Xml.Linq;
 using Pandora.Core;
 using Pandora.Core.Patchers;
 using Pandora.Core.Patchers.Skyrim;
+using Pandora.Patch.Patchers.Skyrim.AnimData;
 using XmlCake.Linq;
 
 namespace Pandora.Patch.Patchers.Skyrim.Nemesis;
@@ -25,6 +26,7 @@ public class NemesisPatcher : IPatcher
 
 
     private IAssembler assembler { get; set; } = new NemesisAssembler();
+
 
     public string GetPostRunMessages()
     {
@@ -46,6 +48,8 @@ public class NemesisPatcher : IPatcher
     public async Task UpdateAsync()
     {
         assembler.LoadResources();
+
+
         List<Task> assembleTasks = new List<Task>();
         foreach(var mod in activeMods)
         {

@@ -1,6 +1,7 @@
 ﻿using NLog;
 using Pandora.Core;
 using Pandora.Core.Patchers.Skyrim;
+using Pandora.Patch.Patchers.Skyrim.AnimData;
 using Pandora.Patch.Patchers.Skyrim.Hkx;
 using System;
 using System.Collections.Generic;
@@ -31,13 +32,14 @@ public class NemesisAssembler : IAssembler
 
     private ProjectManager projectManager = new ProjectManager();
 
-
+	private AnimDataPatcher animDataPatcher = new AnimDataPatcher();
 
     public void LoadResources()
 	{
+		
 		projectManager.LoadProject("actors\\character\\defaultmale.hkx");
 		projectManager.LoadProject("actors\\character\\defaultfemale.hkx");
-
+		animDataPatcher.SplitAnimationDataSingleFile(projectManager);
 	}
 	public void AssemblePatch(IModInfo mod)
 	{

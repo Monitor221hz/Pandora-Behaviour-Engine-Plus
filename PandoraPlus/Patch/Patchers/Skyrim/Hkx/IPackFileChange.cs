@@ -6,9 +6,12 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 	{
 		public enum ChangeType
 		{
+			Remove,
 			Insert,
 			Replace,
-			Remove
+			Append,
+			
+			
 		}
 		public bool Apply(PackFile packFile);
 
