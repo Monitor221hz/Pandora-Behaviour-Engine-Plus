@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -115,27 +116,28 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 				ValidateElementText(element, eventIndices, variableIndices);
 				return;
 			}
-			int elementCount = 0; 
+
+
 			foreach (var xelement in element.Elements())
 			{
-				elementCount++;
+				
 				ValidateElementContent(xelement, eventIndices, variableIndices);
 			}
 
 		}
 
-		private void ValidateElementCount(XElement element)
+		public void TryValidateClipGenerator(string path, PackFile packFile)
 		{
-			XAttribute? countAttribute;
-			if ((countAttribute = element.Attribute("numelements")) != null)
-			{
-				int elementCount = element.Elements().Count();
-				countAttribute.Value = elementCount.ToString();
-			}
+			XElement element;
+			if (!packFile.Map.TryLookup($"{path}/animationName", out element)) return;
+			string clipName = packFile.Map.Lookup($"{path}/name").Value!;
+			packFile.ParentProject?.AnimData?.AddDummyClipData(clipName);
 		}
+
 		public void Validate(PackFile packFile, params List<IPackFileChange>[] changeLists)
 		{
 			if (!ValidateEventsAndVariables(packFile)) return; 
+			int changeCount = 0;
 			foreach(var changeSet in changeLists)
 			{
 				foreach(IPackFileChange change in changeSet)
@@ -146,9 +148,16 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 						continue;
 					}
 					//ValidateElementCount(element.Parent!); might not be needed with hkx2 library; testing needed.
+					if (change.Path[0] == '_')
+					{
+						packFile.Map.MapSlice(change.Path, 1, false);
+						TryValidateClipGenerator(change.Path, packFile);
+					}
 					ValidateElementContent(element, eventIndices, variableIndices);
+					changeCount++;
 				}
 			}
+			Logger.Info($"Validator > {packFile.Name} > {changeCount} Edits > CHECKED");
 		}
 	}
 }

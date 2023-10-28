@@ -19,7 +19,7 @@ namespace Pandora.Core.Engine.Configs
         @"Engine configuration for Skyrim SE/AE behavior files";
 
         public IPatcher Patcher { get; } = new NemesisPatcher();
-        public IIOManager Exporter { get; }
+        public PathManager Exporter { get; }
 
     }
 }

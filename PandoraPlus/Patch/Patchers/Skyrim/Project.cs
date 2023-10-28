@@ -62,13 +62,20 @@ namespace Pandora.Core.Patchers.Skyrim
 
 			var behaviorFiles = behaviorFolder.GetFiles();
 
-			filesByName.Add(skeletonFile.Name,skeletonFile );
-			filesByName.Add(characterFile.Name,characterFile );
+
+
 			foreach ( var behaviorFile in behaviorFiles)
 			{
-				var packFile = new PackFile(behaviorFile);
+				var packFile = new PackFile(behaviorFile) { ParentProject = this };
 				filesByName.Add(packFile.Name, packFile); 
 			}
+
+			if (!filesByName.ContainsKey(skeletonFile.Name)) filesByName.Add(skeletonFile.Name, skeletonFile);
+			if (!filesByName.ContainsKey(characterFile.Name)) filesByName.Add(characterFile.Name, characterFile);
+
+			filesByName.Add($"{Identifier}_skeleton", skeletonFile);
+			filesByName.Add($"{Identifier}_character", characterFile);
+
 			return filesByName.Keys.ToList();
 		}
 		public static Project Load(PackFile projectFile)
@@ -86,7 +93,14 @@ namespace Pandora.Core.Patchers.Skyrim
 			PackFile behaviorFile = rigBehaviorPair.behavior; 
 			if (!behaviorFile.InputHandle.Exists) return new Project();
 
-			return new Project(projectFile, characterFile, skeletonFile, behaviorFile);
+			var project = new Project(projectFile, characterFile, skeletonFile, behaviorFile);
+
+			projectFile.ParentProject = project;
+			characterFile.ParentProject = project;
+			skeletonFile.ParentProject = project;
+			behaviorFile.ParentProject = project;
+
+			return project;
 		}
 
 		public static Project Load(string projectFilePath) => Load(new PackFile(projectFilePath));
@@ -100,7 +114,7 @@ namespace Pandora.Core.Patchers.Skyrim
 			XElement projectData = projectFile.GetNodeByClass("hkbProjectStringData"); 
 			projectMap.MapSlice(projectData, true);
 
-			string characterFilePath = projectMap.Lookup("characterFilenames").Value;
+			string characterFilePath = projectMap.Lookup("characterFilenames").Value.ToLower();
 			PackFile characterFile = new PackFile(Path.Combine(projectFile.InputHandle.DirectoryName!, characterFilePath));
 			//{C:\Users\Monitor\source\repos\Pandora-Plus-Behavior-Engine\PandoraPlus\bin\Debug\net7.0-windows\Pandora_Engine\Skyrim\Template\actors\character\Characters\Character Assets\skeleton.HKX}
 			return characterFile; 

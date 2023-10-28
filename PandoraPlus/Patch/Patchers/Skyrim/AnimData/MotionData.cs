@@ -9,8 +9,13 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimData;
 
 public class MotionData
 {
-	public List<MotionDataBlock> Blocks { get; set; } = new List<MotionDataBlock>();
-	public Dictionary<int, MotionDataBlock> BlocksByID { get; set; } = new Dictionary<int, MotionDataBlock>();
+	public List<ClipMotionDataBlock> Blocks { get; private set; } = new List<ClipMotionDataBlock>();
+	public Dictionary<int, ClipMotionDataBlock> BlocksByID { get; private set; } = new Dictionary<int, ClipMotionDataBlock>();
+
+	public void AddDummyClipMotionData(string id)
+	{
+		Blocks.Add(new ClipMotionDataBlock(id));
+	}
 	public static MotionData ReadProject(StreamReader reader, int lineLimit)
 	{
 		MotionData project = new MotionData();
@@ -19,7 +24,7 @@ public class MotionData
 
 		while (whiteSpace != null && i < lineLimit)
 		{
-			MotionDataBlock block = MotionDataBlock.ReadBlock(reader);
+			ClipMotionDataBlock block = ClipMotionDataBlock.ReadBlock(reader);
 			project.Blocks.Add(block);
 			project.BlocksByID.Add(Int32.Parse(block.ClipID), block);
 			i += block.GetLineCount();
@@ -42,7 +47,7 @@ public class MotionData
 	public int GetLineCount()
 	{
 		int i = 0;
-		foreach (MotionDataBlock block in Blocks)
+		foreach (ClipMotionDataBlock block in Blocks)
 		{
 			i += block.GetLineCount();
 			i++;

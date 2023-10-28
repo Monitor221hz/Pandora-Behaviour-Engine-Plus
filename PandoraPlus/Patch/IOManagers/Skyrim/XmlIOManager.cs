@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Pandora.Patch.IOManagers.Skyrim
 {
-	public class XmlIOManager : IIOManager
+	public class XmlIOManager : PathManager
 	{
 		public bool Export(FileInfo inFile, FileInfo outFile)
 		{

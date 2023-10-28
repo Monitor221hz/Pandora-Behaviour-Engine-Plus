@@ -8,6 +8,7 @@
     <Configurations>Debug;Release;Debug(No Logging)</Configurations>
     <RootNamespace>Pandora</RootNamespace>
     <AssemblyName>PandoraBehaviourEngine</AssemblyName>
+    <ApplicationIcon>butterfly_icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,6 +33,10 @@
     <None Remove="Fonts\Montserrat-SemiBoldItalic.ttf" />
     <None Remove="Fonts\Montserrat-Thin.ttf" />
     <None Remove="Fonts\Montserrat-ThinItalic.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="butterfly_icon.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -60,7 +65,6 @@
 
   <ItemGroup>
     <Folder Include="MVVM\Model\Interface\" />
-    <Folder Include="Pandora_Engine\Skyrim\Template\" />
     <Folder Include="Patch\Havok\" />
     <Folder Include="Patch\Patchers\Interface\Variants\" />
     <Folder Include="Patch\Patchers\Skyrim\Hkx\DebugWindow\Model\" />
@@ -862,6 +866,9 @@
     <None Update="Pandora_Engine\Skyrim\Template\actors\vampirelord\behaviors\vampirelord.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Pandora_Engine\Skyrim\Template\actors\vampirelord\character assets\skeleton.hkx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Pandora_Engine\Skyrim\Template\actors\vampirelord\character\vampirelord.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -911,6 +918,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Pandora_Engine\Skyrim\Template\vanilla_hkxpaths.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Pandora_Engine\Skyrim\Template\vanilla_projectpaths.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

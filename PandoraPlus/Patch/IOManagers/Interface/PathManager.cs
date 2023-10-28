@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Pandora.Core.IOManagers
 {
-	public interface IIOManager
+	public interface PathManager
 	{
 		public bool Export(FileInfo inFile, FileInfo outFile);
 

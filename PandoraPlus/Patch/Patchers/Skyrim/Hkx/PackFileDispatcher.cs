@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using Pandora.Core.Patchers.Skyrim;
 
 namespace Pandora.Patch.Patchers.Skyrim.Hkx
 {
@@ -43,7 +44,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 		}
 		public void ApplyChanges(PackFile packFile)
 		{
-			Logger.Info($"Dispatcher > {packFile.Name} > APPLY CHANGES");
+			Logger.Info($"Dispatcher > {packFile.ParentProject?.Identifier}~{packFile.Name} > APPLY CHANGES");
 			SortChanges();
 			foreach(IPackFileChange change in elementChanges)
 			{

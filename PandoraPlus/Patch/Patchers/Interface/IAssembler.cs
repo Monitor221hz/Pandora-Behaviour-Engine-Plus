@@ -12,25 +12,19 @@ namespace Pandora.Patch.Patchers
 {
 	public interface IAssembler
 	{
-		public void LoadResources(); 
+		public void LoadResources();
 
-		public async Task LoadResourcesAsync()
-		{
-			await Task.Run(() => LoadResources());
-		}
+		public Task LoadResourcesAsync();
 
 		public void AssemblePatch(IModInfo mod);
 
-		public async Task AssemblePatchAsync(IModInfo mod)
+		public virtual async Task AssemblePatchAsync(IModInfo mod)
 		{
 			await Task.Run(() => AssemblePatch(mod));	
 		}
 		public void ApplyPatches();
 
-		public async Task ApplyPatchesAsync()
-		{
-			await Task.Run(() => ApplyPatches());
-		}
+		public Task ApplyPatchesAsync();
 
 		public List<(FileInfo inFile, FileInfo outFile)> GetExportFiles(); 
 

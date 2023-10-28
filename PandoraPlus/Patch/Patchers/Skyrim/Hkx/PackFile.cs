@@ -12,6 +12,8 @@ using HKX2;
 using NLog;
 using NLog.LayoutRenderers.Wrappers;
 using System.Xml.Serialization;
+using System.Threading;
+using Pandora.Core.Patchers.Skyrim;
 
 namespace Pandora.Patch.Patchers.Skyrim.Hkx
 {
@@ -40,16 +42,28 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 
 		private HashSet<string> mappedNodeNames = new HashSet<string>();
 
+		public Project? ParentProject { get; set; }
+
+
+		
 		public PackFile(FileInfo file)
 		{
 			InputHandle = file;
 			OutputHandle = new FileInfo(file.FullName.Replace("Template", "meshes").Replace("\\Pandora_Engine\\Skyrim",""));
-			Map = XMap.Load(file.FullName);
+			using (var stream = file.OpenRead())
+			{
+				Map = XMap.Load(stream);
+			}
+
 			ContainerNode = Map.NavigateTo("__data__");
 			Name = Path.GetFileNameWithoutExtension(InputHandle.Name).ToLower();
 		}
 
+
+
 		public PackFile(string filePath) : this(new FileInfo(filePath)) { }
+
+
 		public XElement SafeNavigateTo(string path) => Map.NavigateTo(path, ContainerNode); 
 		public XElement GetNodeByClass(string className) => Map.NavigateTo(className, ContainerNode, (x) => XMap.TryGetAttributeName("class", x));
 

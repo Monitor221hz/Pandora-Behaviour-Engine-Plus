@@ -26,7 +26,7 @@
 
 
         <controls:PatchBox x:Name="PatchBox" Grid.Row="1" Margin="10 10 10 10"></controls:PatchBox>
-        <controls:LaunchButton x:Name="LaunchButton" Grid.Row="2" Height="64"  Margin ="10 10 10 10"></controls:LaunchButton>
+        <controls:LaunchButton x:Name="LaunchButton" IsEnabled="{Binding LaunchEnabled}"  Grid.Row="2" Height="64"  Margin ="10 10 10 10"></controls:LaunchButton>
         <controls:LogBox x:Name="LogBox" Grid.Row="3" Margin ="10 10 10 10"></controls:LogBox>
         
         

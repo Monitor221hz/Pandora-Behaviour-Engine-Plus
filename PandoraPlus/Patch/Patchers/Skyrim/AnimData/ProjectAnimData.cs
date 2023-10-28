@@ -9,22 +9,37 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimData
 {
 	public class ProjectAnimData
 	{
-		public AnimDataProjectHeader Header { get; private set; }
-		public List<AnimDataBlock> Blocks { get; set; } = new List<AnimDataBlock>();
+		public ProjectAnimDataHeader Header { get; private set; } = new ProjectAnimDataHeader();
+		public List<ClipDataBlock> Blocks { get; set; } = new List<ClipDataBlock>();
 
-		public MotionData BoundMotionDataProject { get; set; }
-		public static ProjectAnimData ReadProject(StreamReader reader, int lineLimit)
+		public MotionData? BoundMotionDataProject { get; set; }
+
+		private AnimDataManager manager { get; set; }
+        public ProjectAnimData(AnimDataManager manager)
+        {
+            this.manager = manager;
+        }
+
+		public void AddDummyClipData(string clipName)
 		{
-			ProjectAnimData project = new ProjectAnimData();
+			var id = manager.GetNextValidID().ToString();
+			Blocks.Add(new ClipDataBlock(clipName,id));
 
-			project.Header = AnimDataProjectHeader.ReadBlock(reader);
+			BoundMotionDataProject?.AddDummyClipMotionData(clipName);
+		}
+		
+        public static ProjectAnimData ReadProject(StreamReader reader, int lineLimit, AnimDataManager manager)
+		{
+			ProjectAnimData project = new ProjectAnimData(manager);
+
+			project.Header = ProjectAnimDataHeader.ReadBlock(reader);
 
 			int i = project.Header.GetLineCount() + 1; //+1 to account for 1 empty line 
 			string whiteSpace = "";
 
 			while (whiteSpace != null && i < lineLimit)
 			{
-				AnimDataBlock block = AnimDataBlock.ReadBlock(reader);
+				ClipDataBlock block = ClipDataBlock.ReadBlock(reader);
 				project.Blocks.Add(block);
 				i += block.GetLineCount();
 
@@ -34,16 +49,16 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimData
 			}
 			return project;
 		}
-		public static ProjectAnimData ReadProject(StreamReader reader)
+		public static ProjectAnimData ReadProject(StreamReader reader, AnimDataManager manager)
 		{
-			ProjectAnimData project = new ProjectAnimData();
-			project.Header = AnimDataProjectHeader.ReadBlock(reader);
+			ProjectAnimData project = new ProjectAnimData(manager);
+			project.Header = ProjectAnimDataHeader.ReadBlock(reader);
 
 
 			string whiteSpace = "";
 			while (whiteSpace != null)
 			{
-				AnimDataBlock block = AnimDataBlock.ReadBlock(reader);
+				ClipDataBlock block = ClipDataBlock.ReadBlock(reader);
 				project.Blocks.Add(block);
 
 				whiteSpace = reader.ReadLine();
@@ -51,21 +66,21 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimData
 			}
 			return project;
 		}
-		public static ProjectAnimData ExtractProject(StreamReader reader, string openString, string closeString)
+		public static ProjectAnimData ExtractProject(StreamReader reader, string openString, string closeString, AnimDataManager manager)
 		{
 			string s;
 			while (!(s = reader.ReadLine()).Contains(openString))
 			{
 
 			}
-			ProjectAnimData project = new ProjectAnimData();
-			project.Header = AnimDataProjectHeader.ReadBlock(reader);
+			ProjectAnimData project = new ProjectAnimData(manager);
+			project.Header = ProjectAnimDataHeader.ReadBlock(reader);
 
 
 			string whiteSpace = "";
 			while (whiteSpace != null && !whiteSpace.Contains(closeString))
 			{
-				AnimDataBlock block = AnimDataBlock.ReadBlock(reader);
+				ClipDataBlock block = ClipDataBlock.ReadBlock(reader);
 				project.Blocks.Add(block);
 
 				whiteSpace = reader.ReadLine();
@@ -88,7 +103,7 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimData
 		public int GetLineCount()
 		{
 			int i = Header.GetLineCount() + 1;
-			foreach (AnimDataBlock block in Blocks)
+			foreach (ClipDataBlock block in Blocks)
 			{
 				i += block.GetLineCount();
 				i++;

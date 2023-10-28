@@ -18,6 +18,6 @@ namespace Pandora.Core
 
 		public IPatcher Patcher { get; }
 
-		public IIOManager Exporter { get; }
+		public PathManager Exporter { get; }
 	}
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Pandora.Patch.Patchers.Skyrim.AnimData
 {
-	public class AnimDataProjectHeader
+	public class ProjectAnimDataHeader
 	{
 		public int LeadInt { get; set; }
 
@@ -15,9 +15,9 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimData
 		public List<string> ProjectAssets { get; set; } = new List<string>();
 		public int HasMotionData { get; set; }
 
-		public static AnimDataProjectHeader ReadBlock(StreamReader reader)
+		public static ProjectAnimDataHeader ReadBlock(StreamReader reader)
 		{
-			AnimDataProjectHeader header = new AnimDataProjectHeader();
+			ProjectAnimDataHeader header = new ProjectAnimDataHeader();
 			try
 			{
 				int[] headerData = new int[0];

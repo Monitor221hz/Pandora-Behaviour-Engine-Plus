@@ -23,24 +23,39 @@ public class NemesisAssembler : IAssembler
 	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger(); //to do: move logger into inheritable base class
 
 
-	private IXExpression replacePattern = new XWrapExpression(new XStep(XmlNodeType.Comment, "OPEN"), new XStep(XmlNodeType.Comment, "ORIGINAL"), new XStep(XmlNodeType.Comment, "CLOSE"));
+	private IXExpression replacePattern = new XSkipWrapExpression(new XStep(XmlNodeType.Comment, "CLOSE"),new XStep(XmlNodeType.Comment, "OPEN"), new XStep(XmlNodeType.Comment, "ORIGINAL"), new XStep(XmlNodeType.Comment, "CLOSE"));
     private IXExpression insertPattern = new XSkipWrapExpression(new XStep(XmlNodeType.Comment, "ORIGINAL"), new XStep(XmlNodeType.Comment, "OPEN"), new XStep(XmlNodeType.Comment, "CLOSE")); 
 
     private XPathLookup lookup = new XPathLookup();
     
     List<PackFile> packFiles = new List<PackFile>();
 
-    private ProjectManager projectManager = new ProjectManager();
+	private DirectoryInfo templateFolder = new DirectoryInfo(Directory.GetCurrentDirectory() + "\\Pandora_Engine\\Skyrim\\Template");
 
-	private AnimDataPatcher animDataPatcher = new AnimDataPatcher();
+	private DirectoryInfo outputFolder = new DirectoryInfo($"{Directory.GetCurrentDirectory()}\\meshes");
+
+	private ProjectManager projectManager;
+
+
+
+    public NemesisAssembler()
+    {
+		projectManager = new ProjectManager(templateFolder, outputFolder);
+    }
 
     public void LoadResources()
 	{
-		
-		projectManager.LoadProject("actors\\character\\defaultmale.hkx");
-		projectManager.LoadProject("actors\\character\\defaultfemale.hkx");
-		animDataPatcher.SplitAnimationDataSingleFile(projectManager);
+		projectManager.LoadTrackedProjects();
+		projectManager.LoadAnimData();
+
 	}
+
+	public async Task LoadResourcesAsync()
+	{
+		projectManager.LoadTrackedProjects();
+		await Task.Run(() => { projectManager.LoadAnimData(); });
+	}
+
 	public void AssemblePatch(IModInfo mod)
 	{
 		DirectoryInfo folder = mod.Folder;
@@ -52,15 +67,10 @@ public class NemesisAssembler : IAssembler
 		}
 	}
     
-	public void ApplyPatches()
-	{
-        foreach(PackFile packFile in projectManager.ActivePackFiles)
-        {
-			packFile.ApplyChanges();
-			//packFile.Map.Save(Path.Join(Directory.GetCurrentDirectory(), packFile.InputHandle.Name));
-			packFile.Export();
-        }
-	}
+	public void ApplyPatches() => projectManager.ApplyPatches();
+
+	public async Task ApplyPatchesAsync() => await projectManager.ApplyPatchesAsync();
+
 	//to-fix: certain excerpts being misclassified as single replace edit when it is actually a replace and insert edit
 
 	//
@@ -78,6 +88,7 @@ public class NemesisAssembler : IAssembler
                 break;
             }
             newNodes.Add(node);
+			//if (node.Parent != null) node.Remove();
 
         }
         if (newNodes.Count > 0)
@@ -134,7 +145,8 @@ public class NemesisAssembler : IAssembler
         foreach(XNode node in newNodes)
         {
 			string nodePath = lookup.LookupPath(node);
-            switch(node.NodeType)
+			//if (node.Parent != null) node.Remove();
+			switch (node.NodeType)
             {
                 case XmlNodeType.Text:
 					//packFile.Editor.QueueInsertText(lookup.LookupPath(node), ((XText)node).Value);
@@ -212,8 +224,9 @@ public class NemesisAssembler : IAssembler
 				nodes = lookup.MapFromElement(element);
 			}
             targetPackFile.MapNode(nodeName);
-			bool hasReplacements = MatchReplacePattern(targetPackFile, nodes, modName);
 			bool hasInserts = MatchInsertPattern(targetPackFile, nodes, modName);
+			bool hasReplacements = MatchReplacePattern(targetPackFile, nodes, modName);
+
 			if (!hasReplacements && !hasInserts)
             {
 				targetPackFile.edits.AddChange(new InsertElementChange(PackFile.ROOT_CONTAINER_NAME+"/top", element, modName));

@@ -47,7 +47,7 @@ public class NemesisPatcher : IPatcher
 
     public async Task UpdateAsync()
     {
-        assembler.LoadResources();
+        await assembler.LoadResourcesAsync();
 
 
         List<Task> assembleTasks = new List<Task>();

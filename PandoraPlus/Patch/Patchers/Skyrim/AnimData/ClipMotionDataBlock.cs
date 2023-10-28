@@ -8,24 +8,30 @@ using System.Threading.Tasks;
 
 namespace Pandora.Patch.Patchers.Skyrim.AnimData
 {
-	public class MotionDataBlock
+	public class ClipMotionDataBlock
 	{
-		public string ClipID { get; set; }
-		public float Duration { get; set; }
-		public int NumTranslations { get; set; }
-		public List<string> Translations { get; set; } = new List<string>();
+		public string ClipID { get; private set; } = string.Empty;
+		public float Duration { get; private set; } = 1.33f;
+		public int NumTranslations { get; private set; } = 1;
+		public List<string> Translations { get; private set; } = new List<string>() { "1.33 0 0 0" };
 
-		public int NumRotations { get; set; }
+		public int NumRotations { get; private set; } = 1;
+		public List<string> Rotations { get; private set; } = new List<string>() { "1 0 0 0 1" };
 
-		public List<string> Rotations { get; set; } = new List<string>();
 
+        public ClipMotionDataBlock(string id)
+        {
+            ClipID = id;
+        }
 
-		public static MotionDataBlock ReadBlock(StreamReader reader)
+        public static ClipMotionDataBlock ReadBlock(StreamReader reader)
 		{
 
-			MotionDataBlock block = new MotionDataBlock();
+			ClipMotionDataBlock block = new ClipMotionDataBlock("");
 			try
 			{
+				block.Rotations = new List<string>();
+				block.Translations = new List<string>();	
 
 				block.ClipID = reader.ReadLine();
 
@@ -55,7 +61,7 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimData
 			return block;
 		}
 
-		public static MotionDataBlock LoadBlock(string filePath)
+		public static ClipMotionDataBlock LoadBlock(string filePath)
 		{
 			using (StreamReader reader = new StreamReader(filePath))
 			{

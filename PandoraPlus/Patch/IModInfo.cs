@@ -22,6 +22,6 @@ namespace Pandora.Core
         public DirectoryInfo Folder { get; }
 
 
-		public bool Active { get; }
+		public bool Active { get; set;  }
 	}
 }

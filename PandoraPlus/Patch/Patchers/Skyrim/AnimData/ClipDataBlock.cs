@@ -7,32 +7,38 @@ using System.Threading.Tasks;
 
 namespace Pandora.Patch.Patchers.Skyrim.AnimData
 {
-	public class AnimDataBlock
+	public class ClipDataBlock
 	{
-		public string Name { get; set; }
+		public string Name { get; private set; } = string.Empty;
 
-		public string ClipID { get; set; }
-		public float PlaybackSpeed { get; set; }
-		public float CropStartLocalTime { get; set; }
-		public float CropEndLocalTime { get; set; }
+		public string ClipID { get; private set; } = string.Empty;
 
-		public int NumClipTriggers { get; set; }
+		public float PlaybackSpeed { get; private set; } = 1.0f;
+		public float CropStartLocalTime { get; private set; } = 0.0f;
+		public float CropEndLocalTime { get; private set; } = 0.0f;
 
-		public List<string> TriggerNames { get; set; }
+		public int NumClipTriggers { get; private set; } = 0;
 
-		public AnimDataBlock()
+		public List<string> TriggerNames { get; private set; } = new List<string>();
+
+		public ClipDataBlock()
 		{
 
 		}
 
+		public ClipDataBlock(string name, string id)
+		{
+			Name = name; 
+			ClipID = id;
+		}
 		private static string ReadLineSafe(StreamReader reader)
 		{
 			string? expectedLine = reader.ReadLine(); 
 			return expectedLine == null ? string.Empty : expectedLine;
 		}
-		public static AnimDataBlock ReadBlock(StreamReader reader)
+		public static ClipDataBlock ReadBlock(StreamReader reader)
 		{
-			AnimDataBlock block = new AnimDataBlock();
+			ClipDataBlock block = new ClipDataBlock();
 			try
 			{
 				block.Name = ReadLineSafe(reader);
@@ -43,7 +49,7 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimData
 				block.CropEndLocalTime = float.Parse(ReadLineSafe(reader));
 
 				block.NumClipTriggers = int.Parse(ReadLineSafe(reader));
-				block.TriggerNames = new List<string>();
+
 				for (int i = 0; i < block.NumClipTriggers; i++)
 				{
 					block.TriggerNames.Add(ReadLineSafe(reader));
@@ -57,7 +63,7 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimData
 
 		}
 
-		public static AnimDataBlock LoadBlock(string filePath)
+		public static ClipDataBlock LoadBlock(string filePath)
 		{
 			using (StreamReader reader = new StreamReader(filePath))
 			{
