@@ -6,16 +6,16 @@ Built with backwards compatibility in mind for [Nemesis Unlimited Behavior Engin
 but comfortable UI, robust logging, and fast patching times.
 
 ## Navigation
-* [For Users](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine/edit/main/README.md#for-users)
-  * [Quickstart](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine/edit/main/README.md#quickstart)
-* [For Mod Authors](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine/edit/main/README.md#for-mod-authors)
-  * [File Targeting](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine/edit/main/README.md#file-targeting)
-  * [AnimData](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine/edit/main/README.md#animdata)
-  * [AnimSetData](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine/edit/main/README.md#animsetdata)
-  * [Verbose Logging](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine/edit/main/README.md#verbose-logging)
-   * [Severity](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine/edit/main/README.md#severity)
-   * [Component](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine/edit/main/README.md#component)
-   * [Input](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine/edit/main/README.md#input)
+* [For Users](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#for-users)
+  * [Quickstart](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#quickstart)
+* [For Mod Authors](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#for-mod-authors)
+  * [File Targeting](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#file-targeting)
+  * [AnimData](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#animdata)
+  * [AnimSetData](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#animsetdata)
+  * [Verbose Logging](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#verbose-logging)
+   * [Severity](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#severity)
+   * [Component](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#component)
+   * [Input](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#input)
 
 <br/>
 <br/>
