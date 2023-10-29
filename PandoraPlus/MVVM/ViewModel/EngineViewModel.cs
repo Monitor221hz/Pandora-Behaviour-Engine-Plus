@@ -1,7 +1,7 @@
 ﻿using Pandora.MVVM.Data;
 using Pandora.MVVM.Model;
 using Pandora.Command;
-using Pandora.Patch;
+using Pandora.Core;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -12,6 +12,9 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Linq;
 using System.Threading.Channels;
+using System.Windows.Media.Animation;
+using System.IO;
+using System.Collections.Generic;
 
 namespace Pandora.MVVM.ViewModel
 {
@@ -23,15 +26,24 @@ namespace Pandora.MVVM.ViewModel
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public bool? DialogResult { get; set; } = true;
-        private PatchEngine engine { get; set; }
 
+        public BehaviourEngine Engine { get; private set; } = new BehaviourEngine();
 
         public RelayCommand LaunchCommand { get; }
         public RelayCommand ExitCommand { get; }
 
-        public ObservableCollection<NemesisModInfo> Mods { get; set; } = new ObservableCollection<NemesisModInfo>();
+        public ObservableCollection<IModInfo> Mods { get; set; } = new ObservableCollection<IModInfo>();
 
-        public string LogText { 
+        public bool LaunchEnabled { get; set; } = true; 
+
+        private bool engineRunning = false;
+
+        private FileInfo activeModConfig; 
+
+        private Dictionary<string, IModInfo> modsByCode = new Dictionary<string, IModInfo>();
+
+
+		public string LogText { 
             get => logText;
             set
             {
@@ -46,18 +58,30 @@ namespace Pandora.MVVM.ViewModel
         public EngineViewModel(IModInfoProvider modinfoProvider)
         {
             this.modinfoProvider = modinfoProvider;
-            LaunchCommand = new RelayCommand(LaunchEngine);
+            LaunchCommand = new RelayCommand(LaunchEngine, CanLaunchEngine);
             ExitCommand = new RelayCommand(Exit);
-            engine = new PatchEngine();
-            
-        }
+			activeModConfig = new FileInfo($"{Directory.GetCurrentDirectory()}\\Pandora_Engine\\ActiveMods.txt");
+
+		}
         public async Task LoadAsync()
         {
-            var modInfos = await modinfoProvider?.GetInstalledMods("C:\\Games\\Skyrim Modding\\Creation Tools\\Skyrim.Behavior.Tool\\PandoraTEST\\Nemesis_Engine\\mod")!;
-            foreach (var modInfo in modInfos)
+
+            List<IModInfo> modInfos;
+#if DEBUG
+            modInfos = await modinfoProvider?.GetInstalledMods("C:\\Games\\Skyrim Modding\\Creation Tools\\Skyrim.Behavior.Tool\\PandoraTEST\\Pandora_Engine\\mod")!;
+			modInfos.AddRange(await modinfoProvider?.GetInstalledMods(Directory.GetCurrentDirectory() + "\\Nemesis_Engine\\mod")!);
+#else
+            modInfos =  await modinfoProvider?.GetInstalledMods(Directory.GetCurrentDirectory()+ "\\Pandora_Engine\\mod")!;
+            modInfos.AddRange(await modinfoProvider?.GetInstalledMods(Directory.GetCurrentDirectory()+ "\\Nemesis_Engine\\mod")!);
+#endif
+
+			foreach (var modInfo in modInfos)
             {
                 Mods.Add(modInfo);
+                modsByCode.Add(modInfo.Code, modInfo);
             }
+
+            LoadActiveMods();
         }
 
         public void Exit(object? p)
@@ -68,7 +92,7 @@ namespace Pandora.MVVM.ViewModel
         internal async Task WriteLogBoxLine(string text)
         {
             StringBuilder sb = new StringBuilder(LogText);
-            if (LogText.Length > 0) sb.Append('\n');
+            if (LogText.Length > 0) sb.Append(Environment.NewLine);
             sb.Append(text);
             LogText = sb.ToString();
         }
@@ -79,21 +103,86 @@ namespace Pandora.MVVM.ViewModel
             LogText = sb.ToString();
         }
 
+        private void LoadActiveMods()
+        {
+            if (!activeModConfig.Exists) return; 
+
+            using (var readStream = activeModConfig.OpenRead())
+            {
+                using (var streamReader  = new StreamReader(readStream))
+                {
+					string? expectedLine;
+
+                    while ((expectedLine = streamReader.ReadLine()) != null)
+                    {
+                        IModInfo? modInfo;
+                        if (!modsByCode.TryGetValue(expectedLine, out modInfo)) continue;
+                        modInfo.Active = true;
+                    }
+				}
+                
+                
+            }
+
+		}
+        private void SaveActiveMods(List<IModInfo> activeMods)
+        {
+
+
+            if (activeModConfig.Exists) { activeModConfig.Delete(); }
+			
+            
+            using (var writeStream = activeModConfig.OpenWrite())
+            {
+                using (StreamWriter streamWriter = new StreamWriter(writeStream)) 
+                { 
+                    foreach(var modInfo in activeMods)
+                    {
+                        streamWriter.WriteLine(modInfo.Code);
+                    }
+                }
+            }
+
+
+		}
         private async void LaunchEngine(object? parameter)
         {
+			lock (LaunchCommand)
+			{
+				engineRunning = true;
+				LaunchEnabled = !engineRunning;
+			}
+
+			Engine = new BehaviourEngine(); 
             logText= string.Empty;
-            engine = new PatchEngine();
+
             await WriteLogBoxLine("Engine launched.");
+
+            
             Stopwatch timer = Stopwatch.StartNew();
-            await engine.Update(Mods.Where(x => x.Active==true).Select(x => x.FolderPath).ToList());
-            timer.Stop();
-            await WriteLogBoxLine(await engine.GetUpdateLog());
-            await WriteLogBoxLine($"Update finished in {Math.Round(timer.ElapsedMilliseconds/1000.0,2)} seconds");
-            timer.Restart();
-            await engine.Launch();
-            await engine.Export();
+            var activeMods = Mods.Where(x => x.Active).ToList<IModInfo>();
+
+			await Task.Run(async () => { await Engine.LaunchAsync(activeMods); }); 
+            
             timer.Stop();
             await WriteLogBoxLine($"Launch finished in {Math.Round(timer.ElapsedMilliseconds / 1000.0, 2)} seconds");
+
+            await WriteLogBoxLine(Engine.GetMessages());
+
+            await Task.Run(() => { SaveActiveMods(activeMods); });
+            lock (LaunchCommand)
+            {
+				engineRunning = false;
+				LaunchEnabled = !engineRunning;
+			}
+
+        }
+
+        private bool CanLaunchEngine(object? parameter)
+        {
+
+            return !engineRunning;
+            
         }
     }
 }

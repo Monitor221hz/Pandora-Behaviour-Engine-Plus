@@ -6,6 +6,9 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <Configurations>Debug;Release;Debug(No Logging)</Configurations>
+    <RootNamespace>Pandora</RootNamespace>
+    <AssemblyName>PandoraBehaviourEngine</AssemblyName>
+    <ApplicationIcon>butterfly_icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -33,6 +36,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="butterfly_icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Assets\cancel.png" />
     <Resource Include="Assets\curly-wing-gold.png" />
     <Resource Include="Assets\curly-wing.png" />
@@ -57,849 +64,863 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pandora_Engine\Template\" />
+    <Folder Include="MVVM\Model\Interface\" />
     <Folder Include="Patch\Havok\" />
+    <Folder Include="Patch\Patchers\Interface\Variants\" />
+    <Folder Include="Patch\Patchers\Skyrim\Hkx\DebugWindow\Model\" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Pandora_Engine\ProjectDefinitions\DefaultFemale.xml">
+    <PackageReference Include="NLog" Version="5.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\HKX2-Library\HKX2 WPF\HKX2.csproj" />
+    <ProjectReference Include="..\..\XML Cake\XML Cake\XML Cake.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\ProjectDefinitions\DefaultMale.xml">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\ambient\chicken\behaviors\chickenbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\ambient\chicken\behaviors\chickenbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\ambient\chicken\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\ambient\chicken\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\ambient\chicken\characters\chickencharater.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\ambient\chicken\characters\chickencharater.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\ambient\chicken\chickenproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\ambient\chicken\chickenproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\ambient\hare\behaviors\harebehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\ambient\hare\behaviors\harebehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\ambient\hare\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\ambient\hare\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\ambient\hare\characters\harecharater.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\ambient\hare\characters\harecharater.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\ambient\hare\hareproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\ambient\hare\hareproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\atronachflame\atronachflame.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\atronachflame\atronachflame.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\atronachflame\behaviors\atronachflamebehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\atronachflame\behaviors\atronachflamebehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\atronachflame\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\atronachflame\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\atronachflame\characters\atronachflame.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\atronachflame\characters\atronachflame.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\atronachfrost\atronachfrostproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\atronachfrost\atronachfrostproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\atronachfrost\behaviors\atronachfrostbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\atronachfrost\behaviors\atronachfrostbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\atronachfrost\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\atronachfrost\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\atronachfrost\characters\atronachfrostcharacter.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\atronachfrost\characters\atronachfrostcharacter.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\atronachstorm\atronachstormproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\atronachstorm\atronachstormproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\atronachstorm\behaviors\atronachstormbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\atronachstorm\behaviors\atronachstormbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\atronachstorm\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\atronachstorm\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\atronachstorm\characters\atronachstormcharacter.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\atronachstorm\characters\atronachstormcharacter.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\bear\bearproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\bear\bearproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\bear\behaviors\bearbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\bear\behaviors\bearbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\bear\behaviors\forwardlocomotion.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\bear\behaviors\forwardlocomotion.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\bear\behaviors\noncombatidle.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\bear\behaviors\noncombatidle.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\bear\behaviors\quadrupedbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\bear\behaviors\quadrupedbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\bear\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\bear\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\bear\characters\bearcharacter.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\bear\characters\bearcharacter.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\canine\behaviors wolf\forwardlocomotion.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\canine\behaviors wolf\forwardlocomotion.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\canine\behaviors wolf\noncombatidle.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\canine\behaviors wolf\noncombatidle.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\canine\behaviors wolf\quadrupedbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\canine\behaviors wolf\quadrupedbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\canine\behaviors wolf\wolfbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\canine\behaviors wolf\wolfbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\canine\behaviors\dogbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\canine\behaviors\dogbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\canine\behaviors\forwardlocomotion.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\canine\behaviors\forwardlocomotion.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\canine\behaviors\noncombatidle.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\canine\behaviors\noncombatidle.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\canine\behaviors\quadrupedbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\canine\behaviors\quadrupedbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\canine\behaviors\wolfbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\canine\behaviors\wolfbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\canine\character assets dog\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\canine\character assets dog\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\canine\character assets wolf\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\canine\character assets wolf\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\canine\characters dog\dog.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\canine\characters dog\dog.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\canine\characters wolf\wolf.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\canine\characters wolf\wolf.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\canine\dogproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\canine\dogproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\canine\wolfproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\canine\wolfproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\behaviors\0_master.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\behaviors\0_master.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\behaviors\1hm_behavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\behaviors\1hm_behavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\behaviors\1hm_locomotion.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\behaviors\1hm_locomotion.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\behaviors\bashbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\behaviors\bashbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\behaviors\blockbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\behaviors\blockbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\behaviors\bow_direction_behavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\behaviors\bow_direction_behavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\behaviors\crossbow_direction_behavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\behaviors\crossbow_direction_behavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\behaviors\horsebehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\behaviors\horsebehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\behaviors\idlebehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\behaviors\idlebehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\behaviors\magicbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\behaviors\magicbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\behaviors\magicmountedbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\behaviors\magicmountedbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\behaviors\magic_readied_direction_behavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\behaviors\magic_readied_direction_behavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\behaviors\mt_behavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\behaviors\mt_behavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\behaviors\shoutmounted_behavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\behaviors\shoutmounted_behavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\behaviors\shout_behavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\behaviors\shout_behavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\behaviors\sprintbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\behaviors\sprintbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\behaviors\staggerbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\behaviors\staggerbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\behaviors\weapequip.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\behaviors\weapequip.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\character assets female\skeleton_female.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\character assets female\skeleton_female.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\characters female\defaultfemale.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\characters female\defaultfemale.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\characters\defaultmale.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\characters\defaultmale.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\defaultfemale.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\defaultfemale.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\defaultmale.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\defaultmale.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\_1stperson\behaviors\0_master.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\_1stperson\behaviors\0_master.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\_1stperson\behaviors\1hm_behavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\_1stperson\behaviors\1hm_behavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\_1stperson\behaviors\1hm_locomotion.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\_1stperson\behaviors\1hm_locomotion.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\_1stperson\behaviors\bashbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\_1stperson\behaviors\bashbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\_1stperson\behaviors\blockbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\_1stperson\behaviors\blockbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\_1stperson\behaviors\bow_direction_behavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\_1stperson\behaviors\bow_direction_behavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\_1stperson\behaviors\horsebehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\_1stperson\behaviors\horsebehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\_1stperson\behaviors\idlebehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\_1stperson\behaviors\idlebehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\_1stperson\behaviors\magicbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\_1stperson\behaviors\magicbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\_1stperson\behaviors\mt_behavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\_1stperson\behaviors\mt_behavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\_1stperson\behaviors\shout_behavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\_1stperson\behaviors\shout_behavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\_1stperson\behaviors\sprintbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\_1stperson\behaviors\sprintbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\_1stperson\behaviors\staggerbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\_1stperson\behaviors\staggerbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\_1stperson\behaviors\weapequip.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\_1stperson\behaviors\weapequip.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\_1stperson\characterassets\skeletonfirst.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\_1stperson\characterassets\skeletonfirst.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\_1stperson\characters\firstperson.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\_1stperson\characters\firstperson.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\character\_1stperson\firstperson.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\character\_1stperson\firstperson.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\chaurus\behaviors\chaurusbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\chaurus\behaviors\chaurusbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\chaurus\character assets\chauurusskin.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\chaurus\character assets\chauurusskin.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\chaurus\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\chaurus\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\chaurus\characters\chaurus.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\chaurus\characters\chaurus.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\chaurus\chaurusproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\chaurus\chaurusproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\cow\behaviors\forwardlocomotion.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\cow\behaviors\forwardlocomotion.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\cow\behaviors\forwardlocomotion_lod.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\cow\behaviors\forwardlocomotion_lod.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\cow\behaviors\h-cowbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\cow\behaviors\h-cowbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\cow\behaviors\h-cowbehavior_lod.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\cow\behaviors\h-cowbehavior_lod.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\cow\behaviors\noncombatidle.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\cow\behaviors\noncombatidle.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\cow\behaviors\quadrupedbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\cow\behaviors\quadrupedbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\cow\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\cow\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\cow\characters\h_cowcharater.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\cow\characters\h_cowcharater.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\cow\highlandcowproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\cow\highlandcowproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\deer\behaviors\deerbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\deer\behaviors\deerbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\deer\behaviors\forwardlocomotion.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\deer\behaviors\forwardlocomotion.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\deer\behaviors\noncombatidle.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\deer\behaviors\noncombatidle.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\deer\behaviors\quadrupedbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\deer\behaviors\quadrupedbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\deer\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\deer\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\deer\characters\deercharater.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\deer\characters\deercharater.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\deer\deerproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\deer\deerproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc01\chaurusflyer\behaviors\chaurusflyerbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc01\chaurusflyer\behaviors\chaurusflyerbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc01\chaurusflyer\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc01\chaurusflyer\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc01\chaurusflyer\characters\chaurusflyercharacter.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc01\chaurusflyer\characters\chaurusflyercharacter.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc01\chaurusflyer\chaurusflyer.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc01\chaurusflyer\chaurusflyer.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc01\vampirebrute\behaviors\vampirebrutebehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc01\vampirebrute\behaviors\vampirebrutebehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc01\vampirebrute\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc01\vampirebrute\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc01\vampirebrute\characters\vampirebrutecharacter.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc01\vampirebrute\characters\vampirebrutecharacter.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc01\vampirebrute\vampirebruteproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc01\vampirebrute\vampirebruteproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc02\benthiclurker\behaviors\benthiclurkerbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc02\benthiclurker\behaviors\benthiclurkerbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc02\benthiclurker\benthiclurkerproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc02\benthiclurker\benthiclurkerproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc02\benthiclurker\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc02\benthiclurker\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc02\benthiclurker\characters\benthiclurkercharacter.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc02\benthiclurker\characters\benthiclurkercharacter.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc02\boarriekling\behaviors\bearbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc02\boarriekling\behaviors\bearbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc02\boarriekling\behaviors\behavior00.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc02\boarriekling\behaviors\behavior00.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc02\boarriekling\behaviors\boarbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc02\boarriekling\behaviors\boarbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc02\boarriekling\behaviors\forwardlocomotion.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc02\boarriekling\behaviors\forwardlocomotion.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc02\boarriekling\behaviors\noncombatidle.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc02\boarriekling\behaviors\noncombatidle.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc02\boarriekling\behaviors\quadrupedbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc02\boarriekling\behaviors\quadrupedbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc02\boarriekling\boarproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc02\boarriekling\boarproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc02\boarriekling\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc02\boarriekling\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc02\boarriekling\characters\boar.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc02\boarriekling\characters\boar.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc02\dwarvenballistacenturion\ballistacenturion.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc02\dwarvenballistacenturion\ballistacenturion.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc02\dwarvenballistacenturion\behaviors\bcbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc02\dwarvenballistacenturion\behaviors\bcbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc02\dwarvenballistacenturion\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc02\dwarvenballistacenturion\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc02\dwarvenballistacenturion\characters\ballistacenturion.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc02\dwarvenballistacenturion\characters\ballistacenturion.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc02\hmdaedra\behaviors\hmdaedra.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc02\hmdaedra\behaviors\hmdaedra.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc02\hmdaedra\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc02\hmdaedra\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc02\hmdaedra\characters\hmdaedracharacter.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc02\hmdaedra\characters\hmdaedracharacter.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc02\hmdaedra\hmdaedra.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc02\hmdaedra\hmdaedra.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc02\netch\behaviors\netchbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc02\netch\behaviors\netchbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc02\netch\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc02\netch\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc02\netch\characters\netchcharacter.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc02\netch\characters\netchcharacter.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc02\netch\netchproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc02\netch\netchproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc02\riekling\behaviors\rieklingbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc02\riekling\behaviors\rieklingbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc02\riekling\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc02\riekling\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc02\riekling\characters\rieklingcharacter.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc02\riekling\characters\rieklingcharacter.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc02\riekling\rieklingproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc02\riekling\rieklingproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc02\scrib\behaviors\scribbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc02\scrib\behaviors\scribbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc02\scrib\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc02\scrib\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc02\scrib\characters\scrib.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc02\scrib\characters\scrib.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dlc02\scrib\scribproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dlc02\scrib\scribproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dragonpriest\behaviors\dragon_priest.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dragonpriest\behaviors\dragon_priest.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dragonpriest\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dragonpriest\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dragonpriest\characters\dragon_priest.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dragonpriest\characters\dragon_priest.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dragonpriest\dragon_priest.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dragonpriest\dragon_priest.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dragon\behaviors\dragonbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dragon\behaviors\dragonbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dragon\character assets\dragon.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dragon\character assets\dragon.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dragon\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dragon\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dragon\characters\dragontest.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dragon\characters\dragontest.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dragon\dragonproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dragon\dragonproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\draugr\behaviors\draugrbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\draugr\behaviors\draugrbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\draugr\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\draugr\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\draugr\character assets\skeletonf.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\draugr\character assets\skeletonf.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\draugr\character assets\skeletons.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\draugr\character assets\skeletons.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\draugr\character assets\skin.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\draugr\character assets\skin.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\draugr\characterskeleton\draugr_skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\draugr\characterskeleton\draugr_skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\draugr\characters\draugr.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\draugr\characters\draugr.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\draugr\characters\draugr_skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\draugr\characters\draugr_skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\draugr\draugrproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\draugr\draugrproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\draugr\draugrskeletonproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\draugr\draugrskeletonproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dwarvenspherecenturion\behaviors\scbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dwarvenspherecenturion\behaviors\scbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dwarvenspherecenturion\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dwarvenspherecenturion\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dwarvenspherecenturion\character assets\spherecenturion.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dwarvenspherecenturion\character assets\spherecenturion.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dwarvenspherecenturion\characters\spherecenturion.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dwarvenspherecenturion\characters\spherecenturion.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dwarvenspherecenturion\spherecenturion.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dwarvenspherecenturion\spherecenturion.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dwarvenspider\behaviors\dwarvenspiderbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dwarvenspider\behaviors\dwarvenspiderbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dwarvenspider\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dwarvenspider\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dwarvenspider\characters\dwarvenspidercenturion.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dwarvenspider\characters\dwarvenspidercenturion.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dwarvenspider\dwarvenspidercenturionproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dwarvenspider\dwarvenspidercenturionproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dwarvensteamcenturion\behaviors\steambehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dwarvensteamcenturion\behaviors\steambehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dwarvensteamcenturion\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dwarvensteamcenturion\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dwarvensteamcenturion\character assets\steamcenturion.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dwarvensteamcenturion\character assets\steamcenturion.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dwarvensteamcenturion\characters\dwarvensteam.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dwarvensteamcenturion\characters\dwarvensteam.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\dwarvensteamcenturion\steamproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\dwarvensteamcenturion\steamproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\falmer\behaviors\falmerbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\falmer\behaviors\falmerbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\falmer\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\falmer\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\falmer\characters\falmer.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\falmer\characters\falmer.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\falmer\falmerproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\falmer\falmerproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\frostbitespider\behaviors\frostbitespiderbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\frostbitespider\behaviors\frostbitespiderbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\frostbitespider\behaviors\frostbitespiderbehavior_lod.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\frostbitespider\behaviors\frostbitespiderbehavior_lod.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\frostbitespider\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\frostbitespider\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\frostbitespider\characters\frostbitespidercharacter.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\frostbitespider\characters\frostbitespidercharacter.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\frostbitespider\frostbitespiderproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\frostbitespider\frostbitespiderproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\giant\behaviors\giantbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\giant\behaviors\giantbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\giant\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\giant\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\giant\characters\giantcharacter.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\giant\characters\giantcharacter.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\giant\giantproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\giant\giantproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\goat\behaviors\forwardlocomotion.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\goat\behaviors\forwardlocomotion.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\goat\behaviors\goatbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\goat\behaviors\goatbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\goat\behaviors\goatbehavior_lod.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\goat\behaviors\goatbehavior_lod.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\goat\behaviors\noncombatidle.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\goat\behaviors\noncombatidle.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\goat\behaviors\noncombatidle_lod.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\goat\behaviors\noncombatidle_lod.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\goat\behaviors\quadrupedbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\goat\behaviors\quadrupedbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\goat\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\goat\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\goat\characters\goatcharater.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\goat\characters\goatcharater.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\goat\goatproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\goat\goatproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\hagraven\behaviors\havgravenbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\hagraven\behaviors\havgravenbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\hagraven\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\hagraven\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\hagraven\characters\hagravencharacter.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\hagraven\characters\hagravencharacter.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\hagraven\hagravenproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\hagraven\hagravenproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\horker\behaviors\forwardlocomotion.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\horker\behaviors\forwardlocomotion.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\horker\behaviors\horkerbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\horker\behaviors\horkerbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\horker\behaviors\noncombatidle.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\horker\behaviors\noncombatidle.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\horker\behaviors\quadrupedbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\horker\behaviors\quadrupedbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\horker\character assets\horkerskin.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\horker\character assets\horkerskin.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\horker\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\horker\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\horker\characters\horker.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\horker\characters\horker.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\horker\horkerproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\horker\horkerproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\horse\behaviors\horsebehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\horse\behaviors\horsebehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\horse\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\horse\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\horse\characters\horse.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\horse\characters\horse.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\horse\horseproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\horse\horseproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\icewraith\behaviors\icewraithbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\icewraith\behaviors\icewraithbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\icewraith\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\icewraith\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\icewraith\characters\icewraithcharacter.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\icewraith\characters\icewraithcharacter.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\icewraith\icewraithproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\icewraith\icewraithproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\mammoth\behaviors\forwardlocomotion.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\mammoth\behaviors\forwardlocomotion.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\mammoth\behaviors\mammothbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\mammoth\behaviors\mammothbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\mammoth\behaviors\noncombatidle.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\mammoth\behaviors\noncombatidle.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\mammoth\behaviors\quadrupedbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\mammoth\behaviors\quadrupedbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\mammoth\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\mammoth\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\mammoth\characters\mammothcharacter.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\mammoth\characters\mammothcharacter.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\mammoth\mammothproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\mammoth\mammothproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\mudcrab\behaviors\mudcrabbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\mudcrab\behaviors\mudcrabbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\mudcrab\character assets\idle mouth.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\mudcrab\character assets\idle mouth.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\mudcrab\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\mudcrab\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\mudcrab\characters\mudcrabcharacter.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\mudcrab\characters\mudcrabcharacter.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\mudcrab\mudcrabproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\mudcrab\mudcrabproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\sabrecat\behaviors\forwardlocomotion.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\sabrecat\behaviors\forwardlocomotion.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\sabrecat\behaviors\noncombatidle.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\sabrecat\behaviors\noncombatidle.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\sabrecat\behaviors\quadrupedbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\sabrecat\behaviors\quadrupedbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\sabrecat\behaviors\sabrecatbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\sabrecat\behaviors\sabrecatbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\sabrecat\character assets\sabrecat.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\sabrecat\character assets\sabrecat.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\sabrecat\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\sabrecat\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\sabrecat\characters\sabrecat.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\sabrecat\characters\sabrecat.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\sabrecat\sabrecatproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\sabrecat\sabrecatproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\skeever\behaviors\forwardlocomotion.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\skeever\behaviors\forwardlocomotion.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\skeever\behaviors\noncombatidle.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\skeever\behaviors\noncombatidle.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\skeever\behaviors\quadrupedbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\skeever\behaviors\quadrupedbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\skeever\behaviors\skeeverbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\skeever\behaviors\skeeverbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\skeever\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\skeever\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\skeever\characters\skeevercharacter.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\skeever\characters\skeevercharacter.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\skeever\skeeverproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\skeever\skeeverproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\slaughterfish\behaviors\slaughterfishbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\slaughterfish\behaviors\slaughterfishbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\slaughterfish\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\slaughterfish\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\slaughterfish\characters\slaughterfish.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\slaughterfish\characters\slaughterfish.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\slaughterfish\slaughterfishproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\slaughterfish\slaughterfishproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\spriggan\behaviors\sprigganbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\spriggan\behaviors\sprigganbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\spriggan\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\spriggan\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\spriggan\characters\spriggan.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\spriggan\characters\spriggan.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\spriggan\spriggan.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\spriggan\spriggan.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\troll\behaviors\trollbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\troll\behaviors\trollbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\troll\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\troll\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\troll\character assets\troll.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\troll\character assets\troll.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\troll\characters\troll.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\troll\characters\troll.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\troll\trollproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\troll\trollproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\vampirelord\behaviors\vampirelord.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\vampirelord\behaviors\vampirelord.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\vampirelord\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\vampirelord\character\vampirelord.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\vampirelord\character\vampirelord.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\vampirelord\vampirelord.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\vampirelord\vampirelord.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\werewolfbeast\behaviors\werewolfbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\werewolfbeast\behaviors\werewolfbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\werewolfbeast\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\werewolfbeast\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\werewolfbeast\characters\werewolf.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\werewolfbeast\characters\werewolf.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\werewolfbeast\werewolfbeastproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\werewolfbeast\werewolfbeastproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\wisp\behaviors\wispbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\wisp\behaviors\wispbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\wisp\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\wisp\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\wisp\characters\wispcharacter.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\wisp\characters\wispcharacter.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\wisp\wispproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\wisp\wispproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\witchlight\behaviors\witchlightbehavior.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\witchlight\behaviors\witchlightbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\witchlight\character assets\skeleton.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\witchlight\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\witchlight\characters\witchlightcharacter.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\witchlight\characters\witchlightcharacter.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\actors\witchlight\witchlightproject.hkx">
+    <None Update="Pandora_Engine\Skyrim\Template\actors\witchlight\witchlightproject.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\animationdatasinglefile.txt">
+    <None Update="Pandora_Engine\Skyrim\Template\animationdatasinglefile.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\animationsetdatasinglefile.txt">
+    <None Update="Pandora_Engine\Skyrim\Template\animationsetdatasinglefile.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Template\vanilla_hkxpaths.txt">
+    <None Update="Pandora_Engine\Skyrim\Template\vanilla_hkxpaths.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Pandora_Engine\Skyrim\Template\vanilla_projectpaths.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
