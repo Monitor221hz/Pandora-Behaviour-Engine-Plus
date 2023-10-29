@@ -594,30 +594,61 @@
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
-			<hkparam name="boneWeights" numelements="99">
-				0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
-				0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
-				0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000 1.000000
-				0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
-				0.000000 0.000000 0.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+			<hkparam name="boneWeights" numelements="97">
+				1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+				1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+				1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.000000 1.000000 0.000000 1.000000 1.000000 1.000000 1.000000
+				0.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+				1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
 				1.000000 1.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
-				0.000000 0.000000 0.000000
+				0.000000
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0071" class="hkbClipGenerator" signature="0x333b85b9">
+		<hkobject name="#0075" class="hkbClipTriggerArray" signature="0x59c23a0f">
+			
+			
+			<hkparam name="triggers" numelements="2">
+				<hkobject>
+					<hkparam name="localTime">-0.100000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">7</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">0.000000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">0</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0074" class="hkbClipGenerator" signature="0x333b85b9">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">Bow_IdleHeld</hkparam>
+			<hkparam name="name">1HM_StaggerBackLargest</hkparam>
 			
 			
 			
-			<hkparam name="animationName">Animations\Bow_IdleHeld.hkx</hkparam>
-			<hkparam name="triggers">null</hkparam>
+			<hkparam name="animationName">Animations\1HM_StaggerBackLargest.hkx</hkparam>
+			<hkparam name="triggers">#0075</hkparam>
 			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
 			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
 			<hkparam name="startTime">0.000000</hkparam>
@@ -625,7 +656,7 @@
 			<hkparam name="enforcedDuration">0.000000</hkparam>
 			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
 			<hkparam name="animationBindingIndex">-1</hkparam>
-			<hkparam name="mode">MODE_LOOPING</hkparam>
+			<hkparam name="mode">MODE_SINGLE_PLAY</hkparam>
 			<hkparam name="flags">0</hkparam>
 			
 			
@@ -645,32 +676,16 @@
 			
 		</hkobject>
 
-		<hkobject name="#0072" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0073" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
-			<hkparam name="generator">#0071</hkparam>
-			<hkparam name="boneWeights">#0070</hkparam>
+			<hkparam name="generator">#0074</hkparam>
+			<hkparam name="boneWeights">null</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
-			<hkparam name="worldFromModelWeight">0.000000</hkparam>
-		</hkobject>
-
-		<hkobject name="#0073" class="hkbBoneWeightArray" signature="0xcd902b77">
-			
-			
-			<hkparam name="variableBindingSet">null</hkparam>
-			
-			
-			<hkparam name="boneWeights" numelements="82">
-				1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
-				1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
-				1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.000000 1.000000 0.000000 1.000000 1.000000 1.000000 1.000000 0.000000
-				1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
-				1.000000 1.000000 1.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
-				0.000000 0.000000
-			</hkparam>
+			<hkparam name="worldFromModelWeight">1.000000</hkparam>
 		</hkobject>
 
 		<hkobject name="#0078" class="hkbClipTriggerArray" signature="0x59c23a0f">
@@ -711,11 +726,11 @@
 			
 			
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">1HM_StaggerBackLargest</hkparam>
+			<hkparam name="name">1HM_StaggerBackLarge</hkparam>
 			
 			
 			
-			<hkparam name="animationName">Animations\1HM_StaggerBackLargest.hkx</hkparam>
+			<hkparam name="animationName">Animations\1HM_StaggerBackLarge.hkx</hkparam>
 			<hkparam name="triggers">#0078</hkparam>
 			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
 			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
@@ -752,7 +767,7 @@
 			
 			<hkparam name="generator">#0077</hkparam>
 			<hkparam name="boneWeights">null</hkparam>
-			<hkparam name="weight">1.000000</hkparam>
+			<hkparam name="weight">0.750000</hkparam>
 			<hkparam name="worldFromModelWeight">1.000000</hkparam>
 		</hkobject>
 
@@ -794,11 +809,11 @@
 			
 			
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">1HM_StaggerBackLarge</hkparam>
+			<hkparam name="name">1HM_StaggerBackMedium</hkparam>
 			
 			
 			
-			<hkparam name="animationName">Animations\1HM_StaggerBackLarge.hkx</hkparam>
+			<hkparam name="animationName">Animations\1HM_StaggerBackMedium.hkx</hkparam>
 			<hkparam name="triggers">#0081</hkparam>
 			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
 			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
@@ -835,94 +850,11 @@
 			
 			<hkparam name="generator">#0080</hkparam>
 			<hkparam name="boneWeights">null</hkparam>
-			<hkparam name="weight">0.750000</hkparam>
-			<hkparam name="worldFromModelWeight">1.000000</hkparam>
-		</hkobject>
-
-		<hkobject name="#0084" class="hkbClipTriggerArray" signature="0x59c23a0f">
-			
-			
-			<hkparam name="triggers" numelements="2">
-				<hkobject>
-					<hkparam name="localTime">-0.100000</hkparam>
-					<hkparam name="event">
-						<hkobject>
-							<hkparam name="id">7</hkparam>
-							<hkparam name="payload">null</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="relativeToEndOfClip">true</hkparam>
-					<hkparam name="acyclic">false</hkparam>
-					<hkparam name="isAnnotation">false</hkparam>
-				</hkobject>
-				<hkobject>
-					<hkparam name="localTime">0.000000</hkparam>
-					<hkparam name="event">
-						<hkobject>
-							<hkparam name="id">0</hkparam>
-							<hkparam name="payload">null</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="relativeToEndOfClip">true</hkparam>
-					<hkparam name="acyclic">false</hkparam>
-					<hkparam name="isAnnotation">false</hkparam>
-				</hkobject>
-			</hkparam>
-		</hkobject>
-
-		<hkobject name="#0083" class="hkbClipGenerator" signature="0x333b85b9">
-			
-			
-			<hkparam name="variableBindingSet">null</hkparam>
-			
-			
-			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">1HM_StaggerBackMedium</hkparam>
-			
-			
-			
-			<hkparam name="animationName">Animations\1HM_StaggerBackMedium.hkx</hkparam>
-			<hkparam name="triggers">#0084</hkparam>
-			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
-			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
-			<hkparam name="startTime">0.000000</hkparam>
-			<hkparam name="playbackSpeed">1.000000</hkparam>
-			<hkparam name="enforcedDuration">0.000000</hkparam>
-			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
-			<hkparam name="animationBindingIndex">-1</hkparam>
-			<hkparam name="mode">MODE_SINGLE_PLAY</hkparam>
-			<hkparam name="flags">0</hkparam>
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-		</hkobject>
-
-		<hkobject name="#0082" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
-			
-			
-			<hkparam name="variableBindingSet">null</hkparam>
-			
-			
-			<hkparam name="generator">#0083</hkparam>
-			<hkparam name="boneWeights">null</hkparam>
 			<hkparam name="weight">0.500000</hkparam>
 			<hkparam name="worldFromModelWeight">1.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0087" class="hkbClipTriggerArray" signature="0x59c23a0f">
+		<hkobject name="#0084" class="hkbClipTriggerArray" signature="0x59c23a0f">
 			
 			
 			<hkparam name="triggers" numelements="3">
@@ -965,7 +897,7 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0086" class="hkbClipGenerator" signature="0x333b85b9">
+		<hkobject name="#0083" class="hkbClipGenerator" signature="0x333b85b9">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -977,6 +909,89 @@
 			
 			
 			<hkparam name="animationName">Animations\1HM_StaggerBackSmall.hkx</hkparam>
+			<hkparam name="triggers">#0084</hkparam>
+			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
+			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
+			<hkparam name="startTime">0.000000</hkparam>
+			<hkparam name="playbackSpeed">1.000000</hkparam>
+			<hkparam name="enforcedDuration">0.000000</hkparam>
+			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
+			<hkparam name="animationBindingIndex">-1</hkparam>
+			<hkparam name="mode">MODE_SINGLE_PLAY</hkparam>
+			<hkparam name="flags">0</hkparam>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		</hkobject>
+
+		<hkobject name="#0082" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="generator">#0083</hkparam>
+			<hkparam name="boneWeights">null</hkparam>
+			<hkparam name="weight">0.250000</hkparam>
+			<hkparam name="worldFromModelWeight">1.000000</hkparam>
+		</hkobject>
+
+		<hkobject name="#0087" class="hkbClipTriggerArray" signature="0x59c23a0f">
+			
+			
+			<hkparam name="triggers" numelements="2">
+				<hkobject>
+					<hkparam name="localTime">-0.100000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">7</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">0.000000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">0</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0086" class="hkbClipGenerator" signature="0x333b85b9">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">0</hkparam>
+			<hkparam name="name">1HM_StaggerBackSmallest</hkparam>
+			
+			
+			
+			<hkparam name="animationName">Animations\1HM_StaggerBackSmallest.hkx</hkparam>
 			<hkparam name="triggers">#0087</hkparam>
 			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
 			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
@@ -1013,94 +1028,11 @@
 			
 			<hkparam name="generator">#0086</hkparam>
 			<hkparam name="boneWeights">null</hkparam>
-			<hkparam name="weight">0.250000</hkparam>
-			<hkparam name="worldFromModelWeight">1.000000</hkparam>
-		</hkobject>
-
-		<hkobject name="#0090" class="hkbClipTriggerArray" signature="0x59c23a0f">
-			
-			
-			<hkparam name="triggers" numelements="2">
-				<hkobject>
-					<hkparam name="localTime">-0.100000</hkparam>
-					<hkparam name="event">
-						<hkobject>
-							<hkparam name="id">7</hkparam>
-							<hkparam name="payload">null</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="relativeToEndOfClip">true</hkparam>
-					<hkparam name="acyclic">false</hkparam>
-					<hkparam name="isAnnotation">false</hkparam>
-				</hkobject>
-				<hkobject>
-					<hkparam name="localTime">0.000000</hkparam>
-					<hkparam name="event">
-						<hkobject>
-							<hkparam name="id">0</hkparam>
-							<hkparam name="payload">null</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="relativeToEndOfClip">true</hkparam>
-					<hkparam name="acyclic">false</hkparam>
-					<hkparam name="isAnnotation">false</hkparam>
-				</hkobject>
-			</hkparam>
-		</hkobject>
-
-		<hkobject name="#0089" class="hkbClipGenerator" signature="0x333b85b9">
-			
-			
-			<hkparam name="variableBindingSet">null</hkparam>
-			
-			
-			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">1HM_StaggerBackSmallest</hkparam>
-			
-			
-			
-			<hkparam name="animationName">Animations\1HM_StaggerBackSmallest.hkx</hkparam>
-			<hkparam name="triggers">#0090</hkparam>
-			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
-			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
-			<hkparam name="startTime">0.000000</hkparam>
-			<hkparam name="playbackSpeed">1.000000</hkparam>
-			<hkparam name="enforcedDuration">0.000000</hkparam>
-			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
-			<hkparam name="animationBindingIndex">-1</hkparam>
-			<hkparam name="mode">MODE_SINGLE_PLAY</hkparam>
-			<hkparam name="flags">0</hkparam>
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-		</hkobject>
-
-		<hkobject name="#0088" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
-			
-			
-			<hkparam name="variableBindingSet">null</hkparam>
-			
-			
-			<hkparam name="generator">#0089</hkparam>
-			<hkparam name="boneWeights">null</hkparam>
 			<hkparam name="weight">0.000000</hkparam>
 			<hkparam name="worldFromModelWeight">1.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0091" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#0088" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="1">
@@ -1122,10 +1054,10 @@
 			
 		</hkobject>
 
-		<hkobject name="#0075" class="hkbBlenderGenerator" signature="0x22df7147">
+		<hkobject name="#0072" class="hkbBlenderGenerator" signature="0x22df7147">
 			
 			
-			<hkparam name="variableBindingSet">#0091</hkparam>
+			<hkparam name="variableBindingSet">#0088</hkparam>
 			
 			
 			<hkparam name="userData">0</hkparam>
@@ -1141,7 +1073,7 @@
 			<hkparam name="flags">17</hkparam>
 			<hkparam name="subtractLastChild">false</hkparam>
 			<hkparam name="children" numelements="5">
-				#0088 #0085 #0082 #0079 #0076
+				#0085 #0082 #0079 #0076 #0073
 			</hkparam>
 			
 			
@@ -1153,16 +1085,85 @@
 			
 		</hkobject>
 
-		<hkobject name="#0074" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0071" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
-			<hkparam name="generator">#0075</hkparam>
-			<hkparam name="boneWeights">#0073</hkparam>
+			<hkparam name="generator">#0072</hkparam>
+			<hkparam name="boneWeights">#0070</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">1.000000</hkparam>
+		</hkobject>
+
+		<hkobject name="#0089" class="hkbBoneWeightArray" signature="0xcd902b77">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="boneWeights" numelements="99">
+				0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
+				0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
+				0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000
+				1.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
+				0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
+				0.000000 0.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+				1.000000 0.000000 0.000000
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0090" class="hkbClipGenerator" signature="0x333b85b9">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">0</hkparam>
+			<hkparam name="name">CrossBow_IdleHeld</hkparam>
+			
+			
+			
+			<hkparam name="animationName">Animations\DLC01\CrossBow_IdleHeld.hkx</hkparam>
+			<hkparam name="triggers">null</hkparam>
+			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
+			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
+			<hkparam name="startTime">0.000000</hkparam>
+			<hkparam name="playbackSpeed">1.000000</hkparam>
+			<hkparam name="enforcedDuration">0.000000</hkparam>
+			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
+			<hkparam name="animationBindingIndex">-1</hkparam>
+			<hkparam name="mode">MODE_LOOPING</hkparam>
+			<hkparam name="flags">0</hkparam>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		</hkobject>
+
+		<hkobject name="#0091" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="generator">#0090</hkparam>
+			<hkparam name="boneWeights">#0089</hkparam>
+			<hkparam name="weight">1.000000</hkparam>
+			<hkparam name="worldFromModelWeight">0.000000</hkparam>
 		</hkobject>
 
 		<hkobject name="#0092" class="hkbBlenderGenerator" signature="0x22df7147">
@@ -1172,7 +1173,7 @@
 			
 			
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">Bow_StaggerBack_Blend</hkparam>
+			<hkparam name="name">CrossBow_StaggerBack_Blend</hkparam>
 			
 			
 			
@@ -1184,7 +1185,7 @@
 			<hkparam name="flags">0</hkparam>
 			<hkparam name="subtractLastChild">false</hkparam>
 			<hkparam name="children" numelements="2">
-				#0074 #0072
+				#0091 #0071
 			</hkparam>
 			
 			
@@ -1196,34 +1197,20 @@
 			
 		</hkobject>
 
-		<hkobject name="#0093" class="hkbClipTriggerArray" signature="0x59c23a0f">
+		<hkobject name="#0093" class="hkbBoneWeightArray" signature="0xcd902b77">
 			
 			
-			<hkparam name="triggers" numelements="2">
-				<hkobject>
-					<hkparam name="localTime">-0.100000</hkparam>
-					<hkparam name="event">
-						<hkobject>
-							<hkparam name="id">7</hkparam>
-							<hkparam name="payload">null</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="relativeToEndOfClip">true</hkparam>
-					<hkparam name="acyclic">false</hkparam>
-					<hkparam name="isAnnotation">false</hkparam>
-				</hkobject>
-				<hkobject>
-					<hkparam name="localTime">0.000000</hkparam>
-					<hkparam name="event">
-						<hkobject>
-							<hkparam name="id">0</hkparam>
-							<hkparam name="payload">null</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="relativeToEndOfClip">true</hkparam>
-					<hkparam name="acyclic">false</hkparam>
-					<hkparam name="isAnnotation">false</hkparam>
-				</hkobject>
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="boneWeights" numelements="99">
+				0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
+				0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
+				0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000 1.000000
+				0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
+				0.000000 0.000000 0.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+				1.000000 1.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
+				0.000000 0.000000 0.000000
 			</hkparam>
 		</hkobject>
 
@@ -1234,12 +1221,12 @@
 			
 			
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">2HW_StaggerBackLargest</hkparam>
+			<hkparam name="name">Bow_IdleHeld</hkparam>
 			
 			
 			
-			<hkparam name="animationName">Animations\2HM_StaggerBackLargest.hkx</hkparam>
-			<hkparam name="triggers">#0093</hkparam>
+			<hkparam name="animationName">Animations\Bow_IdleHeld.hkx</hkparam>
+			<hkparam name="triggers">null</hkparam>
 			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
 			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
 			<hkparam name="startTime">0.000000</hkparam>
@@ -1247,7 +1234,7 @@
 			<hkparam name="enforcedDuration">0.000000</hkparam>
 			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
 			<hkparam name="animationBindingIndex">-1</hkparam>
-			<hkparam name="mode">MODE_SINGLE_PLAY</hkparam>
+			<hkparam name="mode">MODE_LOOPING</hkparam>
 			<hkparam name="flags">0</hkparam>
 			
 			
@@ -1274,64 +1261,60 @@
 			
 			
 			<hkparam name="generator">#0094</hkparam>
-			<hkparam name="boneWeights">null</hkparam>
+			<hkparam name="boneWeights">#0093</hkparam>
+			<hkparam name="weight">1.000000</hkparam>
+			<hkparam name="worldFromModelWeight">0.000000</hkparam>
+		</hkobject>
+
+		<hkobject name="#0096" class="hkbBoneWeightArray" signature="0xcd902b77">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="boneWeights" numelements="82">
+				1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+				1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+				1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.000000 1.000000 0.000000 1.000000 1.000000 1.000000 1.000000 0.000000
+				1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+				1.000000 1.000000 1.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
+				0.000000 0.000000
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0097" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="generator">#0072</hkparam>
+			<hkparam name="boneWeights">#0096</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">1.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0096" class="hkbClipTriggerArray" signature="0x59c23a0f">
-			
-			
-			<hkparam name="triggers" numelements="2">
-				<hkobject>
-					<hkparam name="localTime">-0.100000</hkparam>
-					<hkparam name="event">
-						<hkobject>
-							<hkparam name="id">7</hkparam>
-							<hkparam name="payload">null</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="relativeToEndOfClip">true</hkparam>
-					<hkparam name="acyclic">false</hkparam>
-					<hkparam name="isAnnotation">false</hkparam>
-				</hkobject>
-				<hkobject>
-					<hkparam name="localTime">0.000000</hkparam>
-					<hkparam name="event">
-						<hkobject>
-							<hkparam name="id">0</hkparam>
-							<hkparam name="payload">null</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="relativeToEndOfClip">true</hkparam>
-					<hkparam name="acyclic">false</hkparam>
-					<hkparam name="isAnnotation">false</hkparam>
-				</hkobject>
-			</hkparam>
-		</hkobject>
-
-		<hkobject name="#0097" class="hkbClipGenerator" signature="0x333b85b9">
+		<hkobject name="#0098" class="hkbBlenderGenerator" signature="0x22df7147">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">2HW_StaggerBackLarge</hkparam>
+			<hkparam name="name">Bow_StaggerBack_Blend</hkparam>
 			
 			
 			
-			<hkparam name="animationName">Animations\2HW_StaggerBackLarge.hkx</hkparam>
-			<hkparam name="triggers">#0096</hkparam>
-			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
-			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
-			<hkparam name="startTime">0.000000</hkparam>
-			<hkparam name="playbackSpeed">1.000000</hkparam>
-			<hkparam name="enforcedDuration">0.000000</hkparam>
-			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
-			<hkparam name="animationBindingIndex">-1</hkparam>
-			<hkparam name="mode">MODE_SINGLE_PLAY</hkparam>
+			<hkparam name="referencePoseWeightThreshold">0.000000</hkparam>
+			<hkparam name="blendParameter">1.000000</hkparam>
+			<hkparam name="minCyclicBlendParameter">0.000000</hkparam>
+			<hkparam name="maxCyclicBlendParameter">1.000000</hkparam>
+			<hkparam name="indexOfSyncMasterChild">-1</hkparam>
 			<hkparam name="flags">0</hkparam>
+			<hkparam name="subtractLastChild">false</hkparam>
+			<hkparam name="children" numelements="2">
+				#0097 #0095
+			</hkparam>
 			
 			
 			
@@ -1340,26 +1323,6 @@
 			
 			
 			
-			
-			
-			
-			
-			
-			
-			
-			
-		</hkobject>
-
-		<hkobject name="#0098" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
-			
-			
-			<hkparam name="variableBindingSet">null</hkparam>
-			
-			
-			<hkparam name="generator">#0097</hkparam>
-			<hkparam name="boneWeights">null</hkparam>
-			<hkparam name="weight">0.750000</hkparam>
-			<hkparam name="worldFromModelWeight">1.000000</hkparam>
 		</hkobject>
 
 		<hkobject name="#0099" class="hkbClipTriggerArray" signature="0x59c23a0f">
@@ -1400,11 +1363,11 @@
 			
 			
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">2HW_StaggerBackMedium</hkparam>
+			<hkparam name="name">2HW_StaggerBackLargest</hkparam>
 			
 			
 			
-			<hkparam name="animationName">Animations\2HW_StaggerBackMedium.hkx</hkparam>
+			<hkparam name="animationName">Animations\2HM_StaggerBackLargest.hkx</hkparam>
 			<hkparam name="triggers">#0099</hkparam>
 			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
 			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
@@ -1441,7 +1404,7 @@
 			
 			<hkparam name="generator">#0100</hkparam>
 			<hkparam name="boneWeights">null</hkparam>
-			<hkparam name="weight">0.500000</hkparam>
+			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">1.000000</hkparam>
 		</hkobject>
 
@@ -1483,11 +1446,11 @@
 			
 			
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">2HW_StaggerBackSmall</hkparam>
+			<hkparam name="name">2HW_StaggerBackLarge</hkparam>
 			
 			
 			
-			<hkparam name="animationName">Animations\2HW_StaggerBackSmall.hkx</hkparam>
+			<hkparam name="animationName">Animations\2HW_StaggerBackLarge.hkx</hkparam>
 			<hkparam name="triggers">#0102</hkparam>
 			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
 			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
@@ -1524,7 +1487,7 @@
 			
 			<hkparam name="generator">#0103</hkparam>
 			<hkparam name="boneWeights">null</hkparam>
-			<hkparam name="weight">0.250000</hkparam>
+			<hkparam name="weight">0.750000</hkparam>
 			<hkparam name="worldFromModelWeight">1.000000</hkparam>
 		</hkobject>
 
@@ -1566,11 +1529,11 @@
 			
 			
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">2HW_StaggerBackSmallest</hkparam>
+			<hkparam name="name">2HW_StaggerBackMedium</hkparam>
 			
 			
 			
-			<hkparam name="animationName">Animations\2HW_StaggerBackSmallest.hkx</hkparam>
+			<hkparam name="animationName">Animations\2HW_StaggerBackMedium.hkx</hkparam>
 			<hkparam name="triggers">#0105</hkparam>
 			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
 			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
@@ -1607,64 +1570,11 @@
 			
 			<hkparam name="generator">#0106</hkparam>
 			<hkparam name="boneWeights">null</hkparam>
-			<hkparam name="weight">0.000000</hkparam>
+			<hkparam name="weight">0.500000</hkparam>
 			<hkparam name="worldFromModelWeight">1.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0108" class="hkbVariableBindingSet" signature="0x338ad4ff">
-			
-			
-			<hkparam name="bindings" numelements="1">
-				<hkobject>
-					<hkparam name="memberPath">blendParameter</hkparam>
-					
-					
-					
-					
-					<hkparam name="variableIndex">0</hkparam>
-					<hkparam name="bitIndex">-1</hkparam>
-					<hkparam name="bindingType">BINDING_TYPE_VARIABLE</hkparam>
-					
-					
-					
-				</hkobject>
-			</hkparam>
-			<hkparam name="indexOfBindingToEnable">-1</hkparam>
-			
-		</hkobject>
-
-		<hkobject name="#0109" class="hkbBlenderGenerator" signature="0x22df7147">
-			
-			
-			<hkparam name="variableBindingSet">#0108</hkparam>
-			
-			
-			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">2HW_StaggerBack_Blend</hkparam>
-			
-			
-			
-			<hkparam name="referencePoseWeightThreshold">0.000000</hkparam>
-			<hkparam name="blendParameter">1.000000</hkparam>
-			<hkparam name="minCyclicBlendParameter">0.000000</hkparam>
-			<hkparam name="maxCyclicBlendParameter">1.000000</hkparam>
-			<hkparam name="indexOfSyncMasterChild">-1</hkparam>
-			<hkparam name="flags">17</hkparam>
-			<hkparam name="subtractLastChild">false</hkparam>
-			<hkparam name="children" numelements="5">
-				#0107 #0104 #0101 #0098 #0095
-			</hkparam>
-			
-			
-			
-			
-			
-			
-			
-			
-		</hkobject>
-
-		<hkobject name="#0110" class="hkbClipTriggerArray" signature="0x59c23a0f">
+		<hkobject name="#0108" class="hkbClipTriggerArray" signature="0x59c23a0f">
 			
 			
 			<hkparam name="triggers" numelements="2">
@@ -1695,102 +1605,19 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0111" class="hkbClipGenerator" signature="0x333b85b9">
+		<hkobject name="#0109" class="hkbClipGenerator" signature="0x333b85b9">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">2HM_StaggerBackLargest</hkparam>
+			<hkparam name="name">2HW_StaggerBackSmall</hkparam>
 			
 			
 			
-			<hkparam name="animationName">Animations\2HM_StaggerBackLargest.hkx</hkparam>
-			<hkparam name="triggers">#0110</hkparam>
-			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
-			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
-			<hkparam name="startTime">0.000000</hkparam>
-			<hkparam name="playbackSpeed">1.000000</hkparam>
-			<hkparam name="enforcedDuration">0.000000</hkparam>
-			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
-			<hkparam name="animationBindingIndex">-1</hkparam>
-			<hkparam name="mode">MODE_LOOPING</hkparam>
-			<hkparam name="flags">0</hkparam>
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-		</hkobject>
-
-		<hkobject name="#0112" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
-			
-			
-			<hkparam name="variableBindingSet">null</hkparam>
-			
-			
-			<hkparam name="generator">#0111</hkparam>
-			<hkparam name="boneWeights">null</hkparam>
-			<hkparam name="weight">1.000000</hkparam>
-			<hkparam name="worldFromModelWeight">1.000000</hkparam>
-		</hkobject>
-
-		<hkobject name="#0113" class="hkbClipTriggerArray" signature="0x59c23a0f">
-			
-			
-			<hkparam name="triggers" numelements="2">
-				<hkobject>
-					<hkparam name="localTime">-0.100000</hkparam>
-					<hkparam name="event">
-						<hkobject>
-							<hkparam name="id">7</hkparam>
-							<hkparam name="payload">null</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="relativeToEndOfClip">true</hkparam>
-					<hkparam name="acyclic">false</hkparam>
-					<hkparam name="isAnnotation">false</hkparam>
-				</hkobject>
-				<hkobject>
-					<hkparam name="localTime">0.000000</hkparam>
-					<hkparam name="event">
-						<hkobject>
-							<hkparam name="id">0</hkparam>
-							<hkparam name="payload">null</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="relativeToEndOfClip">true</hkparam>
-					<hkparam name="acyclic">false</hkparam>
-					<hkparam name="isAnnotation">false</hkparam>
-				</hkobject>
-			</hkparam>
-		</hkobject>
-
-		<hkobject name="#0114" class="hkbClipGenerator" signature="0x333b85b9">
-			
-			
-			<hkparam name="variableBindingSet">null</hkparam>
-			
-			
-			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">2HM_StaggerBackLarge</hkparam>
-			
-			
-			
-			<hkparam name="animationName">Animations\2HM_StaggerBackLarge.hkx</hkparam>
-			<hkparam name="triggers">#0113</hkparam>
+			<hkparam name="animationName">Animations\2HW_StaggerBackSmall.hkx</hkparam>
+			<hkparam name="triggers">#0108</hkparam>
 			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
 			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
 			<hkparam name="startTime">0.000000</hkparam>
@@ -1818,16 +1645,152 @@
 			
 		</hkobject>
 
-		<hkobject name="#0115" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0110" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
-			<hkparam name="generator">#0114</hkparam>
+			<hkparam name="generator">#0109</hkparam>
 			<hkparam name="boneWeights">null</hkparam>
-			<hkparam name="weight">0.750000</hkparam>
+			<hkparam name="weight">0.250000</hkparam>
 			<hkparam name="worldFromModelWeight">1.000000</hkparam>
+		</hkobject>
+
+		<hkobject name="#0111" class="hkbClipTriggerArray" signature="0x59c23a0f">
+			
+			
+			<hkparam name="triggers" numelements="2">
+				<hkobject>
+					<hkparam name="localTime">-0.100000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">7</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">0.000000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">0</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0112" class="hkbClipGenerator" signature="0x333b85b9">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">0</hkparam>
+			<hkparam name="name">2HW_StaggerBackSmallest</hkparam>
+			
+			
+			
+			<hkparam name="animationName">Animations\2HW_StaggerBackSmallest.hkx</hkparam>
+			<hkparam name="triggers">#0111</hkparam>
+			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
+			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
+			<hkparam name="startTime">0.000000</hkparam>
+			<hkparam name="playbackSpeed">1.000000</hkparam>
+			<hkparam name="enforcedDuration">0.000000</hkparam>
+			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
+			<hkparam name="animationBindingIndex">-1</hkparam>
+			<hkparam name="mode">MODE_SINGLE_PLAY</hkparam>
+			<hkparam name="flags">0</hkparam>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		</hkobject>
+
+		<hkobject name="#0113" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="generator">#0112</hkparam>
+			<hkparam name="boneWeights">null</hkparam>
+			<hkparam name="weight">0.000000</hkparam>
+			<hkparam name="worldFromModelWeight">1.000000</hkparam>
+		</hkobject>
+
+		<hkobject name="#0114" class="hkbVariableBindingSet" signature="0x338ad4ff">
+			
+			
+			<hkparam name="bindings" numelements="1">
+				<hkobject>
+					<hkparam name="memberPath">blendParameter</hkparam>
+					
+					
+					
+					
+					<hkparam name="variableIndex">0</hkparam>
+					<hkparam name="bitIndex">-1</hkparam>
+					<hkparam name="bindingType">BINDING_TYPE_VARIABLE</hkparam>
+					
+					
+					
+				</hkobject>
+			</hkparam>
+			<hkparam name="indexOfBindingToEnable">-1</hkparam>
+			
+		</hkobject>
+
+		<hkobject name="#0115" class="hkbBlenderGenerator" signature="0x22df7147">
+			
+			
+			<hkparam name="variableBindingSet">#0114</hkparam>
+			
+			
+			<hkparam name="userData">0</hkparam>
+			<hkparam name="name">2HW_StaggerBack_Blend</hkparam>
+			
+			
+			
+			<hkparam name="referencePoseWeightThreshold">0.000000</hkparam>
+			<hkparam name="blendParameter">1.000000</hkparam>
+			<hkparam name="minCyclicBlendParameter">0.000000</hkparam>
+			<hkparam name="maxCyclicBlendParameter">1.000000</hkparam>
+			<hkparam name="indexOfSyncMasterChild">-1</hkparam>
+			<hkparam name="flags">17</hkparam>
+			<hkparam name="subtractLastChild">false</hkparam>
+			<hkparam name="children" numelements="5">
+				#0113 #0110 #0107 #0104 #0101
+			</hkparam>
+			
+			
+			
+			
+			
+			
+			
+			
 		</hkobject>
 
 		<hkobject name="#0116" class="hkbClipTriggerArray" signature="0x59c23a0f">
@@ -1868,11 +1831,11 @@
 			
 			
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">2HM_StaggerBackMedium</hkparam>
+			<hkparam name="name">2HM_StaggerBackLargest</hkparam>
 			
 			
 			
-			<hkparam name="animationName">Animations\2HM_StaggerBackMedium.hkx</hkparam>
+			<hkparam name="animationName">Animations\2HM_StaggerBackLargest.hkx</hkparam>
 			<hkparam name="triggers">#0116</hkparam>
 			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
 			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
@@ -1881,7 +1844,7 @@
 			<hkparam name="enforcedDuration">0.000000</hkparam>
 			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
 			<hkparam name="animationBindingIndex">-1</hkparam>
-			<hkparam name="mode">MODE_SINGLE_PLAY</hkparam>
+			<hkparam name="mode">MODE_LOOPING</hkparam>
 			<hkparam name="flags">0</hkparam>
 			
 			
@@ -1909,7 +1872,7 @@
 			
 			<hkparam name="generator">#0117</hkparam>
 			<hkparam name="boneWeights">null</hkparam>
-			<hkparam name="weight">0.500000</hkparam>
+			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">1.000000</hkparam>
 		</hkobject>
 
@@ -1951,11 +1914,11 @@
 			
 			
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">2HM_StaggerBackSmall</hkparam>
+			<hkparam name="name">2HM_StaggerBackLarge</hkparam>
 			
 			
 			
-			<hkparam name="animationName">Animations\2HM_StaggerBackSmall.hkx</hkparam>
+			<hkparam name="animationName">Animations\2HM_StaggerBackLarge.hkx</hkparam>
 			<hkparam name="triggers">#0119</hkparam>
 			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
 			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
@@ -1992,7 +1955,7 @@
 			
 			<hkparam name="generator">#0120</hkparam>
 			<hkparam name="boneWeights">null</hkparam>
-			<hkparam name="weight">0.250000</hkparam>
+			<hkparam name="weight">0.750000</hkparam>
 			<hkparam name="worldFromModelWeight">1.000000</hkparam>
 		</hkobject>
 
@@ -2034,11 +1997,11 @@
 			
 			
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">2HM_StaggerBackSmallest</hkparam>
+			<hkparam name="name">2HM_StaggerBackMedium</hkparam>
 			
 			
 			
-			<hkparam name="animationName">Animations\2HM_StaggerBackSmallest.hkx</hkparam>
+			<hkparam name="animationName">Animations\2HM_StaggerBackMedium.hkx</hkparam>
 			<hkparam name="triggers">#0122</hkparam>
 			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
 			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
@@ -2075,11 +2038,177 @@
 			
 			<hkparam name="generator">#0123</hkparam>
 			<hkparam name="boneWeights">null</hkparam>
+			<hkparam name="weight">0.500000</hkparam>
+			<hkparam name="worldFromModelWeight">1.000000</hkparam>
+		</hkobject>
+
+		<hkobject name="#0125" class="hkbClipTriggerArray" signature="0x59c23a0f">
+			
+			
+			<hkparam name="triggers" numelements="2">
+				<hkobject>
+					<hkparam name="localTime">-0.100000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">7</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">0.000000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">0</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0126" class="hkbClipGenerator" signature="0x333b85b9">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">0</hkparam>
+			<hkparam name="name">2HM_StaggerBackSmall</hkparam>
+			
+			
+			
+			<hkparam name="animationName">Animations\2HM_StaggerBackSmall.hkx</hkparam>
+			<hkparam name="triggers">#0125</hkparam>
+			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
+			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
+			<hkparam name="startTime">0.000000</hkparam>
+			<hkparam name="playbackSpeed">1.000000</hkparam>
+			<hkparam name="enforcedDuration">0.000000</hkparam>
+			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
+			<hkparam name="animationBindingIndex">-1</hkparam>
+			<hkparam name="mode">MODE_SINGLE_PLAY</hkparam>
+			<hkparam name="flags">0</hkparam>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		</hkobject>
+
+		<hkobject name="#0127" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="generator">#0126</hkparam>
+			<hkparam name="boneWeights">null</hkparam>
+			<hkparam name="weight">0.250000</hkparam>
+			<hkparam name="worldFromModelWeight">1.000000</hkparam>
+		</hkobject>
+
+		<hkobject name="#0128" class="hkbClipTriggerArray" signature="0x59c23a0f">
+			
+			
+			<hkparam name="triggers" numelements="2">
+				<hkobject>
+					<hkparam name="localTime">-0.100000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">7</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">0.000000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">0</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0129" class="hkbClipGenerator" signature="0x333b85b9">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">0</hkparam>
+			<hkparam name="name">2HM_StaggerBackSmallest</hkparam>
+			
+			
+			
+			<hkparam name="animationName">Animations\2HM_StaggerBackSmallest.hkx</hkparam>
+			<hkparam name="triggers">#0128</hkparam>
+			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
+			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
+			<hkparam name="startTime">0.000000</hkparam>
+			<hkparam name="playbackSpeed">1.000000</hkparam>
+			<hkparam name="enforcedDuration">0.000000</hkparam>
+			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
+			<hkparam name="animationBindingIndex">-1</hkparam>
+			<hkparam name="mode">MODE_SINGLE_PLAY</hkparam>
+			<hkparam name="flags">0</hkparam>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		</hkobject>
+
+		<hkobject name="#0130" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="generator">#0129</hkparam>
+			<hkparam name="boneWeights">null</hkparam>
 			<hkparam name="weight">0.000000</hkparam>
 			<hkparam name="worldFromModelWeight">1.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0125" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#0131" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="1">
@@ -2101,10 +2230,10 @@
 			
 		</hkobject>
 
-		<hkobject name="#0126" class="hkbBlenderGenerator" signature="0x22df7147">
+		<hkobject name="#0132" class="hkbBlenderGenerator" signature="0x22df7147">
 			
 			
-			<hkparam name="variableBindingSet">#0125</hkparam>
+			<hkparam name="variableBindingSet">#0131</hkparam>
 			
 			
 			<hkparam name="userData">0</hkparam>
@@ -2120,7 +2249,7 @@
 			<hkparam name="flags">17</hkparam>
 			<hkparam name="subtractLastChild">false</hkparam>
 			<hkparam name="children" numelements="5">
-				#0124 #0121 #0118 #0115 #0112
+				#0130 #0127 #0124 #0121 #0118
 			</hkparam>
 			
 			
@@ -2130,196 +2259,6 @@
 			
 			
 			
-		</hkobject>
-
-		<hkobject name="#0127" class="hkbClipTriggerArray" signature="0x59c23a0f">
-			
-			
-			<hkparam name="triggers" numelements="3">
-				<hkobject>
-					<hkparam name="localTime">-0.100000</hkparam>
-					<hkparam name="event">
-						<hkobject>
-							<hkparam name="id">7</hkparam>
-							<hkparam name="payload">null</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="relativeToEndOfClip">true</hkparam>
-					<hkparam name="acyclic">false</hkparam>
-					<hkparam name="isAnnotation">false</hkparam>
-				</hkobject>
-				<hkobject>
-					<hkparam name="localTime">0.000000</hkparam>
-					<hkparam name="event">
-						<hkobject>
-							<hkparam name="id">8</hkparam>
-							<hkparam name="payload">null</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="relativeToEndOfClip">true</hkparam>
-					<hkparam name="acyclic">false</hkparam>
-					<hkparam name="isAnnotation">false</hkparam>
-				</hkobject>
-				<hkobject>
-					<hkparam name="localTime">0.000000</hkparam>
-					<hkparam name="event">
-						<hkobject>
-							<hkparam name="id">0</hkparam>
-							<hkparam name="payload">null</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="relativeToEndOfClip">true</hkparam>
-					<hkparam name="acyclic">false</hkparam>
-					<hkparam name="isAnnotation">false</hkparam>
-				</hkobject>
-			</hkparam>
-		</hkobject>
-
-		<hkobject name="#0128" class="hkbClipGenerator" signature="0x333b85b9">
-			
-			
-			<hkparam name="variableBindingSet">null</hkparam>
-			
-			
-			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">H2H_StaggerBackLargest</hkparam>
-			
-			
-			
-			<hkparam name="animationName">Animations\H2H_StaggerBackLargest.hkx</hkparam>
-			<hkparam name="triggers">#0127</hkparam>
-			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
-			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
-			<hkparam name="startTime">0.000000</hkparam>
-			<hkparam name="playbackSpeed">1.000000</hkparam>
-			<hkparam name="enforcedDuration">0.000000</hkparam>
-			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
-			<hkparam name="animationBindingIndex">-1</hkparam>
-			<hkparam name="mode">MODE_SINGLE_PLAY</hkparam>
-			<hkparam name="flags">0</hkparam>
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-		</hkobject>
-
-		<hkobject name="#0129" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
-			
-			
-			<hkparam name="variableBindingSet">null</hkparam>
-			
-			
-			<hkparam name="generator">#0128</hkparam>
-			<hkparam name="boneWeights">null</hkparam>
-			<hkparam name="weight">1.000000</hkparam>
-			<hkparam name="worldFromModelWeight">1.000000</hkparam>
-		</hkobject>
-
-		<hkobject name="#0130" class="hkbClipTriggerArray" signature="0x59c23a0f">
-			
-			
-			<hkparam name="triggers" numelements="3">
-				<hkobject>
-					<hkparam name="localTime">-0.100000</hkparam>
-					<hkparam name="event">
-						<hkobject>
-							<hkparam name="id">7</hkparam>
-							<hkparam name="payload">null</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="relativeToEndOfClip">true</hkparam>
-					<hkparam name="acyclic">false</hkparam>
-					<hkparam name="isAnnotation">false</hkparam>
-				</hkobject>
-				<hkobject>
-					<hkparam name="localTime">0.000000</hkparam>
-					<hkparam name="event">
-						<hkobject>
-							<hkparam name="id">8</hkparam>
-							<hkparam name="payload">null</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="relativeToEndOfClip">true</hkparam>
-					<hkparam name="acyclic">false</hkparam>
-					<hkparam name="isAnnotation">false</hkparam>
-				</hkobject>
-				<hkobject>
-					<hkparam name="localTime">0.000000</hkparam>
-					<hkparam name="event">
-						<hkobject>
-							<hkparam name="id">0</hkparam>
-							<hkparam name="payload">null</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="relativeToEndOfClip">true</hkparam>
-					<hkparam name="acyclic">false</hkparam>
-					<hkparam name="isAnnotation">false</hkparam>
-				</hkobject>
-			</hkparam>
-		</hkobject>
-
-		<hkobject name="#0131" class="hkbClipGenerator" signature="0x333b85b9">
-			
-			
-			<hkparam name="variableBindingSet">null</hkparam>
-			
-			
-			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">H2H_StaggerBackLarge</hkparam>
-			
-			
-			
-			<hkparam name="animationName">Animations\H2H_StaggerBackLarge.hkx</hkparam>
-			<hkparam name="triggers">#0130</hkparam>
-			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
-			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
-			<hkparam name="startTime">0.000000</hkparam>
-			<hkparam name="playbackSpeed">1.000000</hkparam>
-			<hkparam name="enforcedDuration">0.000000</hkparam>
-			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
-			<hkparam name="animationBindingIndex">-1</hkparam>
-			<hkparam name="mode">MODE_SINGLE_PLAY</hkparam>
-			<hkparam name="flags">0</hkparam>
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-		</hkobject>
-
-		<hkobject name="#0132" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
-			
-			
-			<hkparam name="variableBindingSet">null</hkparam>
-			
-			
-			<hkparam name="generator">#0131</hkparam>
-			<hkparam name="boneWeights">null</hkparam>
-			<hkparam name="weight">0.750000</hkparam>
-			<hkparam name="worldFromModelWeight">1.000000</hkparam>
 		</hkobject>
 
 		<hkobject name="#0133" class="hkbClipTriggerArray" signature="0x59c23a0f">
@@ -2372,11 +2311,11 @@
 			
 			
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">H2H_StaggerBackMedium</hkparam>
+			<hkparam name="name">H2H_StaggerBackLargest</hkparam>
 			
 			
 			
-			<hkparam name="animationName">Animations\H2H_StaggerBackMedium.hkx</hkparam>
+			<hkparam name="animationName">Animations\H2H_StaggerBackLargest.hkx</hkparam>
 			<hkparam name="triggers">#0133</hkparam>
 			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
 			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
@@ -2413,7 +2352,7 @@
 			
 			<hkparam name="generator">#0134</hkparam>
 			<hkparam name="boneWeights">null</hkparam>
-			<hkparam name="weight">0.500000</hkparam>
+			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">1.000000</hkparam>
 		</hkobject>
 
@@ -2467,11 +2406,11 @@
 			
 			
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">H2H_StaggerBackSmall</hkparam>
+			<hkparam name="name">H2H_StaggerBackLarge</hkparam>
 			
 			
 			
-			<hkparam name="animationName">Animations\H2H_StaggerBackSmall.hkx</hkparam>
+			<hkparam name="animationName">Animations\H2H_StaggerBackLarge.hkx</hkparam>
 			<hkparam name="triggers">#0136</hkparam>
 			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
 			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
@@ -2508,7 +2447,7 @@
 			
 			<hkparam name="generator">#0137</hkparam>
 			<hkparam name="boneWeights">null</hkparam>
-			<hkparam name="weight">0.250000</hkparam>
+			<hkparam name="weight">0.750000</hkparam>
 			<hkparam name="worldFromModelWeight">1.000000</hkparam>
 		</hkobject>
 
@@ -2562,11 +2501,11 @@
 			
 			
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">H2H_StaggerBackSmallest</hkparam>
+			<hkparam name="name">H2H_StaggerBackMedium</hkparam>
 			
 			
 			
-			<hkparam name="animationName">Animations\H2H_StaggerBackSmallest.hkx</hkparam>
+			<hkparam name="animationName">Animations\H2H_StaggerBackMedium.hkx</hkparam>
 			<hkparam name="triggers">#0139</hkparam>
 			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
 			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
@@ -2603,11 +2542,201 @@
 			
 			<hkparam name="generator">#0140</hkparam>
 			<hkparam name="boneWeights">null</hkparam>
+			<hkparam name="weight">0.500000</hkparam>
+			<hkparam name="worldFromModelWeight">1.000000</hkparam>
+		</hkobject>
+
+		<hkobject name="#0142" class="hkbClipTriggerArray" signature="0x59c23a0f">
+			
+			
+			<hkparam name="triggers" numelements="3">
+				<hkobject>
+					<hkparam name="localTime">-0.100000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">7</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">0.000000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">8</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">0.000000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">0</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0143" class="hkbClipGenerator" signature="0x333b85b9">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">0</hkparam>
+			<hkparam name="name">H2H_StaggerBackSmall</hkparam>
+			
+			
+			
+			<hkparam name="animationName">Animations\H2H_StaggerBackSmall.hkx</hkparam>
+			<hkparam name="triggers">#0142</hkparam>
+			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
+			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
+			<hkparam name="startTime">0.000000</hkparam>
+			<hkparam name="playbackSpeed">1.000000</hkparam>
+			<hkparam name="enforcedDuration">0.000000</hkparam>
+			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
+			<hkparam name="animationBindingIndex">-1</hkparam>
+			<hkparam name="mode">MODE_SINGLE_PLAY</hkparam>
+			<hkparam name="flags">0</hkparam>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		</hkobject>
+
+		<hkobject name="#0144" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="generator">#0143</hkparam>
+			<hkparam name="boneWeights">null</hkparam>
+			<hkparam name="weight">0.250000</hkparam>
+			<hkparam name="worldFromModelWeight">1.000000</hkparam>
+		</hkobject>
+
+		<hkobject name="#0145" class="hkbClipTriggerArray" signature="0x59c23a0f">
+			
+			
+			<hkparam name="triggers" numelements="3">
+				<hkobject>
+					<hkparam name="localTime">-0.100000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">7</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">0.000000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">8</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">0.000000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">0</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0146" class="hkbClipGenerator" signature="0x333b85b9">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">0</hkparam>
+			<hkparam name="name">H2H_StaggerBackSmallest</hkparam>
+			
+			
+			
+			<hkparam name="animationName">Animations\H2H_StaggerBackSmallest.hkx</hkparam>
+			<hkparam name="triggers">#0145</hkparam>
+			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
+			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
+			<hkparam name="startTime">0.000000</hkparam>
+			<hkparam name="playbackSpeed">1.000000</hkparam>
+			<hkparam name="enforcedDuration">0.000000</hkparam>
+			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
+			<hkparam name="animationBindingIndex">-1</hkparam>
+			<hkparam name="mode">MODE_SINGLE_PLAY</hkparam>
+			<hkparam name="flags">0</hkparam>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		</hkobject>
+
+		<hkobject name="#0147" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="generator">#0146</hkparam>
+			<hkparam name="boneWeights">null</hkparam>
 			<hkparam name="weight">0.000000</hkparam>
 			<hkparam name="worldFromModelWeight">1.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0142" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#0148" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="1">
@@ -2629,10 +2758,10 @@
 			
 		</hkobject>
 
-		<hkobject name="#0143" class="hkbBlenderGenerator" signature="0x22df7147">
+		<hkobject name="#0149" class="hkbBlenderGenerator" signature="0x22df7147">
 			
 			
-			<hkparam name="variableBindingSet">#0142</hkparam>
+			<hkparam name="variableBindingSet">#0148</hkparam>
 			
 			
 			<hkparam name="userData">0</hkparam>
@@ -2648,7 +2777,7 @@
 			<hkparam name="flags">17</hkparam>
 			<hkparam name="subtractLastChild">false</hkparam>
 			<hkparam name="children" numelements="5">
-				#0141 #0138 #0135 #0132 #0129
+				#0147 #0144 #0141 #0138 #0135
 			</hkparam>
 			
 			
@@ -2660,7 +2789,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0144" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#0150" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="1">
@@ -2682,10 +2811,10 @@
 			
 		</hkobject>
 
-		<hkobject name="#0145" class="hkbManualSelectorGenerator" signature="0xd932fab8">
+		<hkobject name="#0151" class="hkbManualSelectorGenerator" signature="0xd932fab8">
 			
 			
-			<hkparam name="variableBindingSet">#0144</hkparam>
+			<hkparam name="variableBindingSet">#0150</hkparam>
 			
 			
 			<hkparam name="userData">0</hkparam>
@@ -2693,26 +2822,26 @@
 			
 			
 			
-			<hkparam name="generators" numelements="10">
-				#0143 #0075 #0075 #0075 #0075 #0126 #0109 #0092 #0075 #0075
+			<hkparam name="generators" numelements="13">
+				#0149 #0072 #0072 #0072 #0072 #0132 #0115 #0098 #0072 #0072 #0072 #0072 #0092
 			</hkparam>
 			<hkparam name="selectedGeneratorIndex">0</hkparam>
 			<hkparam name="currentGeneratorIndex">0</hkparam>
 		</hkobject>
 
-		<hkobject name="#0146" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0152" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
-			<hkparam name="generator">#0145</hkparam>
+			<hkparam name="generator">#0151</hkparam>
 			<hkparam name="boneWeights">null</hkparam>
 			<hkparam name="weight">0.000000</hkparam>
 			<hkparam name="worldFromModelWeight">1.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0147" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#0153" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="1">
@@ -2734,10 +2863,10 @@
 			
 		</hkobject>
 
-		<hkobject name="#0148" class="hkbBlenderGenerator" signature="0x22df7147">
+		<hkobject name="#0154" class="hkbBlenderGenerator" signature="0x22df7147">
 			
 			
-			<hkparam name="variableBindingSet">#0147</hkparam>
+			<hkparam name="variableBindingSet">#0153</hkparam>
 			
 			
 			<hkparam name="userData">0</hkparam>
@@ -2753,7 +2882,7 @@
 			<hkparam name="flags">48</hkparam>
 			<hkparam name="subtractLastChild">false</hkparam>
 			<hkparam name="children" numelements="2">
-				#0146 #0069
+				#0152 #0069
 			</hkparam>
 			
 			
@@ -2765,7 +2894,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0149" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#0155" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="1">
@@ -2787,10 +2916,10 @@
 			
 		</hkobject>
 
-		<hkobject name="#0150" class="hkbManualSelectorGenerator" signature="0xd932fab8">
+		<hkobject name="#0156" class="hkbManualSelectorGenerator" signature="0xd932fab8">
 			
 			
-			<hkparam name="variableBindingSet">#0149</hkparam>
+			<hkparam name="variableBindingSet">#0155</hkparam>
 			
 			
 			<hkparam name="userData">0</hkparam>
@@ -2799,13 +2928,13 @@
 			
 			
 			<hkparam name="generators" numelements="2">
-				#0148 #0075
+				#0154 #0072
 			</hkparam>
 			<hkparam name="selectedGeneratorIndex">0</hkparam>
 			<hkparam name="currentGeneratorIndex">0</hkparam>
 		</hkobject>
 
-		<hkobject name="#0151" class="hkbStateMachineEventPropertyArray" signature="0xb07b4388">
+		<hkobject name="#0157" class="hkbStateMachineEventPropertyArray" signature="0xb07b4388">
 			
 			
 			<hkparam name="events" numelements="1">
@@ -2816,7 +2945,7 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0152" class="hkbStateMachineEventPropertyArray" signature="0xb07b4388">
+		<hkobject name="#0158" class="hkbStateMachineEventPropertyArray" signature="0xb07b4388">
 			
 			
 			<hkparam name="events" numelements="1">
@@ -2827,24 +2956,24 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0153" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+		<hkobject name="#0159" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
 			<hkparam name="listeners" numelements="0"></hkparam>
-			<hkparam name="enterNotifyEvents">#0152</hkparam>
-			<hkparam name="exitNotifyEvents">#0151</hkparam>
+			<hkparam name="enterNotifyEvents">#0158</hkparam>
+			<hkparam name="exitNotifyEvents">#0157</hkparam>
 			<hkparam name="transitions">null</hkparam>
-			<hkparam name="generator">#0150</hkparam>
+			<hkparam name="generator">#0156</hkparam>
 			<hkparam name="name">Stagger_State</hkparam>
 			<hkparam name="stateId">7</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
 		</hkobject>
 
-		<hkobject name="#0154" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+		<hkobject name="#0160" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -2854,14 +2983,14 @@
 			<hkparam name="enterNotifyEvents">null</hkparam>
 			<hkparam name="exitNotifyEvents">null</hkparam>
 			<hkparam name="transitions">null</hkparam>
-			<hkparam name="generator">#0089</hkparam>
+			<hkparam name="generator">#0086</hkparam>
 			<hkparam name="name">WardBreak</hkparam>
 			<hkparam name="stateId">4</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
 		</hkobject>
 
-		<hkobject name="#0155" class="hkbStateMachine" signature="0x816c1dcb">
+		<hkobject name="#0161" class="hkbStateMachine" signature="0x816c1dcb">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -2893,7 +3022,7 @@
 			<hkparam name="selfTransitionMode">SELF_TRANSITION_MODE_NO_TRANSITION</hkparam>
 			
 			<hkparam name="states" numelements="2">
-				#0154 #0153
+				#0160 #0159
 			</hkparam>
 			<hkparam name="wildcardTransitions">null</hkparam>
 			
@@ -2910,7 +3039,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0156" class="hkbBehaviorGraph" signature="0xb1218f86">
+		<hkobject name="#0162" class="hkbBehaviorGraph" signature="0xb1218f86">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -2926,7 +3055,7 @@
 			
 			
 			
-			<hkparam name="rootGenerator">#0155</hkparam>
+			<hkparam name="rootGenerator">#0161</hkparam>
 			<hkparam name="data">#0054</hkparam>
 			
 			
@@ -2958,7 +3087,7 @@
 				<hkobject>
 					<hkparam name="name">hkbBehaviorGraph</hkparam>
 					<hkparam name="className">hkbBehaviorGraph</hkparam>
-					<hkparam name="variant">#0156</hkparam>
+					<hkparam name="variant">#0162</hkparam>
 				</hkobject>
 			</hkparam>
 		</hkobject>

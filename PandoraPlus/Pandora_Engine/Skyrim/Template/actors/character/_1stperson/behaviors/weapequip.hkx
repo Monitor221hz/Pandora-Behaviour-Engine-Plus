@@ -6,7 +6,7 @@
 		<hkobject name="#0057" class="hkbBehaviorGraphStringData" signature="0xc713064e">
 			
 			
-			<hkparam name="eventNames" numelements="29">
+			<hkparam name="eventNames" numelements="30">
 				<hkcstring>staggerStop</hkcstring>
 				<hkcstring>syncPoint</hkcstring>
 				<hkcstring>WeapEquip_OutMoving</hkcstring>
@@ -36,6 +36,7 @@
 				<hkcstring>tailSneakIdle</hkcstring>
 				<hkcstring>tailCombatIdle</hkcstring>
 				<hkcstring>SoundPlay.WPNLeftHandDraw</hkcstring>
+				<hkcstring>arrowAttach</hkcstring>
 			</hkparam>
 			<hkparam name="attributeNames" numelements="0"></hkparam>
 			<hkparam name="variableNames" numelements="16">
@@ -275,7 +276,7 @@
 					<hkparam name="role">
 						<hkobject>
 							<hkparam name="role">ROLE_DEFAULT</hkparam>
-							<hkparam name="flags">FLAG_NOT_CHARACTER_PROPERTY|FLAG_OUTPUT|FLAG_HIDDEN|FLAG_NOT_VARIABLE|FLAG_NORMALIZED|FLAG_RAGDOLL|FLAG_NONE|0x1200</hkparam>
+							<hkparam name="flags">FLAG_NOT_CHARACTER_PROPERTY|FLAG_OUTPUT|FLAG_HIDDEN|FLAG_NOT_VARIABLE|FLAG_NORMALIZED|FLAG_RAGDOLL|FLAG_NONE|0x18c0</hkparam>
 						</hkobject>
 					</hkparam>
 					<hkparam name="type">VARIABLE_TYPE_POINTER</hkparam>
@@ -284,7 +285,7 @@
 					<hkparam name="role">
 						<hkobject>
 							<hkparam name="role">ROLE_DEFAULT</hkparam>
-							<hkparam name="flags">FLAG_NOT_CHARACTER_PROPERTY|FLAG_OUTPUT|FLAG_HIDDEN|FLAG_NOT_VARIABLE|FLAG_NORMALIZED|FLAG_RAGDOLL|FLAG_NONE|0x1200</hkparam>
+							<hkparam name="flags">FLAG_NOT_CHARACTER_PROPERTY|FLAG_OUTPUT|FLAG_NORMALIZED|FLAG_NONE|0x1900</hkparam>
 						</hkobject>
 					</hkparam>
 					<hkparam name="type">VARIABLE_TYPE_POINTER</hkparam>
@@ -299,7 +300,7 @@
 					<hkparam name="type">VARIABLE_TYPE_POINTER</hkparam>
 				</hkobject>
 			</hkparam>
-			<hkparam name="eventInfos" numelements="29">
+			<hkparam name="eventInfos" numelements="30">
 				<hkobject>
 					<hkparam name="flags">FLAG_SYNC_POINT</hkparam>
 				</hkobject>
@@ -335,6 +336,9 @@
 				</hkobject>
 				<hkobject>
 					<hkparam name="flags">FLAG_SYNC_POINT</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
 				</hkobject>
 				<hkobject>
 					<hkparam name="flags">0</hkparam>
@@ -414,9 +418,21 @@
 		<hkobject name="#0066" class="hkbClipTriggerArray" signature="0x59c23a0f">
 			
 			
-			<hkparam name="triggers" numelements="3">
+			<hkparam name="triggers" numelements="5">
 				<hkobject>
-					<hkparam name="localTime">-0.300000</hkparam>
+					<hkparam name="localTime">0.000000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">5</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">false</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">0.000000</hkparam>
 					<hkparam name="event">
 						<hkobject>
 							<hkparam name="id">2</hkparam>
@@ -428,7 +444,7 @@
 					<hkparam name="isAnnotation">false</hkparam>
 				</hkobject>
 				<hkobject>
-					<hkparam name="localTime">-0.300000</hkparam>
+					<hkparam name="localTime">0.000000</hkparam>
 					<hkparam name="event">
 						<hkobject>
 							<hkparam name="id">3</hkparam>
@@ -440,10 +456,22 @@
 					<hkparam name="isAnnotation">false</hkparam>
 				</hkobject>
 				<hkobject>
-					<hkparam name="localTime">0.000000</hkparam>
+					<hkparam name="localTime">0.571000</hkparam>
 					<hkparam name="event">
 						<hkobject>
-							<hkparam name="id">13</hkparam>
+							<hkparam name="id">29</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">false</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">1.200000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">4</hkparam>
 							<hkparam name="payload">null</hkparam>
 						</hkobject>
 					</hkparam>
@@ -461,11 +489,11 @@
 			
 			
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">Stf_Equip</hkparam>
+			<hkparam name="name">CrossBow_Equip</hkparam>
 			
 			
 			
-			<hkparam name="animationName">Animations\Stf_Equip.hkx</hkparam>
+			<hkparam name="animationName">Animations\DLC01\CrossBow_Equip.hkx</hkparam>
 			<hkparam name="triggers">#0066</hkparam>
 			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
 			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
@@ -474,7 +502,7 @@
 			<hkparam name="enforcedDuration">0.000000</hkparam>
 			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
 			<hkparam name="animationBindingIndex">-1</hkparam>
-			<hkparam name="mode">MODE_LOOPING</hkparam>
+			<hkparam name="mode">MODE_SINGLE_PLAY</hkparam>
 			<hkparam name="flags">0</hkparam>
 			
 			
@@ -497,9 +525,33 @@
 		<hkobject name="#0068" class="hkbClipTriggerArray" signature="0x59c23a0f">
 			
 			
-			<hkparam name="triggers" numelements="2">
+			<hkparam name="triggers" numelements="4">
 				<hkobject>
-					<hkparam name="localTime">-0.300000</hkparam>
+					<hkparam name="localTime">0.000000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">5</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">false</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">0.000000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">3</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">0.000000</hkparam>
 					<hkparam name="event">
 						<hkobject>
 							<hkparam name="id">2</hkparam>
@@ -511,14 +563,14 @@
 					<hkparam name="isAnnotation">false</hkparam>
 				</hkobject>
 				<hkobject>
-					<hkparam name="localTime">-0.300000</hkparam>
+					<hkparam name="localTime">0.588000</hkparam>
 					<hkparam name="event">
 						<hkobject>
-							<hkparam name="id">3</hkparam>
+							<hkparam name="id">4</hkparam>
 							<hkparam name="payload">null</hkparam>
 						</hkobject>
 					</hkparam>
-					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="relativeToEndOfClip">false</hkparam>
 					<hkparam name="acyclic">false</hkparam>
 					<hkparam name="isAnnotation">false</hkparam>
 				</hkobject>
@@ -532,11 +584,11 @@
 			
 			
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">Bow_Equip</hkparam>
+			<hkparam name="name">1HM_Equip</hkparam>
 			
 			
 			
-			<hkparam name="animationName">Animations\Bow_Equip.hkx</hkparam>
+			<hkparam name="animationName">Animations\1HM_Equip.hkx</hkparam>
 			<hkparam name="triggers">#0068</hkparam>
 			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
 			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
@@ -545,7 +597,7 @@
 			<hkparam name="enforcedDuration">0.000000</hkparam>
 			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
 			<hkparam name="animationBindingIndex">-1</hkparam>
-			<hkparam name="mode">MODE_LOOPING</hkparam>
+			<hkparam name="mode">MODE_SINGLE_PLAY</hkparam>
 			<hkparam name="flags">0</hkparam>
 			
 			
@@ -570,7 +622,7 @@
 			
 			<hkparam name="triggers" numelements="3">
 				<hkobject>
-					<hkparam name="localTime">-0.254000</hkparam>
+					<hkparam name="localTime">-0.300000</hkparam>
 					<hkparam name="event">
 						<hkobject>
 							<hkparam name="id">2</hkparam>
@@ -582,7 +634,7 @@
 					<hkparam name="isAnnotation">false</hkparam>
 				</hkobject>
 				<hkobject>
-					<hkparam name="localTime">-0.254000</hkparam>
+					<hkparam name="localTime">-0.300000</hkparam>
 					<hkparam name="event">
 						<hkobject>
 							<hkparam name="id">3</hkparam>
@@ -615,11 +667,11 @@
 			
 			
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">2HW_Equip</hkparam>
+			<hkparam name="name">Stf_Equip</hkparam>
 			
 			
 			
-			<hkparam name="animationName">Animations\2HW_Equip.hkx</hkparam>
+			<hkparam name="animationName">Animations\Stf_Equip.hkx</hkparam>
 			<hkparam name="triggers">#0070</hkparam>
 			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
 			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
@@ -651,9 +703,9 @@
 		<hkobject name="#0072" class="hkbClipTriggerArray" signature="0x59c23a0f">
 			
 			
-			<hkparam name="triggers" numelements="3">
+			<hkparam name="triggers" numelements="2">
 				<hkobject>
-					<hkparam name="localTime">-0.254000</hkparam>
+					<hkparam name="localTime">-0.300000</hkparam>
 					<hkparam name="event">
 						<hkobject>
 							<hkparam name="id">2</hkparam>
@@ -665,7 +717,7 @@
 					<hkparam name="isAnnotation">false</hkparam>
 				</hkobject>
 				<hkobject>
-					<hkparam name="localTime">-0.254000</hkparam>
+					<hkparam name="localTime">-0.300000</hkparam>
 					<hkparam name="event">
 						<hkobject>
 							<hkparam name="id">3</hkparam>
@@ -673,18 +725,6 @@
 						</hkobject>
 					</hkparam>
 					<hkparam name="relativeToEndOfClip">true</hkparam>
-					<hkparam name="acyclic">false</hkparam>
-					<hkparam name="isAnnotation">false</hkparam>
-				</hkobject>
-				<hkobject>
-					<hkparam name="localTime">0.000000</hkparam>
-					<hkparam name="event">
-						<hkobject>
-							<hkparam name="id">13</hkparam>
-							<hkparam name="payload">null</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="relativeToEndOfClip">false</hkparam>
 					<hkparam name="acyclic">false</hkparam>
 					<hkparam name="isAnnotation">false</hkparam>
 				</hkobject>
@@ -698,11 +738,11 @@
 			
 			
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">2HM_Equip</hkparam>
+			<hkparam name="name">Bow_Equip</hkparam>
 			
 			
 			
-			<hkparam name="animationName">Animations\2HC_Equip.hkx</hkparam>
+			<hkparam name="animationName">Animations\Bow_Equip.hkx</hkparam>
 			<hkparam name="triggers">#0072</hkparam>
 			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
 			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
@@ -731,7 +771,173 @@
 			
 		</hkobject>
 
-		<hkobject name="#0075" class="hkbClipTriggerArray" signature="0x59c23a0f">
+		<hkobject name="#0074" class="hkbClipTriggerArray" signature="0x59c23a0f">
+			
+			
+			<hkparam name="triggers" numelements="3">
+				<hkobject>
+					<hkparam name="localTime">-0.254000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">2</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">-0.254000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">3</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">0.000000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">13</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">false</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0073" class="hkbClipGenerator" signature="0x333b85b9">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">0</hkparam>
+			<hkparam name="name">2HW_Equip</hkparam>
+			
+			
+			
+			<hkparam name="animationName">Animations\2HW_Equip.hkx</hkparam>
+			<hkparam name="triggers">#0074</hkparam>
+			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
+			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
+			<hkparam name="startTime">0.000000</hkparam>
+			<hkparam name="playbackSpeed">1.000000</hkparam>
+			<hkparam name="enforcedDuration">0.000000</hkparam>
+			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
+			<hkparam name="animationBindingIndex">-1</hkparam>
+			<hkparam name="mode">MODE_LOOPING</hkparam>
+			<hkparam name="flags">0</hkparam>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		</hkobject>
+
+		<hkobject name="#0076" class="hkbClipTriggerArray" signature="0x59c23a0f">
+			
+			
+			<hkparam name="triggers" numelements="3">
+				<hkobject>
+					<hkparam name="localTime">-0.254000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">2</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">-0.254000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">3</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">0.000000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">13</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">false</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0075" class="hkbClipGenerator" signature="0x333b85b9">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">0</hkparam>
+			<hkparam name="name">2HM_Equip</hkparam>
+			
+			
+			
+			<hkparam name="animationName">Animations\2HC_Equip.hkx</hkparam>
+			<hkparam name="triggers">#0076</hkparam>
+			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
+			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
+			<hkparam name="startTime">0.000000</hkparam>
+			<hkparam name="playbackSpeed">1.000000</hkparam>
+			<hkparam name="enforcedDuration">0.000000</hkparam>
+			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
+			<hkparam name="animationBindingIndex">-1</hkparam>
+			<hkparam name="mode">MODE_LOOPING</hkparam>
+			<hkparam name="flags">0</hkparam>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		</hkobject>
+
+		<hkobject name="#0079" class="hkbClipTriggerArray" signature="0x59c23a0f">
 			
 			
 			<hkparam name="triggers" numelements="3">
@@ -774,7 +980,7 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0074" class="hkbClipGenerator" signature="0x333b85b9">
+		<hkobject name="#0078" class="hkbClipGenerator" signature="0x333b85b9">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -786,7 +992,7 @@
 			
 			
 			<hkparam name="animationName">Animations\Mac_Equip.hkx</hkparam>
-			<hkparam name="triggers">#0075</hkparam>
+			<hkparam name="triggers">#0079</hkparam>
 			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
 			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
 			<hkparam name="startTime">0.000000</hkparam>
@@ -814,7 +1020,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0077" class="hkbClipTriggerArray" signature="0x59c23a0f">
+		<hkobject name="#0081" class="hkbClipTriggerArray" signature="0x59c23a0f">
 			
 			
 			<hkparam name="triggers" numelements="4">
@@ -869,7 +1075,7 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0076" class="hkbClipGenerator" signature="0x333b85b9">
+		<hkobject name="#0080" class="hkbClipGenerator" signature="0x333b85b9">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -881,129 +1087,6 @@
 			
 			
 			<hkparam name="animationName">Animations\Mac_Equip.hkx</hkparam>
-			<hkparam name="triggers">#0077</hkparam>
-			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
-			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
-			<hkparam name="startTime">0.000000</hkparam>
-			<hkparam name="playbackSpeed">1.000000</hkparam>
-			<hkparam name="enforcedDuration">0.000000</hkparam>
-			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
-			<hkparam name="animationBindingIndex">-1</hkparam>
-			<hkparam name="mode">MODE_LOOPING</hkparam>
-			<hkparam name="flags">0</hkparam>
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-		</hkobject>
-
-		<hkobject name="#0078" class="hkbVariableBindingSet" signature="0x338ad4ff">
-			
-			
-			<hkparam name="bindings" numelements="1">
-				<hkobject>
-					<hkparam name="memberPath">selectedGeneratorIndex</hkparam>
-					
-					
-					
-					
-					<hkparam name="variableIndex">13</hkparam>
-					<hkparam name="bitIndex">-1</hkparam>
-					<hkparam name="bindingType">BINDING_TYPE_VARIABLE</hkparam>
-					
-					
-					
-				</hkobject>
-			</hkparam>
-			<hkparam name="indexOfBindingToEnable">-1</hkparam>
-			
-		</hkobject>
-
-		<hkobject name="#0073" class="hkbManualSelectorGenerator" signature="0xd932fab8">
-			
-			
-			<hkparam name="variableBindingSet">#0078</hkparam>
-			
-			
-			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">MacEquipMSG</hkparam>
-			
-			
-			
-			<hkparam name="generators" numelements="12">
-				#0074 #0076 #0076 #0076 #0076 #0074 #0074 #0074 #0074 #0074 #0074 #0074
-			</hkparam>
-			<hkparam name="selectedGeneratorIndex">0</hkparam>
-			<hkparam name="currentGeneratorIndex">0</hkparam>
-		</hkobject>
-
-		<hkobject name="#0081" class="hkbClipTriggerArray" signature="0x59c23a0f">
-			
-			
-			<hkparam name="triggers" numelements="3">
-				<hkobject>
-					<hkparam name="localTime">-0.300000</hkparam>
-					<hkparam name="event">
-						<hkobject>
-							<hkparam name="id">3</hkparam>
-							<hkparam name="payload">null</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="relativeToEndOfClip">true</hkparam>
-					<hkparam name="acyclic">false</hkparam>
-					<hkparam name="isAnnotation">false</hkparam>
-				</hkobject>
-				<hkobject>
-					<hkparam name="localTime">-0.300000</hkparam>
-					<hkparam name="event">
-						<hkobject>
-							<hkparam name="id">2</hkparam>
-							<hkparam name="payload">null</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="relativeToEndOfClip">true</hkparam>
-					<hkparam name="acyclic">false</hkparam>
-					<hkparam name="isAnnotation">false</hkparam>
-				</hkobject>
-				<hkobject>
-					<hkparam name="localTime">0.000000</hkparam>
-					<hkparam name="event">
-						<hkobject>
-							<hkparam name="id">13</hkparam>
-							<hkparam name="payload">null</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="relativeToEndOfClip">false</hkparam>
-					<hkparam name="acyclic">false</hkparam>
-					<hkparam name="isAnnotation">false</hkparam>
-				</hkobject>
-			</hkparam>
-		</hkobject>
-
-		<hkobject name="#0080" class="hkbClipGenerator" signature="0x333b85b9">
-			
-			
-			<hkparam name="variableBindingSet">null</hkparam>
-			
-			
-			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">Axe_Equip</hkparam>
-			
-			
-			
-			<hkparam name="animationName">Animations\Axe_Equip.hkx</hkparam>
 			<hkparam name="triggers">#0081</hkparam>
 			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
 			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
@@ -1032,7 +1115,130 @@
 			
 		</hkobject>
 
-		<hkobject name="#0083" class="hkbClipTriggerArray" signature="0x59c23a0f">
+		<hkobject name="#0082" class="hkbVariableBindingSet" signature="0x338ad4ff">
+			
+			
+			<hkparam name="bindings" numelements="1">
+				<hkobject>
+					<hkparam name="memberPath">selectedGeneratorIndex</hkparam>
+					
+					
+					
+					
+					<hkparam name="variableIndex">13</hkparam>
+					<hkparam name="bitIndex">-1</hkparam>
+					<hkparam name="bindingType">BINDING_TYPE_VARIABLE</hkparam>
+					
+					
+					
+				</hkobject>
+			</hkparam>
+			<hkparam name="indexOfBindingToEnable">-1</hkparam>
+			
+		</hkobject>
+
+		<hkobject name="#0077" class="hkbManualSelectorGenerator" signature="0xd932fab8">
+			
+			
+			<hkparam name="variableBindingSet">#0082</hkparam>
+			
+			
+			<hkparam name="userData">0</hkparam>
+			<hkparam name="name">MacEquipMSG</hkparam>
+			
+			
+			
+			<hkparam name="generators" numelements="12">
+				#0078 #0080 #0080 #0080 #0080 #0078 #0078 #0078 #0078 #0078 #0078 #0078
+			</hkparam>
+			<hkparam name="selectedGeneratorIndex">0</hkparam>
+			<hkparam name="currentGeneratorIndex">0</hkparam>
+		</hkobject>
+
+		<hkobject name="#0085" class="hkbClipTriggerArray" signature="0x59c23a0f">
+			
+			
+			<hkparam name="triggers" numelements="3">
+				<hkobject>
+					<hkparam name="localTime">-0.300000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">3</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">-0.300000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">2</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">0.000000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">13</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">false</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0084" class="hkbClipGenerator" signature="0x333b85b9">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">0</hkparam>
+			<hkparam name="name">Axe_Equip</hkparam>
+			
+			
+			
+			<hkparam name="animationName">Animations\Axe_Equip.hkx</hkparam>
+			<hkparam name="triggers">#0085</hkparam>
+			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
+			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
+			<hkparam name="startTime">0.000000</hkparam>
+			<hkparam name="playbackSpeed">1.000000</hkparam>
+			<hkparam name="enforcedDuration">0.000000</hkparam>
+			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
+			<hkparam name="animationBindingIndex">-1</hkparam>
+			<hkparam name="mode">MODE_LOOPING</hkparam>
+			<hkparam name="flags">0</hkparam>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		</hkobject>
+
+		<hkobject name="#0087" class="hkbClipTriggerArray" signature="0x59c23a0f">
 			
 			
 			<hkparam name="triggers" numelements="4">
@@ -1087,7 +1293,7 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0082" class="hkbClipGenerator" signature="0x333b85b9">
+		<hkobject name="#0086" class="hkbClipGenerator" signature="0x333b85b9">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -1099,7 +1305,7 @@
 			
 			
 			<hkparam name="animationName">Animations\Axe_Equip.hkx</hkparam>
-			<hkparam name="triggers">#0083</hkparam>
+			<hkparam name="triggers">#0087</hkparam>
 			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
 			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
 			<hkparam name="startTime">0.000000</hkparam>
@@ -1127,7 +1333,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0084" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#0088" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="1">
@@ -1149,10 +1355,10 @@
 			
 		</hkobject>
 
-		<hkobject name="#0079" class="hkbManualSelectorGenerator" signature="0xd932fab8">
+		<hkobject name="#0083" class="hkbManualSelectorGenerator" signature="0xd932fab8">
 			
 			
-			<hkparam name="variableBindingSet">#0084</hkparam>
+			<hkparam name="variableBindingSet">#0088</hkparam>
 			
 			
 			<hkparam name="userData">0</hkparam>
@@ -1161,13 +1367,13 @@
 			
 			
 			<hkparam name="generators" numelements="12">
-				#0080 #0082 #0082 #0082 #0082 #0080 #0080 #0080 #0080 #0080 #0080 #0080
+				#0084 #0086 #0086 #0086 #0086 #0084 #0084 #0084 #0084 #0084 #0084 #0084
 			</hkparam>
 			<hkparam name="selectedGeneratorIndex">0</hkparam>
 			<hkparam name="currentGeneratorIndex">0</hkparam>
 		</hkobject>
 
-		<hkobject name="#0087" class="hkbClipTriggerArray" signature="0x59c23a0f">
+		<hkobject name="#0091" class="hkbClipTriggerArray" signature="0x59c23a0f">
 			
 			
 			<hkparam name="triggers" numelements="3">
@@ -1210,7 +1416,7 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0086" class="hkbClipGenerator" signature="0x333b85b9">
+		<hkobject name="#0090" class="hkbClipGenerator" signature="0x333b85b9">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -1222,7 +1428,7 @@
 			
 			
 			<hkparam name="animationName">Animations\Dag_Equip.hkx</hkparam>
-			<hkparam name="triggers">#0087</hkparam>
+			<hkparam name="triggers">#0091</hkparam>
 			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
 			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
 			<hkparam name="startTime">0.000000</hkparam>
@@ -1250,7 +1456,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0089" class="hkbClipTriggerArray" signature="0x59c23a0f">
+		<hkobject name="#0093" class="hkbClipTriggerArray" signature="0x59c23a0f">
 			
 			
 			<hkparam name="triggers" numelements="4">
@@ -1295,141 +1501,6 @@
 					<hkparam name="event">
 						<hkobject>
 							<hkparam name="id">13</hkparam>
-							<hkparam name="payload">null</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="relativeToEndOfClip">false</hkparam>
-					<hkparam name="acyclic">false</hkparam>
-					<hkparam name="isAnnotation">false</hkparam>
-				</hkobject>
-			</hkparam>
-		</hkobject>
-
-		<hkobject name="#0088" class="hkbClipGenerator" signature="0x333b85b9">
-			
-			
-			<hkparam name="variableBindingSet">null</hkparam>
-			
-			
-			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">Dag_Dual_Equip</hkparam>
-			
-			
-			
-			<hkparam name="animationName">Animations\Dag_Equip.hkx</hkparam>
-			<hkparam name="triggers">#0089</hkparam>
-			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
-			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
-			<hkparam name="startTime">0.000000</hkparam>
-			<hkparam name="playbackSpeed">1.000000</hkparam>
-			<hkparam name="enforcedDuration">0.000000</hkparam>
-			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
-			<hkparam name="animationBindingIndex">-1</hkparam>
-			<hkparam name="mode">MODE_LOOPING</hkparam>
-			<hkparam name="flags">0</hkparam>
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-		</hkobject>
-
-		<hkobject name="#0090" class="hkbVariableBindingSet" signature="0x338ad4ff">
-			
-			
-			<hkparam name="bindings" numelements="1">
-				<hkobject>
-					<hkparam name="memberPath">selectedGeneratorIndex</hkparam>
-					
-					
-					
-					
-					<hkparam name="variableIndex">13</hkparam>
-					<hkparam name="bitIndex">-1</hkparam>
-					<hkparam name="bindingType">BINDING_TYPE_VARIABLE</hkparam>
-					
-					
-					
-				</hkobject>
-			</hkparam>
-			<hkparam name="indexOfBindingToEnable">-1</hkparam>
-			
-		</hkobject>
-
-		<hkobject name="#0085" class="hkbManualSelectorGenerator" signature="0xd932fab8">
-			
-			
-			<hkparam name="variableBindingSet">#0090</hkparam>
-			
-			
-			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">DagEquipMSG</hkparam>
-			
-			
-			
-			<hkparam name="generators" numelements="12">
-				#0086 #0088 #0088 #0088 #0088 #0086 #0086 #0086 #0086 #0086 #0086 #0086
-			</hkparam>
-			<hkparam name="selectedGeneratorIndex">0</hkparam>
-			<hkparam name="currentGeneratorIndex">0</hkparam>
-		</hkobject>
-
-		<hkobject name="#0093" class="hkbClipTriggerArray" signature="0x59c23a0f">
-			
-			
-			<hkparam name="triggers" numelements="4">
-				<hkobject>
-					<hkparam name="localTime">0.000000</hkparam>
-					<hkparam name="event">
-						<hkobject>
-							<hkparam name="id">5</hkparam>
-							<hkparam name="payload">null</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="relativeToEndOfClip">false</hkparam>
-					<hkparam name="acyclic">false</hkparam>
-					<hkparam name="isAnnotation">false</hkparam>
-				</hkobject>
-				<hkobject>
-					<hkparam name="localTime">0.000000</hkparam>
-					<hkparam name="event">
-						<hkobject>
-							<hkparam name="id">3</hkparam>
-							<hkparam name="payload">null</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="relativeToEndOfClip">true</hkparam>
-					<hkparam name="acyclic">false</hkparam>
-					<hkparam name="isAnnotation">false</hkparam>
-				</hkobject>
-				<hkobject>
-					<hkparam name="localTime">0.000000</hkparam>
-					<hkparam name="event">
-						<hkobject>
-							<hkparam name="id">2</hkparam>
-							<hkparam name="payload">null</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="relativeToEndOfClip">true</hkparam>
-					<hkparam name="acyclic">false</hkparam>
-					<hkparam name="isAnnotation">false</hkparam>
-				</hkobject>
-				<hkobject>
-					<hkparam name="localTime">0.588000</hkparam>
-					<hkparam name="event">
-						<hkobject>
-							<hkparam name="id">4</hkparam>
 							<hkparam name="payload">null</hkparam>
 						</hkobject>
 					</hkparam>
@@ -1447,11 +1518,11 @@
 			
 			
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">1HM_Equip</hkparam>
+			<hkparam name="name">Dag_Dual_Equip</hkparam>
 			
 			
 			
-			<hkparam name="animationName">Animations\1HM_Equip.hkx</hkparam>
+			<hkparam name="animationName">Animations\Dag_Equip.hkx</hkparam>
 			<hkparam name="triggers">#0093</hkparam>
 			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
 			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
@@ -1460,7 +1531,7 @@
 			<hkparam name="enforcedDuration">0.000000</hkparam>
 			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
 			<hkparam name="animationBindingIndex">-1</hkparam>
-			<hkparam name="mode">MODE_SINGLE_PLAY</hkparam>
+			<hkparam name="mode">MODE_LOOPING</hkparam>
 			<hkparam name="flags">0</hkparam>
 			
 			
@@ -1480,7 +1551,47 @@
 			
 		</hkobject>
 
-		<hkobject name="#0095" class="hkbClipTriggerArray" signature="0x59c23a0f">
+		<hkobject name="#0094" class="hkbVariableBindingSet" signature="0x338ad4ff">
+			
+			
+			<hkparam name="bindings" numelements="1">
+				<hkobject>
+					<hkparam name="memberPath">selectedGeneratorIndex</hkparam>
+					
+					
+					
+					
+					<hkparam name="variableIndex">13</hkparam>
+					<hkparam name="bitIndex">-1</hkparam>
+					<hkparam name="bindingType">BINDING_TYPE_VARIABLE</hkparam>
+					
+					
+					
+				</hkobject>
+			</hkparam>
+			<hkparam name="indexOfBindingToEnable">-1</hkparam>
+			
+		</hkobject>
+
+		<hkobject name="#0089" class="hkbManualSelectorGenerator" signature="0xd932fab8">
+			
+			
+			<hkparam name="variableBindingSet">#0094</hkparam>
+			
+			
+			<hkparam name="userData">0</hkparam>
+			<hkparam name="name">DagEquipMSG</hkparam>
+			
+			
+			
+			<hkparam name="generators" numelements="12">
+				#0090 #0092 #0092 #0092 #0092 #0090 #0090 #0090 #0090 #0090 #0090 #0090
+			</hkparam>
+			<hkparam name="selectedGeneratorIndex">0</hkparam>
+			<hkparam name="currentGeneratorIndex">0</hkparam>
+		</hkobject>
+
+		<hkobject name="#0097" class="hkbClipTriggerArray" signature="0x59c23a0f">
 			
 			
 			<hkparam name="triggers" numelements="5">
@@ -1547,7 +1658,7 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0094" class="hkbClipGenerator" signature="0x333b85b9">
+		<hkobject name="#0096" class="hkbClipGenerator" signature="0x333b85b9">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -1559,7 +1670,7 @@
 			
 			
 			<hkparam name="animationName">Animations\1HM_Equip.hkx</hkparam>
-			<hkparam name="triggers">#0095</hkparam>
+			<hkparam name="triggers">#0097</hkparam>
 			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
 			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
 			<hkparam name="startTime">0.000000</hkparam>
@@ -1587,7 +1698,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0096" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#0098" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="1">
@@ -1609,10 +1720,10 @@
 			
 		</hkobject>
 
-		<hkobject name="#0091" class="hkbManualSelectorGenerator" signature="0xd932fab8">
+		<hkobject name="#0095" class="hkbManualSelectorGenerator" signature="0xd932fab8">
 			
 			
-			<hkparam name="variableBindingSet">#0096</hkparam>
+			<hkparam name="variableBindingSet">#0098</hkparam>
 			
 			
 			<hkparam name="userData">0</hkparam>
@@ -1621,13 +1732,13 @@
 			
 			
 			<hkparam name="generators" numelements="12">
-				#0092 #0094 #0094 #0094 #0094 #0092 #0092 #0092 #0092 #0092 #0092 #0092
+				#0067 #0096 #0096 #0096 #0096 #0067 #0067 #0067 #0067 #0067 #0067 #0067
 			</hkparam>
 			<hkparam name="selectedGeneratorIndex">0</hkparam>
 			<hkparam name="currentGeneratorIndex">0</hkparam>
 		</hkobject>
 
-		<hkobject name="#0099" class="hkbClipTriggerArray" signature="0x59c23a0f">
+		<hkobject name="#0101" class="hkbClipTriggerArray" signature="0x59c23a0f">
 			
 			
 			<hkparam name="triggers" numelements="4">
@@ -1648,113 +1759,6 @@
 					<hkparam name="event">
 						<hkobject>
 							<hkparam name="id">13</hkparam>
-							<hkparam name="payload">null</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="relativeToEndOfClip">false</hkparam>
-					<hkparam name="acyclic">false</hkparam>
-					<hkparam name="isAnnotation">false</hkparam>
-				</hkobject>
-				<hkobject>
-					<hkparam name="localTime">0.000000</hkparam>
-					<hkparam name="event">
-						<hkobject>
-							<hkparam name="id">2</hkparam>
-							<hkparam name="payload">null</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="relativeToEndOfClip">true</hkparam>
-					<hkparam name="acyclic">false</hkparam>
-					<hkparam name="isAnnotation">false</hkparam>
-				</hkobject>
-				<hkobject>
-					<hkparam name="localTime">0.000000</hkparam>
-					<hkparam name="event">
-						<hkobject>
-							<hkparam name="id">3</hkparam>
-							<hkparam name="payload">null</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="relativeToEndOfClip">true</hkparam>
-					<hkparam name="acyclic">false</hkparam>
-					<hkparam name="isAnnotation">false</hkparam>
-				</hkobject>
-			</hkparam>
-		</hkobject>
-
-		<hkobject name="#0098" class="hkbClipGenerator" signature="0x333b85b9">
-			
-			
-			<hkparam name="variableBindingSet">null</hkparam>
-			
-			
-			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">H2H_Equip</hkparam>
-			
-			
-			
-			<hkparam name="animationName">Animations\H2H_Equip.hkx</hkparam>
-			<hkparam name="triggers">#0099</hkparam>
-			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
-			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
-			<hkparam name="startTime">0.000000</hkparam>
-			<hkparam name="playbackSpeed">1.000000</hkparam>
-			<hkparam name="enforcedDuration">0.000000</hkparam>
-			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
-			<hkparam name="animationBindingIndex">-1</hkparam>
-			<hkparam name="mode">MODE_SINGLE_PLAY</hkparam>
-			<hkparam name="flags">0</hkparam>
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-		</hkobject>
-
-		<hkobject name="#0101" class="hkbClipTriggerArray" signature="0x59c23a0f">
-			
-			
-			<hkparam name="triggers" numelements="5">
-				<hkobject>
-					<hkparam name="localTime">0.000000</hkparam>
-					<hkparam name="event">
-						<hkobject>
-							<hkparam name="id">13</hkparam>
-							<hkparam name="payload">null</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="relativeToEndOfClip">false</hkparam>
-					<hkparam name="acyclic">false</hkparam>
-					<hkparam name="isAnnotation">false</hkparam>
-				</hkobject>
-				<hkobject>
-					<hkparam name="localTime">0.000000</hkparam>
-					<hkparam name="event">
-						<hkobject>
-							<hkparam name="id">28</hkparam>
-							<hkparam name="payload">null</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="relativeToEndOfClip">false</hkparam>
-					<hkparam name="acyclic">false</hkparam>
-					<hkparam name="isAnnotation">false</hkparam>
-				</hkobject>
-				<hkobject>
-					<hkparam name="localTime">0.000000</hkparam>
-					<hkparam name="event">
-						<hkobject>
-							<hkparam name="id">15</hkparam>
 							<hkparam name="payload">null</hkparam>
 						</hkobject>
 					</hkparam>
@@ -1796,7 +1800,7 @@
 			
 			
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">H2H_Dual_Equip</hkparam>
+			<hkparam name="name">H2H_Equip</hkparam>
 			
 			
 			
@@ -1829,7 +1833,114 @@
 			
 		</hkobject>
 
-		<hkobject name="#0102" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#0103" class="hkbClipTriggerArray" signature="0x59c23a0f">
+			
+			
+			<hkparam name="triggers" numelements="5">
+				<hkobject>
+					<hkparam name="localTime">0.000000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">13</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">false</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">0.000000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">28</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">false</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">0.000000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">15</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">false</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">0.000000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">2</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">0.000000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">3</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0102" class="hkbClipGenerator" signature="0x333b85b9">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">0</hkparam>
+			<hkparam name="name">H2H_Dual_Equip</hkparam>
+			
+			
+			
+			<hkparam name="animationName">Animations\H2H_Equip.hkx</hkparam>
+			<hkparam name="triggers">#0103</hkparam>
+			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
+			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
+			<hkparam name="startTime">0.000000</hkparam>
+			<hkparam name="playbackSpeed">1.000000</hkparam>
+			<hkparam name="enforcedDuration">0.000000</hkparam>
+			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
+			<hkparam name="animationBindingIndex">-1</hkparam>
+			<hkparam name="mode">MODE_SINGLE_PLAY</hkparam>
+			<hkparam name="flags">0</hkparam>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		</hkobject>
+
+		<hkobject name="#0104" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="1">
@@ -1851,10 +1962,10 @@
 			
 		</hkobject>
 
-		<hkobject name="#0097" class="hkbManualSelectorGenerator" signature="0xd932fab8">
+		<hkobject name="#0099" class="hkbManualSelectorGenerator" signature="0xd932fab8">
 			
 			
-			<hkparam name="variableBindingSet">#0102</hkparam>
+			<hkparam name="variableBindingSet">#0104</hkparam>
 			
 			
 			<hkparam name="userData">0</hkparam>
@@ -1863,13 +1974,13 @@
 			
 			
 			<hkparam name="generators" numelements="12">
-				#0098 #0100 #0100 #0100 #0100 #0098 #0098 #0098 #0065 #0098 #0098 #0098
+				#0100 #0102 #0102 #0102 #0102 #0100 #0100 #0100 #0069 #0100 #0100 #0100
 			</hkparam>
 			<hkparam name="selectedGeneratorIndex">0</hkparam>
 			<hkparam name="currentGeneratorIndex">0</hkparam>
 		</hkobject>
 
-		<hkobject name="#0103" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#0105" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="1">
@@ -1894,7 +2005,7 @@
 		<hkobject name="#0064" class="hkbManualSelectorGenerator" signature="0xd932fab8">
 			
 			
-			<hkparam name="variableBindingSet">#0103</hkparam>
+			<hkparam name="variableBindingSet">#0105</hkparam>
 			
 			
 			<hkparam name="userData">0</hkparam>
@@ -1902,8 +2013,8 @@
 			
 			
 			
-			<hkparam name="generators" numelements="9">
-				#0097 #0091 #0085 #0079 #0073 #0071 #0069 #0067 #0065
+			<hkparam name="generators" numelements="13">
+				#0099 #0095 #0089 #0083 #0077 #0075 #0073 #0071 #0069 #0067 #0067 #0067 #0065
 			</hkparam>
 			<hkparam name="selectedGeneratorIndex">0</hkparam>
 			<hkparam name="currentGeneratorIndex">0</hkparam>
@@ -1921,7 +2032,7 @@
 			<hkparam name="worldFromModelWeight">0.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0105" class="hkbBoneWeightArray" signature="0xcd902b77">
+		<hkobject name="#0107" class="hkbBoneWeightArray" signature="0xcd902b77">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -1938,7 +2049,7 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0106" class="hkbBehaviorReferenceGenerator" signature="0xfcb5423">
+		<hkobject name="#0108" class="hkbBehaviorReferenceGenerator" signature="0xfcb5423">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -1953,14 +2064,14 @@
 			
 		</hkobject>
 
-		<hkobject name="#0104" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0106" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
-			<hkparam name="generator">#0106</hkparam>
-			<hkparam name="boneWeights">#0105</hkparam>
+			<hkparam name="generator">#0108</hkparam>
+			<hkparam name="boneWeights">#0107</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">1.000000</hkparam>
 		</hkobject>
@@ -1984,7 +2095,7 @@
 			<hkparam name="flags">0</hkparam>
 			<hkparam name="subtractLastChild">false</hkparam>
 			<hkparam name="children" numelements="2">
-				#0104 #0062
+				#0106 #0062
 			</hkparam>
 			
 			
@@ -2013,7 +2124,7 @@
 			<hkparam name="enable">true</hkparam>
 		</hkobject>
 
-		<hkobject name="#0107" class="hkbBoneWeightArray" signature="0xcd902b77">
+		<hkobject name="#0109" class="hkbBoneWeightArray" signature="0xcd902b77">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -2030,19 +2141,19 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0108" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0110" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
-			<hkparam name="generator">#0106</hkparam>
-			<hkparam name="boneWeights">#0107</hkparam>
+			<hkparam name="generator">#0108</hkparam>
+			<hkparam name="boneWeights">#0109</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">1.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0109" class="hkbBoneWeightArray" signature="0xcd902b77">
+		<hkobject name="#0111" class="hkbBoneWeightArray" signature="0xcd902b77">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -2059,7 +2170,7 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0115" class="hkbBoneWeightArray" signature="0xcd902b77">
+		<hkobject name="#0117" class="hkbBoneWeightArray" signature="0xcd902b77">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -2076,19 +2187,19 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0114" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0116" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
 			<hkparam name="generator">#0064</hkparam>
-			<hkparam name="boneWeights">#0115</hkparam>
+			<hkparam name="boneWeights">#0117</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">0.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0117" class="hkbBoneWeightArray" signature="0xcd902b77">
+		<hkobject name="#0119" class="hkbBoneWeightArray" signature="0xcd902b77">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -2105,7 +2216,7 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0118" class="hkbClipGenerator" signature="0x333b85b9">
+		<hkobject name="#0120" class="hkbClipGenerator" signature="0x333b85b9">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -2145,19 +2256,19 @@
 			
 		</hkobject>
 
-		<hkobject name="#0116" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0118" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
-			<hkparam name="generator">#0118</hkparam>
-			<hkparam name="boneWeights">#0117</hkparam>
+			<hkparam name="generator">#0120</hkparam>
+			<hkparam name="boneWeights">#0119</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">1.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0113" class="hkbBlenderGenerator" signature="0x22df7147">
+		<hkobject name="#0115" class="hkbBlenderGenerator" signature="0x22df7147">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -2176,7 +2287,7 @@
 			<hkparam name="flags">0</hkparam>
 			<hkparam name="subtractLastChild">false</hkparam>
 			<hkparam name="children" numelements="2">
-				#0116 #0114
+				#0118 #0116
 			</hkparam>
 			
 			
@@ -2188,7 +2299,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0121" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#0123" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="1">
@@ -2210,10 +2321,10 @@
 			
 		</hkobject>
 
-		<hkobject name="#0120" class="hkbBlendingTransitionEffect" signature="0xfd8584fe">
+		<hkobject name="#0122" class="hkbBlendingTransitionEffect" signature="0xfd8584fe">
 			
 			
-			<hkparam name="variableBindingSet">#0121</hkparam>
+			<hkparam name="variableBindingSet">#0123</hkparam>
 			
 			
 			<hkparam name="userData">0</hkparam>
@@ -2238,7 +2349,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0119" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
+		<hkobject name="#0121" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
 			
 			
 			<hkparam name="transitions" numelements="1">
@@ -2259,7 +2370,7 @@
 							<hkparam name="exitTime">0.000000</hkparam>
 						</hkobject>
 					</hkparam>
-					<hkparam name="transition">#0120</hkparam>
+					<hkparam name="transition">#0122</hkparam>
 					<hkparam name="condition">null</hkparam>
 					<hkparam name="eventId">23</hkparam>
 					<hkparam name="toStateId">0</hkparam>
@@ -2271,7 +2382,7 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0122" class="hkbStateMachineEventPropertyArray" signature="0xb07b4388">
+		<hkobject name="#0124" class="hkbStateMachineEventPropertyArray" signature="0xb07b4388">
 			
 			
 			<hkparam name="events" numelements="1">
@@ -2282,24 +2393,24 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0112" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+		<hkobject name="#0114" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
 			<hkparam name="listeners" numelements="0"></hkparam>
-			<hkparam name="enterNotifyEvents">#0122</hkparam>
+			<hkparam name="enterNotifyEvents">#0124</hkparam>
 			<hkparam name="exitNotifyEvents">null</hkparam>
-			<hkparam name="transitions">#0119</hkparam>
-			<hkparam name="generator">#0113</hkparam>
+			<hkparam name="transitions">#0121</hkparam>
+			<hkparam name="generator">#0115</hkparam>
 			<hkparam name="name">Weap_EquipSneakState</hkparam>
 			<hkparam name="stateId">1</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
 		</hkobject>
 
-		<hkobject name="#0124" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
+		<hkobject name="#0126" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
 			
 			
 			<hkparam name="transitions" numelements="1">
@@ -2320,7 +2431,7 @@
 							<hkparam name="exitTime">0.000000</hkparam>
 						</hkobject>
 					</hkparam>
-					<hkparam name="transition">#0120</hkparam>
+					<hkparam name="transition">#0122</hkparam>
 					<hkparam name="condition">null</hkparam>
 					<hkparam name="eventId">22</hkparam>
 					<hkparam name="toStateId">1</hkparam>
@@ -2332,7 +2443,7 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0125" class="hkbStateMachineEventPropertyArray" signature="0xb07b4388">
+		<hkobject name="#0127" class="hkbStateMachineEventPropertyArray" signature="0xb07b4388">
 			
 			
 			<hkparam name="events" numelements="1">
@@ -2343,16 +2454,16 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0123" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+		<hkobject name="#0125" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
 			<hkparam name="listeners" numelements="0"></hkparam>
-			<hkparam name="enterNotifyEvents">#0125</hkparam>
+			<hkparam name="enterNotifyEvents">#0127</hkparam>
 			<hkparam name="exitNotifyEvents">null</hkparam>
-			<hkparam name="transitions">#0124</hkparam>
+			<hkparam name="transitions">#0126</hkparam>
 			<hkparam name="generator">#0064</hkparam>
 			<hkparam name="name">Weap_EquipDefaultState</hkparam>
 			<hkparam name="stateId">0</hkparam>
@@ -2360,7 +2471,7 @@
 			<hkparam name="enable">true</hkparam>
 		</hkobject>
 
-		<hkobject name="#0126" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#0128" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="1">
@@ -2382,10 +2493,10 @@
 			
 		</hkobject>
 
-		<hkobject name="#0111" class="hkbStateMachine" signature="0x816c1dcb">
+		<hkobject name="#0113" class="hkbStateMachine" signature="0x816c1dcb">
 			
 			
-			<hkparam name="variableBindingSet">#0126</hkparam>
+			<hkparam name="variableBindingSet">#0128</hkparam>
 			
 			
 			<hkparam name="userData">0</hkparam>
@@ -2414,7 +2525,7 @@
 			<hkparam name="selfTransitionMode">SELF_TRANSITION_MODE_NO_TRANSITION</hkparam>
 			
 			<hkparam name="states" numelements="2">
-				#0123 #0112
+				#0125 #0114
 			</hkparam>
 			<hkparam name="wildcardTransitions">null</hkparam>
 			
@@ -2431,19 +2542,19 @@
 			
 		</hkobject>
 
-		<hkobject name="#0110" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0112" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
-			<hkparam name="generator">#0111</hkparam>
-			<hkparam name="boneWeights">#0109</hkparam>
+			<hkparam name="generator">#0113</hkparam>
+			<hkparam name="boneWeights">#0111</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">0.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0127" class="hkbBlenderGenerator" signature="0x22df7147">
+		<hkobject name="#0129" class="hkbBlenderGenerator" signature="0x22df7147">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -2462,7 +2573,7 @@
 			<hkparam name="flags">0</hkparam>
 			<hkparam name="subtractLastChild">false</hkparam>
 			<hkparam name="children" numelements="2">
-				#0110 #0108
+				#0112 #0110
 			</hkparam>
 			
 			
@@ -2474,7 +2585,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0128" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#0130" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="1">
@@ -2496,7 +2607,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0132" class="hkbBoneWeightArray" signature="0xcd902b77">
+		<hkobject name="#0134" class="hkbBoneWeightArray" signature="0xcd902b77">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -2513,19 +2624,19 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0131" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0133" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
-			<hkparam name="generator">#0067</hkparam>
-			<hkparam name="boneWeights">#0132</hkparam>
+			<hkparam name="generator">#0071</hkparam>
+			<hkparam name="boneWeights">#0134</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">0.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0134" class="hkbBoneWeightArray" signature="0xcd902b77">
+		<hkobject name="#0136" class="hkbBoneWeightArray" signature="0xcd902b77">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -2542,19 +2653,19 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0133" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0135" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
-			<hkparam name="generator">#0106</hkparam>
-			<hkparam name="boneWeights">#0134</hkparam>
+			<hkparam name="generator">#0108</hkparam>
+			<hkparam name="boneWeights">#0136</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">1.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0130" class="hkbBlenderGenerator" signature="0x22df7147">
+		<hkobject name="#0132" class="hkbBlenderGenerator" signature="0x22df7147">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -2573,7 +2684,7 @@
 			<hkparam name="flags">0</hkparam>
 			<hkparam name="subtractLastChild">false</hkparam>
 			<hkparam name="children" numelements="2">
-				#0133 #0131
+				#0135 #0133
 			</hkparam>
 			
 			
@@ -2585,7 +2696,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0138" class="hkbBoneWeightArray" signature="0xcd902b77">
+		<hkobject name="#0140" class="hkbBoneWeightArray" signature="0xcd902b77">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -2602,19 +2713,19 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0137" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0139" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
-			<hkparam name="generator">#0098</hkparam>
-			<hkparam name="boneWeights">#0138</hkparam>
+			<hkparam name="generator">#0100</hkparam>
+			<hkparam name="boneWeights">#0140</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">0.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0140" class="hkbBoneWeightArray" signature="0xcd902b77">
+		<hkobject name="#0142" class="hkbBoneWeightArray" signature="0xcd902b77">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -2631,19 +2742,19 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0139" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0141" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
-			<hkparam name="generator">#0106</hkparam>
-			<hkparam name="boneWeights">#0140</hkparam>
+			<hkparam name="generator">#0108</hkparam>
+			<hkparam name="boneWeights">#0142</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">1.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0136" class="hkbBlenderGenerator" signature="0x22df7147">
+		<hkobject name="#0138" class="hkbBlenderGenerator" signature="0x22df7147">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -2662,7 +2773,7 @@
 			<hkparam name="flags">0</hkparam>
 			<hkparam name="subtractLastChild">false</hkparam>
 			<hkparam name="children" numelements="2">
-				#0139 #0137
+				#0141 #0139
 			</hkparam>
 			
 			
@@ -2674,7 +2785,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0143" class="hkbBoneWeightArray" signature="0xcd902b77">
+		<hkobject name="#0145" class="hkbBoneWeightArray" signature="0xcd902b77">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -2691,19 +2802,19 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0142" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0144" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
-			<hkparam name="generator">#0098</hkparam>
-			<hkparam name="boneWeights">#0143</hkparam>
+			<hkparam name="generator">#0100</hkparam>
+			<hkparam name="boneWeights">#0145</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">0.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0145" class="hkbBoneWeightArray" signature="0xcd902b77">
+		<hkobject name="#0147" class="hkbBoneWeightArray" signature="0xcd902b77">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -2720,19 +2831,19 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0144" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0146" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
-			<hkparam name="generator">#0106</hkparam>
-			<hkparam name="boneWeights">#0145</hkparam>
+			<hkparam name="generator">#0108</hkparam>
+			<hkparam name="boneWeights">#0147</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">1.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0141" class="hkbBlenderGenerator" signature="0x22df7147">
+		<hkobject name="#0143" class="hkbBlenderGenerator" signature="0x22df7147">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -2751,7 +2862,7 @@
 			<hkparam name="flags">0</hkparam>
 			<hkparam name="subtractLastChild">false</hkparam>
 			<hkparam name="children" numelements="2">
-				#0144 #0142
+				#0146 #0144
 			</hkparam>
 			
 			
@@ -2763,7 +2874,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0146" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#0148" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="1">
@@ -2785,10 +2896,10 @@
 			
 		</hkobject>
 
-		<hkobject name="#0135" class="hkbManualSelectorGenerator" signature="0xd932fab8">
+		<hkobject name="#0137" class="hkbManualSelectorGenerator" signature="0xd932fab8">
 			
 			
-			<hkparam name="variableBindingSet">#0146</hkparam>
+			<hkparam name="variableBindingSet">#0148</hkparam>
 			
 			
 			<hkparam name="userData">0</hkparam>
@@ -2797,16 +2908,16 @@
 			
 			
 			<hkparam name="generators" numelements="12">
-				#0141 #0136 #0136 #0136 #0136 #0136 #0136 #0136 #0136 #0136 #0136 #0136
+				#0143 #0138 #0138 #0138 #0138 #0138 #0138 #0138 #0138 #0138 #0138 #0138
 			</hkparam>
 			<hkparam name="selectedGeneratorIndex">0</hkparam>
 			<hkparam name="currentGeneratorIndex">0</hkparam>
 		</hkobject>
 
-		<hkobject name="#0129" class="hkbManualSelectorGenerator" signature="0xd932fab8">
+		<hkobject name="#0131" class="hkbManualSelectorGenerator" signature="0xd932fab8">
 			
 			
-			<hkparam name="variableBindingSet">#0128</hkparam>
+			<hkparam name="variableBindingSet">#0130</hkparam>
 			
 			
 			<hkparam name="userData">0</hkparam>
@@ -2814,14 +2925,14 @@
 			
 			
 			
-			<hkparam name="generators" numelements="12">
-				#0135 #0127 #0127 #0127 #0127 #0061 #0061 #0130 #0061 #0061 #0061 #0061
+			<hkparam name="generators" numelements="13">
+				#0137 #0129 #0129 #0129 #0129 #0061 #0061 #0132 #0061 #0061 #0061 #0061 #0061
 			</hkparam>
 			<hkparam name="selectedGeneratorIndex">0</hkparam>
 			<hkparam name="currentGeneratorIndex">0</hkparam>
 		</hkobject>
 
-		<hkobject name="#0147" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+		<hkobject name="#0149" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -2831,14 +2942,14 @@
 			<hkparam name="enterNotifyEvents">null</hkparam>
 			<hkparam name="exitNotifyEvents">null</hkparam>
 			<hkparam name="transitions">null</hkparam>
-			<hkparam name="generator">#0129</hkparam>
+			<hkparam name="generator">#0131</hkparam>
 			<hkparam name="name">WeapEquip_Locomotion3rdP</hkparam>
 			<hkparam name="stateId">0</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
 		</hkobject>
 
-		<hkobject name="#0148" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#0150" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="1">
@@ -2860,10 +2971,10 @@
 			
 		</hkobject>
 
-		<hkobject name="#0149" class="hkbStateMachine" signature="0x816c1dcb">
+		<hkobject name="#0151" class="hkbStateMachine" signature="0x816c1dcb">
 			
 			
-			<hkparam name="variableBindingSet">#0148</hkparam>
+			<hkparam name="variableBindingSet">#0150</hkparam>
 			
 			
 			<hkparam name="userData">0</hkparam>
@@ -2892,7 +3003,7 @@
 			<hkparam name="selfTransitionMode">SELF_TRANSITION_MODE_NO_TRANSITION</hkparam>
 			
 			<hkparam name="states" numelements="2">
-				#0147 #0060
+				#0149 #0060
 			</hkparam>
 			<hkparam name="wildcardTransitions">null</hkparam>
 			
@@ -2907,56 +3018,6 @@
 			
 			
 			
-		</hkobject>
-
-		<hkobject name="#0150" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
-			
-			
-			<hkparam name="transitions" numelements="1">
-				<hkobject>
-					<hkparam name="triggerInterval">
-						<hkobject>
-							<hkparam name="enterEventId">-1</hkparam>
-							<hkparam name="exitEventId">-1</hkparam>
-							<hkparam name="enterTime">0.000000</hkparam>
-							<hkparam name="exitTime">0.000000</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="initiateInterval">
-						<hkobject>
-							<hkparam name="enterEventId">-1</hkparam>
-							<hkparam name="exitEventId">-1</hkparam>
-							<hkparam name="enterTime">0.000000</hkparam>
-							<hkparam name="exitTime">0.000000</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="transition">#0120</hkparam>
-					<hkparam name="condition">null</hkparam>
-					<hkparam name="eventId">7</hkparam>
-					<hkparam name="toStateId">0</hkparam>
-					<hkparam name="fromNestedStateId">0</hkparam>
-					<hkparam name="toNestedStateId">0</hkparam>
-					<hkparam name="priority">0</hkparam>
-					<hkparam name="flags">FLAG_DISABLE_CONDITION</hkparam>
-				</hkobject>
-			</hkparam>
-		</hkobject>
-
-		<hkobject name="#0151" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
-			
-			
-			<hkparam name="variableBindingSet">null</hkparam>
-			
-			
-			<hkparam name="listeners" numelements="0"></hkparam>
-			<hkparam name="enterNotifyEvents">null</hkparam>
-			<hkparam name="exitNotifyEvents">null</hkparam>
-			<hkparam name="transitions">#0150</hkparam>
-			<hkparam name="generator">#0149</hkparam>
-			<hkparam name="name">WeapEquip_LocomotionState</hkparam>
-			<hkparam name="stateId">1</hkparam>
-			<hkparam name="probability">1.000000</hkparam>
-			<hkparam name="enable">true</hkparam>
 		</hkobject>
 
 		<hkobject name="#0152" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
@@ -2980,10 +3041,10 @@
 							<hkparam name="exitTime">0.000000</hkparam>
 						</hkobject>
 					</hkparam>
-					<hkparam name="transition">#0120</hkparam>
+					<hkparam name="transition">#0122</hkparam>
 					<hkparam name="condition">null</hkparam>
-					<hkparam name="eventId">6</hkparam>
-					<hkparam name="toStateId">1</hkparam>
+					<hkparam name="eventId">7</hkparam>
+					<hkparam name="toStateId">0</hkparam>
 					<hkparam name="fromNestedStateId">0</hkparam>
 					<hkparam name="toNestedStateId">0</hkparam>
 					<hkparam name="priority">0</hkparam>
@@ -3002,14 +3063,64 @@
 			<hkparam name="enterNotifyEvents">null</hkparam>
 			<hkparam name="exitNotifyEvents">null</hkparam>
 			<hkparam name="transitions">#0152</hkparam>
-			<hkparam name="generator">#0111</hkparam>
+			<hkparam name="generator">#0151</hkparam>
+			<hkparam name="name">WeapEquip_LocomotionState</hkparam>
+			<hkparam name="stateId">1</hkparam>
+			<hkparam name="probability">1.000000</hkparam>
+			<hkparam name="enable">true</hkparam>
+		</hkobject>
+
+		<hkobject name="#0154" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
+			
+			
+			<hkparam name="transitions" numelements="1">
+				<hkobject>
+					<hkparam name="triggerInterval">
+						<hkobject>
+							<hkparam name="enterEventId">-1</hkparam>
+							<hkparam name="exitEventId">-1</hkparam>
+							<hkparam name="enterTime">0.000000</hkparam>
+							<hkparam name="exitTime">0.000000</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="initiateInterval">
+						<hkobject>
+							<hkparam name="enterEventId">-1</hkparam>
+							<hkparam name="exitEventId">-1</hkparam>
+							<hkparam name="enterTime">0.000000</hkparam>
+							<hkparam name="exitTime">0.000000</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="transition">#0122</hkparam>
+					<hkparam name="condition">null</hkparam>
+					<hkparam name="eventId">6</hkparam>
+					<hkparam name="toStateId">1</hkparam>
+					<hkparam name="fromNestedStateId">0</hkparam>
+					<hkparam name="toNestedStateId">0</hkparam>
+					<hkparam name="priority">0</hkparam>
+					<hkparam name="flags">FLAG_DISABLE_CONDITION</hkparam>
+				</hkobject>
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0155" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="listeners" numelements="0"></hkparam>
+			<hkparam name="enterNotifyEvents">null</hkparam>
+			<hkparam name="exitNotifyEvents">null</hkparam>
+			<hkparam name="transitions">#0154</hkparam>
+			<hkparam name="generator">#0113</hkparam>
 			<hkparam name="name">WeapEquip_StandingState</hkparam>
 			<hkparam name="stateId">0</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
 		</hkobject>
 
-		<hkobject name="#0154" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#0156" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="1">
@@ -3031,10 +3142,10 @@
 			
 		</hkobject>
 
-		<hkobject name="#0155" class="hkbStateMachine" signature="0x816c1dcb">
+		<hkobject name="#0157" class="hkbStateMachine" signature="0x816c1dcb">
 			
 			
-			<hkparam name="variableBindingSet">#0154</hkparam>
+			<hkparam name="variableBindingSet">#0156</hkparam>
 			
 			
 			<hkparam name="userData">0</hkparam>
@@ -3063,7 +3174,7 @@
 			<hkparam name="selfTransitionMode">SELF_TRANSITION_MODE_NO_TRANSITION</hkparam>
 			
 			<hkparam name="states" numelements="2">
-				#0153 #0151
+				#0155 #0153
 			</hkparam>
 			<hkparam name="wildcardTransitions">null</hkparam>
 			
@@ -3080,7 +3191,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0156" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+		<hkobject name="#0158" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -3090,14 +3201,14 @@
 			<hkparam name="enterNotifyEvents">null</hkparam>
 			<hkparam name="exitNotifyEvents">null</hkparam>
 			<hkparam name="transitions">null</hkparam>
-			<hkparam name="generator">#0155</hkparam>
+			<hkparam name="generator">#0157</hkparam>
 			<hkparam name="name">WeapEquip</hkparam>
 			<hkparam name="stateId">3</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
 		</hkobject>
 
-		<hkobject name="#0157" class="hkbBoneWeightArray" signature="0xcd902b77">
+		<hkobject name="#0159" class="hkbBoneWeightArray" signature="0xcd902b77">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -3114,7 +3225,7 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0163" class="hkbBoneWeightArray" signature="0xcd902b77">
+		<hkobject name="#0165" class="hkbBoneWeightArray" signature="0xcd902b77">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -3131,7 +3242,7 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0164" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#0166" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="1">
@@ -3153,19 +3264,19 @@
 			
 		</hkobject>
 
-		<hkobject name="#0162" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0164" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
-			<hkparam name="variableBindingSet">#0164</hkparam>
+			<hkparam name="variableBindingSet">#0166</hkparam>
 			
 			
-			<hkparam name="generator">#0098</hkparam>
-			<hkparam name="boneWeights">#0163</hkparam>
+			<hkparam name="generator">#0100</hkparam>
+			<hkparam name="boneWeights">#0165</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">0.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0166" class="hkbBoneWeightArray" signature="0xcd902b77">
+		<hkobject name="#0168" class="hkbBoneWeightArray" signature="0xcd902b77">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -3182,7 +3293,7 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0167" class="hkbClipGenerator" signature="0x333b85b9">
+		<hkobject name="#0169" class="hkbClipGenerator" signature="0x333b85b9">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -3222,19 +3333,19 @@
 			
 		</hkobject>
 
-		<hkobject name="#0165" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0167" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
-			<hkparam name="generator">#0167</hkparam>
-			<hkparam name="boneWeights">#0166</hkparam>
+			<hkparam name="generator">#0169</hkparam>
+			<hkparam name="boneWeights">#0168</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">0.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0161" class="hkbBlenderGenerator" signature="0x22df7147">
+		<hkobject name="#0163" class="hkbBlenderGenerator" signature="0x22df7147">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -3253,7 +3364,7 @@
 			<hkparam name="flags">0</hkparam>
 			<hkparam name="subtractLastChild">false</hkparam>
 			<hkparam name="children" numelements="2">
-				#0165 #0162
+				#0167 #0164
 			</hkparam>
 			
 			
@@ -3265,7 +3376,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0168" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#0170" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="1">
@@ -3287,10 +3398,10 @@
 			
 		</hkobject>
 
-		<hkobject name="#0160" class="hkbManualSelectorGenerator" signature="0xd932fab8">
+		<hkobject name="#0162" class="hkbManualSelectorGenerator" signature="0xd932fab8">
 			
 			
-			<hkparam name="variableBindingSet">#0168</hkparam>
+			<hkparam name="variableBindingSet">#0170</hkparam>
 			
 			
 			<hkparam name="userData">0</hkparam>
@@ -3299,13 +3410,13 @@
 			
 			
 			<hkparam name="generators" numelements="12">
-				#0098 #0098 #0098 #0098 #0098 #0098 #0098 #0098 #0161 #0098 #0098 #0098
+				#0100 #0100 #0100 #0100 #0100 #0100 #0100 #0100 #0163 #0100 #0100 #0100
 			</hkparam>
 			<hkparam name="selectedGeneratorIndex">0</hkparam>
 			<hkparam name="currentGeneratorIndex">0</hkparam>
 		</hkobject>
 
-		<hkobject name="#0169" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#0171" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="1">
@@ -3327,10 +3438,10 @@
 			
 		</hkobject>
 
-		<hkobject name="#0159" class="hkbManualSelectorGenerator" signature="0xd932fab8">
+		<hkobject name="#0161" class="hkbManualSelectorGenerator" signature="0xd932fab8">
 			
 			
-			<hkparam name="variableBindingSet">#0169</hkparam>
+			<hkparam name="variableBindingSet">#0171</hkparam>
 			
 			
 			<hkparam name="userData">0</hkparam>
@@ -3338,26 +3449,26 @@
 			
 			
 			
-			<hkparam name="generators" numelements="9">
-				#0160 #0092 #0086 #0080 #0074 #0071 #0069 #0067 #0065
+			<hkparam name="generators" numelements="13">
+				#0162 #0067 #0090 #0084 #0078 #0075 #0073 #0071 #0069 #0067 #0067 #0067 #0065
 			</hkparam>
 			<hkparam name="selectedGeneratorIndex">0</hkparam>
 			<hkparam name="currentGeneratorIndex">0</hkparam>
 		</hkobject>
 
-		<hkobject name="#0158" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0160" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
-			<hkparam name="generator">#0159</hkparam>
-			<hkparam name="boneWeights">#0157</hkparam>
+			<hkparam name="generator">#0161</hkparam>
+			<hkparam name="boneWeights">#0159</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">0.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0170" class="hkbBoneWeightArray" signature="0xcd902b77">
+		<hkobject name="#0172" class="hkbBoneWeightArray" signature="0xcd902b77">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -3374,19 +3485,19 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0171" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0173" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
-			<hkparam name="generator">#0106</hkparam>
-			<hkparam name="boneWeights">#0170</hkparam>
+			<hkparam name="generator">#0108</hkparam>
+			<hkparam name="boneWeights">#0172</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">1.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0172" class="hkbBlenderGenerator" signature="0x22df7147">
+		<hkobject name="#0174" class="hkbBlenderGenerator" signature="0x22df7147">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -3405,7 +3516,7 @@
 			<hkparam name="flags">0</hkparam>
 			<hkparam name="subtractLastChild">false</hkparam>
 			<hkparam name="children" numelements="2">
-				#0171 #0158
+				#0173 #0160
 			</hkparam>
 			
 			
@@ -3417,7 +3528,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0173" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+		<hkobject name="#0175" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -3427,14 +3538,14 @@
 			<hkparam name="enterNotifyEvents">null</hkparam>
 			<hkparam name="exitNotifyEvents">null</hkparam>
 			<hkparam name="transitions">null</hkparam>
-			<hkparam name="generator">#0172</hkparam>
+			<hkparam name="generator">#0174</hkparam>
 			<hkparam name="name">WeapForceEquip_Locomotion1stP</hkparam>
 			<hkparam name="stateId">1</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
 		</hkobject>
 
-		<hkobject name="#0174" class="hkbBoneWeightArray" signature="0xcd902b77">
+		<hkobject name="#0176" class="hkbBoneWeightArray" signature="0xcd902b77">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -3451,19 +3562,19 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0175" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0177" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
-			<hkparam name="generator">#0159</hkparam>
-			<hkparam name="boneWeights">#0174</hkparam>
+			<hkparam name="generator">#0161</hkparam>
+			<hkparam name="boneWeights">#0176</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">0.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0176" class="hkbBoneWeightArray" signature="0xcd902b77">
+		<hkobject name="#0178" class="hkbBoneWeightArray" signature="0xcd902b77">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -3480,19 +3591,19 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0177" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0179" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
-			<hkparam name="generator">#0106</hkparam>
-			<hkparam name="boneWeights">#0176</hkparam>
+			<hkparam name="generator">#0108</hkparam>
+			<hkparam name="boneWeights">#0178</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">1.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0178" class="hkbBlenderGenerator" signature="0x22df7147">
+		<hkobject name="#0180" class="hkbBlenderGenerator" signature="0x22df7147">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -3511,7 +3622,7 @@
 			<hkparam name="flags">0</hkparam>
 			<hkparam name="subtractLastChild">false</hkparam>
 			<hkparam name="children" numelements="2">
-				#0177 #0175
+				#0179 #0177
 			</hkparam>
 			
 			
@@ -3523,7 +3634,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0179" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#0181" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="1">
@@ -3545,10 +3656,10 @@
 			
 		</hkobject>
 
-		<hkobject name="#0180" class="hkbManualSelectorGenerator" signature="0xd932fab8">
+		<hkobject name="#0182" class="hkbManualSelectorGenerator" signature="0xd932fab8">
 			
 			
-			<hkparam name="variableBindingSet">#0179</hkparam>
+			<hkparam name="variableBindingSet">#0181</hkparam>
 			
 			
 			<hkparam name="userData">0</hkparam>
@@ -3556,14 +3667,14 @@
 			
 			
 			
-			<hkparam name="generators" numelements="12">
-				#0135 #0178 #0178 #0178 #0178 #0061 #0061 #0130 #0061 #0061 #0061 #0061
+			<hkparam name="generators" numelements="13">
+				#0137 #0180 #0180 #0180 #0180 #0061 #0061 #0132 #0061 #0061 #0061 #0061 #0061
 			</hkparam>
 			<hkparam name="selectedGeneratorIndex">0</hkparam>
 			<hkparam name="currentGeneratorIndex">0</hkparam>
 		</hkobject>
 
-		<hkobject name="#0181" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+		<hkobject name="#0183" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -3573,14 +3684,14 @@
 			<hkparam name="enterNotifyEvents">null</hkparam>
 			<hkparam name="exitNotifyEvents">null</hkparam>
 			<hkparam name="transitions">null</hkparam>
-			<hkparam name="generator">#0180</hkparam>
+			<hkparam name="generator">#0182</hkparam>
 			<hkparam name="name">WeapForceEquip_Locomotion3rdP</hkparam>
 			<hkparam name="stateId">0</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
 		</hkobject>
 
-		<hkobject name="#0182" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#0184" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="1">
@@ -3602,10 +3713,10 @@
 			
 		</hkobject>
 
-		<hkobject name="#0183" class="hkbStateMachine" signature="0x816c1dcb">
+		<hkobject name="#0185" class="hkbStateMachine" signature="0x816c1dcb">
 			
 			
-			<hkparam name="variableBindingSet">#0182</hkparam>
+			<hkparam name="variableBindingSet">#0184</hkparam>
 			
 			
 			<hkparam name="userData">0</hkparam>
@@ -3634,7 +3745,7 @@
 			<hkparam name="selfTransitionMode">SELF_TRANSITION_MODE_NO_TRANSITION</hkparam>
 			
 			<hkparam name="states" numelements="2">
-				#0181 #0173
+				#0183 #0175
 			</hkparam>
 			<hkparam name="wildcardTransitions">null</hkparam>
 			
@@ -3651,7 +3762,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0184" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
+		<hkobject name="#0186" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
 			
 			
 			<hkparam name="transitions" numelements="1">
@@ -3672,7 +3783,7 @@
 							<hkparam name="exitTime">0.000000</hkparam>
 						</hkobject>
 					</hkparam>
-					<hkparam name="transition">#0120</hkparam>
+					<hkparam name="transition">#0122</hkparam>
 					<hkparam name="condition">null</hkparam>
 					<hkparam name="eventId">7</hkparam>
 					<hkparam name="toStateId">0</hkparam>
@@ -3684,7 +3795,7 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0185" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+		<hkobject name="#0187" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -3693,15 +3804,15 @@
 			<hkparam name="listeners" numelements="0"></hkparam>
 			<hkparam name="enterNotifyEvents">null</hkparam>
 			<hkparam name="exitNotifyEvents">null</hkparam>
-			<hkparam name="transitions">#0184</hkparam>
-			<hkparam name="generator">#0183</hkparam>
+			<hkparam name="transitions">#0186</hkparam>
+			<hkparam name="generator">#0185</hkparam>
 			<hkparam name="name">WeapRightReplace_ForceEquipLocomotion</hkparam>
 			<hkparam name="stateId">1</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
 		</hkobject>
 
-		<hkobject name="#0186" class="hkbBoneWeightArray" signature="0xcd902b77">
+		<hkobject name="#0188" class="hkbBoneWeightArray" signature="0xcd902b77">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -3718,19 +3829,19 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0187" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0189" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
-			<hkparam name="generator">#0118</hkparam>
-			<hkparam name="boneWeights">#0186</hkparam>
+			<hkparam name="generator">#0120</hkparam>
+			<hkparam name="boneWeights">#0188</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">0.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0188" class="hkbBoneWeightArray" signature="0xcd902b77">
+		<hkobject name="#0190" class="hkbBoneWeightArray" signature="0xcd902b77">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -3747,19 +3858,19 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0189" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0191" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
-			<hkparam name="generator">#0159</hkparam>
-			<hkparam name="boneWeights">#0188</hkparam>
+			<hkparam name="generator">#0161</hkparam>
+			<hkparam name="boneWeights">#0190</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">0.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0190" class="hkbBlenderGenerator" signature="0x22df7147">
+		<hkobject name="#0192" class="hkbBlenderGenerator" signature="0x22df7147">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -3778,7 +3889,7 @@
 			<hkparam name="flags">0</hkparam>
 			<hkparam name="subtractLastChild">false</hkparam>
 			<hkparam name="children" numelements="2">
-				#0189 #0187
+				#0191 #0189
 			</hkparam>
 			
 			
@@ -3790,7 +3901,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0191" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
+		<hkobject name="#0193" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
 			
 			
 			<hkparam name="transitions" numelements="1">
@@ -3811,7 +3922,7 @@
 							<hkparam name="exitTime">0.000000</hkparam>
 						</hkobject>
 					</hkparam>
-					<hkparam name="transition">#0120</hkparam>
+					<hkparam name="transition">#0122</hkparam>
 					<hkparam name="condition">null</hkparam>
 					<hkparam name="eventId">23</hkparam>
 					<hkparam name="toStateId">0</hkparam>
@@ -3823,7 +3934,7 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0192" class="hkbStateMachineEventPropertyArray" signature="0xb07b4388">
+		<hkobject name="#0194" class="hkbStateMachineEventPropertyArray" signature="0xb07b4388">
 			
 			
 			<hkparam name="events" numelements="1">
@@ -3834,24 +3945,24 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0193" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+		<hkobject name="#0195" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
 			<hkparam name="listeners" numelements="0"></hkparam>
-			<hkparam name="enterNotifyEvents">#0192</hkparam>
+			<hkparam name="enterNotifyEvents">#0194</hkparam>
 			<hkparam name="exitNotifyEvents">null</hkparam>
-			<hkparam name="transitions">#0191</hkparam>
-			<hkparam name="generator">#0190</hkparam>
+			<hkparam name="transitions">#0193</hkparam>
+			<hkparam name="generator">#0192</hkparam>
 			<hkparam name="name">WeapRightReplaceSneak_ForceEquipState</hkparam>
 			<hkparam name="stateId">1</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
 		</hkobject>
 
-		<hkobject name="#0194" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
+		<hkobject name="#0196" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
 			
 			
 			<hkparam name="transitions" numelements="1">
@@ -3872,7 +3983,7 @@
 							<hkparam name="exitTime">0.000000</hkparam>
 						</hkobject>
 					</hkparam>
-					<hkparam name="transition">#0120</hkparam>
+					<hkparam name="transition">#0122</hkparam>
 					<hkparam name="condition">null</hkparam>
 					<hkparam name="eventId">22</hkparam>
 					<hkparam name="toStateId">1</hkparam>
@@ -3884,7 +3995,7 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0195" class="hkbStateMachineEventPropertyArray" signature="0xb07b4388">
+		<hkobject name="#0197" class="hkbStateMachineEventPropertyArray" signature="0xb07b4388">
 			
 			
 			<hkparam name="events" numelements="1">
@@ -3895,24 +4006,24 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0196" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+		<hkobject name="#0198" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
 			<hkparam name="listeners" numelements="0"></hkparam>
-			<hkparam name="enterNotifyEvents">#0195</hkparam>
+			<hkparam name="enterNotifyEvents">#0197</hkparam>
 			<hkparam name="exitNotifyEvents">null</hkparam>
-			<hkparam name="transitions">#0194</hkparam>
-			<hkparam name="generator">#0159</hkparam>
+			<hkparam name="transitions">#0196</hkparam>
+			<hkparam name="generator">#0161</hkparam>
 			<hkparam name="name">WeapRightReplaceDefault_ForceEquipState</hkparam>
 			<hkparam name="stateId">0</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
 		</hkobject>
 
-		<hkobject name="#0197" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#0199" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="1">
@@ -3934,10 +4045,10 @@
 			
 		</hkobject>
 
-		<hkobject name="#0198" class="hkbStateMachine" signature="0x816c1dcb">
+		<hkobject name="#0200" class="hkbStateMachine" signature="0x816c1dcb">
 			
 			
-			<hkparam name="variableBindingSet">#0197</hkparam>
+			<hkparam name="variableBindingSet">#0199</hkparam>
 			
 			
 			<hkparam name="userData">0</hkparam>
@@ -3966,7 +4077,7 @@
 			<hkparam name="selfTransitionMode">SELF_TRANSITION_MODE_NO_TRANSITION</hkparam>
 			
 			<hkparam name="states" numelements="2">
-				#0196 #0193
+				#0198 #0195
 			</hkparam>
 			<hkparam name="wildcardTransitions">null</hkparam>
 			
@@ -3983,7 +4094,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0199" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
+		<hkobject name="#0201" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
 			
 			
 			<hkparam name="transitions" numelements="1">
@@ -4004,7 +4115,7 @@
 							<hkparam name="exitTime">0.000000</hkparam>
 						</hkobject>
 					</hkparam>
-					<hkparam name="transition">#0120</hkparam>
+					<hkparam name="transition">#0122</hkparam>
 					<hkparam name="condition">null</hkparam>
 					<hkparam name="eventId">6</hkparam>
 					<hkparam name="toStateId">1</hkparam>
@@ -4016,7 +4127,7 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0200" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+		<hkobject name="#0202" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -4025,15 +4136,15 @@
 			<hkparam name="listeners" numelements="0"></hkparam>
 			<hkparam name="enterNotifyEvents">null</hkparam>
 			<hkparam name="exitNotifyEvents">null</hkparam>
-			<hkparam name="transitions">#0199</hkparam>
-			<hkparam name="generator">#0198</hkparam>
+			<hkparam name="transitions">#0201</hkparam>
+			<hkparam name="generator">#0200</hkparam>
 			<hkparam name="name">WeapRightReplace_ForceEquipStanding</hkparam>
 			<hkparam name="stateId">0</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
 		</hkobject>
 
-		<hkobject name="#0201" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#0203" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="1">
@@ -4055,10 +4166,10 @@
 			
 		</hkobject>
 
-		<hkobject name="#0202" class="hkbStateMachine" signature="0x816c1dcb">
+		<hkobject name="#0204" class="hkbStateMachine" signature="0x816c1dcb">
 			
 			
-			<hkparam name="variableBindingSet">#0201</hkparam>
+			<hkparam name="variableBindingSet">#0203</hkparam>
 			
 			
 			<hkparam name="userData">0</hkparam>
@@ -4087,7 +4198,7 @@
 			<hkparam name="selfTransitionMode">SELF_TRANSITION_MODE_NO_TRANSITION</hkparam>
 			
 			<hkparam name="states" numelements="2">
-				#0200 #0185
+				#0202 #0187
 			</hkparam>
 			<hkparam name="wildcardTransitions">null</hkparam>
 			
@@ -4104,7 +4215,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0203" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+		<hkobject name="#0205" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -4114,14 +4225,14 @@
 			<hkparam name="enterNotifyEvents">null</hkparam>
 			<hkparam name="exitNotifyEvents">null</hkparam>
 			<hkparam name="transitions">null</hkparam>
-			<hkparam name="generator">#0202</hkparam>
+			<hkparam name="generator">#0204</hkparam>
 			<hkparam name="name">WeapRightReplace_ForceEquipRoot</hkparam>
 			<hkparam name="stateId">2</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
 		</hkobject>
 
-		<hkobject name="#0204" class="hkbBoneWeightArray" signature="0xcd902b77">
+		<hkobject name="#0206" class="hkbBoneWeightArray" signature="0xcd902b77">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -4138,7 +4249,7 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0210" class="hkbBoneWeightArray" signature="0xcd902b77">
+		<hkobject name="#0212" class="hkbBoneWeightArray" signature="0xcd902b77">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -4155,19 +4266,19 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0209" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0211" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
-			<hkparam name="generator">#0118</hkparam>
-			<hkparam name="boneWeights">#0210</hkparam>
+			<hkparam name="generator">#0120</hkparam>
+			<hkparam name="boneWeights">#0212</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">0.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0212" class="hkbBoneWeightArray" signature="0xcd902b77">
+		<hkobject name="#0214" class="hkbBoneWeightArray" signature="0xcd902b77">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -4184,7 +4295,7 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0216" class="hkbClipTriggerArray" signature="0x59c23a0f">
+		<hkobject name="#0218" class="hkbClipTriggerArray" signature="0x59c23a0f">
 			
 			
 			<hkparam name="triggers" numelements="3">
@@ -4227,7 +4338,7 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0215" class="hkbClipGenerator" signature="0x333b85b9">
+		<hkobject name="#0217" class="hkbClipGenerator" signature="0x333b85b9">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -4239,7 +4350,7 @@
 			
 			
 			<hkparam name="animationName">Animations\WeapSoloEquip.hkx</hkparam>
-			<hkparam name="triggers">#0216</hkparam>
+			<hkparam name="triggers">#0218</hkparam>
 			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
 			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
 			<hkparam name="startTime">0.000000</hkparam>
@@ -4267,7 +4378,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0214" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+		<hkobject name="#0216" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -4277,43 +4388,9 @@
 			<hkparam name="enterNotifyEvents">null</hkparam>
 			<hkparam name="exitNotifyEvents">null</hkparam>
 			<hkparam name="transitions">null</hkparam>
-			<hkparam name="generator">#0215</hkparam>
+			<hkparam name="generator">#0217</hkparam>
 			<hkparam name="name">1HMForceEquip_Dagger</hkparam>
 			<hkparam name="stateId">2</hkparam>
-			<hkparam name="probability">1.000000</hkparam>
-			<hkparam name="enable">true</hkparam>
-		</hkobject>
-
-		<hkobject name="#0217" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
-			
-			
-			<hkparam name="variableBindingSet">null</hkparam>
-			
-			
-			<hkparam name="listeners" numelements="0"></hkparam>
-			<hkparam name="enterNotifyEvents">null</hkparam>
-			<hkparam name="exitNotifyEvents">null</hkparam>
-			<hkparam name="transitions">null</hkparam>
-			<hkparam name="generator">#0215</hkparam>
-			<hkparam name="name">1HMForceEquip_Mace</hkparam>
-			<hkparam name="stateId">4</hkparam>
-			<hkparam name="probability">1.000000</hkparam>
-			<hkparam name="enable">true</hkparam>
-		</hkobject>
-
-		<hkobject name="#0218" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
-			
-			
-			<hkparam name="variableBindingSet">null</hkparam>
-			
-			
-			<hkparam name="listeners" numelements="0"></hkparam>
-			<hkparam name="enterNotifyEvents">null</hkparam>
-			<hkparam name="exitNotifyEvents">null</hkparam>
-			<hkparam name="transitions">null</hkparam>
-			<hkparam name="generator">#0215</hkparam>
-			<hkparam name="name">1HMForceEquip_Axe</hkparam>
-			<hkparam name="stateId">3</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
 		</hkobject>
@@ -4328,14 +4405,48 @@
 			<hkparam name="enterNotifyEvents">null</hkparam>
 			<hkparam name="exitNotifyEvents">null</hkparam>
 			<hkparam name="transitions">null</hkparam>
-			<hkparam name="generator">#0215</hkparam>
+			<hkparam name="generator">#0217</hkparam>
+			<hkparam name="name">1HMForceEquip_Mace</hkparam>
+			<hkparam name="stateId">4</hkparam>
+			<hkparam name="probability">1.000000</hkparam>
+			<hkparam name="enable">true</hkparam>
+		</hkobject>
+
+		<hkobject name="#0220" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="listeners" numelements="0"></hkparam>
+			<hkparam name="enterNotifyEvents">null</hkparam>
+			<hkparam name="exitNotifyEvents">null</hkparam>
+			<hkparam name="transitions">null</hkparam>
+			<hkparam name="generator">#0217</hkparam>
+			<hkparam name="name">1HMForceEquip_Axe</hkparam>
+			<hkparam name="stateId">3</hkparam>
+			<hkparam name="probability">1.000000</hkparam>
+			<hkparam name="enable">true</hkparam>
+		</hkobject>
+
+		<hkobject name="#0221" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="listeners" numelements="0"></hkparam>
+			<hkparam name="enterNotifyEvents">null</hkparam>
+			<hkparam name="exitNotifyEvents">null</hkparam>
+			<hkparam name="transitions">null</hkparam>
+			<hkparam name="generator">#0217</hkparam>
 			<hkparam name="name">1HMForceEquip_1HM</hkparam>
 			<hkparam name="stateId">1</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
 		</hkobject>
 
-		<hkobject name="#0223" class="hkbBoneWeightArray" signature="0xcd902b77">
+		<hkobject name="#0225" class="hkbBoneWeightArray" signature="0xcd902b77">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -4352,19 +4463,19 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0222" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0224" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
-			<hkparam name="generator">#0065</hkparam>
-			<hkparam name="boneWeights">#0223</hkparam>
+			<hkparam name="generator">#0069</hkparam>
+			<hkparam name="boneWeights">#0225</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">1.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0225" class="hkbBoneWeightArray" signature="0xcd902b77">
+		<hkobject name="#0227" class="hkbBoneWeightArray" signature="0xcd902b77">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -4380,7 +4491,7 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0226" class="hkbClipGenerator" signature="0x333b85b9">
+		<hkobject name="#0228" class="hkbClipGenerator" signature="0x333b85b9">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -4420,19 +4531,19 @@
 			
 		</hkobject>
 
-		<hkobject name="#0224" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0226" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
-			<hkparam name="generator">#0226</hkparam>
-			<hkparam name="boneWeights">#0225</hkparam>
+			<hkparam name="generator">#0228</hkparam>
+			<hkparam name="boneWeights">#0227</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">1.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0221" class="hkbBlenderGenerator" signature="0x22df7147">
+		<hkobject name="#0223" class="hkbBlenderGenerator" signature="0x22df7147">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -4451,7 +4562,7 @@
 			<hkparam name="flags">0</hkparam>
 			<hkparam name="subtractLastChild">false</hkparam>
 			<hkparam name="children" numelements="2">
-				#0224 #0222
+				#0226 #0224
 			</hkparam>
 			
 			
@@ -4463,7 +4574,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0220" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+		<hkobject name="#0222" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -4473,14 +4584,14 @@
 			<hkparam name="enterNotifyEvents">null</hkparam>
 			<hkparam name="exitNotifyEvents">null</hkparam>
 			<hkparam name="transitions">null</hkparam>
-			<hkparam name="generator">#0221</hkparam>
+			<hkparam name="generator">#0223</hkparam>
 			<hkparam name="name">1HMForceEquip_Staff</hkparam>
 			<hkparam name="stateId">8</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
 		</hkobject>
 
-		<hkobject name="#0229" class="hkbClipTriggerArray" signature="0x59c23a0f">
+		<hkobject name="#0231" class="hkbClipTriggerArray" signature="0x59c23a0f">
 			
 			
 			<hkparam name="triggers" numelements="3">
@@ -4523,7 +4634,7 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0228" class="hkbClipGenerator" signature="0x333b85b9">
+		<hkobject name="#0230" class="hkbClipGenerator" signature="0x333b85b9">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -4535,7 +4646,7 @@
 			
 			
 			<hkparam name="animationName">Animations\Shd_Equip_1HMOut.hkx</hkparam>
-			<hkparam name="triggers">#0229</hkparam>
+			<hkparam name="triggers">#0231</hkparam>
 			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
 			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
 			<hkparam name="startTime">0.000000</hkparam>
@@ -4563,7 +4674,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0227" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+		<hkobject name="#0229" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -4573,14 +4684,14 @@
 			<hkparam name="enterNotifyEvents">null</hkparam>
 			<hkparam name="exitNotifyEvents">null</hkparam>
 			<hkparam name="transitions">null</hkparam>
-			<hkparam name="generator">#0228</hkparam>
+			<hkparam name="generator">#0230</hkparam>
 			<hkparam name="name">1HMForceEquip_Shield</hkparam>
 			<hkparam name="stateId">10</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
 		</hkobject>
 
-		<hkobject name="#0230" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+		<hkobject name="#0232" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -4590,14 +4701,14 @@
 			<hkparam name="enterNotifyEvents">null</hkparam>
 			<hkparam name="exitNotifyEvents">null</hkparam>
 			<hkparam name="transitions">null</hkparam>
-			<hkparam name="generator">#0228</hkparam>
+			<hkparam name="generator">#0230</hkparam>
 			<hkparam name="name">1HMForceEquip_Torch</hkparam>
 			<hkparam name="stateId">11</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
 		</hkobject>
 
-		<hkobject name="#0234" class="hkbBoneWeightArray" signature="0xcd902b77">
+		<hkobject name="#0236" class="hkbBoneWeightArray" signature="0xcd902b77">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -4614,7 +4725,7 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0236" class="hkbClipTriggerArray" signature="0x59c23a0f">
+		<hkobject name="#0238" class="hkbClipTriggerArray" signature="0x59c23a0f">
 			
 			
 			<hkparam name="triggers" numelements="1">
@@ -4633,7 +4744,7 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0235" class="hkbClipGenerator" signature="0x333b85b9">
+		<hkobject name="#0237" class="hkbClipGenerator" signature="0x333b85b9">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -4645,7 +4756,7 @@
 			
 			
 			<hkparam name="animationName">Animations\MRh_and_MLh_ForceEquip.hkx</hkparam>
-			<hkparam name="triggers">#0236</hkparam>
+			<hkparam name="triggers">#0238</hkparam>
 			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
 			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
 			<hkparam name="startTime">0.000000</hkparam>
@@ -4673,7 +4784,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0237" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#0239" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="1">
@@ -4695,19 +4806,19 @@
 			
 		</hkobject>
 
-		<hkobject name="#0233" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0235" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
-			<hkparam name="variableBindingSet">#0237</hkparam>
+			<hkparam name="variableBindingSet">#0239</hkparam>
 			
 			
-			<hkparam name="generator">#0235</hkparam>
-			<hkparam name="boneWeights">#0234</hkparam>
+			<hkparam name="generator">#0237</hkparam>
+			<hkparam name="boneWeights">#0236</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">1.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0239" class="hkbBoneWeightArray" signature="0xcd902b77">
+		<hkobject name="#0241" class="hkbBoneWeightArray" signature="0xcd902b77">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -4723,19 +4834,19 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0238" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0240" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
-			<hkparam name="generator">#0226</hkparam>
-			<hkparam name="boneWeights">#0239</hkparam>
+			<hkparam name="generator">#0228</hkparam>
+			<hkparam name="boneWeights">#0241</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">1.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0232" class="hkbBlenderGenerator" signature="0x22df7147">
+		<hkobject name="#0234" class="hkbBlenderGenerator" signature="0x22df7147">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -4754,7 +4865,7 @@
 			<hkparam name="flags">0</hkparam>
 			<hkparam name="subtractLastChild">false</hkparam>
 			<hkparam name="children" numelements="2">
-				#0238 #0233
+				#0240 #0235
 			</hkparam>
 			
 			
@@ -4766,7 +4877,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0231" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+		<hkobject name="#0233" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -4776,14 +4887,14 @@
 			<hkparam name="enterNotifyEvents">null</hkparam>
 			<hkparam name="exitNotifyEvents">null</hkparam>
 			<hkparam name="transitions">null</hkparam>
-			<hkparam name="generator">#0232</hkparam>
+			<hkparam name="generator">#0234</hkparam>
 			<hkparam name="name">1HMForceEquip_Magic</hkparam>
 			<hkparam name="stateId">9</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
 		</hkobject>
 
-		<hkobject name="#0243" class="hkbBoneWeightArray" signature="0xcd902b77">
+		<hkobject name="#0245" class="hkbBoneWeightArray" signature="0xcd902b77">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -4800,19 +4911,19 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0242" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0244" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
-			<hkparam name="generator">#0092</hkparam>
-			<hkparam name="boneWeights">#0243</hkparam>
+			<hkparam name="generator">#0067</hkparam>
+			<hkparam name="boneWeights">#0245</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">1.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0245" class="hkbBoneWeightArray" signature="0xcd902b77">
+		<hkobject name="#0247" class="hkbBoneWeightArray" signature="0xcd902b77">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -4828,19 +4939,19 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0244" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0246" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
-			<hkparam name="generator">#0226</hkparam>
-			<hkparam name="boneWeights">#0245</hkparam>
+			<hkparam name="generator">#0228</hkparam>
+			<hkparam name="boneWeights">#0247</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">1.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0241" class="hkbBlenderGenerator" signature="0x22df7147">
+		<hkobject name="#0243" class="hkbBlenderGenerator" signature="0x22df7147">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -4859,7 +4970,7 @@
 			<hkparam name="flags">0</hkparam>
 			<hkparam name="subtractLastChild">false</hkparam>
 			<hkparam name="children" numelements="2">
-				#0244 #0242
+				#0246 #0244
 			</hkparam>
 			
 			
@@ -4871,7 +4982,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0240" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+		<hkobject name="#0242" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -4881,14 +4992,14 @@
 			<hkparam name="enterNotifyEvents">null</hkparam>
 			<hkparam name="exitNotifyEvents">null</hkparam>
 			<hkparam name="transitions">null</hkparam>
-			<hkparam name="generator">#0241</hkparam>
+			<hkparam name="generator">#0243</hkparam>
 			<hkparam name="name">1HMForceEquip_Solo</hkparam>
 			<hkparam name="stateId">0</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
 		</hkobject>
 
-		<hkobject name="#0246" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#0248" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="1">
@@ -4910,10 +5021,10 @@
 			
 		</hkobject>
 
-		<hkobject name="#0213" class="hkbStateMachine" signature="0x816c1dcb">
+		<hkobject name="#0215" class="hkbStateMachine" signature="0x816c1dcb">
 			
 			
-			<hkparam name="variableBindingSet">#0246</hkparam>
+			<hkparam name="variableBindingSet">#0248</hkparam>
 			
 			
 			<hkparam name="userData">0</hkparam>
@@ -4942,7 +5053,7 @@
 			<hkparam name="selfTransitionMode">SELF_TRANSITION_MODE_NO_TRANSITION</hkparam>
 			
 			<hkparam name="states" numelements="9">
-				#0240 #0231 #0230 #0227 #0220 #0219 #0218 #0217 #0214
+				#0242 #0233 #0232 #0229 #0222 #0221 #0220 #0219 #0216
 			</hkparam>
 			<hkparam name="wildcardTransitions">null</hkparam>
 			
@@ -4959,7 +5070,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0247" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#0249" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="1">
@@ -4981,19 +5092,19 @@
 			
 		</hkobject>
 
-		<hkobject name="#0211" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0213" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
-			<hkparam name="variableBindingSet">#0247</hkparam>
+			<hkparam name="variableBindingSet">#0249</hkparam>
 			
 			
-			<hkparam name="generator">#0213</hkparam>
-			<hkparam name="boneWeights">#0212</hkparam>
+			<hkparam name="generator">#0215</hkparam>
+			<hkparam name="boneWeights">#0214</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">0.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0208" class="hkbBlenderGenerator" signature="0x22df7147">
+		<hkobject name="#0210" class="hkbBlenderGenerator" signature="0x22df7147">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -5012,7 +5123,7 @@
 			<hkparam name="flags">0</hkparam>
 			<hkparam name="subtractLastChild">false</hkparam>
 			<hkparam name="children" numelements="2">
-				#0211 #0209
+				#0213 #0211
 			</hkparam>
 			
 			
@@ -5024,7 +5135,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0248" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
+		<hkobject name="#0250" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
 			
 			
 			<hkparam name="transitions" numelements="1">
@@ -5045,7 +5156,7 @@
 							<hkparam name="exitTime">0.000000</hkparam>
 						</hkobject>
 					</hkparam>
-					<hkparam name="transition">#0120</hkparam>
+					<hkparam name="transition">#0122</hkparam>
 					<hkparam name="condition">null</hkparam>
 					<hkparam name="eventId">23</hkparam>
 					<hkparam name="toStateId">0</hkparam>
@@ -5057,7 +5168,7 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0249" class="hkbStateMachineEventPropertyArray" signature="0xb07b4388">
+		<hkobject name="#0251" class="hkbStateMachineEventPropertyArray" signature="0xb07b4388">
 			
 			
 			<hkparam name="events" numelements="1">
@@ -5068,24 +5179,24 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0207" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+		<hkobject name="#0209" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
 			<hkparam name="listeners" numelements="0"></hkparam>
-			<hkparam name="enterNotifyEvents">#0249</hkparam>
+			<hkparam name="enterNotifyEvents">#0251</hkparam>
 			<hkparam name="exitNotifyEvents">null</hkparam>
-			<hkparam name="transitions">#0248</hkparam>
-			<hkparam name="generator">#0208</hkparam>
+			<hkparam name="transitions">#0250</hkparam>
+			<hkparam name="generator">#0210</hkparam>
 			<hkparam name="name">1HMForceEquipsSneakState</hkparam>
 			<hkparam name="stateId">1</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
 		</hkobject>
 
-		<hkobject name="#0251" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
+		<hkobject name="#0253" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
 			
 			
 			<hkparam name="transitions" numelements="1">
@@ -5106,7 +5217,7 @@
 							<hkparam name="exitTime">0.000000</hkparam>
 						</hkobject>
 					</hkparam>
-					<hkparam name="transition">#0120</hkparam>
+					<hkparam name="transition">#0122</hkparam>
 					<hkparam name="condition">null</hkparam>
 					<hkparam name="eventId">22</hkparam>
 					<hkparam name="toStateId">1</hkparam>
@@ -5118,7 +5229,7 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0252" class="hkbStateMachineEventPropertyArray" signature="0xb07b4388">
+		<hkobject name="#0254" class="hkbStateMachineEventPropertyArray" signature="0xb07b4388">
 			
 			
 			<hkparam name="events" numelements="1">
@@ -5129,24 +5240,24 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0250" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+		<hkobject name="#0252" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
 			<hkparam name="listeners" numelements="0"></hkparam>
-			<hkparam name="enterNotifyEvents">#0252</hkparam>
+			<hkparam name="enterNotifyEvents">#0254</hkparam>
 			<hkparam name="exitNotifyEvents">null</hkparam>
-			<hkparam name="transitions">#0251</hkparam>
-			<hkparam name="generator">#0213</hkparam>
+			<hkparam name="transitions">#0253</hkparam>
+			<hkparam name="generator">#0215</hkparam>
 			<hkparam name="name">1HMForceEquipDefaultState</hkparam>
 			<hkparam name="stateId">0</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
 		</hkobject>
 
-		<hkobject name="#0253" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#0255" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="1">
@@ -5168,10 +5279,10 @@
 			
 		</hkobject>
 
-		<hkobject name="#0206" class="hkbStateMachine" signature="0x816c1dcb">
+		<hkobject name="#0208" class="hkbStateMachine" signature="0x816c1dcb">
 			
 			
-			<hkparam name="variableBindingSet">#0253</hkparam>
+			<hkparam name="variableBindingSet">#0255</hkparam>
 			
 			
 			<hkparam name="userData">0</hkparam>
@@ -5200,7 +5311,7 @@
 			<hkparam name="selfTransitionMode">SELF_TRANSITION_MODE_NO_TRANSITION</hkparam>
 			
 			<hkparam name="states" numelements="2">
-				#0250 #0207
+				#0252 #0209
 			</hkparam>
 			<hkparam name="wildcardTransitions">null</hkparam>
 			
@@ -5217,19 +5328,19 @@
 			
 		</hkobject>
 
-		<hkobject name="#0205" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0207" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
-			<hkparam name="generator">#0206</hkparam>
-			<hkparam name="boneWeights">#0204</hkparam>
+			<hkparam name="generator">#0208</hkparam>
+			<hkparam name="boneWeights">#0206</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">0.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0254" class="hkbBoneWeightArray" signature="0xcd902b77">
+		<hkobject name="#0256" class="hkbBoneWeightArray" signature="0xcd902b77">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -5246,19 +5357,19 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0255" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0257" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
-			<hkparam name="generator">#0106</hkparam>
-			<hkparam name="boneWeights">#0254</hkparam>
+			<hkparam name="generator">#0108</hkparam>
+			<hkparam name="boneWeights">#0256</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">1.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0256" class="hkbBlenderGenerator" signature="0x22df7147">
+		<hkobject name="#0258" class="hkbBlenderGenerator" signature="0x22df7147">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -5277,7 +5388,7 @@
 			<hkparam name="flags">0</hkparam>
 			<hkparam name="subtractLastChild">false</hkparam>
 			<hkparam name="children" numelements="2">
-				#0255 #0205
+				#0257 #0207
 			</hkparam>
 			
 			
@@ -5287,56 +5398,6 @@
 			
 			
 			
-		</hkobject>
-
-		<hkobject name="#0257" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
-			
-			
-			<hkparam name="transitions" numelements="1">
-				<hkobject>
-					<hkparam name="triggerInterval">
-						<hkobject>
-							<hkparam name="enterEventId">-1</hkparam>
-							<hkparam name="exitEventId">-1</hkparam>
-							<hkparam name="enterTime">0.000000</hkparam>
-							<hkparam name="exitTime">0.000000</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="initiateInterval">
-						<hkobject>
-							<hkparam name="enterEventId">-1</hkparam>
-							<hkparam name="exitEventId">-1</hkparam>
-							<hkparam name="enterTime">0.000000</hkparam>
-							<hkparam name="exitTime">0.000000</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="transition">#0120</hkparam>
-					<hkparam name="condition">null</hkparam>
-					<hkparam name="eventId">7</hkparam>
-					<hkparam name="toStateId">0</hkparam>
-					<hkparam name="fromNestedStateId">0</hkparam>
-					<hkparam name="toNestedStateId">0</hkparam>
-					<hkparam name="priority">0</hkparam>
-					<hkparam name="flags">FLAG_DISABLE_CONDITION</hkparam>
-				</hkobject>
-			</hkparam>
-		</hkobject>
-
-		<hkobject name="#0258" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
-			
-			
-			<hkparam name="variableBindingSet">null</hkparam>
-			
-			
-			<hkparam name="listeners" numelements="0"></hkparam>
-			<hkparam name="enterNotifyEvents">null</hkparam>
-			<hkparam name="exitNotifyEvents">null</hkparam>
-			<hkparam name="transitions">#0257</hkparam>
-			<hkparam name="generator">#0256</hkparam>
-			<hkparam name="name">WeapLeftReplace_ForceEquipLocomotion</hkparam>
-			<hkparam name="stateId">1</hkparam>
-			<hkparam name="probability">1.000000</hkparam>
-			<hkparam name="enable">true</hkparam>
 		</hkobject>
 
 		<hkobject name="#0259" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
@@ -5360,10 +5421,10 @@
 							<hkparam name="exitTime">0.000000</hkparam>
 						</hkobject>
 					</hkparam>
-					<hkparam name="transition">#0120</hkparam>
+					<hkparam name="transition">#0122</hkparam>
 					<hkparam name="condition">null</hkparam>
-					<hkparam name="eventId">6</hkparam>
-					<hkparam name="toStateId">1</hkparam>
+					<hkparam name="eventId">7</hkparam>
+					<hkparam name="toStateId">0</hkparam>
 					<hkparam name="fromNestedStateId">0</hkparam>
 					<hkparam name="toNestedStateId">0</hkparam>
 					<hkparam name="priority">0</hkparam>
@@ -5382,14 +5443,64 @@
 			<hkparam name="enterNotifyEvents">null</hkparam>
 			<hkparam name="exitNotifyEvents">null</hkparam>
 			<hkparam name="transitions">#0259</hkparam>
-			<hkparam name="generator">#0206</hkparam>
+			<hkparam name="generator">#0258</hkparam>
+			<hkparam name="name">WeapLeftReplace_ForceEquipLocomotion</hkparam>
+			<hkparam name="stateId">1</hkparam>
+			<hkparam name="probability">1.000000</hkparam>
+			<hkparam name="enable">true</hkparam>
+		</hkobject>
+
+		<hkobject name="#0261" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
+			
+			
+			<hkparam name="transitions" numelements="1">
+				<hkobject>
+					<hkparam name="triggerInterval">
+						<hkobject>
+							<hkparam name="enterEventId">-1</hkparam>
+							<hkparam name="exitEventId">-1</hkparam>
+							<hkparam name="enterTime">0.000000</hkparam>
+							<hkparam name="exitTime">0.000000</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="initiateInterval">
+						<hkobject>
+							<hkparam name="enterEventId">-1</hkparam>
+							<hkparam name="exitEventId">-1</hkparam>
+							<hkparam name="enterTime">0.000000</hkparam>
+							<hkparam name="exitTime">0.000000</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="transition">#0122</hkparam>
+					<hkparam name="condition">null</hkparam>
+					<hkparam name="eventId">6</hkparam>
+					<hkparam name="toStateId">1</hkparam>
+					<hkparam name="fromNestedStateId">0</hkparam>
+					<hkparam name="toNestedStateId">0</hkparam>
+					<hkparam name="priority">0</hkparam>
+					<hkparam name="flags">FLAG_DISABLE_CONDITION</hkparam>
+				</hkobject>
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0262" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="listeners" numelements="0"></hkparam>
+			<hkparam name="enterNotifyEvents">null</hkparam>
+			<hkparam name="exitNotifyEvents">null</hkparam>
+			<hkparam name="transitions">#0261</hkparam>
+			<hkparam name="generator">#0208</hkparam>
 			<hkparam name="name">WeapLeftReplace_ForceEquipStanding</hkparam>
 			<hkparam name="stateId">0</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
 		</hkobject>
 
-		<hkobject name="#0261" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#0263" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="1">
@@ -5411,10 +5522,10 @@
 			
 		</hkobject>
 
-		<hkobject name="#0262" class="hkbStateMachine" signature="0x816c1dcb">
+		<hkobject name="#0264" class="hkbStateMachine" signature="0x816c1dcb">
 			
 			
-			<hkparam name="variableBindingSet">#0261</hkparam>
+			<hkparam name="variableBindingSet">#0263</hkparam>
 			
 			
 			<hkparam name="userData">0</hkparam>
@@ -5443,7 +5554,7 @@
 			<hkparam name="selfTransitionMode">SELF_TRANSITION_MODE_NO_TRANSITION</hkparam>
 			
 			<hkparam name="states" numelements="2">
-				#0260 #0258
+				#0262 #0260
 			</hkparam>
 			<hkparam name="wildcardTransitions">null</hkparam>
 			
@@ -5460,7 +5571,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0263" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+		<hkobject name="#0265" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -5470,14 +5581,14 @@
 			<hkparam name="enterNotifyEvents">null</hkparam>
 			<hkparam name="exitNotifyEvents">null</hkparam>
 			<hkparam name="transitions">null</hkparam>
-			<hkparam name="generator">#0262</hkparam>
+			<hkparam name="generator">#0264</hkparam>
 			<hkparam name="name">WeapLeftReplace_ForceEquipRoot</hkparam>
 			<hkparam name="stateId">1</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
 		</hkobject>
 
-		<hkobject name="#0264" class="hkbBoneWeightArray" signature="0xcd902b77">
+		<hkobject name="#0266" class="hkbBoneWeightArray" signature="0xcd902b77">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -5494,7 +5605,7 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0265" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#0267" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="1">
@@ -5513,101 +5624,6 @@
 				</hkobject>
 			</hkparam>
 			<hkparam name="indexOfBindingToEnable">-1</hkparam>
-			
-		</hkobject>
-
-		<hkobject name="#0269" class="hkbClipTriggerArray" signature="0x59c23a0f">
-			
-			
-			<hkparam name="triggers" numelements="4">
-				<hkobject>
-					<hkparam name="localTime">0.000000</hkparam>
-					<hkparam name="event">
-						<hkobject>
-							<hkparam name="id">5</hkparam>
-							<hkparam name="payload">null</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="relativeToEndOfClip">false</hkparam>
-					<hkparam name="acyclic">false</hkparam>
-					<hkparam name="isAnnotation">false</hkparam>
-				</hkobject>
-				<hkobject>
-					<hkparam name="localTime">0.000000</hkparam>
-					<hkparam name="event">
-						<hkobject>
-							<hkparam name="id">3</hkparam>
-							<hkparam name="payload">null</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="relativeToEndOfClip">true</hkparam>
-					<hkparam name="acyclic">false</hkparam>
-					<hkparam name="isAnnotation">false</hkparam>
-				</hkobject>
-				<hkobject>
-					<hkparam name="localTime">0.000000</hkparam>
-					<hkparam name="event">
-						<hkobject>
-							<hkparam name="id">2</hkparam>
-							<hkparam name="payload">null</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="relativeToEndOfClip">true</hkparam>
-					<hkparam name="acyclic">false</hkparam>
-					<hkparam name="isAnnotation">false</hkparam>
-				</hkobject>
-				<hkobject>
-					<hkparam name="localTime">0.588000</hkparam>
-					<hkparam name="event">
-						<hkobject>
-							<hkparam name="id">4</hkparam>
-							<hkparam name="payload">null</hkparam>
-						</hkobject>
-					</hkparam>
-					<hkparam name="relativeToEndOfClip">false</hkparam>
-					<hkparam name="acyclic">false</hkparam>
-					<hkparam name="isAnnotation">false</hkparam>
-				</hkobject>
-			</hkparam>
-		</hkobject>
-
-		<hkobject name="#0268" class="hkbClipGenerator" signature="0x333b85b9">
-			
-			
-			<hkparam name="variableBindingSet">null</hkparam>
-			
-			
-			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">1HM_BoundSwordEquip</hkparam>
-			
-			
-			
-			<hkparam name="animationName">Animations\1HM_BoundSwordEquip.hkx</hkparam>
-			<hkparam name="triggers">#0269</hkparam>
-			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
-			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
-			<hkparam name="startTime">0.000000</hkparam>
-			<hkparam name="playbackSpeed">1.000000</hkparam>
-			<hkparam name="enforcedDuration">0.000000</hkparam>
-			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
-			<hkparam name="animationBindingIndex">-1</hkparam>
-			<hkparam name="mode">MODE_SINGLE_PLAY</hkparam>
-			<hkparam name="flags">0</hkparam>
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
 			
 		</hkobject>
 
@@ -5673,11 +5689,11 @@
 			
 			
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">Bow_BoundBowEquip</hkparam>
+			<hkparam name="name">1HM_BoundSwordEquip</hkparam>
 			
 			
 			
-			<hkparam name="animationName">Animations\Bow_BoundBowEquip.hkx</hkparam>
+			<hkparam name="animationName">Animations\1HM_BoundSwordEquip.hkx</hkparam>
 			<hkparam name="triggers">#0271</hkparam>
 			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
 			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
@@ -5706,7 +5722,102 @@
 			
 		</hkobject>
 
-		<hkobject name="#0272" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#0273" class="hkbClipTriggerArray" signature="0x59c23a0f">
+			
+			
+			<hkparam name="triggers" numelements="4">
+				<hkobject>
+					<hkparam name="localTime">0.000000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">5</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">false</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">0.000000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">3</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">0.000000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">2</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">true</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="localTime">0.588000</hkparam>
+					<hkparam name="event">
+						<hkobject>
+							<hkparam name="id">4</hkparam>
+							<hkparam name="payload">null</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="relativeToEndOfClip">false</hkparam>
+					<hkparam name="acyclic">false</hkparam>
+					<hkparam name="isAnnotation">false</hkparam>
+				</hkobject>
+			</hkparam>
+		</hkobject>
+
+		<hkobject name="#0272" class="hkbClipGenerator" signature="0x333b85b9">
+			
+			
+			<hkparam name="variableBindingSet">null</hkparam>
+			
+			
+			<hkparam name="userData">0</hkparam>
+			<hkparam name="name">Bow_BoundBowEquip</hkparam>
+			
+			
+			
+			<hkparam name="animationName">Animations\Bow_BoundBowEquip.hkx</hkparam>
+			<hkparam name="triggers">#0273</hkparam>
+			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
+			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
+			<hkparam name="startTime">0.000000</hkparam>
+			<hkparam name="playbackSpeed">1.000000</hkparam>
+			<hkparam name="enforcedDuration">0.000000</hkparam>
+			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
+			<hkparam name="animationBindingIndex">-1</hkparam>
+			<hkparam name="mode">MODE_SINGLE_PLAY</hkparam>
+			<hkparam name="flags">0</hkparam>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		</hkobject>
+
+		<hkobject name="#0274" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="1">
@@ -5728,10 +5839,10 @@
 			
 		</hkobject>
 
-		<hkobject name="#0267" class="hkbManualSelectorGenerator" signature="0xd932fab8">
+		<hkobject name="#0269" class="hkbManualSelectorGenerator" signature="0xd932fab8">
 			
 			
-			<hkparam name="variableBindingSet">#0272</hkparam>
+			<hkparam name="variableBindingSet">#0274</hkparam>
 			
 			
 			<hkparam name="userData">0</hkparam>
@@ -5740,25 +5851,25 @@
 			
 			
 			<hkparam name="generators" numelements="10">
-				#0268 #0268 #0268 #0268 #0268 #0268 #0268 #0270 #0268 #0268
+				#0270 #0270 #0270 #0270 #0270 #0270 #0270 #0272 #0270 #0270
 			</hkparam>
 			<hkparam name="selectedGeneratorIndex">0</hkparam>
 			<hkparam name="currentGeneratorIndex">0</hkparam>
 		</hkobject>
 
-		<hkobject name="#0266" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0268" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
-			<hkparam name="variableBindingSet">#0265</hkparam>
+			<hkparam name="variableBindingSet">#0267</hkparam>
 			
 			
-			<hkparam name="generator">#0267</hkparam>
-			<hkparam name="boneWeights">#0264</hkparam>
+			<hkparam name="generator">#0269</hkparam>
+			<hkparam name="boneWeights">#0266</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">0.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0273" class="hkbBoneWeightArray" signature="0xcd902b77">
+		<hkobject name="#0275" class="hkbBoneWeightArray" signature="0xcd902b77">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -5775,19 +5886,19 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0274" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0276" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
-			<hkparam name="generator">#0106</hkparam>
-			<hkparam name="boneWeights">#0273</hkparam>
+			<hkparam name="generator">#0108</hkparam>
+			<hkparam name="boneWeights">#0275</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">1.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0275" class="hkbBlenderGenerator" signature="0x22df7147">
+		<hkobject name="#0277" class="hkbBlenderGenerator" signature="0x22df7147">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -5806,7 +5917,7 @@
 			<hkparam name="flags">0</hkparam>
 			<hkparam name="subtractLastChild">false</hkparam>
 			<hkparam name="children" numelements="2">
-				#0274 #0266
+				#0276 #0268
 			</hkparam>
 			
 			
@@ -5818,7 +5929,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0276" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
+		<hkobject name="#0278" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
 			
 			
 			<hkparam name="transitions" numelements="1">
@@ -5839,7 +5950,7 @@
 							<hkparam name="exitTime">0.000000</hkparam>
 						</hkobject>
 					</hkparam>
-					<hkparam name="transition">#0120</hkparam>
+					<hkparam name="transition">#0122</hkparam>
 					<hkparam name="condition">null</hkparam>
 					<hkparam name="eventId">7</hkparam>
 					<hkparam name="toStateId">0</hkparam>
@@ -5851,7 +5962,7 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0277" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+		<hkobject name="#0279" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -5860,15 +5971,15 @@
 			<hkparam name="listeners" numelements="0"></hkparam>
 			<hkparam name="enterNotifyEvents">null</hkparam>
 			<hkparam name="exitNotifyEvents">null</hkparam>
-			<hkparam name="transitions">#0276</hkparam>
-			<hkparam name="generator">#0275</hkparam>
+			<hkparam name="transitions">#0278</hkparam>
+			<hkparam name="generator">#0277</hkparam>
 			<hkparam name="name">MagicWeap_ForceEquipLocomotion</hkparam>
 			<hkparam name="stateId">1</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
 		</hkobject>
 
-		<hkobject name="#0278" class="hkbBoneWeightArray" signature="0xcd902b77">
+		<hkobject name="#0280" class="hkbBoneWeightArray" signature="0xcd902b77">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -5885,19 +5996,19 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0279" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0281" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
-			<hkparam name="generator">#0118</hkparam>
-			<hkparam name="boneWeights">#0278</hkparam>
+			<hkparam name="generator">#0120</hkparam>
+			<hkparam name="boneWeights">#0280</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">1.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0280" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#0282" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="1">
@@ -5919,19 +6030,19 @@
 			
 		</hkobject>
 
-		<hkobject name="#0281" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
+		<hkobject name="#0283" class="hkbBlenderGeneratorChild" signature="0xe2b384b0">
 			
 			
-			<hkparam name="variableBindingSet">#0280</hkparam>
+			<hkparam name="variableBindingSet">#0282</hkparam>
 			
 			
-			<hkparam name="generator">#0267</hkparam>
+			<hkparam name="generator">#0269</hkparam>
 			<hkparam name="boneWeights">null</hkparam>
 			<hkparam name="weight">1.000000</hkparam>
 			<hkparam name="worldFromModelWeight">0.000000</hkparam>
 		</hkobject>
 
-		<hkobject name="#0282" class="hkbBlenderGenerator" signature="0x22df7147">
+		<hkobject name="#0284" class="hkbBlenderGenerator" signature="0x22df7147">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -5950,7 +6061,7 @@
 			<hkparam name="flags">0</hkparam>
 			<hkparam name="subtractLastChild">false</hkparam>
 			<hkparam name="children" numelements="2">
-				#0281 #0279
+				#0283 #0281
 			</hkparam>
 			
 			
@@ -5962,7 +6073,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0284" class="hkbBlendingTransitionEffect" signature="0xfd8584fe">
+		<hkobject name="#0286" class="hkbBlendingTransitionEffect" signature="0xfd8584fe">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -5990,7 +6101,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0283" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
+		<hkobject name="#0285" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
 			
 			
 			<hkparam name="transitions" numelements="1">
@@ -6011,7 +6122,7 @@
 							<hkparam name="exitTime">0.000000</hkparam>
 						</hkobject>
 					</hkparam>
-					<hkparam name="transition">#0284</hkparam>
+					<hkparam name="transition">#0286</hkparam>
 					<hkparam name="condition">null</hkparam>
 					<hkparam name="eventId">23</hkparam>
 					<hkparam name="toStateId">0</hkparam>
@@ -6023,7 +6134,7 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0285" class="hkbStateMachineEventPropertyArray" signature="0xb07b4388">
+		<hkobject name="#0287" class="hkbStateMachineEventPropertyArray" signature="0xb07b4388">
 			
 			
 			<hkparam name="events" numelements="1">
@@ -6034,24 +6145,24 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0286" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+		<hkobject name="#0288" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
 			<hkparam name="listeners" numelements="0"></hkparam>
-			<hkparam name="enterNotifyEvents">#0285</hkparam>
+			<hkparam name="enterNotifyEvents">#0287</hkparam>
 			<hkparam name="exitNotifyEvents">null</hkparam>
-			<hkparam name="transitions">#0283</hkparam>
-			<hkparam name="generator">#0282</hkparam>
+			<hkparam name="transitions">#0285</hkparam>
+			<hkparam name="generator">#0284</hkparam>
 			<hkparam name="name">SneakMagicWeap_ForceEquipStandingState</hkparam>
 			<hkparam name="stateId">1</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
 		</hkobject>
 
-		<hkobject name="#0287" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
+		<hkobject name="#0289" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
 			
 			
 			<hkparam name="transitions" numelements="1">
@@ -6072,7 +6183,7 @@
 							<hkparam name="exitTime">0.000000</hkparam>
 						</hkobject>
 					</hkparam>
-					<hkparam name="transition">#0284</hkparam>
+					<hkparam name="transition">#0286</hkparam>
 					<hkparam name="condition">null</hkparam>
 					<hkparam name="eventId">22</hkparam>
 					<hkparam name="toStateId">1</hkparam>
@@ -6084,7 +6195,7 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0288" class="hkbStateMachineEventPropertyArray" signature="0xb07b4388">
+		<hkobject name="#0290" class="hkbStateMachineEventPropertyArray" signature="0xb07b4388">
 			
 			
 			<hkparam name="events" numelements="1">
@@ -6095,24 +6206,24 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0289" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+		<hkobject name="#0291" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
 			
 			
 			<hkparam name="listeners" numelements="0"></hkparam>
-			<hkparam name="enterNotifyEvents">#0288</hkparam>
+			<hkparam name="enterNotifyEvents">#0290</hkparam>
 			<hkparam name="exitNotifyEvents">null</hkparam>
-			<hkparam name="transitions">#0287</hkparam>
-			<hkparam name="generator">#0267</hkparam>
+			<hkparam name="transitions">#0289</hkparam>
+			<hkparam name="generator">#0269</hkparam>
 			<hkparam name="name">DefaultMagicWeap_ForceEquipStandingState</hkparam>
 			<hkparam name="stateId">0</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
 		</hkobject>
 
-		<hkobject name="#0290" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#0292" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="1">
@@ -6134,10 +6245,10 @@
 			
 		</hkobject>
 
-		<hkobject name="#0291" class="hkbStateMachine" signature="0x816c1dcb">
+		<hkobject name="#0293" class="hkbStateMachine" signature="0x816c1dcb">
 			
 			
-			<hkparam name="variableBindingSet">#0290</hkparam>
+			<hkparam name="variableBindingSet">#0292</hkparam>
 			
 			
 			<hkparam name="userData">0</hkparam>
@@ -6166,7 +6277,7 @@
 			<hkparam name="selfTransitionMode">SELF_TRANSITION_MODE_NO_TRANSITION</hkparam>
 			
 			<hkparam name="states" numelements="2">
-				#0289 #0286
+				#0291 #0288
 			</hkparam>
 			<hkparam name="wildcardTransitions">null</hkparam>
 			
@@ -6183,7 +6294,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0292" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
+		<hkobject name="#0294" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
 			
 			
 			<hkparam name="transitions" numelements="1">
@@ -6204,7 +6315,7 @@
 							<hkparam name="exitTime">0.000000</hkparam>
 						</hkobject>
 					</hkparam>
-					<hkparam name="transition">#0120</hkparam>
+					<hkparam name="transition">#0122</hkparam>
 					<hkparam name="condition">null</hkparam>
 					<hkparam name="eventId">6</hkparam>
 					<hkparam name="toStateId">1</hkparam>
@@ -6216,7 +6327,7 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#0293" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+		<hkobject name="#0295" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -6225,15 +6336,15 @@
 			<hkparam name="listeners" numelements="0"></hkparam>
 			<hkparam name="enterNotifyEvents">null</hkparam>
 			<hkparam name="exitNotifyEvents">null</hkparam>
-			<hkparam name="transitions">#0292</hkparam>
-			<hkparam name="generator">#0291</hkparam>
+			<hkparam name="transitions">#0294</hkparam>
+			<hkparam name="generator">#0293</hkparam>
 			<hkparam name="name">MagicWeap_ForceEquipStanding</hkparam>
 			<hkparam name="stateId">0</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
 		</hkobject>
 
-		<hkobject name="#0294" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#0296" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="1">
@@ -6255,10 +6366,10 @@
 			
 		</hkobject>
 
-		<hkobject name="#0295" class="hkbStateMachine" signature="0x816c1dcb">
+		<hkobject name="#0297" class="hkbStateMachine" signature="0x816c1dcb">
 			
 			
-			<hkparam name="variableBindingSet">#0294</hkparam>
+			<hkparam name="variableBindingSet">#0296</hkparam>
 			
 			
 			<hkparam name="userData">0</hkparam>
@@ -6287,7 +6398,7 @@
 			<hkparam name="selfTransitionMode">SELF_TRANSITION_MODE_NO_TRANSITION</hkparam>
 			
 			<hkparam name="states" numelements="2">
-				#0293 #0277
+				#0295 #0279
 			</hkparam>
 			<hkparam name="wildcardTransitions">null</hkparam>
 			
@@ -6304,7 +6415,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0296" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+		<hkobject name="#0298" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -6314,14 +6425,14 @@
 			<hkparam name="enterNotifyEvents">null</hkparam>
 			<hkparam name="exitNotifyEvents">null</hkparam>
 			<hkparam name="transitions">null</hkparam>
-			<hkparam name="generator">#0295</hkparam>
+			<hkparam name="generator">#0297</hkparam>
 			<hkparam name="name">MagicWeap_ForceEquipRoot</hkparam>
 			<hkparam name="stateId">4</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
 		</hkobject>
 
-		<hkobject name="#0297" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#0299" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="1">
@@ -6343,10 +6454,10 @@
 			
 		</hkobject>
 
-		<hkobject name="#0298" class="hkbStateMachine" signature="0x816c1dcb">
+		<hkobject name="#0300" class="hkbStateMachine" signature="0x816c1dcb">
 			
 			
-			<hkparam name="variableBindingSet">#0297</hkparam>
+			<hkparam name="variableBindingSet">#0299</hkparam>
 			
 			
 			<hkparam name="userData">0</hkparam>
@@ -6375,7 +6486,7 @@
 			<hkparam name="selfTransitionMode">SELF_TRANSITION_MODE_NO_TRANSITION</hkparam>
 			
 			<hkparam name="states" numelements="4">
-				#0296 #0263 #0203 #0156
+				#0298 #0265 #0205 #0158
 			</hkparam>
 			<hkparam name="wildcardTransitions">null</hkparam>
 			
@@ -6392,7 +6503,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#0299" class="hkbBehaviorGraph" signature="0xb1218f86">
+		<hkobject name="#0301" class="hkbBehaviorGraph" signature="0xb1218f86">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -6408,7 +6519,7 @@
 			
 			
 			
-			<hkparam name="rootGenerator">#0298</hkparam>
+			<hkparam name="rootGenerator">#0300</hkparam>
 			<hkparam name="data">#0059</hkparam>
 			
 			
@@ -6440,7 +6551,7 @@
 				<hkobject>
 					<hkparam name="name">hkbBehaviorGraph</hkparam>
 					<hkparam name="className">hkbBehaviorGraph</hkparam>
-					<hkparam name="variant">#0299</hkparam>
+					<hkparam name="variant">#0301</hkparam>
 				</hkobject>
 			</hkparam>
 		</hkobject>

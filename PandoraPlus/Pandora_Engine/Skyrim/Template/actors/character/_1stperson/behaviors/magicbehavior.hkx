@@ -106,7 +106,7 @@
 				<hkcstring>SneakSprintStartRoll</hkcstring>
 			</hkparam>
 			<hkparam name="attributeNames" numelements="0"></hkparam>
-			<hkparam name="variableNames" numelements="80">
+			<hkparam name="variableNames" numelements="81">
 				<hkcstring>blendDefault</hkcstring>
 				<hkcstring>blendMove1stP</hkcstring>
 				<hkcstring>blendMoveStop</hkcstring>
@@ -187,6 +187,7 @@
 				<hkcstring>Pitch</hkcstring>
 				<hkcstring>BowAimOffsetHeading</hkcstring>
 				<hkcstring>BowAimOffsetPitch</hkcstring>
+				<hkcstring>bVoiceReady</hkcstring>
 			</hkparam>
 			<hkparam name="characterPropertyNames" numelements="7">
 				<hkcstring>LeftArm</hkcstring>
@@ -202,7 +203,7 @@
 		<hkobject name="#0078" class="hkbVariableValueSet" signature="0x27812d8d">
 			
 			
-			<hkparam name="wordVariableValues" numelements="80">
+			<hkparam name="wordVariableValues" numelements="81">
 				<hkobject>
 					<hkparam name="value">1045220557</hkparam>
 				</hkobject>
@@ -443,6 +444,9 @@
 				<hkobject>
 					<hkparam name="value">0</hkparam>
 				</hkobject>
+				<hkobject>
+					<hkparam name="value">0</hkparam>
+				</hkobject>
 			</hkparam>
 			<hkparam name="quadVariableValues" numelements="0"></hkparam>
 			<hkparam name="variantVariableValues" numelements="0"></hkparam>
@@ -452,7 +456,7 @@
 			
 			
 			<hkparam name="attributeDefaults" numelements="0"></hkparam>
-			<hkparam name="variableInfos" numelements="80">
+			<hkparam name="variableInfos" numelements="81">
 				<hkobject>
 					<hkparam name="role">
 						<hkobject>
@@ -1172,6 +1176,15 @@
 						</hkobject>
 					</hkparam>
 					<hkparam name="type">VARIABLE_TYPE_REAL</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
 				</hkobject>
 			</hkparam>
 			<hkparam name="characterPropertyInfos" numelements="7">
@@ -1179,7 +1192,7 @@
 					<hkparam name="role">
 						<hkobject>
 							<hkparam name="role">ROLE_DEFAULT</hkparam>
-							<hkparam name="flags">FLAG_NOT_CHARACTER_PROPERTY|FLAG_OUTPUT|FLAG_HIDDEN|FLAG_NOT_VARIABLE|FLAG_NORMALIZED|FLAG_RAGDOLL|FLAG_NONE|0x1200</hkparam>
+							<hkparam name="flags">FLAG_NOT_CHARACTER_PROPERTY|FLAG_HIDDEN|FLAG_NOT_VARIABLE|FLAG_RAGDOLL|FLAG_NONE|0x1900</hkparam>
 						</hkobject>
 					</hkparam>
 					<hkparam name="type">VARIABLE_TYPE_POINTER</hkparam>
@@ -1188,7 +1201,7 @@
 					<hkparam name="role">
 						<hkobject>
 							<hkparam name="role">ROLE_DEFAULT</hkparam>
-							<hkparam name="flags">FLAG_NOT_CHARACTER_PROPERTY|FLAG_OUTPUT|FLAG_HIDDEN|FLAG_NOT_VARIABLE|FLAG_NORMALIZED|FLAG_NONE|0x1200</hkparam>
+							<hkparam name="flags">FLAG_NOT_CHARACTER_PROPERTY|FLAG_OUTPUT|FLAG_NOT_VARIABLE|FLAG_RAGDOLL|FLAG_NONE|0x1900</hkparam>
 						</hkobject>
 					</hkparam>
 					<hkparam name="type">VARIABLE_TYPE_POINTER</hkparam>
@@ -1206,7 +1219,7 @@
 					<hkparam name="role">
 						<hkobject>
 							<hkparam name="role">ROLE_DEFAULT</hkparam>
-							<hkparam name="flags">FLAG_NOT_CHARACTER_PROPERTY|FLAG_OUTPUT|FLAG_HIDDEN|FLAG_NOT_VARIABLE|FLAG_NORMALIZED|FLAG_NONE|0x1200</hkparam>
+							<hkparam name="flags">FLAG_NOT_CHARACTER_PROPERTY|FLAG_OUTPUT|FLAG_NONE|0x1880</hkparam>
 						</hkobject>
 					</hkparam>
 					<hkparam name="type">VARIABLE_TYPE_POINTER</hkparam>
@@ -1215,7 +1228,7 @@
 					<hkparam name="role">
 						<hkobject>
 							<hkparam name="role">ROLE_DEFAULT</hkparam>
-							<hkparam name="flags">FLAG_NOT_CHARACTER_PROPERTY|FLAG_OUTPUT|FLAG_HIDDEN|FLAG_NOT_VARIABLE|FLAG_NORMALIZED|FLAG_RAGDOLL|FLAG_NONE|0x1200</hkparam>
+							<hkparam name="flags">FLAG_NOT_CHARACTER_PROPERTY|FLAG_OUTPUT|FLAG_HIDDEN|FLAG_NORMALIZED|FLAG_NONE|0x1ac0</hkparam>
 						</hkobject>
 					</hkparam>
 					<hkparam name="type">VARIABLE_TYPE_POINTER</hkparam>
@@ -1224,7 +1237,7 @@
 					<hkparam name="role">
 						<hkobject>
 							<hkparam name="role">ROLE_DEFAULT</hkparam>
-							<hkparam name="flags">FLAG_NOT_CHARACTER_PROPERTY|FLAG_OUTPUT|FLAG_HIDDEN|FLAG_NOT_VARIABLE|FLAG_NORMALIZED|FLAG_NONE|0x1200</hkparam>
+							<hkparam name="flags">FLAG_NOT_CHARACTER_PROPERTY|FLAG_OUTPUT|FLAG_NONE|0x1880</hkparam>
 						</hkobject>
 					</hkparam>
 					<hkparam name="type">VARIABLE_TYPE_POINTER</hkparam>
@@ -25548,10 +25561,32 @@
 			<hkparam name="enable">true</hkparam>
 		</hkobject>
 
-		<hkobject name="#1007" class="hkbStateMachine" signature="0x816c1dcb">
+		<hkobject name="#1007" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
-			<hkparam name="variableBindingSet">null</hkparam>
+			<hkparam name="bindings" numelements="1">
+				<hkobject>
+					<hkparam name="memberPath">isActive</hkparam>
+					
+					
+					
+					
+					<hkparam name="variableIndex">80</hkparam>
+					<hkparam name="bitIndex">-1</hkparam>
+					<hkparam name="bindingType">BINDING_TYPE_VARIABLE</hkparam>
+					
+					
+					
+				</hkobject>
+			</hkparam>
+			<hkparam name="indexOfBindingToEnable">-1</hkparam>
+			
+		</hkobject>
+
+		<hkobject name="#1008" class="hkbStateMachine" signature="0x816c1dcb">
+			
+			
+			<hkparam name="variableBindingSet">#1007</hkparam>
 			
 			
 			<hkparam name="userData">0</hkparam>
@@ -25597,7 +25632,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#1008" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#1009" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="2">
@@ -25632,10 +25667,10 @@
 			
 		</hkobject>
 
-		<hkobject name="#1009" class="BSIsActiveModifier" signature="0xb0fde45a">
+		<hkobject name="#1010" class="BSIsActiveModifier" signature="0xb0fde45a">
 			
 			
-			<hkparam name="variableBindingSet">#1008</hkparam>
+			<hkparam name="variableBindingSet">#1009</hkparam>
 			
 			
 			<hkparam name="userData">2</hkparam>
@@ -25657,7 +25692,7 @@
 			<hkparam name="bInvertActive4">false</hkparam>
 		</hkobject>
 
-		<hkobject name="#1010" class="hkbVariableBindingSet" signature="0x338ad4ff">
+		<hkobject name="#1011" class="hkbVariableBindingSet" signature="0x338ad4ff">
 			
 			
 			<hkparam name="bindings" numelements="2">
@@ -25692,10 +25727,10 @@
 			
 		</hkobject>
 
-		<hkobject name="#1011" class="BSEventOnFalseToTrueModifier" signature="0x81d0777a">
+		<hkobject name="#1012" class="BSEventOnFalseToTrueModifier" signature="0x81d0777a">
 			
 			
-			<hkparam name="variableBindingSet">#1010</hkparam>
+			<hkparam name="variableBindingSet">#1011</hkparam>
 			
 			
 			<hkparam name="userData">2</hkparam>
@@ -25734,7 +25769,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#1012" class="hkbModifierList" signature="0xa4180ca1">
+		<hkobject name="#1013" class="hkbModifierList" signature="0xa4180ca1">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -25748,11 +25783,11 @@
 			<hkparam name="enable">true</hkparam>
 			
 			<hkparam name="modifiers" numelements="2">
-				#1011 #1009
+				#1012 #1010
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#1013" class="hkbModifierGenerator" signature="0x1f81fae6">
+		<hkobject name="#1014" class="hkbModifierGenerator" signature="0x1f81fae6">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -25763,18 +25798,18 @@
 			
 			
 			
-			<hkparam name="modifier">#1012</hkparam>
-			<hkparam name="generator">#1007</hkparam>
+			<hkparam name="modifier">#1013</hkparam>
+			<hkparam name="generator">#1008</hkparam>
 		</hkobject>
 
-		<hkobject name="#1014" class="hkbExpressionCondition" signature="0x1c3c1045">
+		<hkobject name="#1015" class="hkbExpressionCondition" signature="0x1c3c1045">
 			
 			
 			<hkparam name="expression">(iRightHandType == 8) || (iRightHandType == 9)</hkparam>
 			
 		</hkobject>
 
-		<hkobject name="#1015" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
+		<hkobject name="#1016" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
 			
 			
 			<hkparam name="transitions" numelements="2">
@@ -25796,7 +25831,7 @@
 						</hkobject>
 					</hkparam>
 					<hkparam name="transition">#0082</hkparam>
-					<hkparam name="condition">#1014</hkparam>
+					<hkparam name="condition">#1015</hkparam>
 					<hkparam name="eventId">3</hkparam>
 					<hkparam name="toStateId">3</hkparam>
 					<hkparam name="fromNestedStateId">0</hkparam>
@@ -25822,7 +25857,7 @@
 						</hkobject>
 					</hkparam>
 					<hkparam name="transition">#0082</hkparam>
-					<hkparam name="condition">#1014</hkparam>
+					<hkparam name="condition">#1015</hkparam>
 					<hkparam name="eventId">89</hkparam>
 					<hkparam name="toStateId">3</hkparam>
 					<hkparam name="fromNestedStateId">0</hkparam>
@@ -25833,7 +25868,7 @@
 			</hkparam>
 		</hkobject>
 
-		<hkobject name="#1016" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
+		<hkobject name="#1017" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -25842,15 +25877,15 @@
 			<hkparam name="listeners" numelements="0"></hkparam>
 			<hkparam name="enterNotifyEvents">null</hkparam>
 			<hkparam name="exitNotifyEvents">null</hkparam>
-			<hkparam name="transitions">#1015</hkparam>
-			<hkparam name="generator">#1013</hkparam>
+			<hkparam name="transitions">#1016</hkparam>
+			<hkparam name="generator">#1014</hkparam>
 			<hkparam name="name">MagicRoot</hkparam>
 			<hkparam name="stateId">4</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
 		</hkobject>
 
-		<hkobject name="#1017" class="hkbStateMachine" signature="0x816c1dcb">
+		<hkobject name="#1018" class="hkbStateMachine" signature="0x816c1dcb">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -25882,7 +25917,7 @@
 			<hkparam name="selfTransitionMode">SELF_TRANSITION_MODE_NO_TRANSITION</hkparam>
 			
 			<hkparam name="states" numelements="2">
-				#1016 #0084
+				#1017 #0084
 			</hkparam>
 			<hkparam name="wildcardTransitions">null</hkparam>
 			
@@ -25899,7 +25934,7 @@
 			
 		</hkobject>
 
-		<hkobject name="#1018" class="hkbBehaviorGraph" signature="0xb1218f86">
+		<hkobject name="#1019" class="hkbBehaviorGraph" signature="0xb1218f86">
 			
 			
 			<hkparam name="variableBindingSet">null</hkparam>
@@ -25915,7 +25950,7 @@
 			
 			
 			
-			<hkparam name="rootGenerator">#1017</hkparam>
+			<hkparam name="rootGenerator">#1018</hkparam>
 			<hkparam name="data">#0079</hkparam>
 			
 			
@@ -25947,7 +25982,7 @@
 				<hkobject>
 					<hkparam name="name">hkbBehaviorGraph</hkparam>
 					<hkparam name="className">hkbBehaviorGraph</hkparam>
-					<hkparam name="variant">#1018</hkparam>
+					<hkparam name="variant">#1019</hkparam>
 				</hkobject>
 			</hkparam>
 		</hkobject>
