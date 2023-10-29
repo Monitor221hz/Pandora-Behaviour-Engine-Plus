@@ -50,7 +50,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			{
 				if (!change.Apply(packFile))
 				{
-					Logger.Warn($"Mod \"{change.ModName}\" > {change.Type} > {change.AssociatedType} > {change.Path} > FAILED");
+					Logger.Warn($"Dispatcher > \"{change.ModName}\" > {packFile.ParentProject?.Identifier}~{packFile.Name} > {change.Type} > {change.AssociatedType} > {change.Path} > FAILED");
 				}
 			}
 
@@ -58,7 +58,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			{
 				if (!change.Apply(packFile))
 				{
-					Logger.Warn($"Mod \"{change.ModName}\" > {change.Type} > {change.AssociatedType} > {change.Path} > FAILED");
+					Logger.Warn($"Dispatcher > \"{change.ModName}\" > {packFile.ParentProject?.Identifier}~{packFile.Name} > {change.Type} > {change.AssociatedType} > {change.Path} > FAILED");
 				}
 			}
 
