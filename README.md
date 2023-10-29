@@ -12,6 +12,8 @@ but comfortable UI, robust logging, and fast patching times.
   * [Quickstart](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#quickstart)
 * [For Mod Authors](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#for-mod-authors)
   * [File Targeting](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#file-targeting)
+    * [Unique Identifiers](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#unique-identifiers)
+    * [Indirect Identifiers](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#indirect-identifiers)
   * [AnimData](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#animdata)
   * [AnimSetData](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#animsetdata)
   * [Verbose Logging](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#verbose-logging)
@@ -39,7 +41,9 @@ It's recommended to pass the log on to the relevant mod author if a specific mod
 ## For Mod Authors
 
 ### File Targeting
-For now, Pandora uses the same patch file format as Nemesis, but the folder system is expanded on to provide creature compatibility.  Patch folders can use the short name or their full unique name to be recognized by the engine.  
+
+#### Unique Identifiers
+Pandora supports the same patch file format as Nemesis, but the folder system is expanded on to provide creature compatibility.  Patch folders can use the short name or their full unique name to be recognized by the engine.  
 <br/>
 The full identifying name is `[ProjectName]~[FileName]`. For example:
 <br/>
@@ -58,6 +62,7 @@ Note that using the full name does not separate files that are already shared be
 <br/>
 <br/>
 
+#### Indirect Identifiers
 Skeleton and character files can be targeted using either short and full names folder names. Alternatively they can also use:
 <br/>
 <br/>
