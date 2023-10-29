@@ -38,7 +38,7 @@ namespace Pandora.MVVM.Model
             Valid = false;
             Folder = new DirectoryInfo(Directory.GetCurrentDirectory()); 
         }
-        public NemesisModInfo(DirectoryInfo folder, string name, string author, string url, Dictionary<string, string> properties)
+        public NemesisModInfo(DirectoryInfo folder, string name, string author, string url, bool active, Dictionary<string, string> properties)
         { 
             Folder = folder;
             Name = name;
@@ -47,6 +47,7 @@ namespace Pandora.MVVM.Model
             StringProperties = properties;  
             Code = Folder.Name;
             Valid = true; 
+            Active = active;
         }
         public static NemesisModInfo ParseMetadata(DirectoryInfo folder)
         {
@@ -80,12 +81,18 @@ namespace Pandora.MVVM.Model
 			}
             string? name;
             string? author;
-            string? url; 
+            string? url;
+            string? hidden;
             properties.TryGetValue("name", out name); 
             properties.TryGetValue("author", out author);
             properties.TryGetValue("site", out url);
+            properties.TryGetValue("hidden", out hidden);
 
-            return (name != null && author != null && url != null) ? new NemesisModInfo(folder, name, author, url, properties) : new NemesisModInfo();
+            bool active;
+            bool.TryParse(hidden, out active);
+
+
+            return (name != null && author != null && url != null) ? new NemesisModInfo(folder, name, author, url, active, properties) : new NemesisModInfo();
 			//add metadata later
 		}
     }

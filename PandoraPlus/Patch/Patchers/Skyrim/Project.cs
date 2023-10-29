@@ -67,6 +67,7 @@ namespace Pandora.Core.Patchers.Skyrim
 			foreach ( var behaviorFile in behaviorFiles)
 			{
 				var packFile = new PackFile(behaviorFile) { ParentProject = this };
+				packFile.DeleteExistingOutput();
 				filesByName.Add(packFile.Name, packFile); 
 			}
 
@@ -75,6 +76,9 @@ namespace Pandora.Core.Patchers.Skyrim
 
 			filesByName.Add($"{Identifier}_skeleton", skeletonFile);
 			filesByName.Add($"{Identifier}_character", characterFile);
+
+			skeletonFile.DeleteExistingOutput();
+			characterFile.DeleteExistingOutput();
 
 			return filesByName.Keys.ToList();
 		}

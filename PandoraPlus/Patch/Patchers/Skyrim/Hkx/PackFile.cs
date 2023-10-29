@@ -67,6 +67,14 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 		public XElement SafeNavigateTo(string path) => Map.NavigateTo(path, ContainerNode); 
 		public XElement GetNodeByClass(string className) => Map.NavigateTo(className, ContainerNode, (x) => XMap.TryGetAttributeName("class", x));
 
+		public void DeleteExistingOutput()
+		{
+			if (OutputHandle.Exists)
+			{
+				OutputHandle.Delete();	
+			}
+		}
+
 		public void MapNode(string nodeName)
 		{
 			if (mappedNodeNames.Contains(nodeName)) return; 
