@@ -13,9 +13,9 @@ but comfortable UI, robust logging, and fast patching times.
   * [AnimData](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#animdata)
   * [AnimSetData](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#animsetdata)
   * [Verbose Logging](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#verbose-logging)
-   * [Severity](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#severity)
-   * [Component](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#component)
-   * [Input](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#input)
+    * [Severity](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#severity)
+    * [Component](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#component)
+    * [Input](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#input)
 
 <br/>
 <br/>
