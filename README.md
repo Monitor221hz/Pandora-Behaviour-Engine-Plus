@@ -1,4 +1,4 @@
-# Pandora Plus Behavior Engine
+# Pandora Behavior Engine+
 
 A modular and lightweight behavior engine for TES Skyrim SE, for creatures and humanoids.  
 
