@@ -6,13 +6,16 @@ Built with backwards compatibility in mind for [Nemesis Unlimited Behavior Engin
 but comfortable UI, robust logging, and fast patching times.
 
 ## Navigation
-* [For Users]
-  * [Quickstart]
-* [For Mod Authors]
-  * [File Targeting]
-  * [AnimData]
-  * [AnimSetData]
-  * [Verbose Logging]
+* [For Users](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine/edit/main/README.md#for-users)
+  * [Quickstart](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine/edit/main/README.md#quickstart)
+* [For Mod Authors](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine/edit/main/README.md#for-mod-authors)
+  * [File Targeting](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine/edit/main/README.md#file-targeting)
+  * [AnimData](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine/edit/main/README.md#animdata)
+  * [AnimSetData](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine/edit/main/README.md#animsetdata)
+  * [Verbose Logging](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine/edit/main/README.md#verbose-logging)
+   * [Severity](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine/edit/main/README.md#severity)
+   * [Component](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine/edit/main/README.md#component)
+   * [Input](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine/edit/main/README.md#input)
 
 <br/>
 <br/>
