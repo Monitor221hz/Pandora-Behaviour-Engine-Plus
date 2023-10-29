@@ -43,7 +43,7 @@ It's recommended to pass the log on to the relevant mod author if a specific mod
 ### File Targeting
 
 #### Unique Identifiers
-Pandora supports the same patch file format as Nemesis, but the folder system is expanded on to provide creature compatibility.  Patch folders can use the short name or their full unique name to be recognized by the engine.  
+Pandora supports the same [patch file format](https://github.com/ShikyoKira/Project-New-Reign---Nemesis-Sub-tool) as Nemesis, but the folder system is expanded on to provide creature compatibility.  Patch folders can use the short name or their full unique name to be recognized by the engine.  
 <br/>
 The full identifying name is `[ProjectName]~[FileName]`. For example:
 <br/>
