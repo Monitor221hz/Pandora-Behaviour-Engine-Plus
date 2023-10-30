@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Pandora.Patch.Patchers.Skyrim.AnimSetData
 {
-	public class AnimSetData
+	public class ProjectAnimSetData
 	{
 		public int NumSets { get; private set; } = 1;
 
@@ -17,9 +17,9 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimSetData
 
 		public Dictionary<string, AnimSet> AnimSetsByName { get; private set; } = new Dictionary<string, AnimSet>();
 
-		public static AnimSetData Read(StreamReader reader)
+		public static ProjectAnimSetData Read(StreamReader reader)
 		{
-			var setData = new AnimSetData();
+			var setData = new ProjectAnimSetData();
 
 			int numSets;
 

@@ -2,6 +2,7 @@
 using Pandora.Core;
 using Pandora.Core.Patchers.Skyrim;
 using Pandora.Patch.Patchers.Skyrim.AnimData;
+using Pandora.Patch.Patchers.Skyrim.AnimSetData;
 using Pandora.Patch.Patchers.Skyrim.Hkx;
 using System;
 using System.Collections.Generic;
@@ -30,17 +31,20 @@ public class NemesisAssembler : IAssembler
     
     List<PackFile> packFiles = new List<PackFile>();
 
+	private DirectoryInfo currentFolder = new DirectoryInfo(Directory.GetCurrentDirectory());
+
 	private DirectoryInfo templateFolder = new DirectoryInfo(Directory.GetCurrentDirectory() + "\\Pandora_Engine\\Skyrim\\Template");
 
 	private DirectoryInfo outputFolder = new DirectoryInfo($"{Directory.GetCurrentDirectory()}\\meshes");
 
 	private ProjectManager projectManager;
 
-
+	private AnimSetDataManager animSetDataManager;
 
     public NemesisAssembler()
     {
 		projectManager = new ProjectManager(templateFolder, outputFolder);
+		animSetDataManager = new AnimSetDataManager(templateFolder, outputFolder);
     }
 
     public void LoadResources()
@@ -52,10 +56,11 @@ public class NemesisAssembler : IAssembler
 
 	public async Task LoadResourcesAsync()
 	{
-		var animSetDataTask = Task.Run(() => { projectManager.LoadAnimSetData(); });
+		var animSetDataTask = Task.Run(() => { animSetDataManager.SplitAnimSetDataSingleFile(); });
 		projectManager.LoadTrackedProjects();
 		await Task.Run(() => { projectManager.LoadAnimData(); });
 		await animSetDataTask; 
+
 	}
 
 	public void AssemblePatch(IModInfo mod)
@@ -65,13 +70,20 @@ public class NemesisAssembler : IAssembler
 
 		foreach (DirectoryInfo subFolder in subFolders)
 		{
-			AssemblePackFilePatch(subFolder,mod.Name);
+			if (AssemblePackFilePatch(subFolder, mod.Name) || subFolder.Name != "animsetdatasinglefile") continue;
+			AssembleAnimSetDataPatch(subFolder);
+
 		}
 	}
     
 	public void ApplyPatches() => projectManager.ApplyPatches();
 
-	public async Task ApplyPatchesAsync() => await projectManager.ApplyPatchesAsync();
+	public async Task ApplyPatchesAsync()
+	{
+		var animSetDataTask = Task.Run(() => { animSetDataManager.MergeAnimSetDataSingleFile(); });
+		await projectManager.ApplyPatchesAsync();
+		await animSetDataTask;
+	}
 
 	//to-fix: certain excerpts being misclassified as single replace edit when it is actually a replace and insert edit
 
@@ -196,11 +208,51 @@ public class NemesisAssembler : IAssembler
 		return true;
 	}
 
+	public void AssembleAnimSetDataPatch(DirectoryInfo directoryInfo) //technically not Nemesis format but this format is just simpler and
+	{
+		ProjectAnimSetData? targetAnimSetData;
+		foreach(DirectoryInfo subDirInfo in directoryInfo.GetDirectories())
+		{
+			if (!animSetDataManager.AnimSetDataMap.TryGetValue(subDirInfo.Name, out targetAnimSetData)) return;
+			var patchFiles = subDirInfo.GetFiles();
+
+			foreach (var patchFile in patchFiles)
+			{
+				AnimSet? targetAnimSet;
+				if (!targetAnimSetData.AnimSetsByName.TryGetValue(patchFile.Name, out targetAnimSet)) continue;
+
+				using (var readStream = patchFile.OpenRead())
+				{
+
+					using (var reader = new StreamReader(readStream))
+					{
+
+						string? expectedPath;
+						while ((expectedPath = reader.ReadLine()) != null)
+						{
+							if (string.IsNullOrWhiteSpace(expectedPath)) continue;
+
+							string animationName = Path.GetFileNameWithoutExtension(expectedPath);
+							string folder = Path.GetDirectoryName(expectedPath)!;
 
 
-	private void AssemblePackFilePatch(DirectoryInfo folder, string modName)
+							var animInfo = SetCachedAnimInfo.Encode(folder, animationName);
+							targetAnimSet.AddAnimInfo(animInfo);
+						}
+
+					}
+				}
+			}
+		}
+		
+
+
+	
+	}
+
+	private bool AssemblePackFilePatch(DirectoryInfo folder, string modName)
     {
-		if (!projectManager.ContainsPackFile(folder.Name)) return;
+		if (!projectManager.ContainsPackFile(folder.Name)) return false;
 
 		var targetPackFile = projectManager.ActivatePackFile(folder.Name);
 
@@ -239,6 +291,7 @@ public class NemesisAssembler : IAssembler
 				targetPackFile.edits.AddChange(new InsertElementChange(PackFile.ROOT_CONTAINER_NAME+"/top", element, modName));
             }
 		}
+		return true;
 	}
 
 	public List<(FileInfo inFile, FileInfo outFile)> GetExportFiles()

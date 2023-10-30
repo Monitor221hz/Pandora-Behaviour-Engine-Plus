@@ -29,24 +29,24 @@ namespace Pandora.Core.Patchers.Skyrim
 
 
 		private AnimDataManager animDataPatcher;
-		private AnimSetDataManager animSetDataPatcher; 
+
 
 		public ProjectManager(DirectoryInfo templateFolder, DirectoryInfo outputFolder)
         {
             this.templateFolder = templateFolder;
 			this.outputFolder = outputFolder;
 			animDataPatcher = new AnimDataManager(this.templateFolder, this.outputFolder);
-			animSetDataPatcher = new AnimSetDataManager(this.templateFolder, this.outputFolder);
+
         }
         public void LoadAnimData()
 		{
 			animDataPatcher.SplitAnimationDataSingleFile(this);
 		}
 
-		public void LoadAnimSetData()
-		{
-			animSetDataPatcher.SplitAnimSetDataSingleFile();
-		}
+
+
+
+
 
 		public async Task LoadTrackedProjectsAsync()
 		{
@@ -202,7 +202,7 @@ namespace Pandora.Core.Patchers.Skyrim
 
 		public async Task ApplyPatchesAsync()
 		{
-			var animSetDataTask = Task.Run(()=> { animSetDataPatcher.MergeAnimSetDataSingleFile(); });
+
 
 			Parallel.ForEach(ActivePackFiles, packFile =>
 			{
@@ -215,8 +215,6 @@ namespace Pandora.Core.Patchers.Skyrim
 
 
 			Parallel.ForEach(ActivePackFiles, packFile => { packFile.Export(); });
-
-			await animSetDataTask;
 
 			await animDataTask;
 		}

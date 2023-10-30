@@ -26,6 +26,7 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimSetData
 
 		public List<SetCachedAnimInfo> AnimInfos { get; private set; } = new List<SetCachedAnimInfo>();
 
+		public void AddAnimInfo(SetCachedAnimInfo animInfo) => AnimInfos.Add(animInfo);
 
 		public static AnimSet Read(StreamReader reader)
 		{

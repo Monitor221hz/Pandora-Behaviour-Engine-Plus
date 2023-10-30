@@ -122,7 +122,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			}
 			catch(Exception ex) 
 			{
-				Logger.Fatal($"Export > {OutputHandle.Name} > FAILED > {ex.Message}");
+				Logger.Fatal($"Export > {ParentProject?.Identifier}~{Name} > FAILED > {ex.Message}");
 				using (var writeStream = OutputHandle.Create())
 				{
 					Map.Save(writeStream);

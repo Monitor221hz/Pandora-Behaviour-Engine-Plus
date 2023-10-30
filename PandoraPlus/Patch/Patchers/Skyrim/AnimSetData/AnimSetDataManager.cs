@@ -7,6 +7,7 @@ using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Pandora.Patch.Patchers.Skyrim.AnimSetData
 {
 	public class AnimSetDataManager
@@ -18,17 +19,24 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimSetData
 		private FileInfo templateAnimSetDataSingleFile { get; set; }
 		private FileInfo outputAnimSetDataSingleFile { get; set; }
 
+		private FileInfo vanillaHkxFiles { get; set; }
+
+		private HashSet<string> vanillaAnimationPaths { get; set; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
 		private List<string> projectPaths { get; set; } = new List<string>();
 
-		private List<AnimSetData> animSetDataList { get; set; } = new List<AnimSetData>();
+		private List<ProjectAnimSetData> animSetDataList { get; set; } = new List<ProjectAnimSetData>();
+
+		public Dictionary<string, ProjectAnimSetData> AnimSetDataMap { get; private set; } = new Dictionary<string, ProjectAnimSetData>();
+
 		public AnimSetDataManager(DirectoryInfo templateFolder, DirectoryInfo outputFolder)
         {
 			this.templateFolder = templateFolder;
 			this.outputFolder = outputFolder;
 			templateAnimSetDataSingleFile = new FileInfo($"{templateFolder.FullName}\\{ANIMSETDATA_FILENAME}");
 			outputAnimSetDataSingleFile = new FileInfo($"{outputFolder.FullName}\\{ANIMSETDATA_FILENAME}");
+			vanillaHkxFiles = new FileInfo($"{templateFolder.FullName}\\vanilla_hkxpaths.txt");
 		}
-
 
         public void SplitAnimSetDataSingleFile()
 		{
@@ -44,7 +52,9 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimSetData
 
 					for(int i = 0; i < NumProjects; i++)
 					{
-						animSetDataList.Add(AnimSetData.Read(reader));
+						var animSetData = ProjectAnimSetData.Read(reader);
+						animSetDataList.Add(animSetData);
+						AnimSetDataMap.Add(Path.GetFileNameWithoutExtension(projectPaths[i]), animSetData);
 
 //#if DEBUG
 //						FileInfo animDataFile = new FileInfo($"{outputFolder.FullName}\\animsetdata\\{(Path.GetFileName(projectPaths[i]))}");
@@ -76,7 +86,7 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimSetData
 				{
 					writer.WriteLine(projectPaths.Count);
 					foreach (var projectPath in projectPaths) { writer.WriteLine(projectPath); }
-					foreach(AnimSetData animSetData in animSetDataList)
+					foreach(ProjectAnimSetData animSetData in animSetDataList)
 					{
 						writer.Write(animSetData);
 					}

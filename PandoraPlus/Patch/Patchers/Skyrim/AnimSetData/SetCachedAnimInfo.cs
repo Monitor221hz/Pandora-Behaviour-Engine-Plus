@@ -56,8 +56,8 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimSetData
 		{
 			var animInfo = new SetCachedAnimInfo();
 
-			animInfo.encodedPath = BSCRC32.GetValueUInt32(folderPath);
-			animInfo.encodedFileName = BSCRC32.GetValueUInt32(fileName);
+			animInfo.encodedPath = BSCRC32.GetValueUInt32(folderPath.ToLower());
+			animInfo.encodedFileName = BSCRC32.GetValueUInt32(fileName.ToLower());
 
 			return animInfo;
 		}
