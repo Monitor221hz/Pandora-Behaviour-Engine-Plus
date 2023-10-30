@@ -130,6 +130,7 @@ Not yet implemented.
 
 <br/>
 <br/>
+
 ### Verbose Logging
 Log messages are kept in a separate file called `Engine.log`. 
 
