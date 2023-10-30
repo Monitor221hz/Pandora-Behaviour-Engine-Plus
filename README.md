@@ -145,7 +145,8 @@ Most of these are self explanatory but some of the more obscure formatting is ex
 
 #### Component:
 
-* The `Assembler` is responsible for parsing the patch format to derive an operation for each edit. Usually the name is preceded by the format that it parses. The assembler responsible for parsing Nemesis patches is the `Nemesis Assembler`.
+* The `Assembler` is responsible for parsing the patch format to derive an operation for each edit. Usually the name is preceded by the format that it parses.
+  * The assembler responsible for parsing Nemesis patches is the `Nemesis Assembler`.
 * The `Dispatcher` is responsible for saving the patch edits and applying them to the target file.
 * The `Validator` is responsible for validating all the edits made by the Dispatcher after it is run.
 
