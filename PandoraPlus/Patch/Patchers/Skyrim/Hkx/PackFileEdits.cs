@@ -14,10 +14,6 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 		public static XElement ReplaceElement(PackFile packFile, string path, XElement element) => packFile.Map.ReplaceElement(path, element);
 
 
-		public static void InsertElementTop(PackFile packFile, XElement element)
-		{
-			packFile.Map.AppendElement(packFile.ContainerNode, element);
-		}
 		public static string InsertElement(PackFile packFile, string path, XElement element)
 		{
 			return packFile.Map.InsertElement(path, element, true);

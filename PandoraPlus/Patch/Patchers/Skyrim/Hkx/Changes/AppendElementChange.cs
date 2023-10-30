@@ -24,6 +24,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 		}
 		public bool Apply(PackFile packFile)
 		{
+			if (!packFile.Map.PathExists(Path)) return false;
 			string newPath = PackFileEditor.AppendElement(packFile, Path, element);
 			Path = String.IsNullOrEmpty(newPath) ? Path : newPath;
 			return packFile.Map.PathExists(Path);
