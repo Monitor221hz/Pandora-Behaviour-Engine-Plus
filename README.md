@@ -15,7 +15,7 @@ Built with backwards compatibility in mind for [Nemesis Unlimited Behavior Engin
     * [Indirect Identifiers](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#indirect-identifiers)
   * [AnimData](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#animdata)
   * [AnimSetData](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#animsetdata)
-    *[Adding AnimSetData Animations](https://github.com/Monitor144hz/Pandora-Behavior-Engine-Plus#adding-animsetdata-animations) 
+    * [Adding AnimSetData Animations](https://github.com/Monitor144hz/Pandora-Behavior-Engine-Plus#adding-animsetdata-animations) 
   * [Verbose Logging](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#verbose-logging)
     * [Severity](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#severity)
     * [Component](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#component)
