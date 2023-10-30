@@ -7,20 +7,22 @@ Built with backwards compatibility in mind for [Nemesis Unlimited Behavior Engin
 <br/>
 
 ## Navigation
-* [For Users](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#for-users)
-  * [Quickstart](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#quickstart)
-* [For Mod Authors](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#for-mod-authors)
-  * [File Targeting](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#file-targeting)
-    * [Unique Identifiers](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#unique-identifiers)
-    * [Indirect Identifiers](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#indirect-identifiers)
-  * [AnimData](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#animdata)
-  * [AnimSetData](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#animsetdata)
-    * [Adding AnimSetData Animations](https://github.com/Monitor144hz/Pandora-Behavior-Engine-Plus#adding-animsetdata-animations)
-  * [Custom Projects](https://github.com/Monitor144hz/Pandora-Behavior-Engine-Plus#custom-projects)
-  * [Verbose Logging](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#verbose-logging)
-    * [Severity](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#severity)
-    * [Component](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#component)
-    * [Input](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#input)
+* [For Users](#for-users)
+  * [Quickstart](#quickstart)
+* [For Mod Authors](#for-mod-authors)
+  * [File Targeting](#file-targeting)
+    * [Unique Identifiers](#unique-identifiers)
+    * [Indirect Identifiers](#indirect-identifiers)
+  * [AnimData](#animdata)
+    * [Auto Generation](#auto-generation)
+    * [Manual Addition](#manual-addition)
+  * [AnimSetData](#animsetdata)
+    * [Adding AnimSetData Animations](#adding-animsetdata-animations)
+  * [Custom Projects](#custom-projects)
+  * [Verbose Logging](#verbose-logging)
+    * [Severity](#severity)
+    * [Component](#component)
+    * [Input](#input)
 
 <br/>
 <br/>
@@ -102,10 +104,19 @@ Skeleton and character files can be targeted using either short or full names. A
 <br/>
 
 ### AnimData
+#### Auto Generation
 Pandora Behavior Engine generates dummy motion data for every added clip generator. All added animations are now [AMR ready](https://www.nexusmods.com/skyrimspecialedition/mods/50258) by default when patched. 
 <br/>
 
-No more need for blank animdata to be written by hand, which was a huge hassle for behavior authors.
+No more need for blank animdata to be written by hand, which was a huge hassle for behavior authors.  
+<br/>
+
+#### Manual Addition
+Mods with their own custom graphs still need to register their clip generators manually if they want motion.
+<br/>
+
+To do so, create a folder named `animdata` and create a `[ProjectName].txt` file with each line containing the name of one clip generator. Don't worry about repetition as the engine will automatically discard duplicate clip generator names (case sensitive).
+
 <br/>
 <br/>
 
