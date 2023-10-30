@@ -19,7 +19,7 @@ using XmlCake.Linq.Expressions;
 
 namespace Pandora.Patch.Patchers.Skyrim.Nemesis;
 
-public class NemesisAssembler : IAssembler
+public class NemesisAssembler : IAssembler //animdata and animsetdata deviate from nemesis format
 {
 	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger(); //to do: move logger into inheritable base class
 

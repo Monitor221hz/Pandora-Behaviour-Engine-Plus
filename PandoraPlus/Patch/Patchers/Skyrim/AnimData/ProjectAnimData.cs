@@ -15,6 +15,8 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimData
 		public MotionData? BoundMotionDataProject { get; set; }
 
 		private AnimDataManager manager { get; set; }
+
+		private HashSet<string> dummyClipNames { get; set; } = new HashSet<string>();
         public ProjectAnimData(AnimDataManager manager)
         {
             this.manager = manager;
@@ -22,10 +24,15 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimData
 
 		public void AddDummyClipData(string clipName)
 		{
+			if (dummyClipNames.Contains(clipName)) return; 
+
+
 			var id = manager.GetNextValidID().ToString();
 			Blocks.Add(new ClipDataBlock(clipName,id));
 
 			BoundMotionDataProject?.AddDummyClipMotionData(id);
+
+			dummyClipNames.Add(clipName);
 		}
 		
         public static ProjectAnimData ReadProject(StreamReader reader, int lineLimit, AnimDataManager manager)
