@@ -112,10 +112,13 @@ No more need for blank animdata to be written by hand, which was a huge hassle f
 <br/>
 
 #### Manual Addition
-Mods with their own custom graphs still need to register their clip generators manually if they want motion.
+Mods with their own custom graphs still need to register their clip generators manually if they want motion.  
+
 <br/>
 
-To do so, create a folder named `animdata` and create a `[ProjectName].txt` file with each line containing the name of one clip generator. Don't worry about repetition as the engine will automatically discard duplicate clip generator names (case sensitive).
+To do so, create a folder named `animdata` and create a `[ProjectName].txt` file with each line containing the name of one clip generator. Don't worry about repetition as the engine will automatically discard duplicate clip generator names (case sensitive).  
+
+There's also a [python script](https://gist.github.com/Monitor144hz/ce3069fb99064bda85e9b127f90e5039) that automatically converts the Nemesis animdatasinglefile format into the Pandora format, for when there are too many clip generator names to convert manually.
 
 <br/>
 <br/>
