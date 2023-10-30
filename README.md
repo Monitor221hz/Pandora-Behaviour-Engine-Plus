@@ -2,8 +2,7 @@
 
 A modular and lightweight behavior engine for TES Skyrim SE, for creatures and humanoids.  
 
-Built with backwards compatibility in mind for [Nemesis Unlimited Behavior Engine](https://github.com/ShikyoKira/Project-New-Reign---Nemesis-Main) and designed to be an alternative, Pandora streamlines the user experience through a simplified 
-but comfortable UI, robust logging, and fast patching times.
+Built with backwards compatibility in mind for [Nemesis Unlimited Behavior Engine](https://github.com/ShikyoKira/Project-New-Reign---Nemesis-Main) and designed to be an alternative, Pandora streamlines both the author and user experience through a simplified UI, robust logging, intuitive formats, and fast patching times.
 <br/>
 <br/>
 
@@ -16,6 +15,7 @@ but comfortable UI, robust logging, and fast patching times.
     * [Indirect Identifiers](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#indirect-identifiers)
   * [AnimData](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#animdata)
   * [AnimSetData](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#animsetdata)
+    *[Adding AnimSetData Animations](https://github.com/Monitor144hz/Pandora-Behavior-Engine-Plus#adding-animsetdata-animations) 
   * [Verbose Logging](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#verbose-logging)
     * [Severity](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#severity)
     * [Component](https://github.com/Monitor144hz/Pandora-Plus-Behavior-Engine#component)
@@ -39,7 +39,7 @@ It's recommended to pass the log on to the relevant mod author if a specific mod
 <br/>
 <br/>
 ## For Mod Authors
-
+This section exists to inform current behavior authors of the key differences and features of Pandora, it's not a guide for making behavior mods.
 ### File Targeting
 
 #### Unique Identifiers
@@ -74,13 +74,52 @@ Skeleton and character files can be targeted using either short and full names f
 <br/>
 
 ### AnimData
-Pandora Behavior Engine generates dummy motion data for every added clip generator. All added animations are now [AMR ready](https://www.nexusmods.com/skyrimspecialedition/mods/50258) by default when patched. No more need for blank animdata to be written 
-by hand, which was a huge hassle for behavior authors.
+Pandora Behavior Engine generates dummy motion data for every added clip generator. All added animations are now [AMR ready](https://www.nexusmods.com/skyrimspecialedition/mods/50258) by default when patched. 
+<br/>
+
+No more need for blank animdata to be written by hand, which was a huge hassle for behavior authors.
 <br/>
 <br/>
 
 ### AnimSetData
-Work in progress.
+AnimSetData is a unique case that Pandora does not automatically generate, because it's not necessary for all new animations and would be a waste of time to find and automatically generate for every new animation file. 
+<br/>
+
+It's only needed for adding paired animations and other edge cases this section can be skipped if it's not relevant.
+<br/>
+Currently Pandora only supports adding anim info, for paired animations. 
+<br/>
+
+#### Adding AnimSetData Animations
+To make additions to AnimSetData, authors must define animation paths in a separate file with this folder structure.
+<br/>
+```
+[ModFolder]\animsetdatasinglefile\[ProjectName]\[SetName].txt
+```
+<br/>
+<br/>
+
+Each file of the project folder should have paths with the animation relative to the data folder. For example, in path:
+```
+..\testmod\animsetdatasinglefile\DefaultMale\H2HDual.txt
+```
+
+<br/>
+There would be something like:
+<br/>
+
+```
+meshes\actors\character\animations\killmove1.hkx
+meshes\actors\character\animations\killmove2.hkx
+meshes\actors\character\animations\killmove3.hkx
+```
+
+These animations are then parsed, encoded with the right format, and added to animsetdata.
+<br/>
+
+Formerly, authors would have to encode the file and paths themselves and add it to the copied set file between two comments indicating the operation. Now it's as easy as writing a single line in a new file with the same name!
+
+
 <br/>
 <br/>
 
