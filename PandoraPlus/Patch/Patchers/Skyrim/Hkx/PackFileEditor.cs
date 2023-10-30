@@ -95,14 +95,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			}
 		}
 
-		private void ApplyTopInsertEdits(PackFile packFile)
-		{
-			//validate strings through regex here, can also assign new id if needed.
-			foreach(var edit in TopLevelInserts)
-			{
-				InsertElementTop(packFile, edit); 
-			}
-		}
+
 		public void ApplyEdits(PackFile packFile)
 		{
 			ApplyRemoveEdits(packFile);
@@ -116,8 +109,6 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			ApplyTextReplaceEdits(packFile);
 
 			ApplyTextInsertEdits(packFile);
-
-			ApplyTopInsertEdits(packFile);
 			
 
 		}

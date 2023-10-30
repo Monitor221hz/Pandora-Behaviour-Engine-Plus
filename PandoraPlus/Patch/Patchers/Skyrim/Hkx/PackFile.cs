@@ -28,7 +28,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 
 		public FileInfo OutputHandle {  get; private set; }
 
-		public static bool DebugFiles { get; set; } = true; 
+		public static bool DebugFiles { get; set; } = false;
 
 		public PackFileEditor Editor {  get; private set; } = new PackFileEditor();
 

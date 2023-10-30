@@ -38,16 +38,13 @@ namespace Pandora.Core.Patchers.Skyrim
 			animDataPatcher = new AnimDataManager(this.templateFolder, this.outputFolder);
 
         }
-        public void LoadAnimData()
-		{
-			animDataPatcher.SplitAnimationDataSingleFile(this);
-		}
+
+		public bool TryGetProject(string name, out Project? project) => projectMap.TryGetValue(name, out project);
+		public bool ProjectExists(string name) => projectMap.ContainsKey(name);
 
 
 
-
-
-
+		
 		public async Task LoadTrackedProjectsAsync()
 		{
 			FileInfo projectList = new FileInfo($"{templateFolder.FullName}\\vanilla_projectpaths.txt");
@@ -85,7 +82,10 @@ namespace Pandora.Core.Patchers.Skyrim
 					}
 				}
 			}
-			foreach(var projectPath in projectPaths) { LoadProject(projectPath); }
+			foreach(var projectPath in projectPaths) 
+			{ 
+				LoadProject(projectPath); 
+			}
 			//ExtractProjects();
 		}
 		public void ExtractProjects()
@@ -200,7 +200,7 @@ namespace Pandora.Core.Patchers.Skyrim
 			animDataPatcher.MergeAnimDataSingleFile();
 		}
 
-		public async Task ApplyPatchesAsync()
+		public void ApplyPatchesParallel()
 		{
 
 
@@ -210,13 +210,10 @@ namespace Pandora.Core.Patchers.Skyrim
 				//packFile.Map.Save(Path.Join(Directory.GetCurrentDirectory(), packFile.InputHandle.Name));
 				//packFile.Export();
 			});
-			var animDataTask = Task.Run(() => { animDataPatcher.MergeAnimDataSingleFile(); });
+			
 			//animDataPatcher.MergeAnimDataSingleFile();
-
-
 			Parallel.ForEach(ActivePackFiles, packFile => { packFile.Export(); });
 
-			await animDataTask;
 		}
 	}
 }

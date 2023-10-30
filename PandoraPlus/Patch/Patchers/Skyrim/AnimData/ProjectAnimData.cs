@@ -25,7 +25,7 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimData
 			var id = manager.GetNextValidID().ToString();
 			Blocks.Add(new ClipDataBlock(clipName,id));
 
-			BoundMotionDataProject?.AddDummyClipMotionData(clipName);
+			BoundMotionDataProject?.AddDummyClipMotionData(id);
 		}
 		
         public static ProjectAnimData ReadProject(StreamReader reader, int lineLimit, AnimDataManager manager)
@@ -83,7 +83,7 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimData
 				ClipDataBlock block = ClipDataBlock.ReadBlock(reader);
 				project.Blocks.Add(block);
 
-				whiteSpace = reader.ReadLine();
+				whiteSpace = reader.ReadLineSafe();
 
 			}
 			return project;

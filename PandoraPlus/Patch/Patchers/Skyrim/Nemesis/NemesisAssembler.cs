@@ -41,16 +41,19 @@ public class NemesisAssembler : IAssembler
 
 	private AnimSetDataManager animSetDataManager;
 
-    public NemesisAssembler()
+	private AnimDataManager animDataManager;
+
+	public NemesisAssembler()
     {
 		projectManager = new ProjectManager(templateFolder, outputFolder);
 		animSetDataManager = new AnimSetDataManager(templateFolder, outputFolder);
+		animDataManager = new AnimDataManager(templateFolder, outputFolder);
     }
 
     public void LoadResources()
 	{
-		projectManager.LoadTrackedProjects();
-		projectManager.LoadAnimData();
+		throw new NotImplementedException();
+
 
 	}
 
@@ -58,7 +61,7 @@ public class NemesisAssembler : IAssembler
 	{
 		var animSetDataTask = Task.Run(() => { animSetDataManager.SplitAnimSetDataSingleFile(); });
 		projectManager.LoadTrackedProjects();
-		await Task.Run(() => { projectManager.LoadAnimData(); });
+		await Task.Run(() => { animDataManager.SplitAnimationDataSingleFile(projectManager); });
 		await animSetDataTask; 
 
 	}
@@ -70,8 +73,9 @@ public class NemesisAssembler : IAssembler
 
 		foreach (DirectoryInfo subFolder in subFolders)
 		{
-			if (AssemblePackFilePatch(subFolder, mod.Name) || subFolder.Name != "animsetdatasinglefile") continue;
-			AssembleAnimSetDataPatch(subFolder);
+			if (AssemblePackFilePatch(subFolder, mod.Name)) continue;
+			if (subFolder.Name == "animsetdata") AssembleAnimSetDataPatch(subFolder);
+			if (subFolder.Name == "animdata") AssembleAnimDataPatch(subFolder);
 
 		}
 	}
@@ -81,8 +85,14 @@ public class NemesisAssembler : IAssembler
 	public async Task ApplyPatchesAsync()
 	{
 		var animSetDataTask = Task.Run(() => { animSetDataManager.MergeAnimSetDataSingleFile(); });
-		await projectManager.ApplyPatchesAsync();
+
+		await Task.Run(() => { projectManager.ApplyPatchesParallel(); });
+
+		var animDataTask = Task.Run(() => { animDataManager.MergeAnimDataSingleFile(); });
+
+		await animDataTask;
 		await animSetDataTask;
+
 	}
 
 	//to-fix: certain excerpts being misclassified as single replace edit when it is actually a replace and insert edit
@@ -207,8 +217,31 @@ public class NemesisAssembler : IAssembler
         }
 		return true;
 	}
+	public void AssembleAnimDataPatch(DirectoryInfo folder)
+	{
+		foreach(var file in folder.GetFiles())
+		{
+			Project? targetProject;
+			if (!file.Exists || !projectManager.TryGetProject(Path.GetFileNameWithoutExtension(file.Name.ToLower()), out targetProject)) continue;
 
-	public void AssembleAnimSetDataPatch(DirectoryInfo directoryInfo) //technically not Nemesis format but this format is just simpler and
+			using (var readStream = file.OpenRead())
+			{
+				using (var reader = new StreamReader(readStream))
+				{
+					string? expectedLine;
+					while ((expectedLine = reader.ReadLine()) != null)
+					{
+						if (String.IsNullOrWhiteSpace(expectedLine)) continue;
+						targetProject!.AnimData?.AddDummyClipData(expectedLine);
+					}
+				}
+			}
+		}
+
+
+
+	}
+	public void AssembleAnimSetDataPatch(DirectoryInfo directoryInfo) //not exactly Nemesis format but this format is just simpler
 	{
 		ProjectAnimSetData? targetAnimSetData;
 		foreach(DirectoryInfo subDirInfo in directoryInfo.GetDirectories())
