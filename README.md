@@ -30,16 +30,32 @@ Built with backwards compatibility in mind for [Nemesis Unlimited Behavior Engin
 ### Quickstart
 Install [.NET 7 Desktop Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/7.0) if you do not have it installed.  
 
+<br/>
+
 <details>
 
 <summary>MO2 Users</summary>
+<br/>
 
-1. Add Pandora as an [tool application for MO2](https://stepmodifications.org/wiki/Guide:Mod_Organizer#General_Application_Setup)
-2. Run the program from within MO2, using the menu on the right.
-3. Tick the patches you want and click Run. 
+1. Install Pandora Behaviour Engine as a mod and make sure it is active.
+2. Add Pandora as an [application for MO2](https://stepmodifications.org/wiki/Guide:Mod_Organizer#General_Application_Setup)
+    * Having a dedicated output mod is recommended to keep the files that the tool generates in one place.
+3. Run the program from within MO2, using the menu on the right.
+4. Tick the patches you want and click Launch. 
+
 
 </details>
+<br/>
+<details>
 
+<summary>Vortex Users</summary>
+<br/>
+
+1. Install Pandora Behaviour Engine as a mod and make sure it is active.
+2. Run the program either manually or after adding it to the tools dashboard.
+3. Tick the patches you want and click Launch. 
+
+</details>
 
 <br/>
 
