@@ -64,7 +64,7 @@ Note that using the full name does not separate files that are already shared be
 <br/>
 
 #### Indirect Identifiers
-Skeleton and character files can be targeted using either short and full names folder names. Alternatively they can also use:
+Skeleton and character files can be targeted using either short or full names. Alternatively they can also use:
 <br/>
 <br/>
 * `[ProjectName]_character` for targeting the character file of the project.
