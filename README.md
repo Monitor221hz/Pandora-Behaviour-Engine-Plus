@@ -1,4 +1,4 @@
-# Pandora Behavior Engine+
+# Pandora Behaviour Engine+
 
 A modular and lightweight behavior engine for TES Skyrim SE, for creatures and humanoids.  
 
@@ -30,9 +30,20 @@ Built with backwards compatibility in mind for [Nemesis Unlimited Behavior Engin
 ### Quickstart
 Install [.NET 7 Desktop Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/7.0) if you do not have it installed.  
 
-1. Run the behavior engine. If you're using MO2 you must launch from within the manager.
-2. Tick any mods that you want patched.
-3. Click "Launch" and let the engine finish.
+<details>
+
+<summary>MO2 Users</summary>
+
+1. Add Pandora as an [tool application for MO2](https://stepmodifications.org/wiki/Guide:Mod_Organizer#General_Application_Setup)
+2. Run the program from within MO2, using the menu on the right.
+3. Tick the patches you want and click Run. 
+
+</details>
+
+
+<br/>
+
+
 
 In case of any problems with the output, `Engine.log` names patches with failed edits for easier troubleshooting. 
 
