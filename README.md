@@ -123,6 +123,12 @@ Formerly, authors would have to encode the file and paths themselves and add it 
 <br/>
 <br/>
 
+### Custom Projects
+
+Not yet implemented.
+
+<br/>
+<br/>
 ### Verbose Logging
 Log messages are kept in a separate file called `Engine.log`. 
 
@@ -141,7 +147,7 @@ Most of these are self explanatory but some of the more obscure formatting is ex
 * `INFO` means it's just there as a notification. Nothing has gone wrong.
 * `WARN` means something is unexpected and could be a potential issue. 
 * `ERROR` means the subject prevented the engine from performing some part of its work and is likely to be an issue.
-* `FATAL` means the engine has failed completely because of a significant fault.
+* `FATAL` means the engine has failed completely because of a significant fault, usually on export. These should be reported immediately to the engine developer(s).
 
 #### Component:
 
@@ -152,7 +158,7 @@ Most of these are self explanatory but some of the more obscure formatting is ex
 
 #### Input:
 
-The input is usually a parameter of the operation that is significant for manual debugging. The most common input are xml paths which denote the path to the area of the xml file where it failed.
+The input is usually a parameter of the operation that is significant for manual debugging. The most common input are xml paths which denote the path to the area of the xml file where an edit failed.
 <br/>
 
 Can you see why this edit failed?
