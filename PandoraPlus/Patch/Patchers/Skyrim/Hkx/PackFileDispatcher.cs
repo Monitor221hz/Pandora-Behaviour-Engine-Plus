@@ -44,7 +44,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 		}
 		public void ApplyChanges(PackFile packFile)
 		{
-			Logger.Info($"Dispatcher > {packFile.ParentProject?.Identifier}~{packFile.Name} > APPLY CHANGES");
+
 			SortChanges();
 			foreach(IPackFileChange change in elementChanges)
 			{

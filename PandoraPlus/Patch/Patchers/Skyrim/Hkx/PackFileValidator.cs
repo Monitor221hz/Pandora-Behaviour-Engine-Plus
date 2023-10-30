@@ -67,7 +67,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 				{
 					eventNameElement.Remove();
 					eventFlagElements[i].Remove();
-					Logger.Warn($"Duplicate Event > {eventName} > REMOVED");
+					Logger.Warn($"Validator > {packFile.ParentProject?.Identifier}~{packFile.Name} > Duplicate Event > {eventName} > REMOVED");
 					continue;
 				}
 				eventIndices.Add(eventName, i);
@@ -81,7 +81,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 					variableNameElement.Remove();
 					variableTypeElements[i].Remove();
 					variableValueElements[i].Remove();
-					Logger.Warn($"Duplicate Variable > {variableName} > REMOVED");
+					Logger.Warn($"Validator > {packFile.ParentProject?.Identifier}~{packFile.Name} > Duplicate Variable > {variableName} > REMOVED");
 					continue; 
 				}
 				variableIndices.Add(variableName, i);
@@ -157,7 +157,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 					changeCount++;
 				}
 			}
-			Logger.Info($"Validator > {packFile.Name} > {changeCount} Edits > CHECKED");
+			Logger.Info($"Validator > {packFile.ParentProject?.Identifier}~{packFile.Name} > {changeCount} Edits > CHECKED");
 		}
 	}
 }

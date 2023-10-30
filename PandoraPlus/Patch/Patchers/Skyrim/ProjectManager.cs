@@ -1,4 +1,5 @@
 ﻿using Pandora.Patch.Patchers.Skyrim.AnimData;
+using Pandora.Patch.Patchers.Skyrim.AnimSetData;
 using Pandora.Patch.Patchers.Skyrim.Hkx;
 using System;
 using System.Collections.Generic;
@@ -28,17 +29,23 @@ namespace Pandora.Core.Patchers.Skyrim
 
 
 		private AnimDataManager animDataPatcher;
-
+		private AnimSetDataManager animSetDataPatcher; 
 
 		public ProjectManager(DirectoryInfo templateFolder, DirectoryInfo outputFolder)
         {
             this.templateFolder = templateFolder;
 			this.outputFolder = outputFolder;
 			animDataPatcher = new AnimDataManager(this.templateFolder, this.outputFolder);
+			animSetDataPatcher = new AnimSetDataManager(this.templateFolder, this.outputFolder);
         }
         public void LoadAnimData()
 		{
 			animDataPatcher.SplitAnimationDataSingleFile(this);
+		}
+
+		public void LoadAnimSetData()
+		{
+			animSetDataPatcher.SplitAnimSetDataSingleFile();
 		}
 
 		public async Task LoadTrackedProjectsAsync()
@@ -195,7 +202,23 @@ namespace Pandora.Core.Patchers.Skyrim
 
 		public async Task ApplyPatchesAsync()
 		{
-			List<Task> exportTasks = new List<Task>();
+			var animSetDataTask = Task.Run(()=> { animSetDataPatcher.MergeAnimSetDataSingleFile(); });
+
+			Parallel.ForEach(ActivePackFiles, packFile =>
+			{
+				packFile.ApplyChanges();
+				//packFile.Map.Save(Path.Join(Directory.GetCurrentDirectory(), packFile.InputHandle.Name));
+				//packFile.Export();
+			});
+			var animDataTask = Task.Run(() => { animDataPatcher.MergeAnimDataSingleFile(); });
+			//animDataPatcher.MergeAnimDataSingleFile();
+
+
+			Parallel.ForEach(ActivePackFiles, packFile => { packFile.Export(); });
+
+			await animSetDataTask;
+
+			await animDataTask;
 		}
 	}
 }

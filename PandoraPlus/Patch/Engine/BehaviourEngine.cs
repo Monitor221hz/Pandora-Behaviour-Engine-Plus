@@ -24,8 +24,7 @@ namespace Pandora.Core
 		{
 			Configuration.Patcher.SetTarget(mods);
 			await Configuration.Patcher.UpdateAsync();
-
-			Configuration.Patcher.Run(); 
+			await Configuration.Patcher.RunAsync(); 
 		}
 
 		public string GetMessages()

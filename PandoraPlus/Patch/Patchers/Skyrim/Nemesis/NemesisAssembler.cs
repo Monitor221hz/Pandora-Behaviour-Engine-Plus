@@ -52,8 +52,10 @@ public class NemesisAssembler : IAssembler
 
 	public async Task LoadResourcesAsync()
 	{
+		var animSetDataTask = Task.Run(() => { projectManager.LoadAnimSetData(); });
 		projectManager.LoadTrackedProjects();
 		await Task.Run(() => { projectManager.LoadAnimData(); });
+		await animSetDataTask; 
 	}
 
 	public void AssemblePatch(IModInfo mod)
@@ -215,7 +217,7 @@ public class NemesisAssembler : IAssembler
 			}
 			catch(XmlException e)
 			{
-				Logger.Error($"File {editFile.FullName} > Load > FAILED > {e.Message}");
+				Logger.Error($"Nemesis Assembler > File {editFile.FullName} > Load > FAILED > {e.Message}");
 				continue;
 			}
 			
@@ -229,6 +231,11 @@ public class NemesisAssembler : IAssembler
 
 			if (!hasReplacements && !hasInserts)
             {
+				if (targetPackFile.Map.PathExists(modName))
+				{
+					Logger.Error($"Nemesis Assembler > File {editFile.FullName} >  No Edits Found > Load > SKIPPED");
+					continue;
+				}
 				targetPackFile.edits.AddChange(new InsertElementChange(PackFile.ROOT_CONTAINER_NAME+"/top", element, modName));
             }
 		}

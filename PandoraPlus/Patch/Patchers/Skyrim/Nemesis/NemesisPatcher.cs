@@ -44,6 +44,10 @@ public class NemesisPatcher : IPatcher
     {
         assembler.ApplyPatches();
     }
+    public async Task RunAsync()
+    {
+        await assembler.ApplyPatchesAsync();
+    }
 
     public async Task UpdateAsync()
     {

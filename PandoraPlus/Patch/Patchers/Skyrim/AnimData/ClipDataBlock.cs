@@ -83,7 +83,7 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimData
 
 
 
-				sb.AppendJoin("\r\n", TriggerNames).AppendLine();
+				sb.AppendJoin("\r\n", TriggerNames);
 
 			}
 			return sb.ToString();

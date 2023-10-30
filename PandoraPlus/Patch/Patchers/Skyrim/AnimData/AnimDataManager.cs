@@ -16,13 +16,13 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimData
 
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-		private HashSet<int> UsedClipIDs = new HashSet<int>();
+		private HashSet<int> usedClipIDs = new HashSet<int>();
 		public int numClipIDs { get; private set; } = 0;
 
-		private List<string> ProjectNames = new List<string>();
+		private List<string> projectNames = new List<string>();
 		private Dictionary<string, Dictionary<int, int>> MotionBlockIndexes { get; set; } = new Dictionary<string, Dictionary<int, int>>();
-		private List<ProjectAnimData> AnimDataList { get; set; } = new List<ProjectAnimData>();
-		private List<MotionData> MotionDataProjects { get; set; } = new List<MotionData>();
+		private List<ProjectAnimData> animDataList { get; set; } = new List<ProjectAnimData>();
+		private List<MotionData> motionDataList { get; set; } = new List<MotionData>();
 
 		private DirectoryInfo templateFolder;
 		private DirectoryInfo outputFolder; 
@@ -46,13 +46,13 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimData
 		{
 			foreach (ClipDataBlock block in animData.Blocks)
 			{
-				UsedClipIDs.Add(Int32.Parse(block.ClipID));
+				usedClipIDs.Add(Int32.Parse(block.ClipID));
 			}
 		}
 
 		private void MapAnimData()
 		{
-			foreach (ProjectAnimData animData in AnimDataList)
+			foreach (ProjectAnimData animData in animDataList)
 			{
 				MapProjectAnimData(animData);
 			}
@@ -60,11 +60,11 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimData
 
 		public int GetNextValidID()
 		{
-			while (UsedClipIDs.Contains(LastID))
+			while (usedClipIDs.Contains(LastID))
 			{
 				LastID--;
 			}
-			UsedClipIDs.Add(LastID);
+			usedClipIDs.Add(LastID);
 			return LastID;
 		}
 		
@@ -94,12 +94,12 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimData
 						
 						if (expectedLine.Contains(".txt"))
 						{
-							ProjectNames.Add(Path.GetFileNameWithoutExtension(expectedLine));
+							projectNames.Add(Path.GetFileNameWithoutExtension(expectedLine));
 
 						}
 						else if (Int32.TryParse(expectedLine, out numLines))
 						{
-							string projectName = ProjectNames[projectIndex].ToLower();
+							string projectName = projectNames[projectIndex].ToLower();
 							if (projectManager.ProjectLoaded(projectName)) activeProject = projectManager.LookupProject(projectName);
 							sectionIndex++;
 
@@ -127,7 +127,7 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimData
 									projectIndex++;
 									sectionIndex++;
 								}
-								AnimDataList.Add(animData);
+								animDataList.Add(animData);
 								if (activeProject != null)
 								{
 									activeProject.AnimData = animData;
@@ -143,7 +143,7 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimData
 								if (animData != null) animData.BoundMotionDataProject = motionData;
 
 
-								MotionDataProjects.Add(motionData);
+								motionDataList.Add(motionData);
 #if DEBUG
 								//var outputFile = new FileInfo(MotionDataProjectOutputFolder.FullName + $"\\{ProjectNames[projectIndex]}");
 								//if (outputFile.Exists) outputFile.Delete();
@@ -173,12 +173,12 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimData
 			{
 				using (var streamWriter =  new StreamWriter(writeStream))
 				{
-					streamWriter.WriteLine(ProjectNames.Count);
-					foreach(var projectName in ProjectNames) { streamWriter.WriteLine($"{projectName}.txt"); }
+					streamWriter.WriteLine(projectNames.Count);
+					foreach(var projectName in projectNames) { streamWriter.WriteLine($"{projectName}.txt"); }
 
-					for(int i = 0;  i < ProjectNames.Count; i++)
+					for(int i = 0;  i < projectNames.Count; i++)
 					{
-						var animData = AnimDataList[i];
+						var animData = animDataList[i];
 						var motionData = animData.BoundMotionDataProject;
 
 						streamWriter.WriteLine(animData.GetLineCount());
