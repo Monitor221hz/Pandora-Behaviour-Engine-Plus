@@ -25,7 +25,9 @@ namespace Pandora.MVVM.ViewModel
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public bool? DialogResult { get; set; } = true;
+		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
+		public bool? DialogResult { get; set; } = true;
 
         public BehaviourEngine Engine { get; private set; } = new BehaviourEngine();
 

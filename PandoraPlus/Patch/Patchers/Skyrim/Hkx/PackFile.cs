@@ -106,8 +106,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 				var serializer = new PackFileSerializer();
 				serializer.Serialize(rootObject, binaryWriter, header);
 			}
-				if (DebugFiles)
-				{
+#if DEBUG
 					var debugOuputHandle = new FileInfo(OutputHandle.FullName + ".xml");
 					if (debugOuputHandle.Exists) { debugOuputHandle.Delete(); }
 					using (var writeStream = debugOuputHandle.Create())
@@ -117,8 +116,8 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 						xmlSerializer.Serialize(rootObject, header, writeStream);
 					}
 
-				}
 
+#endif
 			}
 			catch(Exception ex) 
 			{

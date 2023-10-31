@@ -15,7 +15,10 @@ namespace Pandora.Patch.Patchers.Skyrim.Nemesis;
 
 public class NemesisPatcher : IPatcher
 {
-    private List<IModInfo> activeMods { get; set; } = new List<IModInfo>();
+	private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
+
+	private List<IModInfo> activeMods { get; set; } = new List<IModInfo>();
 
 
     public void SetTarget(List<IModInfo> mods) => activeMods = mods;
@@ -35,7 +38,9 @@ public class NemesisPatcher : IPatcher
 		for (int i = 0; i < activeMods.Count; i++)
         {
 			IModInfo mod = activeMods[i];
-			logBuilder.AppendLine($"Mod {i+1} : {mod.Name} - v.{mod.Version}");
+            string modLine = $"Mod {i + 1} : {mod.Name} - v.{mod.Version}";
+			logBuilder.AppendLine(modLine);
+            logger.Info(modLine);
         }
         return logBuilder.ToString();
     }

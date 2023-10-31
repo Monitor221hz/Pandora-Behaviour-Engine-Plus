@@ -4,6 +4,7 @@ using Pandora.Core.Patchers.Skyrim;
 using Pandora.Patch.Patchers.Skyrim.AnimData;
 using Pandora.Patch.Patchers.Skyrim.AnimSetData;
 using Pandora.Patch.Patchers.Skyrim.Hkx;
+using Pandora.Patch.Patchers.Skyrim.Pandora;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -43,12 +44,26 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 
 	private AnimDataManager animDataManager;
 
+	private PandoraConverter pandoraConverter;
+
+
 	public NemesisAssembler()
     {
 		projectManager = new ProjectManager(templateFolder, outputFolder);
 		animSetDataManager = new AnimSetDataManager(templateFolder, outputFolder);
 		animDataManager = new AnimDataManager(templateFolder, outputFolder);
+
+		pandoraConverter = new PandoraConverter(projectManager, animSetDataManager, animDataManager);
     }
+
+	public NemesisAssembler(ProjectManager projManager, AnimSetDataManager animSDManager, AnimDataManager animDManager)
+	{
+		this.projectManager = projManager;
+		this.animSetDataManager = animSDManager;
+		this.animDataManager = animDManager;
+
+		pandoraConverter = new PandoraConverter(projectManager, animSetDataManager, animDataManager);
+	}
 
     public void LoadResources()
 	{
@@ -74,8 +89,9 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 		foreach (DirectoryInfo subFolder in subFolders)
 		{
 			if (AssemblePackFilePatch(subFolder, mod.Name)) continue;
-			if (subFolder.Name == "animsetdata") AssembleAnimSetDataPatch(subFolder);
-			if (subFolder.Name == "animdata") AssembleAnimDataPatch(subFolder);
+			if (subFolder.Name == "animationsetdatasinglefile") AssembleAnimSetDataPatch(subFolder);
+			if (subFolder.Name == "animationdatasinglefile") AssembleAnimDataPatch(subFolder);
+			if (subFolder.Name == "animdata") subFolder.Delete(true);
 
 		}
 	}
@@ -217,33 +233,20 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
         }
 		return true;
 	}
+	
+
 	public void AssembleAnimDataPatch(DirectoryInfo folder)
 	{
-		foreach(var file in folder.GetFiles())
+		foreach(var subFolder in folder.GetDirectories())
 		{
-			Project? targetProject;
-			if (!file.Exists || !projectManager.TryGetProject(Path.GetFileNameWithoutExtension(file.Name.ToLower()), out targetProject)) continue;
-
-			using (var readStream = file.OpenRead())
-			{
-				using (var reader = new StreamReader(readStream))
-				{
-					string? expectedLine;
-					while ((expectedLine = reader.ReadLine()) != null)
-					{
-						if (String.IsNullOrWhiteSpace(expectedLine)) continue;
-						targetProject!.AnimData?.AddDummyClipData(expectedLine);
-					}
-				}
-			}
+			pandoraConverter.TryGenerateAnimDataPatchFile(subFolder);
 		}
-
-
-
+		pandoraConverter.Assembler.AssembleAnimDataPatch(folder);
 	}
 	public void AssembleAnimSetDataPatch(DirectoryInfo directoryInfo) //not exactly Nemesis format but this format is just simpler
 	{
 		ProjectAnimSetData? targetAnimSetData;
+		
 		foreach(DirectoryInfo subDirInfo in directoryInfo.GetDirectories())
 		{
 			if (!animSetDataManager.AnimSetDataMap.TryGetValue(subDirInfo.Name, out targetAnimSetData)) return;
