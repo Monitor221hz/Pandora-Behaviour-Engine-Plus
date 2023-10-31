@@ -80,13 +80,13 @@ It's recommended to pass the log on to the relevant mod author if a specific mod
 
 <br/>
 
-You have a mod patch that uses animsetdatasinglefile in the old Nemesis format. Please convert it or disable it.
+You have a mod patch that uses animsetdatasinglefile in the old Nemesis format. Please disable it for now.
 
 <br/>
 
 **My animation has no movement!"**
 
-One of the mods uses their own behavior file and Pandora did not generate animdata for it. Go here and [convert it](#manual-addition) or wait for a patch to be released.
+One of the mods does not have motion data. That is not a Pandora issue, it is a mod issue. 
 
 <br/>
 <br/>
