@@ -15,7 +15,6 @@ Built with backwards compatibility in mind for [Nemesis Unlimited Behavior Engin
     * [Unique Identifiers](#unique-identifiers)
     * [Indirect Identifiers](#indirect-identifiers)
   * [AnimData](#animdata)
-    * [Auto Generation](#auto-generation)
     * [Manual Addition](#manual-addition)
   * [AnimSetData](#animsetdata)
     * [Adding AnimSetData Animations](#adding-animsetdata-animations)
@@ -24,6 +23,8 @@ Built with backwards compatibility in mind for [Nemesis Unlimited Behavior Engin
     * [Severity](#severity)
     * [Component](#component)
     * [Input](#input)
+* [For Developers](#for-developers)
+  * [Build Requirements](#build-requirements) 
 
 <br/>
 <br/>
@@ -126,21 +127,15 @@ Skeleton and character files can be targeted using either short or full names. A
 <br/>
 
 ### AnimData
-#### Auto Generation
-Pandora Behavior Engine generates dummy motion data for every added clip generator. All added animations are now [AMR ready](https://www.nexusmods.com/skyrimspecialedition/mods/50258) by default when patched. 
-<br/>
-
-No more need for blank animdata to be written by hand, which was a huge hassle for behavior authors.  
-<br/>
 
 #### Manual Addition
-Mods with their own custom graphs still need to register their clip generators manually if they want motion.  
+Mods need to register their clip generators manually if they want motion.  
 
 <br/>
 
 To do so, create a folder named `animdata` and create a `[ProjectName].txt` file with each line containing the name of one clip generator. Don't worry about repetition as the engine will automatically discard duplicate clip generator names (case sensitive).  
 
-There's also a [python script](https://gist.github.com/Monitor144hz/ce3069fb99064bda85e9b127f90e5039) that automatically converts the Nemesis animdatasinglefile format into the Pandora format, for when there are too many clip generator names to convert manually.
+As of v0.3.0-alpha Pandora generates a compatible format for existing animsingledatafiles in the Nemesis format. 
 
 <br/>
 <br/>
@@ -258,3 +253,9 @@ Dispatcher > "ExampleMod" > defaultfemale~1hm_behavior > Replace > Element > #25
   
   The path should be `#2521/contactEvent/Element0/id`, not `#2521/event/Element0/id`. In this case, it should be fixed by the author, or reported to the author if found by a user.
 </details>
+
+## For Developers 
+### Build Requirements
+* [Nito HashAlgorithms CRC](https://www.nuget.org/packages/Nito.HashAlgorithms.CRC)
+* [NLog](https://www.nuget.org/packages/NLog/)
+* [XmlCake](https://github.com/Monitor144hz/XML-Cake)
