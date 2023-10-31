@@ -76,14 +76,6 @@ It's recommended to pass the log on to the relevant mod author if a specific mod
 
 <br/>
 
-**I just die instantly or crumple to the ground at a high velocity!"**
-
-<br/>
-
-You have a mod patch that uses animsetdatasinglefile in the old Nemesis format. Please disable it for now.
-
-<br/>
-
 **My animation has no movement!"**
 
 One of the mods does not have motion data. That is not a Pandora issue, it is a mod issue. 
