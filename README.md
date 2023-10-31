@@ -9,6 +9,7 @@ Built with backwards compatibility in mind for [Nemesis Unlimited Behavior Engin
 ## Navigation
 * [For Users](#for-users)
   * [Quickstart](#quickstart)
+  * [Troubleshooting](#troubleshooting)
 * [For Mod Authors](#for-mod-authors)
   * [File Targeting](#file-targeting)
     * [Unique Identifiers](#unique-identifiers)
