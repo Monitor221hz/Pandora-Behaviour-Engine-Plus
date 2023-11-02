@@ -46,7 +46,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			XElement eventFlagContainer = graphDataContainer.Elements().ElementAt(3);
 
 			XElement variableNameContainer = stringDataContainer.Elements().ElementAt(2);
-			XElement variableValueContainer = variableValueSetContainer.Elements().FirstOrDefault();
+			XElement variableValueContainer = variableValueSetContainer.Elements().FirstOrDefault()!;
 			XElement variableTypeContainer = graphDataContainer.Elements().ElementAt(1);
 
 			var eventNameElements = eventNameContainer.Elements().ToList();
@@ -56,35 +56,59 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			var variableValueElements = variableValueContainer.Elements().ToList();
 			var variableTypeElements = variableTypeContainer.Elements().ToList();
 
+			var uniqueEventNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+			var uniqueVariableNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
 			eventIndices.Clear();
 			variableIndices.Clear();
 
-			for (int i = 0; i < eventNameElements.Count; i++)
+			for (int i = eventNameElements.Count - 1; i >= 0; i--)
 			{
 				var eventNameElement = eventNameElements[i];
 				var eventName = eventNameElement.Value;
-				if (eventIndices.ContainsKey(eventName))
+				if (!uniqueEventNames.Add(eventName))
 				{
 					eventNameElement.Remove();
 					eventFlagElements[i].Remove();
+
+					eventNameElements.RemoveAt(i);
+					eventFlagElements.RemoveAt(i);
 					Logger.Warn($"Validator > {packFile.ParentProject?.Identifier}~{packFile.Name} > Duplicate Event > {eventName} > REMOVED");
 					continue;
 				}
-				eventIndices.Add(eventName, i);
+//#if DEBUG
+//				Logger.Debug($"Validator > {packFile.ParentProject?.Identifier}~{packFile.Name} > Mapped Event > {eventName} > Index {i}");
+//#endif
+				
 			}
-			for (int i = 0; i < variableNameElements.Count; i++)
+			for (int i = variableNameElements.Count - 1; i >= 0; i--)
 			{
 				var variableNameElement = variableNameElements[i];	
 				var variableName = variableNameElement.Value;
-				if (variableIndices.ContainsKey(variableName))
+				if (!uniqueVariableNames.Add(variableName))
 				{
 					variableNameElement.Remove();
 					variableTypeElements[i].Remove();
 					variableValueElements[i].Remove();
+
+					variableNameElements.RemoveAt(i);
+					variableTypeElements.RemoveAt(i);
+					variableValueElements.RemoveAt(i);
 					Logger.Warn($"Validator > {packFile.ParentProject?.Identifier}~{packFile.Name} > Duplicate Variable > {variableName} > REMOVED");
 					continue; 
 				}
-				variableIndices.Add(variableName, i);
+//#if DEBUG
+//				Logger.Debug($"Validator > {packFile.ParentProject?.Identifier}~{packFile.Name} > Mapped Variable > {variableName} > Index {i}");
+//#endif
+				
+			}
+			for (int i = 0; i < eventNameElements.Count; i++)
+			{
+				eventIndices.Add(eventNameElements[i].Value, i);
+			}
+			for (int i = 0; i < variableNameElements.Count; i++)
+			{
+				variableIndices.Add(variableNameElements[i].Value, i);
 			}
 			return true; 
 		}
@@ -96,14 +120,15 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			foreach (Match match in eventMatch)
 			{
 				var index = GetIndexFromMatch(eventIndices, match);
-				rawValue = rawValue.Replace(match.Value, GetIndexFromMatch(eventIndices, match).ToString());
+				
+				rawValue = rawValue.Replace(match.Value, index.ToString());
 			}
 
 			var varMatch = VarFormat.Matches(element.Value);
 			foreach (Match match in varMatch)
 			{
 				var index = GetIndexFromMatch(eventIndices, match);
-				rawValue = rawValue.Replace(match.Value, GetIndexFromMatch(variableIndices, match).ToString());
+				rawValue = rawValue.Replace(match.Value, index.ToString());
 			}
 			element.SetValue(rawValue);
 		}
@@ -148,11 +173,6 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 						continue;
 					}
 					//ValidateElementCount(element.Parent!); might not be needed with hkx2 library; testing needed.
-					if (change.Path[0] == '_')
-					{
-						packFile.Map.MapSlice(change.Path, 1, false);
-						TryValidateClipGenerator(change.Path, packFile);
-					}
 					ValidateElementContent(element, eventIndices, variableIndices);
 					changeCount++;
 				}

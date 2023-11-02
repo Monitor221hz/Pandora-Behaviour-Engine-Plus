@@ -243,47 +243,9 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 		}
 		pandoraConverter.Assembler.AssembleAnimDataPatch(folder);
 	}
-	public void AssembleAnimSetDataPatch(DirectoryInfo directoryInfo) //not exactly Nemesis format but this format is just simpler
+	public void AssembleAnimSetDataPatch(DirectoryInfo directoryInfo)
 	{
-		ProjectAnimSetData? targetAnimSetData;
-		
-		foreach(DirectoryInfo subDirInfo in directoryInfo.GetDirectories())
-		{
-			if (!animSetDataManager.AnimSetDataMap.TryGetValue(subDirInfo.Name, out targetAnimSetData)) return;
-			var patchFiles = subDirInfo.GetFiles();
-
-			foreach (var patchFile in patchFiles)
-			{
-				AnimSet? targetAnimSet;
-				if (!targetAnimSetData.AnimSetsByName.TryGetValue(patchFile.Name, out targetAnimSet)) continue;
-
-				using (var readStream = patchFile.OpenRead())
-				{
-
-					using (var reader = new StreamReader(readStream))
-					{
-
-						string? expectedPath;
-						while ((expectedPath = reader.ReadLine()) != null)
-						{
-							if (string.IsNullOrWhiteSpace(expectedPath)) continue;
-
-							string animationName = Path.GetFileNameWithoutExtension(expectedPath);
-							string folder = Path.GetDirectoryName(expectedPath)!;
-
-
-							var animInfo = SetCachedAnimInfo.Encode(folder, animationName);
-							targetAnimSet.AddAnimInfo(animInfo);
-						}
-
-					}
-				}
-			}
-		}
-		
-
-
-	
+		pandoraConverter.Assembler.AssembleAnimSetDataPatch(directoryInfo);
 	}
 
 	private bool AssemblePackFilePatch(DirectoryInfo folder, string modName)

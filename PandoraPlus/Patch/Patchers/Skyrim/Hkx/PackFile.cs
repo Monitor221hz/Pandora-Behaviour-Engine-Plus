@@ -93,8 +93,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			}
 			HKXHeader header = HKXHeader.SkyrimSE();
 			IHavokObject rootObject;
-			try
-			{
+#if DEBUG
 			using (var readStream = OutputHandle.OpenRead())
 			{
 				var deserializer = new XmlDeserializer();
@@ -106,18 +105,29 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 				var serializer = new PackFileSerializer();
 				serializer.Serialize(rootObject, binaryWriter, header);
 			}
-#if DEBUG
-					var debugOuputHandle = new FileInfo(OutputHandle.FullName + ".xml");
-					if (debugOuputHandle.Exists) { debugOuputHandle.Delete(); }
-					using (var writeStream = debugOuputHandle.Create())
-					{
+			var debugOuputHandle = new FileInfo(OutputHandle.FullName + ".xml");
+			if (debugOuputHandle.Exists) { debugOuputHandle.Delete(); }
+			using (var writeStream = debugOuputHandle.Create())
+			{
 
-						var xmlSerializer = new HKX2.XmlSerializer();
-						xmlSerializer.Serialize(rootObject, header, writeStream);
-					}
+				var xmlSerializer = new HKX2.XmlSerializer();
+				xmlSerializer.Serialize(rootObject, header, writeStream);
+			}
 
-
-#endif
+#else
+			try
+			{
+				using (var readStream = OutputHandle.OpenRead())
+				{
+					var deserializer = new XmlDeserializer();
+					rootObject = deserializer.Deserialize(readStream, header, false);
+				}
+				using (var writeStream = OutputHandle.Create())
+				{
+					var binaryWriter = new BinaryWriterEx(writeStream);
+					var serializer = new PackFileSerializer();
+					serializer.Serialize(rootObject, binaryWriter, header);
+				}
 			}
 			catch(Exception ex) 
 			{
@@ -127,21 +137,6 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 					Map.Save(writeStream);
 				}
 			}
-
-			
-#if DEBUG
-			//if (debugOuputHandle.Exists) { debugOuputHandle.Delete(); }
-			//using (var readStream = OutputHandle.OpenRead())
-			//{
-			//	var binaryReader = new BinaryReaderEx(readStream);
-			//	var deserializer = new PackFileDeserializer();
-			//	rootObject = deserializer.Deserialize(binaryReader, false);
-			//}
-			//using (var writeStream = debugOuputHandle.Create())
-			//{
-			//	var xmlSerializer = new HKX2.XmlSerializer();
-			//	xmlSerializer.Serialize(rootObject, header, writeStream);
-			//}
 #endif
 
 

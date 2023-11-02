@@ -12,6 +12,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 {
 	public class PandoraAssembler
 	{
+		private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 		private ProjectManager projectManager { get; set; }	
 		private AnimDataManager animDataManager { get; set; }	
 		private AnimSetDataManager animSetDataManager { get; set; }
@@ -59,6 +60,46 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 					}
 				}
 			}
+		}
+		public void AssembleAnimSetDataPatch(DirectoryInfo directoryInfo) //not exactly Nemesis format but this format is just simpler
+		{
+			ProjectAnimSetData? targetAnimSetData;
+
+			foreach (DirectoryInfo subDirInfo in directoryInfo.GetDirectories())
+			{
+				if (!animSetDataManager.AnimSetDataMap.TryGetValue(subDirInfo.Name, out targetAnimSetData)) return;
+				var patchFiles = subDirInfo.GetFiles();
+
+				foreach (var patchFile in patchFiles)
+				{
+					AnimSet? targetAnimSet;
+					if (!targetAnimSetData.AnimSetsByName.TryGetValue(patchFile.Name, out targetAnimSet)) continue;
+
+					using (var readStream = patchFile.OpenRead())
+					{
+
+						using (var reader = new StreamReader(readStream))
+						{
+
+							string? expectedPath;
+							while ((expectedPath = reader.ReadLine()) != null)
+							{
+								if (string.IsNullOrWhiteSpace(expectedPath)) continue;
+
+								string animationName = Path.GetFileNameWithoutExtension(expectedPath);
+								string folder = Path.GetDirectoryName(expectedPath)!;
+								var animInfo = SetCachedAnimInfo.Encode(folder, animationName);
+								targetAnimSet.AddAnimInfo(animInfo);
+							}
+
+						}
+					}
+				}
+			}
+
+
+
+
 		}
 	}
 }

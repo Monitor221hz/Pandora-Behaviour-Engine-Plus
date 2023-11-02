@@ -72,6 +72,7 @@ namespace Pandora.MVVM.ViewModel
 #if DEBUG
             modInfos = await modinfoProvider?.GetInstalledMods("C:\\Games\\Skyrim Modding\\Creation Tools\\Skyrim.Behavior.Tool\\PandoraTEST\\Pandora_Engine\\mod")!;
 			modInfos.AddRange(await modinfoProvider?.GetInstalledMods(Directory.GetCurrentDirectory() + "\\Nemesis_Engine\\mod")!);
+			modInfos.AddRange(await modinfoProvider?.GetInstalledMods(Directory.GetCurrentDirectory() + "\\Pandora_Engine\\mod")!); 
 #else
             modInfos =  await modinfoProvider?.GetInstalledMods(Directory.GetCurrentDirectory()+ "\\Pandora_Engine\\mod")!;
             modInfos.AddRange(await modinfoProvider?.GetInstalledMods(Directory.GetCurrentDirectory()+ "\\Nemesis_Engine\\mod")!);
