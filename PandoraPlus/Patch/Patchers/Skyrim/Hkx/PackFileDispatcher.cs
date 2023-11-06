@@ -8,67 +8,56 @@ using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using Pandora.Core.Patchers.Skyrim;
 
-namespace Pandora.Patch.Patchers.Skyrim.Hkx
+namespace Pandora.Patch.Patchers.Skyrim.Hkx;
+
+public class PackFileDispatcher
 {
-	public class PackFileDispatcher
+	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
+	//public ObservableCollection<IPackFileChange> ChangeHistory { get; set; } = new List<IPackFileChange>();
+
+	private List<IPackFileChange> elementChanges { get; set; } = new List<IPackFileChange>();
+
+	private List<IPackFileChange> textChanges { get; set; } = new List<IPackFileChange>();
+
+	private List<PackFileChangeSet> changeSets { get; set; } = new List<PackFileChangeSet>();
+
+	private static Regex EventFormat = new Regex(@"[$]{1}eventID{1}[\[]{1}(.+)[\]]{1}[$]{1}");
+	private static Regex VarFormat = new Regex(@"[$]{1}variableID{1}[\[]{1}(.+)[\]]{1}[$]{1}");
+
+	private PackFileValidator packFileValidator { get; set; } = new PackFileValidator();
+
+	public void AddChange(IPackFileChange change)
 	{
-		private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-
-		//public ObservableCollection<IPackFileChange> ChangeHistory { get; set; } = new List<IPackFileChange>();
-
-		private List<IPackFileChange> elementChanges {  get; set; } = new List<IPackFileChange> ();
-
-		private List<IPackFileChange> textChanges { get; set; } = new List<IPackFileChange>();	
-
-		private static Regex EventFormat = new Regex(@"[$]{1}eventID{1}[\[]{1}(.+)[\]]{1}[$]{1}");
-		private static Regex VarFormat = new Regex(@"[$]{1}variableID{1}[\[]{1}(.+)[\]]{1}[$]{1}");
-
-		private PackFileValidator packFileValidator { get; set; } = new PackFileValidator ();
-
-		public void AddChange(IPackFileChange change)
+		if (change.AssociatedType == System.Xml.XmlNodeType.Element)
 		{
-			if (change.AssociatedType == System.Xml.XmlNodeType.Element)
-			{
-				elementChanges.Add(change);
-			}
-			else if (change.AssociatedType == System.Xml.XmlNodeType.Text)
-			{
-				textChanges.Add(change);
-			}
+			elementChanges.Add(change);
 		}
-
-		public void SortChanges()
+		else if (change.AssociatedType == System.Xml.XmlNodeType.Text)
 		{
-			elementChanges = elementChanges.OrderBy(x => (int)x.Type).ToList();
-			textChanges = textChanges.OrderBy(x => (int) x.Type).ToList();
-		}
-		public void ApplyChanges(PackFile packFile)
-		{
-
-			SortChanges();
-			foreach(IPackFileChange change in elementChanges)
-			{
-				if (!change.Apply(packFile))
-				{
-					Logger.Warn($"Dispatcher > \"{change.ModName}\" > {packFile.ParentProject?.Identifier}~{packFile.Name} > {change.Type} > {change.AssociatedType} > {change.Path} > FAILED");
-				}
-			}
-
-			foreach(IPackFileChange change in textChanges)
-			{
-				if (!change.Apply(packFile))
-				{
-					Logger.Warn($"Dispatcher > \"{change.ModName}\" > {packFile.ParentProject?.Identifier}~{packFile.Name} > {change.Type} > {change.AssociatedType} > {change.Path} > FAILED");
-				}
-			}
-
-			packFileValidator.Validate(packFile, textChanges, elementChanges);
-
+			textChanges.Add(change);
 		}
 	}
 
+	public void AddChangeSet(PackFileChangeSet changeSet)
+	{
+		lock(changeSets)
+		{
+			changeSets.Add(changeSet);
+		}
+	}
 
+	public void SortChangeSets()
+	{
+		changeSets = changeSets.OrderBy(s => s.Origin.Priority).ToList();
+	}
+	public void ApplyChanges(PackFile packFile)
+	{
+		SortChangeSets();
+		
+		PackFileChangeSet.ApplyInOrder(packFile, changeSets);
 
-
-
+		packFileValidator.ValidateEventsAndVariables(packFile);
+		foreach(var changeSet in changeSets) { changeSet.Validate(packFile, packFileValidator); }
+	}
 }

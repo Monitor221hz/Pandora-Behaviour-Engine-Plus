@@ -20,7 +20,9 @@ public class NemesisModInfoProvider : IModInfoProvider
     public async Task<List<IModInfo>> GetInstalledMods(string folderPath)
     {
         List<IModInfo> infoList = new List<IModInfo>();
+
         if (!Path.Exists(folderPath)) return infoList;
+
         string[] folders = Directory.GetDirectories(folderPath);
         foreach (string folder in folders)
         {

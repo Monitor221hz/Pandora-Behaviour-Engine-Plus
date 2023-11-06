@@ -58,14 +58,14 @@ public class NemesisPatcher : IPatcher
     {
         await assembler.LoadResourcesAsync();
 
-
-        List<Task> assembleTasks = new List<Task>();
-        foreach(var mod in activeMods)
-        {
-            assembleTasks.Add(Task.Run(() => { assembler.AssemblePatch(mod); })); 
-        }
-        await Task.WhenAll(assembleTasks);
-    }
+        Parallel.ForEach(activeMods, mod => { assembler.AssemblePatch(mod); });
+		//List<Task> assembleTasks = new List<Task>();
+		//foreach (var mod in activeMods)
+		//{
+		//	assembleTasks.Add(Task.Run(() => { assembler.AssemblePatch(mod); }));
+		//}
+		//await Task.WhenAll(assembleTasks);
+	}
 
     public async Task WriteAsync()
     {

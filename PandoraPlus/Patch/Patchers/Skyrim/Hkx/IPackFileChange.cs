@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿using Pandora.Core;
+using System.Xml;
 
 namespace Pandora.Patch.Patchers.Skyrim.Hkx
 {
@@ -22,7 +23,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 		
 		public string Path { get; }
 
-		public string ModName { get; }
+		public IModInfo Origin { get; }
 	}
 
 

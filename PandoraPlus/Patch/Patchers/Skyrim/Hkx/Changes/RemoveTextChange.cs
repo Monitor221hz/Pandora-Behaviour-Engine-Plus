@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿using Pandora.Core;
+using System.Xml;
 
 namespace Pandora.Patch.Patchers.Skyrim.Hkx
 {
@@ -11,12 +12,12 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 		public string Path { get; private set; }
 		private string value { get; set; }
 
-		public string ModName { get; private set; }
-		public RemoveTextChange(string path, string value, string modName)
+		public IModInfo Origin { get; private set; }
+		public RemoveTextChange(string path, string value, IModInfo modInfo)
 		{
 			Path = path;
 			this.value = value;
-			ModName = modName;
+			Origin = modInfo;
 		}
 
 		public bool Apply(PackFile packFile)

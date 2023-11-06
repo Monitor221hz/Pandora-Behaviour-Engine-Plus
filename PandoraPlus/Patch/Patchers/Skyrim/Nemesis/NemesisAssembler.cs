@@ -81,14 +81,14 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 
 	}
 
-	public void AssemblePatch(IModInfo mod)
+	public void AssemblePatch(IModInfo modInfo)
 	{
-		DirectoryInfo folder = mod.Folder;
+		DirectoryInfo folder = modInfo.Folder;
 		DirectoryInfo[] subFolders = folder.GetDirectories();
 
 		foreach (DirectoryInfo subFolder in subFolders)
 		{
-			if (AssemblePackFilePatch(subFolder, mod.Name)) continue;
+			if (AssemblePackFilePatch(subFolder, modInfo)) continue;
 			if (subFolder.Name == "animationsetdatasinglefile") AssembleAnimSetDataPatch(subFolder);
 			if (subFolder.Name == "animationdatasinglefile") AssembleAnimDataPatch(subFolder);
 			if (subFolder.Name == "animdata") subFolder.Delete(true);
@@ -114,7 +114,7 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 	//to-fix: certain excerpts being misclassified as single replace edit when it is actually a replace and insert edit
 
 	//
-    public void ForwardReplaceEdit(PackFile packFile, XMatch match, string modName)
+    public void ForwardReplaceEdit(PackFile packFile, XMatch match, PackFileChangeSet changeSet)
     {
         List<XNode> newNodes = new List<XNode>();
         int separatorIndex = match.Count;
@@ -142,11 +142,14 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 				{
 					case XmlNodeType.Text:
 						//packFile.Editor.QueueReplaceText(lookup.LookupPath(node), ((XText)node).Value, ((XText)newNodes[i - separatorIndex - 1]).Value);
-						lock (packFile.edits) packFile.edits.AddChange(new ReplaceTextChange(lookup.LookupPath(node), ((XText)node).Value, ((XText)newNodes[i - separatorIndex - 1]).Value,modName));
+
+						changeSet.AddChange(new ReplaceTextChange(lookup.LookupPath(node), ((XText)node).Value, ((XText)newNodes[i - separatorIndex - 1]).Value, changeSet.Origin));
+						//lock (packFile.edits) packFile.edits.AddChange(new ReplaceTextChange(lookup.LookupPath(node), ((XText)node).Value, ((XText)newNodes[i - separatorIndex - 1]).Value,modInfo));
 						break;
 					case XmlNodeType.Element:
 						//packFile.Editor.QueueReplaceElement(lookup.LookupPath(node), (XElement)newNodes[i - separatorIndex - 1]);
-						lock (packFile.edits) packFile.edits.AddChange(new ReplaceElementChange(lookup.LookupPath(node), (XElement)newNodes[i - separatorIndex - 1],modName));
+						changeSet.AddChange(new ReplaceElementChange(lookup.LookupPath(node), (XElement)newNodes[i - separatorIndex - 1], changeSet.Origin));
+						//lock (packFile.edits) packFile.edits.AddChange(new ReplaceElementChange(lookup.LookupPath(node), (XElement)newNodes[i - separatorIndex - 1],modInfo));
 						break;
 					default:
 						break;
@@ -163,11 +166,13 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 			{
 				case XmlNodeType.Text:
 					//packFile.Editor.QueueRemoveText(lookup.LookupPath(node), ((XText)node).Value);
-					lock (packFile.edits) packFile.edits.AddChange(new RemoveTextChange(lookup.LookupPath(node), ((XText)node).Value, modName));
+					changeSet.AddChange(new RemoveTextChange(lookup.LookupPath(node), ((XText)node).Value, changeSet.Origin));
+					//lock (packFile.edits) packFile.edits.AddChange(new RemoveTextChange(lookup.LookupPath(node), ((XText)node).Value, modInfo));
 					break;
 				case XmlNodeType.Element:
 					//packFile.Editor.QueueRemoveElement(lookup.LookupPath(node));
-					lock (packFile.edits) packFile.edits.AddChange(new RemoveElementChange(lookup.LookupPath(node),modName));
+					changeSet.AddChange(new RemoveElementChange(lookup.LookupPath(node), changeSet.Origin));
+					//lock (packFile.edits) packFile.edits.AddChange(new RemoveElementChange(lookup.LookupPath(node),modInfo));
 					break;
 				default:
 					break;
@@ -176,7 +181,7 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 
 	}
 
-    public void ForwardInsertEdit(PackFile packFile, XMatch match, string modName)
+    public void ForwardInsertEdit(PackFile packFile, XMatch match, PackFileChangeSet changeSet)
     {
         List<XNode> newNodes = match.nodes;
 		newNodes.RemoveAt(0);
@@ -190,19 +195,23 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
             {
                 case XmlNodeType.Text:
 					//packFile.Editor.QueueInsertText(lookup.LookupPath(node), ((XText)node).Value);
-					lock (packFile.edits) packFile.edits.AddChange(new InsertTextChange(nodePath, ((XText)node).Value, modName));
+
+					changeSet.AddChange(new InsertTextChange(nodePath, ((XText)node).Value, changeSet.Origin));
+					//lock (packFile.edits) packFile.edits.AddChange(new InsertTextChange(nodePath, ((XText)node).Value, modInfo));
                     break; 
                 case XmlNodeType.Element:
 					//packFile.Editor.QueueInsertElement(lookup.LookupPath(node), (XElement)node);
-					lock (packFile.edits)
+					lock (packFile.Dispatcher)
 					{
 						if (packFile.Map.PathExists(nodePath))
 						{
-							packFile.edits.AddChange(new InsertElementChange(nodePath, (XElement)node, modName));
+							changeSet.AddChange(new InsertElementChange(nodePath, (XElement)node, changeSet.Origin));
+							//packFile.edits.AddChange(new InsertElementChange(nodePath, (XElement)node, modInfo));
 						}
 						else
 						{
-							packFile.edits.AddChange(new AppendElementChange(nodePath.Substring(0, nodePath.LastIndexOf('/')), (XElement)node, modName));
+							changeSet.AddChange(new AppendElementChange(nodePath.Substring(0, nodePath.LastIndexOf('/')), (XElement)node, changeSet.Origin));
+							//packFile.edits.AddChange(new AppendElementChange(nodePath.Substring(0, nodePath.LastIndexOf('/')), (XElement)node, modInfo));
 						}
 					}
 					break;
@@ -212,24 +221,24 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
         }
 	}
 
-    public bool MatchReplacePattern(PackFile packFile, List<XNode> nodes, string modName)
+    public bool MatchReplacePattern(PackFile packFile, List<XNode> nodes, PackFileChangeSet changeSet)
     {
         XMatchCollection matchCollection = replacePattern.Matches(nodes);
         if (!matchCollection.Success) return false;
         foreach(XMatch match in matchCollection)
         {
-            ForwardReplaceEdit(packFile, match, modName);
+            ForwardReplaceEdit(packFile, match, changeSet);
         }
         return true;
     }
 
-    public bool MatchInsertPattern(PackFile packFile, List<XNode> nodes, string modName)
+    public bool MatchInsertPattern(PackFile packFile, List<XNode> nodes, PackFileChangeSet changeSet)
     {
 		XMatchCollection matchCollection = insertPattern.Matches(nodes);
 		if (!matchCollection.Success) return false;
 		foreach(XMatch match in matchCollection)
         {
-            ForwardInsertEdit(packFile, match, modName); 
+            ForwardInsertEdit(packFile, match, changeSet); 
         }
 		return true;
 	}
@@ -248,10 +257,11 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 		pandoraConverter.Assembler.AssembleAnimSetDataPatch(directoryInfo);
 	}
 
-	private bool AssemblePackFilePatch(DirectoryInfo folder, string modName)
+	private bool AssemblePackFilePatch(DirectoryInfo folder, IModInfo modInfo)
     {
 		if (!projectManager.ContainsPackFile(folder.Name)) return false;
-
+		var changeSet = new PackFileChangeSet(modInfo);
+		var modName = modInfo.Name;
 		var targetPackFile = projectManager.ActivatePackFile(folder.Name);
 
 		FileInfo[] editFiles = folder.GetFiles("#*.txt");
@@ -271,13 +281,14 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 				continue;
 			}
 			
+
 			lock(lookup)
 			{
 				nodes = lookup.MapFromElement(element);
 			}
             targetPackFile.MapNode(nodeName);
-			bool hasInserts = MatchInsertPattern(targetPackFile, nodes, modName);
-			bool hasReplacements = MatchReplacePattern(targetPackFile, nodes, modName);
+			bool hasInserts = MatchInsertPattern(targetPackFile, nodes, changeSet);
+			bool hasReplacements = MatchReplacePattern(targetPackFile, nodes, changeSet);
 
 			if (!hasReplacements && !hasInserts)
             {
@@ -286,9 +297,11 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 					Logger.Error($"Nemesis Assembler > File {editFile.FullName} >  No Edits Found > Load > SKIPPED");
 					continue;
 				}
-				targetPackFile.edits.AddChange(new InsertElementChange(PackFile.ROOT_CONTAINER_NAME+"/top", element, modName));
+				changeSet.AddChange(new InsertElementChange(PackFile.ROOT_CONTAINER_NAME + "/top", element, modInfo));
+				//targetPackFile.edits.AddChange(new InsertElementChange(PackFile.ROOT_CONTAINER_NAME+"/top", element, modInfo));
             }
 		}
+		targetPackFile.Dispatcher.AddChangeSet(changeSet);
 		return true;
 	}
 

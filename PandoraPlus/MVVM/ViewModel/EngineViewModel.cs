@@ -68,15 +68,13 @@ namespace Pandora.MVVM.ViewModel
         public async Task LoadAsync()
         {
 
-            List<IModInfo> modInfos;
+            List<IModInfo> modInfos = new List<IModInfo>();
 #if DEBUG
             modInfos = await modinfoProvider?.GetInstalledMods("C:\\Games\\Skyrim Modding\\Creation Tools\\Skyrim.Behavior.Tool\\PandoraTEST\\Pandora_Engine\\mod")!;
-			modInfos.AddRange(await modinfoProvider?.GetInstalledMods(Directory.GetCurrentDirectory() + "\\Nemesis_Engine\\mod")!);
-			modInfos.AddRange(await modinfoProvider?.GetInstalledMods(Directory.GetCurrentDirectory() + "\\Pandora_Engine\\mod")!); 
-#else
-            modInfos =  await modinfoProvider?.GetInstalledMods(Directory.GetCurrentDirectory()+ "\\Pandora_Engine\\mod")!;
-            modInfos.AddRange(await modinfoProvider?.GetInstalledMods(Directory.GetCurrentDirectory()+ "\\Nemesis_Engine\\mod")!);
 #endif
+			modInfos.AddRange(await modinfoProvider?.GetInstalledMods(Directory.GetCurrentDirectory() + "\\Nemesis_Engine\\mod")!);
+			modInfos.AddRange(await modinfoProvider?.GetInstalledMods(Directory.GetCurrentDirectory() + "\\Pandora_Engine\\mod")!);
+
 
 			foreach (var modInfo in modInfos)
             {
@@ -106,10 +104,14 @@ namespace Pandora.MVVM.ViewModel
             LogText = sb.ToString();
         }
 
-        private void LoadActiveMods()
+        private bool LoadActiveMods()
         {
-            if (!activeModConfig.Exists) return; 
-
+            if (!activeModConfig.Exists) return false;
+            foreach(var mod in Mods) 
+            { 
+                if (mod == null) continue;
+                mod.Active = false;  
+            }
             using (var readStream = activeModConfig.OpenRead())
             {
                 using (var streamReader  = new StreamReader(readStream))
@@ -126,7 +128,7 @@ namespace Pandora.MVVM.ViewModel
                 
                 
             }
-
+            return true;
 		}
         private void SaveActiveMods(List<IModInfo> activeMods)
         {

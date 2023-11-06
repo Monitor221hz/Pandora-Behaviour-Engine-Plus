@@ -1,44 +1,39 @@
-﻿using System;
+﻿using Pandora.Core;
+using System;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace Pandora.Patch.Patchers.Skyrim.Hkx
+namespace Pandora.Patch.Patchers.Skyrim.Hkx;
+
+public class RemoveElementChange : IPackFileChange
 {
-	public class RemoveElementChange : IPackFileChange
+	public IPackFileChange.ChangeType Type { get; } = IPackFileChange.ChangeType.Remove;
+
+	public XmlNodeType AssociatedType { get; } = XmlNodeType.Element;
+
+	public string Path { get; private set; }
+
+	private XElement? element { get; set; }
+
+	public IModInfo Origin { get; private set; }
+	public RemoveElementChange(string path, IModInfo modInfo)
 	{
-		public IPackFileChange.ChangeType Type { get; } = IPackFileChange.ChangeType.Remove;
+		Path = path;
+		Origin = modInfo;
+	}
+	public bool Apply(PackFile packFile)
+	{
+		if (!packFile.Map.PathExists(Path)) return false;
+		element = PackFileEditor.RemoveElement(packFile, Path);
+		return !packFile.Map.PathExists(Path);
 
-		public XmlNodeType AssociatedType { get; } = XmlNodeType.Element;
-
-		public string Path { get; private set; }
-
-		private XElement? element { get; set; }
-
-		public string ModName { get; private set; }
-		public RemoveElementChange(string path, string modName)
-		{
-			Path = path;
-			ModName = modName;
-		}
-		public bool Apply(PackFile packFile)
-		{
-			if (!packFile.Map.PathExists(Path)) return false;
-			element = PackFileEditor.RemoveElement(packFile, Path);
-			return !packFile.Map.PathExists(Path);
-
-		}
-
-		public bool Revert(PackFile packFile)
-		{
-			if (element == null) return false;
-			string newPath = PackFileEditor.InsertElement(packFile, Path, element);
-			Path = String.IsNullOrEmpty(newPath) ? Path : newPath;
-			return packFile.Map.PathExists(Path);
-		}
 	}
 
-
-
-
-
+	public bool Revert(PackFile packFile)
+	{
+		if (element == null) return false;
+		string newPath = PackFileEditor.InsertElement(packFile, Path, element);
+		Path = String.IsNullOrEmpty(newPath) ? Path : newPath;
+		return packFile.Map.PathExists(Path);
+	}
 }

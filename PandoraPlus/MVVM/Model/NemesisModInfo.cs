@@ -18,20 +18,22 @@ namespace Pandora.MVVM.Model
 
         public Dictionary<string, string> StringProperties { get; private set; } = new Dictionary<string, string>();
 
-        public string Name { get; set; } = "Default";
+        public string Name { get; private set; } = "Default";
 
-        public string Author { get; set; } = "Default";
-        public string URL { get; set; } = "Default";
+        public string Author { get; private set; } = "Default";
+        public string URL { get; private set; } = "Default";
 
-        public string Code { get; set; } = "Default";
+        public string Code { get; private set; } = "Default";
 
         public Version Version { get; } = new Version(1,0,0);
+
+        public UInt32 Priority { get; private set; } = 0;
 
         //internal string Auto { get; set; } = "Default";
         //internal string RequiredFile { get; set; } = "Default";
         //internal string FileToCopy { get; set; } = "Default";
         //internal bool Hidden { get; set; } = false;
-        public bool Valid { get; set; } = false;
+        public bool Valid { get; private set; } = false;
 
         public NemesisModInfo()
         {

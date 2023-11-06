@@ -23,5 +23,7 @@ namespace Pandora.Core
 
 
 		public bool Active { get; set;  }
+
+        public UInt32 Priority { get; }
 	}
 }

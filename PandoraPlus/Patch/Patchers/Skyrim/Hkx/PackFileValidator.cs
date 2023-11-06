@@ -29,7 +29,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 
 			return index;
 		}
-		private bool ValidateEventsAndVariables(PackFile packFile)
+		public bool ValidateEventsAndVariables(PackFile packFile)
 		{
 			XElement? stringDataContainer = packFile.GetNodeByClass("hkbBehaviorGraphStringData");
 			if (stringDataContainer == null) return false;
@@ -161,11 +161,11 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 
 		public void Validate(PackFile packFile, params List<IPackFileChange>[] changeLists)
 		{
-			if (!ValidateEventsAndVariables(packFile)) return; 
+			//if (!ValidateEventsAndVariables(packFile)) return; 
 			int changeCount = 0;
-			foreach(var changeSet in changeLists)
+			foreach(var changeList in changeLists)
 			{
-				foreach(IPackFileChange change in changeSet)
+				foreach(IPackFileChange change in changeList)
 				{
 					XElement element;
 					if (!packFile.Map.TryLookup(change.Path, out element))
@@ -177,7 +177,6 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 					changeCount++;
 				}
 			}
-			Logger.Info($"Validator > {packFile.ParentProject?.Identifier}~{packFile.Name} > {changeCount} Edits > CHECKED");
 		}
 	}
 }

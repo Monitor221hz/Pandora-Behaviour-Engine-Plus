@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿using Pandora.Core;
+using System.Xml;
 using System.Xml.Linq;
 
 namespace Pandora.Patch.Patchers.Skyrim.Hkx
@@ -16,13 +17,13 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 		//public XElement oldElement { get; private set; } 
 		private XElement element { get; set; }
 
-		public string ModName { get; private set; }
+		public IModInfo Origin { get; private set; }
 
-		public ReplaceElementChange(string path, XElement element, string modName)
+		public ReplaceElementChange(string path, XElement element, IModInfo modInfo)
 		{
 			Path = path;
 			this.element = element;
-			ModName = modName;
+			Origin = modInfo;
 		}
 		public bool Apply(PackFile packFile)
 		{
