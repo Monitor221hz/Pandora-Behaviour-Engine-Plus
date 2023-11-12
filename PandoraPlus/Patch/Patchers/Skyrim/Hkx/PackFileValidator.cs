@@ -127,7 +127,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			var varMatch = VarFormat.Matches(element.Value);
 			foreach (Match match in varMatch)
 			{
-				var index = GetIndexFromMatch(eventIndices, match);
+				var index = GetIndexFromMatch(variableIndices, match);
 				rawValue = rawValue.Replace(match.Value, index.ToString());
 			}
 			element.SetValue(rawValue);
