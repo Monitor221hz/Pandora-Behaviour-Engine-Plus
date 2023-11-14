@@ -19,7 +19,8 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 		public void TryGenerateAnimDataPatchFile(DirectoryInfo folder)
 		{
 			var parentFolder = folder.Parent;
-			if (parentFolder == null) return; 
+			if (parentFolder == null) return;
+			
 
 			FileInfo patchFile = new FileInfo($"{parentFolder.FullName}\\{folder.Name.Split('~')[0]}.txt");
 			if (patchFile.Exists) return;

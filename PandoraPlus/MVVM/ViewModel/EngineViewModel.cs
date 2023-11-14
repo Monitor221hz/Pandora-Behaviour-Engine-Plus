@@ -15,6 +15,8 @@ using System.Threading.Channels;
 using System.Windows.Media.Animation;
 using System.IO;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Threading;
 
 namespace Pandora.MVVM.ViewModel
 {
@@ -157,6 +159,13 @@ namespace Pandora.MVVM.ViewModel
 				engineRunning = true;
 				LaunchEnabled = !engineRunning;
 			}
+			CultureInfo culture;
+            
+			culture = CultureInfo.CreateSpecificCulture("en-US");
+
+			CultureInfo.DefaultThreadCurrentCulture = culture;
+			CultureInfo.DefaultThreadCurrentUICulture = culture;
+            CultureInfo.CurrentCulture = culture;
 
 			Engine = new BehaviourEngine(); 
             logText= string.Empty;
