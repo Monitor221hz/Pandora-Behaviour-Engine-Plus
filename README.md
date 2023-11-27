@@ -251,3 +251,4 @@ Dispatcher > "ExampleMod" > defaultfemale~1hm_behavior > Replace > Element > #25
 * [Nito HashAlgorithms CRC](https://www.nuget.org/packages/Nito.HashAlgorithms.CRC)
 * [NLog](https://www.nuget.org/packages/NLog/)
 * [XmlCake](https://github.com/Monitor144hz/XML-Cake)
+* [HKX2](https://github.com/Monitor144hz/HKX2-Library/tree/wpf) 
