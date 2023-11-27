@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:dd="urn:gong-wpf-dragdrop"
              xmlns:local="clr-namespace:Pandora.MVVM.View.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="500">
@@ -15,11 +16,13 @@
                   Background="Transparent" 
                   Margin="5 5 5 5" 
                   BorderThickness="0"
-                  ItemsSource="{Binding Mods}"
+                  ItemsSource="{Binding Mods, Mode=TwoWay}"
                   ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                   ScrollViewer.VerticalScrollBarVisibility="Disabled"
                   Focusable="False"
                   ItemContainerStyle="{StaticResource ListViewItemStyle}"
+                  dd:DragDrop.IsDragSource="True"
+                  dd:DragDrop.IsDropTarget="True"
                   >
             
             <ListView.View>

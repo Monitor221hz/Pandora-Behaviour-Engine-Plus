@@ -74,8 +74,6 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimData
 
 			int NumProjects;
 
-			DirectoryInfo AnimDataProjectOutputFolder = templateFolder.CreateSubdirectory("AnimationData");
-			DirectoryInfo MotionDataProjectOutputFolder = AnimDataProjectOutputFolder.CreateSubdirectory("boundanims");
 
 			using (var readStream = templateAnimDataSingleFile.OpenRead())
 			{

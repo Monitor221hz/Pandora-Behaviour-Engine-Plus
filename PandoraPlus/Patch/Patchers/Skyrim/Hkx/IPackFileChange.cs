@@ -23,7 +23,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 		
 		public string Path { get; }
 
-		public IModInfo Origin { get; }
+
 	}
 
 

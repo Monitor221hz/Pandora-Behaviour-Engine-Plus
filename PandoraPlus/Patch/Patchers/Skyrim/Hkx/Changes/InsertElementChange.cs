@@ -15,13 +15,11 @@ public class InsertElementChange : IPackFileChange
 
 	private XElement element { get;  set;  }
 
-	public IModInfo Origin { get; private set; }
 
-	public InsertElementChange(string path, XElement element, IModInfo modInfo)
+	public InsertElementChange(string path, XElement element)
 	{
 		Path = path; 
 		this.element = element;
-		Origin = modInfo;
 	}
 	public bool Apply(PackFile packFile)
 	{

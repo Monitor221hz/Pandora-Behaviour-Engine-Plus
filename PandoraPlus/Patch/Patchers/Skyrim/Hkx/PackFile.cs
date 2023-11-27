@@ -78,8 +78,14 @@ public class PackFile : IPatchFile
 	public void MapNode(string nodeName)
 	{
 		if (mappedNodeNames.Contains(nodeName)) return;
-		mappedNodeNames.Add(nodeName);
-		Map.MapSlice(nodeName);
+		lock (mappedNodeNames)
+		{
+			mappedNodeNames.Add(nodeName);
+		}
+		lock(Map)
+		{
+			Map.MapSlice(nodeName);
+		}
 	}
 
 	public void Export()

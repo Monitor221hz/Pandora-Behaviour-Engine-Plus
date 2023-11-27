@@ -65,12 +65,14 @@
 
   <ItemGroup>
     <Folder Include="MVVM\Model\Interface\" />
+    <Folder Include="Pandora_Engine\Skyrim\Process\" />
     <Folder Include="Patch\Havok\" />
     <Folder Include="Patch\Patchers\Interface\Variants\" />
     <Folder Include="Patch\Patchers\Skyrim\Hkx\DebugWindow\Model\" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="gong-wpf-dragdrop" Version="3.2.1" />
     <PackageReference Include="Nito.HashAlgorithms.CRC" Version="1.0.1" />
     <PackageReference Include="NLog" Version="5.2.5" />
   </ItemGroup>
@@ -81,6 +83,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Nemesis_Engine\mod\tdmv\magicbehavior\#0077.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

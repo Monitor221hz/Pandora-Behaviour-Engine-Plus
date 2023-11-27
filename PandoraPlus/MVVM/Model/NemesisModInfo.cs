@@ -27,7 +27,7 @@ namespace Pandora.MVVM.Model
 
         public Version Version { get; } = new Version(1,0,0);
 
-        public UInt32 Priority { get; private set; } = 0;
+        public uint Priority { get; set; } = 0;
 
         //internal string Auto { get; set; } = "Default";
         //internal string RequiredFile { get; set; } = "Default";
@@ -51,23 +51,15 @@ namespace Pandora.MVVM.Model
             Valid = true; 
             Active = active;
         }
-        public static NemesisModInfo ParseMetadata(DirectoryInfo folder)
+        public static NemesisModInfo ParseMetadata(FileInfo file)
         {
-
-            StringBuilder pathBuilder = new StringBuilder(folder.FullName);
-            pathBuilder.Append('\\');
-            pathBuilder.Append("info.ini");
 			Dictionary<string, string> properties = new Dictionary<string, string>();
 
-			string infoPath = pathBuilder.ToString();
-
-            
-
-            if (!File.Exists(infoPath))
+            if (!file.Exists)
             {
                 return new NemesisModInfo();
             }
-			using (StreamReader reader = new StreamReader(infoPath))
+			using (StreamReader reader = new StreamReader(file.FullName))
 			{
 				string s;
 				string[] args;
@@ -94,7 +86,7 @@ namespace Pandora.MVVM.Model
             bool.TryParse(hidden, out active);
 
 
-            return (name != null && author != null && url != null) ? new NemesisModInfo(folder, name, author, url, active, properties) : new NemesisModInfo();
+            return (name != null && author != null && url != null) ? new NemesisModInfo(file.Directory!, name, author, url, active, properties) : new NemesisModInfo();
 			//add metadata later
 		}
     }

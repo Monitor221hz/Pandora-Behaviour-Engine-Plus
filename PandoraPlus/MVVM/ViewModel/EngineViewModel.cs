@@ -38,13 +38,19 @@ namespace Pandora.MVVM.ViewModel
 
         public ObservableCollection<IModInfo> Mods { get; set; } = new ObservableCollection<IModInfo>();
 
-        public bool LaunchEnabled { get; set; } = true; 
+        public bool LaunchEnabled { get; set; } = true;
+
+
 
         private bool engineRunning = false;
 
         private FileInfo activeModConfig; 
 
         private Dictionary<string, IModInfo> modsByCode = new Dictionary<string, IModInfo>();
+
+        private bool modInfoCache = false;
+
+        private static DirectoryInfo currentDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
 
 
 		public string LogText { 
@@ -64,7 +70,7 @@ namespace Pandora.MVVM.ViewModel
             this.modinfoProvider = modinfoProvider;
             LaunchCommand = new RelayCommand(LaunchEngine, CanLaunchEngine);
             ExitCommand = new RelayCommand(Exit);
-			activeModConfig = new FileInfo($"{Directory.GetCurrentDirectory()}\\Pandora_Engine\\ActiveMods.txt");
+			activeModConfig = new FileInfo($"{currentDirectory}\\Pandora_Engine\\ActiveMods.txt");
 
 		}
         public async Task LoadAsync()
@@ -74,18 +80,31 @@ namespace Pandora.MVVM.ViewModel
 #if DEBUG
             modInfos = await modinfoProvider?.GetInstalledMods("C:\\Games\\Skyrim Modding\\Creation Tools\\Skyrim.Behavior.Tool\\PandoraTEST\\Pandora_Engine\\mod")!;
 #endif
-			modInfos.AddRange(await modinfoProvider?.GetInstalledMods(Directory.GetCurrentDirectory() + "\\Nemesis_Engine\\mod")!);
-			modInfos.AddRange(await modinfoProvider?.GetInstalledMods(Directory.GetCurrentDirectory() + "\\Pandora_Engine\\mod")!);
+			modInfos.AddRange(await modinfoProvider?.GetInstalledMods(currentDirectory + "\\Nemesis_Engine\\mod")!);
+			modInfos.AddRange(await modinfoProvider?.GetInstalledMods(currentDirectory + "\\Pandora_Engine\\mod")!);
 
 
-			foreach (var modInfo in modInfos)
+			for (int i = 0; i < modInfos.Count; i++)
             {
-                Mods.Add(modInfo);
+				IModInfo? modInfo = modInfos[i];
+				//Mods.Add(modInfo);
+				IModInfo? existingModInfo;
+                if (modsByCode.TryGetValue(modInfo.Code, out existingModInfo))
+                {
+                    logger.Warn($"Engine > Folder {modInfo.Folder.Parent?.Name} > Parse Info > {modInfo.Code} Already Exists > SKIPPED");
+                    modInfos.RemoveAt(i);
+                    continue;
+                }
                 modsByCode.Add(modInfo.Code, modInfo);
             }
 
-            LoadActiveMods();
-        }
+            modInfoCache = LoadActiveMods(modInfos);
+
+            modInfos = modInfos.OrderBy(m => m.Priority == 0).ThenBy(m => m.Priority).ToList();
+
+            foreach(var modInfo in modInfos) { Mods.Add(modInfo);  }
+
+		}
 
         public void Exit(object? p)
         {
@@ -106,10 +125,10 @@ namespace Pandora.MVVM.ViewModel
             LogText = sb.ToString();
         }
 
-        private bool LoadActiveMods()
+        private bool LoadActiveMods(List<IModInfo> loadedMods)
         {
             if (!activeModConfig.Exists) return false;
-            foreach(var mod in Mods) 
+            foreach(var mod in loadedMods) 
             { 
                 if (mod == null) continue;
                 mod.Active = false;  
@@ -119,11 +138,13 @@ namespace Pandora.MVVM.ViewModel
                 using (var streamReader  = new StreamReader(readStream))
                 {
 					string? expectedLine;
-
+                    uint priority = 0; 
                     while ((expectedLine = streamReader.ReadLine()) != null)
                     {
                         IModInfo? modInfo;
                         if (!modsByCode.TryGetValue(expectedLine, out modInfo)) continue;
+                        priority++;
+                        modInfo.Priority = priority;
                         modInfo.Active = true;
                     }
 				}
@@ -152,7 +173,21 @@ namespace Pandora.MVVM.ViewModel
 
 
 		}
-        private async void LaunchEngine(object? parameter)
+        private List<IModInfo> AssignModPriorities(List<IModInfo> mods)
+        {
+            uint priority = 0;
+			foreach(var mod in mods)
+            {
+                priority++;
+                mod.Priority = priority; 
+            }
+
+            return mods; 
+        }
+
+        private List<IModInfo> GetActiveModsByPriority() => AssignModPriorities(Mods.Where(m => m.Active).ToList());
+
+		private async void LaunchEngine(object? parameter)
         {
 			lock (LaunchCommand)
 			{
@@ -171,10 +206,10 @@ namespace Pandora.MVVM.ViewModel
             logText= string.Empty;
 
             await WriteLogBoxLine("Engine launched.");
-
             
-            Stopwatch timer = Stopwatch.StartNew();
-            var activeMods = Mods.Where(x => x.Active).ToList<IModInfo>();
+            List<IModInfo> activeMods = GetActiveModsByPriority();
+
+			Stopwatch timer = Stopwatch.StartNew();
 
 			await Task.Run(async () => { await Engine.LaunchAsync(activeMods); }); 
             

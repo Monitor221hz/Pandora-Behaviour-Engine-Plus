@@ -14,14 +14,13 @@ public class ReplaceTextChange : IPackFileChange
 
 	private string newValue { get; set; }
 
-	public IModInfo Origin { get; private set; }
 
-	public ReplaceTextChange(string path, string oldvalue, string newvalue, IModInfo modInfo)
+
+	public ReplaceTextChange(string path, string oldvalue, string newvalue)
 	{
 		Path = path;
 		oldValue = oldvalue;
 		newValue = newvalue;
-		Origin = modInfo;
 	}
 	public bool Apply(PackFile packFile)
 	{

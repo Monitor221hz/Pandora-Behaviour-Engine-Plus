@@ -28,14 +28,13 @@ namespace Pandora.Core.Patchers.Skyrim
 		public  HashSet<PackFile> ActivePackFiles { get; private set;  } =  new HashSet<PackFile>();
 
 
-		private AnimDataManager animDataPatcher;
 
 
 		public ProjectManager(DirectoryInfo templateFolder, DirectoryInfo outputFolder)
         {
             this.templateFolder = templateFolder;
 			this.outputFolder = outputFolder;
-			animDataPatcher = new AnimDataManager(this.templateFolder, this.outputFolder);
+
 
         }
 
@@ -197,7 +196,7 @@ namespace Pandora.Core.Patchers.Skyrim
 			//	packFile.Map.Save(Path.Join(Directory.GetCurrentDirectory(), packFile.InputHandle.Name));
 			//	packFile.Export();
 			//}
-			animDataPatcher.MergeAnimDataSingleFile();
+
 		}
 
 		public void ApplyPatchesParallel()

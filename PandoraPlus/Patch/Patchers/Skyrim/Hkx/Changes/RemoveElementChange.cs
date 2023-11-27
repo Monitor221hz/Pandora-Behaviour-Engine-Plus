@@ -15,11 +15,9 @@ public class RemoveElementChange : IPackFileChange
 
 	private XElement? element { get; set; }
 
-	public IModInfo Origin { get; private set; }
-	public RemoveElementChange(string path, IModInfo modInfo)
+	public RemoveElementChange(string path)
 	{
 		Path = path;
-		Origin = modInfo;
 	}
 	public bool Apply(PackFile packFile)
 	{

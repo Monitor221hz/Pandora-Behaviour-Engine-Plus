@@ -10,10 +10,10 @@ using Pandora.Core.Patchers;
 using Pandora.Core.Patchers.Skyrim;
 using Pandora.Patch.Patchers.Skyrim.AnimData;
 using XmlCake.Linq;
+using Pandora.Patch.Patchers.Skyrim.Nemesis;
+namespace Pandora.Patch.Patchers.Skyrim;
 
-namespace Pandora.Patch.Patchers.Skyrim.Nemesis;
-
-public class NemesisPatcher : IPatcher
+public class SkyrimPatcher : IPatcher
 {
 	private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -57,8 +57,20 @@ public class NemesisPatcher : IPatcher
     public async Task UpdateAsync()
     {
         await assembler.LoadResourcesAsync();
-
-        Parallel.ForEach(activeMods, mod => { assembler.AssemblePatch(mod); });
+        try
+        {
+			Parallel.ForEach(activeMods, mod => { assembler.AssemblePatch(mod); });
+		}
+        catch (Exception ex)
+        {
+            logger.Fatal($"Skyrim Patcher > Active Mods > Update > FAILED");
+            logger.Error($"Skyrim Patcher > Active Mods > Update > {ex.Message} > EXCEPTION");
+			//foreach(var exception in ex.InnerExceptions)
+			//{
+			//    logger.Error($"Skyrim Patcher > Active Mods > Update > {exception.Message} > EXCEPTION");
+			//}
+		}
+       
 		//List<Task> assembleTasks = new List<Task>();
 		//foreach (var mod in activeMods)
 		//{

@@ -17,13 +17,13 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 		//public XElement oldElement { get; private set; } 
 		private XElement element { get; set; }
 
-		public IModInfo Origin { get; private set; }
 
-		public ReplaceElementChange(string path, XElement element, IModInfo modInfo)
+
+		public ReplaceElementChange(string path, XElement element)
 		{
 			Path = path;
 			this.element = element;
-			Origin = modInfo;
+	
 		}
 		public bool Apply(PackFile packFile)
 		{

@@ -2,6 +2,7 @@
 using Pandora.Core.IOManagers;
 using Pandora.Core.Patchers;
 using Pandora.Core.Patchers.Skyrim;
+using Pandora.Patch.Patchers.Skyrim;
 using Pandora.Patch.Patchers.Skyrim.Nemesis;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace Pandora.Core.Engine.Configs
         public string Description { get; } = 
         @"Engine configuration for Skyrim SE/AE behavior files";
 
-        public IPatcher Patcher { get; } = new NemesisPatcher();
+        public IPatcher Patcher { get; } = new SkyrimPatcher();
         public PathManager Exporter { get; }
 
     }

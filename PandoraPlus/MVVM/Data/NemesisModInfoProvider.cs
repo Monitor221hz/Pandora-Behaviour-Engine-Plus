@@ -17,17 +17,30 @@ public interface IModInfoProvider
 
 public class NemesisModInfoProvider : IModInfoProvider
 {
-    public async Task<List<IModInfo>> GetInstalledMods(string folderPath)
+    public async Task<List<IModInfo>> GetInstalledMods(string folderPath) => await Task.Run(() => GetInstalledMods(new DirectoryInfo(folderPath)));
+
+    public List<IModInfo> GetInstalledMods(DirectoryInfo folder)
     {
-        List<IModInfo> infoList = new List<IModInfo>();
+		List<IModInfo> infoList = new List<IModInfo>();
+        if (!folder.Exists) { return infoList;  }
 
-        if (!Path.Exists(folderPath)) return infoList;
+        List<FileInfo> infoFiles = new List<FileInfo>();
+        var modFolders = folder.GetDirectories();
 
-        string[] folders = Directory.GetDirectories(folderPath);
-        foreach (string folder in folders)
+        foreach( var modFolder in modFolders ) 
+        {       
+            var files = modFolder.GetFiles("*.ini");
+            if (files.Length == 0) { continue; }
+
+            foreach( var file in files ) { infoFiles.Add(file); }
+        }
+
+        foreach (var file in infoFiles)
         {
-            infoList.Add(NemesisModInfo.ParseMetadata(new DirectoryInfo(folder)));
+            if (file.Directory == null) continue; 
+
+            infoList.Add(NemesisModInfo.ParseMetadata(file));
         }
         return infoList;
-    }
+	}
 }
