@@ -10,6 +10,8 @@ Built with backwards compatibility in mind for [Nemesis Unlimited Behavior Engin
 * [For Users](#for-users)
   * [Quickstart](#quickstart)
   * [Troubleshooting](#troubleshooting)
+  * [Patch Order](#patch-order)
+  * [Mod Cache](#mod-cache)
 * [For Mod Authors](#for-mod-authors)
   * [File Targeting](#file-targeting)
     * [Unique Identifiers](#unique-identifiers)
@@ -63,6 +65,15 @@ Install [.NET 7 Desktop Runtime](https://dotnet.microsoft.com/en-us/download/dot
 
 <br/>
 
+### Patch Order
+Pandora has a drag and drop priority system. Higher priority mods will overwrite conflicting changes from lower priority mods. Direct behaviour conflicts are rare, so manual resolving is almost never needed, but the option is there just in case. 
+
+
+### Mod Cache
+Pandora saves the active mods to an external cache file after the engine successfully finishes its patching process. When the cache is loaded, all active mods are shown at the top with relative priority preserved, for better readability. To clear the cache, delete `Pandora_Engine/ActiveMods.txt`. 
+
+
+Note that hidden mods are not active by default if there was data loaded from a cache.
 
 ### Troubleshooting
 
