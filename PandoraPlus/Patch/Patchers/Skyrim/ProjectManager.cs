@@ -3,7 +3,6 @@ using Pandora.Patch.Patchers.Skyrim.AnimSetData;
 using Pandora.Patch.Patchers.Skyrim.Hkx;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection.PortableExecutable;
@@ -177,8 +176,19 @@ namespace Pandora.Core.Patchers.Skyrim
 			{
 				if (ActivePackFiles.Contains(packFile)) return packFile;
 				ActivePackFiles.Add(packFile);
-				packFile.Map.MapLayer(PackFile.ROOT_CONTAINER_NAME, true);
+				packFile.Activate();
 			}
+			return packFile;
+		}
+		public PackFile ActivatePackFile(PackFile packFile)
+		{
+			lock (ActivePackFiles)
+				lock (packFile)
+				{
+					if (ActivePackFiles.Contains(packFile)) return packFile;
+					ActivePackFiles.Add(packFile);
+					packFile.Activate();
+				}
 			return packFile;
 		}
 

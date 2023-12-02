@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using Pandora.Core.Patchers.Skyrim;
@@ -57,7 +56,10 @@ public class PackFileDispatcher
 		
 		PackFileChangeSet.ApplyInOrder(packFile, changeSets);
 
-		packFileValidator.ValidateEventsAndVariables(packFile);
-		foreach(var changeSet in changeSets) { changeSet.Validate(packFile, packFileValidator); }
+		if (packFile is not PackFileGraph) { return; }
+
+		packFileValidator.ValidateEventsAndVariables((PackFileGraph)packFile);
+
+		foreach (var changeSet in changeSets) { changeSet.Validate(packFile, packFileValidator); }
 	}
 }

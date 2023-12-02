@@ -269,6 +269,8 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 
 		FileInfo[] editFiles = folder.GetFiles("#*.txt");
 
+		pandoraConverter.TryGraphInjection(folder, targetPackFile, changeSet);
+
 		foreach (FileInfo editFile in editFiles)
 		{
 			List<XNode> nodes =new List<XNode>();
@@ -300,7 +302,7 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 					Logger.Error($"Nemesis Assembler > File {editFile.FullName} >  No Edits Found > Load > SKIPPED");
 					continue;
 				}
-				changeSet.AddChange(new InsertElementChange(PackFile.ROOT_CONTAINER_NAME + "/top", element));
+				changeSet.AddChange(new AppendElementChange(PackFile.ROOT_CONTAINER_NAME, element));
 				//targetPackFile.edits.AddChange(new InsertElementChange(PackFile.ROOT_CONTAINER_NAME+"/top", element, modInfo));
             }
 		}

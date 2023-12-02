@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Pandora.Patch.Patchers.Skyrim.AnimSetData
 {
-	public class AnimSet
+    public class AnimSet
 	{
 		public string VersionName { get; private set; } = "V3";
 		public int NumTriggers { get; private set; } = 0;

@@ -1,6 +1,7 @@
 ﻿using Pandora.Core.Patchers.Skyrim;
 using Pandora.Patch.Patchers.Skyrim.AnimData;
 using Pandora.Patch.Patchers.Skyrim.AnimSetData;
+using Pandora.Patch.Patchers.Skyrim.Hkx;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,7 +16,18 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 
 		public PandoraAssembler Assembler { get; private set; }
 
-		public PandoraConverter(ProjectManager projManager, AnimSetDataManager animSDManager, AnimDataManager animDManager) => Assembler = new PandoraAssembler(projManager, animSDManager, animDManager);	
+		public PandoraConverter(ProjectManager projManager, AnimSetDataManager animSDManager, AnimDataManager animDManager) => Assembler = new PandoraAssembler(projManager, animSDManager, animDManager);
+
+		public void TryGraphInjection(DirectoryInfo folder, PackFile packFile, PackFileChangeSet changeSet)
+		{
+			DirectoryInfo injectFolder = new DirectoryInfo($"{folder.FullName}\\inject");
+			if (!injectFolder.Exists) { return; }
+
+
+			Assembler.AssembleGraphInjection(injectFolder, packFile, changeSet);
+		}
+
+		
 		public void TryGenerateAnimDataPatchFile(DirectoryInfo folder)
 		{
 			var parentFolder = folder.Parent;

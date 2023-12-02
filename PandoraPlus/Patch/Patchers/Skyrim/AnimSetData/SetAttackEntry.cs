@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Pandora.Patch.Patchers.Skyrim.AnimSetData
 {
 
-	public class SetAttackEntry
+    public class SetAttackEntry
 	{
 		public string AttackTrigger { get; private set; } = "attackStart";
 

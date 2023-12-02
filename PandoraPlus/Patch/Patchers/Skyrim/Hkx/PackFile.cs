@@ -1,19 +1,12 @@
-﻿using System;
+﻿using HKX2;
+using Pandora.Core.Patchers.Skyrim;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 using XmlCake.Linq;
-using XmlCake.Linq.Expressions;
-using XmlCake.String;
-using HKX2;
-using NLog;
-using NLog.LayoutRenderers.Wrappers;
-using System.Xml.Serialization;
-using System.Threading;
-using Pandora.Core.Patchers.Skyrim;
 
 namespace Pandora.Patch.Patchers.Skyrim.Hkx;
 
@@ -22,6 +15,8 @@ public class PackFile : IPatchFile
 	public XMap Map { get; private set; }
 
 	public static readonly string ROOT_CONTAINER_NAME = "__data__";
+
+	public static readonly string ROOT_CONTAINER_INSERT_PATH = "__data__/top";
 
 	public string Name { get; private set; }
 	public FileInfo InputHandle { get; private set; }
@@ -45,6 +40,9 @@ public class PackFile : IPatchFile
 	public Project? ParentProject { get; set; }
 
 
+	protected ILookup<string, XElement>? classLookup = null;
+
+	private bool active = false; 
 
 	public PackFile(FileInfo file)
 	{
@@ -57,15 +55,52 @@ public class PackFile : IPatchFile
 
 		ContainerNode = Map.NavigateTo("__data__");
 		Name = Path.GetFileNameWithoutExtension(InputHandle.Name).ToLower();
+
+		UniqueName = Name;
+	}
+	public PackFile(FileInfo file, Project project)
+	{
+		InputHandle = file;
+		OutputHandle = new FileInfo(file.FullName.Replace("Template", "meshes").Replace("\\Pandora_Engine\\Skyrim", ""));
+		using (var stream = file.OpenRead())
+		{
+			Map = XMap.Load(stream);
+		}
+		ParentProject = project;
+		ContainerNode = Map.NavigateTo("__data__");
+		Name = Path.GetFileNameWithoutExtension(InputHandle.Name).ToLower();
+
+		UniqueName = $"{ParentProject?.Identifier}~{Name}";
 	}
 
+	[MemberNotNull(nameof(classLookup))]
+	public void BuildClassLookup()
+	{
+		classLookup = Map.NavigateTo(PackFile.ROOT_CONTAINER_NAME).Elements().ToLookup(e => e.Attribute("class")!.Value);
+	}
 
+	protected bool CanActivate() => !active;
+	public virtual void Activate()
+	{
+		if (!CanActivate()) return;
+		Map.MapLayer(PackFile.ROOT_CONTAINER_NAME, true);
+		active = true; 
+	}
 
+	
 	public PackFile(string filePath) : this(new FileInfo(filePath)) { }
 
-
+	public string UniqueName { get; private set; }
 	public XElement SafeNavigateTo(string path) => Map.NavigateTo(path, ContainerNode);
-	public XElement GetNodeByClass(string className) => Map.NavigateTo(className, ContainerNode, (x) => XMap.TryGetAttributeName("class", x));
+
+	[MemberNotNull(nameof(classLookup))]
+	public void TryBuildClassLookup() {  if (classLookup == null) {  BuildClassLookup(); } }
+	public XElement GetFirstNodeOfClass(string className)
+	{
+		TryBuildClassLookup();
+
+		return classLookup[className].First();
+	}
 
 	public void DeleteExistingOutput()
 	{
@@ -74,7 +109,7 @@ public class PackFile : IPatchFile
 			OutputHandle.Delete();
 		}
 	}
-
+	
 	public void MapNode(string nodeName)
 	{
 		if (mappedNodeNames.Contains(nodeName)) return;
@@ -93,17 +128,16 @@ public class PackFile : IPatchFile
 		if (OutputHandle.Directory == null) return;
 		if (!OutputHandle.Directory.Exists) { OutputHandle.Directory.Create(); }
 		if (OutputHandle.Exists) { OutputHandle.Delete(); }
-		using (var writeStream = OutputHandle.OpenWrite())
-		{
-			Map.Save(writeStream);
-		}
 		HKXHeader header = HKXHeader.SkyrimSE();
 		IHavokObject rootObject;
 #if DEBUG
-		using (var readStream = OutputHandle.OpenRead())
+		using (var memoryStream = new MemoryStream())
 		{
+			Map.Save(memoryStream);
+			memoryStream.Position = 0;
 			var deserializer = new XmlDeserializer();
-			rootObject = deserializer.Deserialize(readStream, header, false);
+			rootObject = deserializer.Deserialize(memoryStream, header, false);
+
 		}
 		using (var writeStream = OutputHandle.Create())
 		{
@@ -119,21 +153,29 @@ public class PackFile : IPatchFile
 			var xmlSerializer = new HKX2.XmlSerializer();
 			xmlSerializer.Serialize(rootObject, header, writeStream);
 		}
+		debugOuputHandle = new FileInfo(debugOuputHandle.DirectoryName + "\\m_" + debugOuputHandle.Name);
+
+		using (var writeStream = debugOuputHandle.Create())
+		{
+			Map.Save(writeStream);
+		}
 
 #else
 		try
 		{
-			using (var readStream = OutputHandle.OpenRead())
-			{
-				var deserializer = new XmlDeserializer();
-				rootObject = deserializer.Deserialize(readStream, header, false);
-			}
-			using (var writeStream = OutputHandle.Create())
-			{
-				var binaryWriter = new BinaryWriterEx(writeStream);
-				var serializer = new PackFileSerializer();
-				serializer.Serialize(rootObject, binaryWriter, header);
-			}
+		using (var memoryStream = new MemoryStream())
+		{
+			Map.Save(memoryStream);
+			memoryStream.Position = 0;
+			var deserializer = new XmlDeserializer();
+			rootObject = deserializer.Deserialize(memoryStream, header, false);
+		}
+		using (var writeStream = OutputHandle.Create())
+		{
+			var binaryWriter = new BinaryWriterEx(writeStream);
+			var serializer = new PackFileSerializer();
+			serializer.Serialize(rootObject, binaryWriter, header);
+		}
 		}
 		catch(Exception ex) 
 		{
@@ -146,6 +188,53 @@ public class PackFile : IPatchFile
 #endif
 
 
+	}
+	public static void Unpack(FileInfo inputHandle)
+	{
+		HKXHeader header = HKXHeader.SkyrimSE();
+		IHavokObject rootObject;
+		using (var readStream = inputHandle.OpenRead())
+		{
+			var deserializer = new XmlDeserializer();
+			rootObject = deserializer.Deserialize(readStream, header, false);
+		}
+		using (var writeStream = inputHandle.Create())
+		{
+			var binaryWriter = new BinaryWriterEx(writeStream);
+			var serializer = new PackFileSerializer();
+			serializer.Serialize(rootObject, binaryWriter, header);
+		}
+		var outputHandle = new FileInfo(Path.ChangeExtension(inputHandle.FullName, ".xml"));
+		if (outputHandle.Exists) { outputHandle.Delete(); }
+		using (var writeStream = outputHandle.Create())
+		{
+
+			var xmlSerializer = new HKX2.XmlSerializer();
+			xmlSerializer.Serialize(rootObject, header, writeStream);
+		}
+	}
+	public static FileInfo GetUnpackedHandle(FileInfo inputHandle)
+	{
+		HKXHeader header = HKXHeader.SkyrimSE();
+		IHavokObject rootObject;
+		using (var readStream = inputHandle.OpenRead())
+		{
+			var deserializer = new PackFileDeserializer();
+			var binaryReaderEx = new BinaryReaderEx(readStream);
+			rootObject = deserializer.Deserialize(binaryReaderEx);
+		}
+
+		var outputHandle = new FileInfo(Path.ChangeExtension(inputHandle.FullName, ".xml"));
+		if (outputHandle.Exists) { outputHandle.Delete(); }
+		using (var writeStream = outputHandle.Create())
+		{
+
+			var xmlSerializer = new HKX2.XmlSerializer();
+			xmlSerializer.Serialize(rootObject, header, writeStream);
+		}
+		
+
+		return outputHandle;
 	}
 
 

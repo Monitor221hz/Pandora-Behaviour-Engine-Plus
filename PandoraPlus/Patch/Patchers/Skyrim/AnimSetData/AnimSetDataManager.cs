@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection.PortableExecutable;
@@ -10,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Pandora.Patch.Patchers.Skyrim.AnimSetData
 {
-	public class AnimSetDataManager
+    public class AnimSetDataManager
 	{
 		private static readonly string ANIMSETDATA_FILENAME = "animationsetdatasinglefile.txt";
 

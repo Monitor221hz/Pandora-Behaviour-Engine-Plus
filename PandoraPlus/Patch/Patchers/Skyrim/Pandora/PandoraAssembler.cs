@@ -1,12 +1,15 @@
-﻿using Pandora.Core;
+﻿using HKX2;
+using Pandora.Core;
 using Pandora.Core.Patchers.Skyrim;
 using Pandora.Patch.Patchers.Skyrim.AnimData;
 using Pandora.Patch.Patchers.Skyrim.AnimSetData;
 using Pandora.Patch.Patchers.Skyrim.Hkx;
+using Pandora.Patch.Patchers.Skyrim.Nemesis;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,6 +32,9 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 
 		private DirectoryInfo outputFolder = new DirectoryInfo($"{Directory.GetCurrentDirectory()}\\meshes");
 
+		private Dictionary<string, FileInfo> cachedFiles = new Dictionary<string, FileInfo>();
+
+		private static readonly string stateMachineChildrenFormatPath = "{0}/states";
 
 		public PandoraAssembler()
 		{
@@ -43,41 +49,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 			this.animSetDataManager = animSDManager;
 			this.animDataManager = animDManager;
 		}
-		private IPackFileChange TagEdit(ChangeType changeType, string path, XElement element)
-		{
-			switch (changeType)
-			{
-				case ChangeType.Remove:
-					return new RemoveElementChange(path);
-				case ChangeType.Insert:
-					return new InsertElementChange(path, element);
-				case ChangeType.Replace:
-					return new ReplaceElementChange(path, element);
-				case ChangeType.Append:
-					return new AppendElementChange(path, element);
-
-			}
-
-			return new RemoveElementChange(path);
-		}
-
-		private IPackFileChange TagEdit(ChangeType changeType, string path, string value)
-		{
-			switch (changeType)
-			{
-				//case ChangeType.Remove:
-				//	return new RemoveTextChange(path, value);
-				//case ChangeType.Insert:
-				//	return new InsertTextChange(path, value);
-				//case ChangeType.Replace:
-				//	return new ReplaceElementChange(path, value);
-				//case ChangeType.Append:
-				//	return new AppendElementChange(path, value);
-
-			}
-
-			return new RemoveElementChange(path);
-		}
+		
 		private bool AssembleUnknownEdits(DirectoryInfo folder, out List<XElement> elements, out List<string> strings, ChangeType changeType)
 		{
 			var textFiles = folder.GetFiles("*.txt");
@@ -127,6 +99,46 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 				changeSet.AddChange(new ReplaceElementChange(path,element));
 			}
 		}
+
+		private bool TryLoadPackedFileGraph(FileInfo file, out PackFileGraph? packFile)
+		{
+			FileInfo? existingFile;
+			bool cached = cachedFiles.TryGetValue(file.Name, out existingFile);
+			if (cached) { file = existingFile!; }
+
+			var unpackedFile = new FileInfo(Path.ChangeExtension(file.FullName, ".xml"));
+			packFile = null;
+			
+			try
+			{
+				packFile = unpackedFile.Exists ? new PackFileGraph(unpackedFile) : new PackFileGraph(PackFile.GetUnpackedHandle(file));
+				packFile.Activate();
+
+				if (!cached) { cachedFiles.Add(file.Name, file); }
+
+			}
+			catch (Exception ex)
+			{
+				//add log message later
+				return false;	
+			}
+			return true;
+		}
+		private bool TryLoadPackFileGraph(FileInfo file, out PackFileGraph? packFile)
+		{
+			packFile = null; 
+			try
+			{
+				packFile = new PackFileGraph(file);
+				packFile.Activate();
+			}
+			catch 
+			(Exception ex)
+			{ 
+				return false; 
+			}
+			return true;
+		}
 		private void IdentifyUnknownEdits(string name, List<XElement> elements, List<string> values)
 		{
 			switch(name)
@@ -147,14 +159,99 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 					break;
 			}
 		}
+		private void InjectEventsAndVariables(PackFileGraph sourcePackFile, PackFileGraph destPackFile, PackFileChangeSet destChangeSet)
+		{
+			var eventNameElements = sourcePackFile.EventNames;
+			var eventFlagElements = sourcePackFile.EventFlags;
+
+			var variableNameElements = sourcePackFile.VariableNames;
+			var variableValueElements = sourcePackFile.VariableValues;
+			var variableTypeElements = sourcePackFile.VariableTypes;
+
+			for (int i = 0; i < eventNameElements.Count; i++)
+			{
+				destChangeSet.AddChange(new AppendElementChange(destPackFile.EventNamesPath, eventNameElements[i]));
+				destChangeSet.AddChange(new AppendElementChange(destPackFile.EventFlagsPath, eventFlagElements[i]));
+			}
+
+			for (int i = 0; i < variableNameElements.Count; i++)
+			{
+				destChangeSet.AddChange(new AppendElementChange(destPackFile.VariableNamesPath, variableNameElements[i]));
+				destChangeSet.AddChange(new AppendElementChange(destPackFile.VariableValuesPath, variableValueElements[i]));
+				destChangeSet.AddChange(new AppendElementChange(destPackFile.VariableTypesPath, variableTypeElements[i]));
+			}
+		}
+
+		private void InjectGraphAnimations(PackFileGraph sourcePackFile, PackFileCharacter destPackFile, PackFileChangeSet changeSet)
+		{
+			var animationNames = sourcePackFile.GetAnimationFilePaths();
+			//projectManager.ActivatePackFile((PackFile)destPackFile);
+			foreach(var animationName in animationNames) { changeSet.AddChange(new AppendElementChange(destPackFile.AnimationNamesPath, new XElement("hkcstring", animationName))); }
+		}
+		private void InjectGraphReference(PackFileGraph sourcePackFile, PackFileGraph destPackFile, PackFileChangeSet changeSet, string stateFolderName)
+		{
+			InjectEventsAndVariables(sourcePackFile, destPackFile, changeSet);
+
+			var stateInfoPath = string.Format(stateMachineChildrenFormatPath, stateFolderName);
+			var graphPath = $"{destPackFile.OutputHandle.Directory?.Name}\\{Path.GetFileNameWithoutExtension(sourcePackFile.OutputHandle.Name)}.hkx";
+
+
+			PatchNodeCreator nodeMaker = new PatchNodeCreator(changeSet.Origin.Code);
+
+			string behaviorRefName;
+			var behaviorRef = nodeMaker.CreateBehaviorReferenceGenerator(graphPath, out behaviorRefName);
+			XElement behaviorRefElement = nodeMaker.TranslateToLinq<hkbBehaviorReferenceGenerator>(behaviorRef, behaviorRefName);
+
+			string stateInfoName;
+			var stateInfo = nodeMaker.CreateSimpleStateInfo(behaviorRef, out stateInfoName);
+			XElement stateInfoElement = nodeMaker.TranslateToLinq<hkbStateMachineStateInfo>(stateInfo, stateInfoName);
+
+			changeSet.AddChange(new AppendElementChange(PackFile.ROOT_CONTAINER_NAME, behaviorRefElement));
+			changeSet.AddChange(new AppendElementChange(PackFile.ROOT_CONTAINER_NAME, stateInfoElement));
+			changeSet.AddChange(new InsertTextChange(stateInfoPath, stateInfoName));
+		}
+		public void AssembleGraphInjection(DirectoryInfo injectFolder, PackFile destPackFile, PackFileChangeSet changeSet)
+		{
+			if (destPackFile is not PackFileGraph && destPackFile is not PackFileCharacter) { return; }
+
+
+			if (destPackFile is PackFileCharacter)
+			{
+				foreach (var file in injectFolder.GetFiles("*.xml"))
+				{
+					PackFileGraph? sourcePackFile; 
+
+					if (!TryLoadPackFileGraph(file, out sourcePackFile)) { continue; }
+
+					InjectGraphAnimations(sourcePackFile!, (PackFileCharacter)destPackFile, changeSet);
+				}
+				return; 
+			}
+
+			var stateFolders = injectFolder.GetDirectories();
+
+			foreach (var stateFolder in stateFolders)
+			{
+
+				destPackFile.MapNode(stateFolder.Name);
+
+				foreach(var file in stateFolder.GetFiles("*.xml"))
+				{
+					PackFileGraph? sourcePackFile;
+
+					if (!TryLoadPackFileGraph(file, out sourcePackFile)) { continue; }
+
+					InjectGraphReference(sourcePackFile!, (PackFileGraph)destPackFile, changeSet, stateFolder.Name);
+				}
+			}
+		}
 		private bool AssemblePackFilePatch(DirectoryInfo folder, IModInfo modInfo)
 		{
 			if (!projectManager.ContainsPackFile(folder.Name)) return false;
 			var changeSet = new PackFileChangeSet(modInfo);
 			var modName = modInfo.Name;
 			var targetPackFile = projectManager.ActivatePackFile(folder.Name);
-
-
+			
 			var subFolders = modInfo.Folder.GetDirectories();
 			if (subFolders.Length == 0) return false;
 			List<string> values;
@@ -174,6 +271,9 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 					case "insert":
 						break;
 					case "append":
+						break;
+					case "inject": //special case for injecting behavior files
+						AssembleGraphInjection(subFolder, targetPackFile, changeSet);
 						break;
 					default:
 						break;

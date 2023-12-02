@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Pandora.Patch.Patchers.Skyrim.AnimSetData
 {
-	public class SetCondition
+    public class SetCondition
 	{
 		public string VariableName { get; private set; } = string.Empty;
 

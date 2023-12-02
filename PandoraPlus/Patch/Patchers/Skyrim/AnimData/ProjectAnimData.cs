@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Pandora.Patch.Patchers.Skyrim.AnimData
 {
-	public class ProjectAnimData
+    public class ProjectAnimData
 	{
 		public ProjectAnimDataHeader Header { get; private set; } = new ProjectAnimDataHeader();
 		public List<ClipDataBlock> Blocks { get; set; } = new List<ClipDataBlock>();

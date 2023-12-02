@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using static Nito.HashAlgorithms.CRC32;
 namespace Pandora.Patch.Patchers.Skyrim.AnimSetData
 {
-	public static class BSCRC32
+    public static class BSCRC32
 	{
 		public static Definition BSDefinition = new Definition
 		{

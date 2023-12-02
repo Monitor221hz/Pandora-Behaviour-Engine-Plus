@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -21,10 +20,10 @@ namespace Pandora.Core.Patchers.Skyrim
 
 		public bool Valid { get; private set; }
 
-		private PackFile projectFile {  get; set; }	
-		private PackFile characterFile { get; set; } 
-		private PackFile skeletonFile { get; set; }
-		private PackFile behaviorFile { get; set; } 
+		public PackFile ProjectFile {  get; private set; }	
+		public PackFileCharacter CharacterFile { get; private set; } 
+		public PackFile SkeletonFile { get; private set; }
+		public PackFileGraph BehaviorFile { get; private set; } 
 
 		public ProjectAnimData AnimData { get; set; }
 
@@ -32,22 +31,20 @@ namespace Pandora.Core.Patchers.Skyrim
 		public Project()
 		{
 			Valid = false;
-			projectFile = new PackFile("");
-			characterFile = projectFile; 
-			skeletonFile = characterFile; 
-			behaviorFile = skeletonFile;
+			ProjectFile = new PackFile("");
+
 #if DEBUG
 			throw new InvalidDataException("Could not initialize project because of invalid data");
 #endif
 		}
-		public Project(PackFile projectfile, PackFile characterfile, PackFile skeletonfile, PackFile behaviorfile)
+		public Project(PackFile projectfile, PackFileCharacter characterfile, PackFile skeletonfile, PackFileGraph behaviorfile)
 		{
-			projectFile = projectfile;
-			characterFile = characterfile;
-			skeletonFile = skeletonfile;
-			behaviorFile = behaviorfile;
+			ProjectFile = projectfile;
+			CharacterFile = characterfile;
+			SkeletonFile = skeletonfile;
+			BehaviorFile = behaviorfile;
 
-			Identifier = Path.GetFileNameWithoutExtension(projectFile.InputHandle.Name);
+			Identifier = Path.GetFileNameWithoutExtension(ProjectFile.InputHandle.Name);
 			Valid = true;
 		}
 		
@@ -57,7 +54,7 @@ namespace Pandora.Core.Patchers.Skyrim
 
 		public List<string> MapFiles()
 		{
-			DirectoryInfo? behaviorFolder = behaviorFile.InputHandle.Directory;
+			DirectoryInfo? behaviorFolder = BehaviorFile.InputHandle.Directory;
 			if (behaviorFolder == null) return new List<string>();
 
 			var behaviorFiles = behaviorFolder.GetFiles();
@@ -66,19 +63,19 @@ namespace Pandora.Core.Patchers.Skyrim
 
 			foreach ( var behaviorFile in behaviorFiles)
 			{
-				var packFile = new PackFile(behaviorFile) { ParentProject = this };
+				var packFile = new PackFileGraph(behaviorFile, this);
 				packFile.DeleteExistingOutput();
 				filesByName.Add(packFile.Name, packFile); 
 			}
 
-			if (!filesByName.ContainsKey(skeletonFile.Name)) filesByName.Add(skeletonFile.Name, skeletonFile);
-			if (!filesByName.ContainsKey(characterFile.Name)) filesByName.Add(characterFile.Name, characterFile);
+			if (!filesByName.ContainsKey(SkeletonFile.Name)) filesByName.Add(SkeletonFile.Name, SkeletonFile);
+			if (!filesByName.ContainsKey(CharacterFile.Name)) filesByName.Add(CharacterFile.Name, CharacterFile);
 
-			filesByName.Add($"{Identifier}_skeleton", skeletonFile);
-			filesByName.Add($"{Identifier}_character", characterFile);
+			filesByName.Add($"{Identifier}_skeleton", SkeletonFile);
+			filesByName.Add($"{Identifier}_character", CharacterFile);
 
-			skeletonFile.DeleteExistingOutput();
-			characterFile.DeleteExistingOutput();
+			SkeletonFile.DeleteExistingOutput();
+			CharacterFile.DeleteExistingOutput();
 
 			return filesByName.Keys.ToList();
 		}
@@ -86,7 +83,7 @@ namespace Pandora.Core.Patchers.Skyrim
 		{
 			if (!projectFile.InputHandle.Exists) return new Project(); 
 
-			PackFile characterFile = GetCharacterFile(projectFile); 
+			PackFileCharacter characterFile = GetCharacterFile(projectFile); 
 			if (!characterFile.InputHandle.Exists) return new Project();
 
 			var rigBehaviorPair = GetSkeletonAndBehaviorFile(projectFile, characterFile);
@@ -94,7 +91,7 @@ namespace Pandora.Core.Patchers.Skyrim
 			PackFile skeletonFile = rigBehaviorPair.skeleton; 
 			if (!skeletonFile.InputHandle.Exists) return new Project();
 
-			PackFile behaviorFile = rigBehaviorPair.behavior; 
+			PackFileGraph behaviorFile = rigBehaviorPair.behavior; 
 			if (!behaviorFile.InputHandle.Exists) return new Project();
 
 			var project = new Project(projectFile, characterFile, skeletonFile, behaviorFile);
@@ -110,31 +107,28 @@ namespace Pandora.Core.Patchers.Skyrim
 		public static Project Load(string projectFilePath) => Load(new PackFile(projectFilePath));
 
 
-		private static PackFile GetCharacterFile(PackFile projectFile)
+		private static PackFileCharacter GetCharacterFile(PackFile projectFile)
 		{
 
 
 			XMap projectMap = projectFile.Map;
-			XElement projectData = projectFile.GetNodeByClass("hkbProjectStringData"); 
+			XElement projectData = projectFile.GetFirstNodeOfClass("hkbProjectStringData"); 
 			projectMap.MapSlice(projectData, true);
 
 			string characterFilePath = projectMap.Lookup("characterFilenames").Value.ToLower();
-			PackFile characterFile = new PackFile(Path.Combine(projectFile.InputHandle.DirectoryName!, characterFilePath));
-			//{C:\Users\Monitor\source\repos\Pandora-Plus-Behavior-Engine\PandoraPlus\bin\Debug\net7.0-windows\Pandora_Engine\Skyrim\Template\actors\character\Characters\Character Assets\skeleton.HKX}
-			return characterFile; 
+
+			return new PackFileCharacter(new FileInfo(Path.Combine(projectFile.InputHandle.DirectoryName!, characterFilePath)));
 		}
 
-		private static (PackFile skeleton, PackFile behavior) GetSkeletonAndBehaviorFile(PackFile projectFile, PackFile characterFile)
+		private static (PackFile skeleton, PackFileGraph behavior) GetSkeletonAndBehaviorFile(PackFile projectFile, PackFileCharacter characterFile)
 		{
 			XMap characterMap =  characterFile.Map;
 
-			XElement characterStringDataNode = characterFile.GetNodeByClass("hkbCharacterStringData"); 
+			string skeletonFilePath = characterMap.Lookup(characterFile.RigNamePath).Value;
 
-			string skeletonFilePath = characterMap.NavigateTo("rigName", characterStringDataNode).Value;
+			string behaviorFilePath = characterMap.Lookup(characterFile.BehaviorFilenamePath).Value;
 
-			string behaviorFilePath = characterMap.NavigateTo("behaviorFilename", characterStringDataNode).Value;
-
-			return (new PackFile(Path.Combine(projectFile.InputHandle.DirectoryName!, skeletonFilePath)), new PackFile(Path.Combine(projectFile.InputHandle.DirectoryName!, behaviorFilePath)));
+			return (new PackFile(new FileInfo(Path.Combine(projectFile.InputHandle.DirectoryName!, skeletonFilePath))), new PackFileGraph(new FileInfo(Path.Combine(projectFile.InputHandle.DirectoryName!, behaviorFilePath))));
 
 		}
 

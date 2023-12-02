@@ -25,6 +25,12 @@ public class PackFileChangeSet
 		Origin = modInfo;
 	}
 
+	public PackFileChangeSet(PackFileChangeSet packFileChangeSet)
+	{
+		foreach (ChangeType changeType in orderedChangeTypes) { changes.Add(changeType, new List<IPackFileChange>()); }
+		Origin = packFileChangeSet.Origin;
+	}
+
 	public void AddChange(IPackFileChange change) => changes[change.Type].Add(change);
 	public static void ApplyInOrder(PackFile packFile, List<PackFileChangeSet> changeSetList)
 	{

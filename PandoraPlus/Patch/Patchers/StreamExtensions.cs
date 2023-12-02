@@ -7,12 +7,8 @@ using System.Threading.Tasks;
 
 namespace Pandora.Patch.Patchers
 {
-	public interface IPatchFile
-	{
-		public FileInfo InputHandle { get;  }
-
-		public FileInfo OutputHandle { get; }
-
-		public void Export();
-	}
+    public static class StreamExtensions
+    {
+        public static string ReadLineSafe(this StreamReader reader) => reader.ReadLine() ?? string.Empty;
+    }
 }

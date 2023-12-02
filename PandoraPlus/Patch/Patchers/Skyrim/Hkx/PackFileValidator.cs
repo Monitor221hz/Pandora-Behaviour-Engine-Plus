@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.Linq;
 
 namespace Pandora.Patch.Patchers.Skyrim.Hkx
@@ -29,32 +30,24 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 
 			return index;
 		}
-		public bool ValidateEventsAndVariables(PackFile packFile)
+		public bool ValidateEventsAndVariables(PackFileGraph graph)
 		{
-			XElement? stringDataContainer = packFile.GetNodeByClass("hkbBehaviorGraphStringData");
-			if (stringDataContainer == null) return false;
+			var eventNameElements = graph.EventNames;
+			var eventFlagElements = graph.EventFlags;
 
-			XElement? variableValueSetContainer = packFile.GetNodeByClass("hkbVariableValueSet");
-			if (variableValueSetContainer == null) return false;
+			var variableNameElements = graph.VariableNames;
+			var variableValueElements = graph.VariableValues;
+			var variableTypeElements = graph.VariableTypes;
 
-			XElement? graphDataContainer = packFile.GetNodeByClass("hkbBehaviorGraphData");
-			if (graphDataContainer == null) return false;	
 
-			XElement? eventNameContainer = stringDataContainer.Elements().FirstOrDefault();
-			if (eventNameContainer == null) return false;
+			eventNameElements.Reverse();
+			eventFlagElements.Reverse();
 
-			XElement eventFlagContainer = graphDataContainer.Elements().ElementAt(3);
+			variableNameElements.Reverse();
+			variableValueElements.Reverse();
+			variableTypeElements.Reverse();
+			 //reverse is necessary so that validator doesn't remove the original element if a duplicate is found
 
-			XElement variableNameContainer = stringDataContainer.Elements().ElementAt(2);
-			XElement variableValueContainer = variableValueSetContainer.Elements().FirstOrDefault()!;
-			XElement variableTypeContainer = graphDataContainer.Elements().ElementAt(1);
-
-			var eventNameElements = eventNameContainer.Elements().ToList();
-			var eventFlagElements = eventFlagContainer.Elements().ToList();
-
-			var variableNameElements = variableNameContainer.Elements().ToList();
-			var variableValueElements = variableValueContainer.Elements().ToList();
-			var variableTypeElements = variableTypeContainer.Elements().ToList();
 
 			var uniqueEventNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 			var uniqueVariableNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -73,7 +66,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 
 					eventNameElements.RemoveAt(i);
 					eventFlagElements.RemoveAt(i);
-					Logger.Warn($"Validator > {packFile.ParentProject?.Identifier}~{packFile.Name} > Duplicate Event > {eventName} > REMOVED");
+					Logger.Warn($"Validator > {graph.ParentProject?.Identifier}~{graph.Name} > Duplicate Event > {eventName} > REMOVED");
 					continue;
 				}
 //#if DEBUG
@@ -94,7 +87,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 					variableNameElements.RemoveAt(i);
 					variableTypeElements.RemoveAt(i);
 					variableValueElements.RemoveAt(i);
-					Logger.Warn($"Validator > {packFile.ParentProject?.Identifier}~{packFile.Name} > Duplicate Variable > {variableName} > REMOVED");
+					Logger.Warn($"Validator > {graph.ParentProject?.Identifier}~{graph.Name} > Duplicate Variable > {variableName} > REMOVED");
 					continue; 
 				}
 //#if DEBUG
@@ -104,11 +97,11 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			}
 			for (int i = 0; i < eventNameElements.Count; i++)
 			{
-				eventIndices.Add(eventNameElements[i].Value, i);
+				eventIndices.Add(eventNameElements[i].Value, eventNameElements.Count - 1 - i);
 			}
 			for (int i = 0; i < variableNameElements.Count; i++)
 			{
-				variableIndices.Add(variableNameElements[i].Value, i);
+				variableIndices.Add(variableNameElements[i].Value, variableNameElements.Count - 1 - i);
 			}
 			return true; 
 		}
@@ -162,7 +155,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 		public void Validate(PackFile packFile, params List<IPackFileChange>[] changeLists)
 		{
 			//if (!ValidateEventsAndVariables(packFile)) return; 
-			int changeCount = 0;
+
 			foreach(var changeList in changeLists)
 			{
 				foreach(IPackFileChange change in changeList)
@@ -174,7 +167,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 					}
 					//ValidateElementCount(element.Parent!); might not be needed with hkx2 library; testing needed.
 					ValidateElementContent(element, eventIndices, variableIndices);
-					changeCount++;
+
 				}
 			}
 		}
