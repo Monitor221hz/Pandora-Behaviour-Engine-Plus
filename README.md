@@ -2,7 +2,7 @@
 
 A modular and lightweight behavior engine for TES Skyrim SE, for creatures and humanoids.  
 
-Built with backwards compatibility in mind for [Nemesis Unlimited Behavior Engine](https://github.com/ShikyoKira/Project-New-Reign---Nemesis-Main), FNIS, and designed to be an alternative, Pandora streamlines both the author and user experience through a simplified UI, robust logging, intuitive formats, and fast patching times.
+Built with backwards compatibility in mind for [Nemesis Unlimited Behavior Engine](https://github.com/ShikyoKira/Project-New-Reign---Nemesis-Main) and FNIS, Pandora is an alternative engine streamlines both the author and user experience through a simplified UI, robust logging, intuitive formats, and fast patching times.
 
 
 <br/>
