@@ -53,7 +53,7 @@ public class PackFile : IPatchFile
 			Map = XMap.Load(stream);
 		}
 
-		ContainerNode = Map.NavigateTo("__data__");
+		ContainerNode = Map.NavigateTo(ROOT_CONTAINER_NAME);
 		Name = Path.GetFileNameWithoutExtension(InputHandle.Name).ToLower();
 
 		UniqueName = Name;
@@ -67,7 +67,7 @@ public class PackFile : IPatchFile
 			Map = XMap.Load(stream);
 		}
 		ParentProject = project;
-		ContainerNode = Map.NavigateTo("__data__");
+		ContainerNode = Map.NavigateTo(ROOT_CONTAINER_NAME);
 		Name = Path.GetFileNameWithoutExtension(InputHandle.Name).ToLower();
 
 		UniqueName = $"{ParentProject?.Identifier}~{Name}";

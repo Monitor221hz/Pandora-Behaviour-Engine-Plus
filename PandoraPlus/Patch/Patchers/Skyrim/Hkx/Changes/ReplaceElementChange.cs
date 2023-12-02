@@ -11,10 +11,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 		public XmlNodeType AssociatedType { get;  } = XmlNodeType.Element;
 
 		public string Path { get; private set; }
-		//string path, string oldValue, string newValue
 
-		//PackFile packFile, string path, XElement element
-		//public XElement oldElement { get; private set; } 
 		private XElement element { get; set; }
 
 
