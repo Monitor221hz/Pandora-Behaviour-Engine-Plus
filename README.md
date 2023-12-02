@@ -20,6 +20,7 @@ Built with backwards compatibility in mind for [Nemesis Unlimited Behavior Engin
     * [Manual Addition](#manual-addition)
   * [AnimSetData](#animsetdata)
     * [Adding AnimSetData Animations](#adding-animsetdata-animations)
+  * [Graph Injection](#graph-injection)
   * [Custom Projects](#custom-projects)
   * [Verbose Logging](#verbose-logging)
     * [Severity](#severity)
@@ -181,6 +182,25 @@ These animations are then parsed, encoded with the right format, and added to an
 
 Formerly, authors would have to encode the file and paths themselves and add it to the copied set file between two comments indicating the operation. Now it's as easy as writing a single line in a new file with the same name!
 
+
+<br/>
+<br/>
+
+### Graph Injection
+
+Graph injection is the process of injecting properties from modded graphs into the vanilla behavior graphs. 
+A graph is an hkx file that is specialized for behavior and contains a "graph" of nodes. 
+
+
+FNIS creates custom graphs by reading the animlist files when creating mod behavior through `GenerateFNISforModders.exe`.
+
+First, the custom graph must be unpacked into a readable xml, using something like [hkxconv](https://github.com/ret2end/hkxconv/releases) for 64 bit(SE/AE) files or [hkxcmd](https://www.nexusmods.com/skyrim/mods/1797) for 32 bit(LE) files. 
+
+To inject a custom graph reference, including its variables and animations into a specific graph, make a subfolder named `inject` in the identifying folder of the behavior graph that you want to inject into. Then, in the `inject` folder, make another folder that has the same name as the `hkbStateMachine` that you want to inject under. Then place the custom graph under this folder.
+
+To inject a custom graph's animations (skimmed from all hkbClipGenerators) into a specific character file, make a subfolder name `inject` in the identifying folder of the character file that you want to inject into. Then place the custom graph under this folder.
+
+Graph injection is an experimental feature and should only be made by authors that know what they are doing.
 
 <br/>
 <br/>
