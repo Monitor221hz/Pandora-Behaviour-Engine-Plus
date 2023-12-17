@@ -7,10 +7,12 @@ using Pandora.Patch.Patchers.Skyrim.Hkx;
 using Pandora.Patch.Patchers.Skyrim.Pandora;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.RightsManagement;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 using System.Xml;
@@ -121,37 +123,52 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
     {
         List<XNode> newNodes = new List<XNode>();
         int separatorIndex = match.Count;
-        for (int i = 1; i < separatorIndex; i++)
+
+		XNode? previousNode = match[0].PreviousNode;
+		
+		foreach(var node in match) { node.Remove();  }
+		for (int i = 1; i < separatorIndex; i++)
         {
 
             XNode node = match[i];
+			
             if (node.NodeType == XmlNodeType.Comment)
             {
                 separatorIndex = i;
                 break;
             }
             newNodes.Add(node);
-			//if (node.Parent != null) node.Remove();
-
         }
-        if (newNodes.Count > 0)
+
+		if (newNodes.Count > 0)
         {
 			for (int i = separatorIndex + 1; i < match.Count - 1; i++)
 			{
 				XNode node = match[i];
-
+				XNode newNode = newNodes[i - separatorIndex - 1];
 
 				switch (node.NodeType)
 				{
 					case XmlNodeType.Text:
+						StringBuilder previousTextBuilder = new StringBuilder();
+
+						while (previousNode != null && previousNode.NodeType == XmlNodeType.Text)
+						{
+							previousTextBuilder.Append(((XText)previousNode!).Value);
+							previousNode = previousNode.PreviousNode;
+						}
+
+						string preText = previousTextBuilder.ToString();
+						string oldText = ((XText)node).Value;
+						string newText = ((XText)newNode).Value;
 						//packFile.Editor.QueueReplaceText(lookup.LookupPath(node), ((XText)node).Value, ((XText)newNodes[i - separatorIndex - 1]).Value);
 
-						changeSet.AddChange(new ReplaceTextChange(lookup.LookupPath(node), ((XText)node).Value, ((XText)newNodes[i - separatorIndex - 1]).Value));
+						changeSet.AddChange(new ReplaceTextChange(lookup.LookupPath(node), preText, oldText, newText));
 						//lock (packFile.edits) packFile.edits.AddChange(new ReplaceTextChange(lookup.LookupPath(node), ((XText)node).Value, ((XText)newNodes[i - separatorIndex - 1]).Value,modInfo));
 						break;
 					case XmlNodeType.Element:
 						//packFile.Editor.QueueReplaceElement(lookup.LookupPath(node), (XElement)newNodes[i - separatorIndex - 1]);
-						changeSet.AddChange(new ReplaceElementChange(lookup.LookupPath(node), (XElement)newNodes[i - separatorIndex - 1]));
+						changeSet.AddChange(new ReplaceElementChange(lookup.LookupPath(node), (XElement)newNode));
 						//lock (packFile.edits) packFile.edits.AddChange(new ReplaceElementChange(lookup.LookupPath(node), (XElement)newNodes[i - separatorIndex - 1],modInfo));
 						break;
 					default:
@@ -187,19 +204,44 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
     public void ForwardInsertEdit(PackFile packFile, XMatch match, PackFileChangeSet changeSet)
     {
         List<XNode> newNodes = match.nodes;
+		XNode? previousNode = newNodes.First().PreviousNode;
+		XNode? nextNode = newNodes.Last().NextNode;
+		
+
+		foreach(var node in newNodes) { node.Remove(); }	
 		newNodes.RemoveAt(0);
 		newNodes.RemoveAt(newNodes.Count - 1);
-        
-        foreach(XNode node in newNodes)
+		bool isTextInsert = nextNode != null && nextNode.NodeType == XmlNodeType.Text;
+
+
+		foreach (XNode node in newNodes)
         {
 			string nodePath = lookup.LookupPath(node);
 			//if (node.Parent != null) node.Remove();
 			switch (node.NodeType)
             {
                 case XmlNodeType.Text:
-					//packFile.Editor.QueueInsertText(lookup.LookupPath(node), ((XText)node).Value);
 
-					changeSet.AddChange(new InsertTextChange(nodePath, ((XText)node).Value));
+					
+
+					//packFile.Editor.QueueInsertText(lookup.LookupPath(node), ((XText)node).Value);
+					if (!isTextInsert) 
+					{
+						changeSet.AddChange(new AppendTextChange(nodePath, ((XText)node).Value));
+						break;
+					} 
+
+					StringBuilder previousTextBuilder = new StringBuilder();
+
+					while (previousNode != null && previousNode.NodeType == XmlNodeType.Text)
+					{
+						previousTextBuilder.Append(((XText)previousNode!).Value);
+						previousNode = previousNode.PreviousNode;
+					}
+
+					string preText = previousTextBuilder.ToString();
+					changeSet.AddChange(new InsertTextChange(nodePath, preText, ((XText)node).Value));
+
 					//lock (packFile.edits) packFile.edits.AddChange(new InsertTextChange(nodePath, ((XText)node).Value, modInfo));
                     break; 
                 case XmlNodeType.Element:
@@ -302,7 +344,7 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 					Logger.Error($"Nemesis Assembler > File {editFile.FullName} >  No Edits Found > Load > SKIPPED");
 					continue;
 				}
-				changeSet.AddChange(new AppendElementChange(PackFile.ROOT_CONTAINER_NAME, element));
+				changeSet.AddChange(new PushElementChange(PackFile.ROOT_CONTAINER_NAME, element));
 				//targetPackFile.edits.AddChange(new InsertElementChange(PackFile.ROOT_CONTAINER_NAME+"/top", element, modInfo));
             }
 		}

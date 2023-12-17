@@ -69,22 +69,6 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 				RemoveElement(packFile, edit);
 			}
 		}
-		private void ApplyTextReplaceEdits(PackFile packFile)
-		{
-			foreach (var edit in TextReplaceEdits)
-			{
-				ReplaceText(packFile, edit.path, edit.oldValue, edit.newValue);
-			}
-
-		}
-
-		private void ApplyTextInsertEdits(PackFile packFile)
-		{
-			foreach (var edit in TextInsertEdits)
-			{
-				InsertText(packFile, edit.path, edit.insertValue);
-			}
-		}
 
 		private void ApplyTextRemoveEdits(PackFile packFile)
 		{
@@ -105,9 +89,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 
 			ApplyTextRemoveEdits(packFile); 
 
-			ApplyTextReplaceEdits(packFile);
 
-			ApplyTextInsertEdits(packFile);
 			
 
 		}

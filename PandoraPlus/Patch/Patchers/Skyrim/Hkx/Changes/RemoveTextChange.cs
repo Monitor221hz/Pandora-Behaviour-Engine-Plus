@@ -28,7 +28,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 
 		public bool Revert(PackFile packFile)
 		{
-			PackFileEditor.InsertText(packFile, Path, value);
+			//PackFileEditor.InsertText(packFile, Path, value);
 			return true; 
 		}
 	}

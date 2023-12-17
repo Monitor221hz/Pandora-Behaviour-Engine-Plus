@@ -12,25 +12,30 @@ public class ReplaceTextChange : IPackFileChange
 	public string Path { get; private set; }
 	private string oldValue { get; set; }
 
+
+
 	private string newValue { get; set; }
 
+	private string preValue; 
 
 
-	public ReplaceTextChange(string path, string oldvalue, string newvalue)
+
+	public ReplaceTextChange(string path, string preValue, string oldvalue, string newvalue)
 	{
 		Path = path;
 		oldValue = oldvalue;
 		newValue = newvalue;
+		this.preValue = preValue;
 	}
 	public bool Apply(PackFile packFile)
 	{
-		PackFileEditor.ReplaceText(packFile, Path, oldValue, newValue);
-		return true; 
+		return PackFileEditor.ReplaceText(packFile, Path, preValue, oldValue, newValue);
+		
 	}
 
 	public bool Revert(PackFile packFile)
 	{
-		PackFileEditor.ReplaceText(packFile, Path, newValue, oldValue);
+		//PackFileEditor.ReplaceText(packFile, Path, newValue, oldValue);
 		return true; 
 	}
 

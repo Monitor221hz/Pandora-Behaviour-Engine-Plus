@@ -208,7 +208,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 
 			changeSet.AddChange(new AppendElementChange(PackFile.ROOT_CONTAINER_NAME, behaviorRefElement));
 			changeSet.AddChange(new AppendElementChange(PackFile.ROOT_CONTAINER_NAME, stateInfoElement));
-			changeSet.AddChange(new InsertTextChange(stateInfoPath, stateInfoName));
+			changeSet.AddChange(new AppendTextChange(stateInfoPath, stateInfoName));
 		}
 		public void AssembleGraphInjection(DirectoryInfo injectFolder, PackFile destPackFile, PackFileChangeSet changeSet)
 		{
