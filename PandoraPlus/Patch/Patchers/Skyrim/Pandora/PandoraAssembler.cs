@@ -191,15 +191,16 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 		private void InjectGraphReference(PackFileGraph sourcePackFile, PackFileGraph destPackFile, PackFileChangeSet changeSet, string stateFolderName)
 		{
 			InjectEventsAndVariables(sourcePackFile, destPackFile, changeSet);
-
+			string nameWithoutExtension = Path.GetFileNameWithoutExtension(sourcePackFile.OutputHandle.Name);
+			string refName = nameWithoutExtension.Replace(' ', '_');
 			var stateInfoPath = string.Format(stateMachineChildrenFormatPath, stateFolderName);
-			var graphPath = $"{destPackFile.OutputHandle.Directory?.Name}\\{Path.GetFileNameWithoutExtension(sourcePackFile.OutputHandle.Name)}.hkx";
+			var graphPath = $"{destPackFile.OutputHandle.Directory?.Name}\\{nameWithoutExtension}.hkx";
 
 
 			PatchNodeCreator nodeMaker = new PatchNodeCreator(changeSet.Origin.Code);
 
 			string behaviorRefName;
-			var behaviorRef = nodeMaker.CreateBehaviorReferenceGenerator(graphPath, out behaviorRefName);
+			var behaviorRef = nodeMaker.CreateBehaviorReferenceGenerator(refName, graphPath, out behaviorRefName);
 			XElement behaviorRefElement = nodeMaker.TranslateToLinq<hkbBehaviorReferenceGenerator>(behaviorRef, behaviorRefName);
 
 			string stateInfoName;

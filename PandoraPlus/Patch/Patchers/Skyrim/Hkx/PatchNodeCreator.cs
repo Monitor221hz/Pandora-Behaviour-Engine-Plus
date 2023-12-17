@@ -39,6 +39,13 @@ public class PatchNodeCreator
 
 		return behaviorRefNode;
 	}
+	public hkbBehaviorReferenceGenerator CreateBehaviorReferenceGenerator(string generatorName, string behaviorName, out string nodeName)
+	{
+		nodeName = GenerateNodeName(generatorName);
+		var behaviorRefNode = new hkbBehaviorReferenceGenerator() { m_name = $"{generatorName}_RG", m_behaviorName = behaviorName, m_variableBindingSet = null, m_userData = 0 };
+
+		return behaviorRefNode;
+	}
 
 	public hkbStateMachineStateInfo CreateSimpleStateInfo(hkbGenerator generator)
 	{
