@@ -58,7 +58,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			for (int i = eventNameElements.Count - 1; i >= 0; i--)
 			{
 				var eventNameElement = eventNameElements[i];
-				var eventName = eventNameElement.Value;
+				var eventName = eventNameElement.Value.Trim();
 				if (!uniqueEventNames.Add(eventName))
 				{
 					eventNameElement.Remove();
