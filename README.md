@@ -208,6 +208,8 @@ To inject a custom graph's animations (skimmed from all hkbClipGenerators) into 
 
 Graph injection is an experimental feature and should only be made by authors that know what they are doing.
 
+More information on the [wiki page](https://github.com/Monitor144hz/Pandora-Behaviour-Engine-Plus/wiki/Graph-Injection)
+
 <br/>
 <br/>
 
