@@ -3,6 +3,7 @@ using Pandora.Patch.Patchers.Skyrim.AnimSetData;
 using Pandora.Patch.Patchers.Skyrim.Hkx;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection.PortableExecutable;
@@ -219,8 +220,11 @@ namespace Pandora.Core.Patchers.Skyrim
 				//packFile.Map.Save(Path.Join(Directory.GetCurrentDirectory(), packFile.InputHandle.Name));
 				//packFile.Export();
 			});
-			
+
 			//animDataPatcher.MergeAnimDataSingleFile();
+#if DEBUG || DEBUGRELEASE
+			foreach(PackFile packFile in ActivePackFiles) { Debug.WriteLine(packFile.UniqueName);  }
+#endif
 			Parallel.ForEach(ActivePackFiles, packFile => { packFile.Export(); });
 
 		}

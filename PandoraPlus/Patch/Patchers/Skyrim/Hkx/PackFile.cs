@@ -10,13 +10,15 @@ using XmlCake.Linq;
 
 namespace Pandora.Patch.Patchers.Skyrim.Hkx;
 
-public class PackFile : IPatchFile
+public class PackFile : IPatchFile, IEquatable<PackFile>
 {
 	public XMap Map { get; private set; }
 
 	public static readonly string ROOT_CONTAINER_NAME = "__data__";
 
 	public static readonly string ROOT_CONTAINER_INSERT_PATH = "__data__/top";
+
+	private static HashSet<FileInfo> exportedFiles = new HashSet<FileInfo>();
 
 	public string Name { get; private set; }
 	public FileInfo InputHandle { get; private set; }
@@ -37,12 +39,17 @@ public class PackFile : IPatchFile
 
 	private HashSet<string> mappedNodeNames = new HashSet<string>();
 
-	public Project? ParentProject { get; set; }
+	public Project? ParentProject { get => parentProject; 
+		set { 
+			parentProject = value;
+			UniqueName = $"{ParentProject?.Identifier}~{Name}";
+		} }
 
 
 	protected ILookup<string, XElement>? classLookup = null;
 
-	private bool active = false; 
+	private bool active = false;
+	private Project? parentProject;
 
 	public PackFile(FileInfo file)
 	{
@@ -108,6 +115,13 @@ public class PackFile : IPatchFile
 		{
 			OutputHandle.Delete();
 		}
+#if DEBUG
+		var debugOuputHandle = new FileInfo(OutputHandle.FullName + ".xml");
+		if (debugOuputHandle.Exists) { debugOuputHandle.Delete(); }
+
+		debugOuputHandle = new FileInfo(debugOuputHandle.DirectoryName + "\\m_" + debugOuputHandle.Name);
+		if (debugOuputHandle.Exists) { debugOuputHandle.Delete();  }
+#endif
 	}
 	
 	public void MapNode(string nodeName)
@@ -125,40 +139,45 @@ public class PackFile : IPatchFile
 
 	public void Export()
 	{
-		if (OutputHandle.Directory == null) return;
-		if (!OutputHandle.Directory.Exists) { OutputHandle.Directory.Create(); }
-		if (OutputHandle.Exists) { OutputHandle.Delete(); }
-		HKXHeader header = HKXHeader.SkyrimSE();
-		IHavokObject rootObject;
+
+
+			if (OutputHandle.Directory == null) return;
+			if (!OutputHandle.Directory.Exists) { OutputHandle.Directory.Create(); }
+			if (OutputHandle.Exists) { return; }
+			if (OutputHandle.Exists) { OutputHandle.Delete(); }
+			HKXHeader header = HKXHeader.SkyrimSE();
+			IHavokObject rootObject;
 #if DEBUG
-		using (var memoryStream = new MemoryStream())
-		{
-			Map.Save(memoryStream);
-			memoryStream.Position = 0;
-			var deserializer = new XmlDeserializer();
-			rootObject = deserializer.Deserialize(memoryStream, header, false);
 
-		}
-		using (var writeStream = OutputHandle.Create())
-		{
-			var binaryWriter = new BinaryWriterEx(writeStream);
-			var serializer = new PackFileSerializer();
-			serializer.Serialize(rootObject, binaryWriter, header);
-		}
-		var debugOuputHandle = new FileInfo(OutputHandle.FullName + ".xml");
-		if (debugOuputHandle.Exists) { debugOuputHandle.Delete(); }
-		using (var writeStream = debugOuputHandle.Create())
-		{
+			using (var memoryStream = new MemoryStream())
+			{
+				Map.Save(memoryStream);
+				memoryStream.Position = 0;
+				var deserializer = new XmlDeserializer();
+				rootObject = deserializer.Deserialize(memoryStream, header, false);
+			}
+			using (var writeStream = OutputHandle.Create())
+			{
+				var binaryWriter = new BinaryWriterEx(writeStream);
+				var serializer = new PackFileSerializer();
+				serializer.Serialize(rootObject, binaryWriter, header);
+			}
 
-			var xmlSerializer = new HKX2.XmlSerializer();
-			xmlSerializer.Serialize(rootObject, header, writeStream);
-		}
-		debugOuputHandle = new FileInfo(debugOuputHandle.DirectoryName + "\\m_" + debugOuputHandle.Name);
 
-		using (var writeStream = debugOuputHandle.Create())
-		{
-			Map.Save(writeStream);
-		}
+			var debugOuputHandle = new FileInfo(OutputHandle.FullName + ".xml");
+			if (debugOuputHandle.Exists) { return; }
+			using (var writeStream = debugOuputHandle.Create())
+			{
+
+				var xmlSerializer = new HKX2.XmlSerializer();
+				xmlSerializer.Serialize(rootObject, header, writeStream);
+			}
+			debugOuputHandle = new FileInfo(debugOuputHandle.DirectoryName + "\\m_" + debugOuputHandle.Name);
+
+			using (var writeStream = debugOuputHandle.Create())
+			{
+				Map.Save(writeStream);
+			}
 
 #else
 		try
@@ -237,14 +256,19 @@ public class PackFile : IPatchFile
 		return outputHandle;
 	}
 
+	public bool Equals(PackFile? other)
+	{
+		return other != null && other.OutputHandle.FullName.Equals(this.OutputHandle.FullName);
+	}
+	public override int GetHashCode()
+	{
+		return OutputHandle.FullName.GetHashCode();
+	}
 
+	public override bool Equals(object? obj)
+	{
+		if (obj == null || ! (obj is PackFile)) return false;
 
-
-
-
-
-
-
-
-
+		return Equals((PackFile)obj);
+	}
 }
