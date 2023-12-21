@@ -47,7 +47,7 @@ public class SkyrimPatcher : IPatcher
 
     public void Run()
     {
-        assembler.ApplyPatches();
+        //assembler.ApplyPatches();
     }
     public async Task RunAsync()
     {
@@ -56,7 +56,7 @@ public class SkyrimPatcher : IPatcher
 
     public async Task UpdateAsync()
     {
-        await assembler.LoadResourcesAsync();
+        //await assembler.LoadResourcesAsync();
         try
         {
 			Parallel.ForEach(activeMods, mod => { assembler.AssemblePatch(mod); });
@@ -89,4 +89,8 @@ public class SkyrimPatcher : IPatcher
 
     }
 
+	public async Task PreloadAsync()
+	{
+		await assembler.LoadResourcesAsync();
+	}
 }

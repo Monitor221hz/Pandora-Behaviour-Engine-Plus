@@ -52,6 +52,7 @@ namespace Pandora.MVVM.ViewModel
 
         private static DirectoryInfo currentDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
 
+        private Task preloadTask;
 
 		public string LogText { 
             get => logText;
@@ -71,11 +72,10 @@ namespace Pandora.MVVM.ViewModel
             LaunchCommand = new RelayCommand(LaunchEngine, CanLaunchEngine);
             ExitCommand = new RelayCommand(Exit);
 			activeModConfig = new FileInfo($"{currentDirectory}\\Pandora_Engine\\ActiveMods.txt");
-
+			preloadTask = Task.Run(Engine.PreloadAsync);
 		}
         public async Task LoadAsync()
         {
-
             List<IModInfo> modInfos = new List<IModInfo>();
 #if DEBUG
             modInfos = await modinfoProvider?.GetInstalledMods("C:\\Games\\Skyrim Modding\\Creation Tools\\Skyrim.Behavior.Tool\\PandoraTEST\\Pandora_Engine\\mod")!;
@@ -202,16 +202,16 @@ namespace Pandora.MVVM.ViewModel
 			CultureInfo.DefaultThreadCurrentUICulture = culture;
             CultureInfo.CurrentCulture = culture;
 
-			Engine = new BehaviourEngine(); 
+			
             logText= string.Empty;
 
             await WriteLogBoxLine("Engine launched.");
-            
+            await preloadTask;
             List<IModInfo> activeMods = GetActiveModsByPriority();
 
 			Stopwatch timer = Stopwatch.StartNew();
 
-			await Task.Run(async () => { await Engine.LaunchAsync(activeMods); }); 
+			await Task.Run(async() => { await Engine.LaunchAsync(activeMods); }); 
             
             timer.Stop();
             await WriteLogBoxLine($"Launch finished in {Math.Round(timer.ElapsedMilliseconds / 1000.0, 2)} seconds");
@@ -219,7 +219,11 @@ namespace Pandora.MVVM.ViewModel
             await WriteLogBoxLine(Engine.GetMessages());
 
             await Task.Run(() => { SaveActiveMods(activeMods); });
-            lock (LaunchCommand)
+
+			Engine = new BehaviourEngine();
+            preloadTask = Task.Run(Engine.PreloadAsync);
+
+			lock (LaunchCommand)
             {
 				engineRunning = false;
 				LaunchEnabled = !engineRunning;

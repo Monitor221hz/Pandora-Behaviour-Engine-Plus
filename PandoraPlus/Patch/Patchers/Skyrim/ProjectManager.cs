@@ -25,7 +25,11 @@ namespace Pandora.Core.Patchers.Skyrim
 
 		private DirectoryInfo outputFolder { get; set; }
 
+
+		private PackFileCache packFileCache { get; set; } = new PackFileCache();
 		public  HashSet<PackFile> ActivePackFiles { get; private set;  } =  new HashSet<PackFile>();
+
+
 
 
 
@@ -81,11 +85,11 @@ namespace Pandora.Core.Patchers.Skyrim
 					}
 				}
 			}
-			foreach(var projectPath in projectPaths) 
-			{ 
-				LoadProject(projectPath); 
+			foreach (var projectPath in projectPaths)
+			{
+				LoadProject(projectPath);
 			}
-			//ExtractProjects();
+
 		}
 		public void ExtractProjects()
 		{
@@ -96,7 +100,7 @@ namespace Pandora.Core.Patchers.Skyrim
 			if (String.IsNullOrWhiteSpace(projectFilePath)) return;
 
 
-				var project = Project.Load(Path.Join(templateFolder.FullName, projectFilePath));
+				var project = Project.Load(new FileInfo(Path.Join(templateFolder.FullName, projectFilePath)), packFileCache);
 
 				lock (projectMap) projectMap.Add(project.Identifier, project);
 
@@ -111,13 +115,13 @@ namespace Pandora.Core.Patchers.Skyrim
 
 			lock (projectMap)
 			{
-				var project = Project.Load(Path.Join(templateFolder.FullName, projectFilePath));
+				var project = Project.Load(new FileInfo(Path.Join(templateFolder.FullName, projectFilePath)), packFileCache);
 
 				projectMap.Add(project.Identifier, project);
 
 
 
-			    ExtractProject(project);
+			    lock (project) ExtractProject(project);
 			}
 
 		}
@@ -126,11 +130,11 @@ namespace Pandora.Core.Patchers.Skyrim
 		{
 			lock (fileProjectMap)
 			{
-			List<string> fileNames = project.MapFiles(); 
-			foreach(string file in fileNames)
-			{
-				if (!fileProjectMap.ContainsKey(file)) fileProjectMap.Add(file, project);
-			}
+				List<string> fileNames = project.MapFiles(packFileCache);
+				foreach (string file in fileNames)
+				{
+					if (!fileProjectMap.ContainsKey(file)) fileProjectMap.Add(file, project);
+				}
 			}
 
 		}
@@ -195,6 +199,8 @@ namespace Pandora.Core.Patchers.Skyrim
 
 		public void ApplyPatches()
 		{
+			packFileCache.DeletePackFileOutput();
+
 			Parallel.ForEach(ActivePackFiles, packFile =>
 			{
 				packFile.ApplyChanges();
@@ -213,18 +219,16 @@ namespace Pandora.Core.Patchers.Skyrim
 		public void ApplyPatchesParallel()
 		{
 
+			packFileCache.DeletePackFileOutput();
 
 			Parallel.ForEach(ActivePackFiles, packFile =>
 			{
 				packFile.ApplyChanges();
-				//packFile.Map.Save(Path.Join(Directory.GetCurrentDirectory(), packFile.InputHandle.Name));
-				//packFile.Export();
 			});
 
-			//animDataPatcher.MergeAnimDataSingleFile();
-#if DEBUG || DEBUGRELEASE
-			foreach(PackFile packFile in ActivePackFiles) { Debug.WriteLine(packFile.UniqueName);  }
-#endif
+//#if DEBUG || DEBUGRELEASE
+//			foreach(PackFile packFile in ActivePackFiles) { Debug.WriteLine(packFile.UniqueName);  }
+//#endif
 			Parallel.ForEach(ActivePackFiles, packFile => { packFile.Export(); });
 
 		}

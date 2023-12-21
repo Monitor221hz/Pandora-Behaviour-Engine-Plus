@@ -333,7 +333,7 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 			{
 				nodes = lookup.MapFromElement(element);
 			}
-            targetPackFile.MapNode(nodeName);
+            lock (targetPackFile) targetPackFile.MapNode(nodeName);
 			bool hasInserts = MatchInsertPattern(targetPackFile, nodes, changeSet);
 			bool hasReplacements = MatchReplacePattern(targetPackFile, nodes, changeSet);
 
@@ -348,7 +348,7 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 				//targetPackFile.edits.AddChange(new InsertElementChange(PackFile.ROOT_CONTAINER_NAME+"/top", element, modInfo));
             }
 		}
-		targetPackFile.Dispatcher.AddChangeSet(changeSet);
+		lock (targetPackFile) targetPackFile.Dispatcher.AddChangeSet(changeSet);
 		return true;
 	}
 

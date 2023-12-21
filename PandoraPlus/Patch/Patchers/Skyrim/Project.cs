@@ -52,7 +52,7 @@ namespace Pandora.Core.Patchers.Skyrim
 
 		public bool ContainsPackFile(string name) => filesByName.ContainsKey(name);
 
-		public List<string> MapFiles()
+		public List<string> MapFiles(PackFileCache cache)
 		{
 			DirectoryInfo? behaviorFolder = BehaviorFile.InputHandle.Directory;
 			if (behaviorFolder == null) return new List<string>();
@@ -60,33 +60,38 @@ namespace Pandora.Core.Patchers.Skyrim
 			var behaviorFiles = behaviorFolder.GetFiles();
 
 
-
-			foreach ( var behaviorFile in behaviorFiles)
+			lock(filesByName)
 			{
-				var packFile = new PackFileGraph(behaviorFile, this);
-				packFile.DeleteExistingOutput();
-				filesByName.Add(packFile.Name, packFile); 
-			}
+				foreach (var behaviorFile in behaviorFiles)
+				{
+					var packFile = cache.LoadPackFileGraph(behaviorFile, this);
 
-			if (!filesByName.ContainsKey(SkeletonFile.Name)) filesByName.Add(SkeletonFile.Name, SkeletonFile);
-			if (!filesByName.ContainsKey(CharacterFile.Name)) filesByName.Add(CharacterFile.Name, CharacterFile);
+					//packFile.DeleteExistingOutput();
+					filesByName.Add(packFile.Name, packFile);
+				}
 
-			filesByName.Add($"{Identifier}_skeleton", SkeletonFile);
-			filesByName.Add($"{Identifier}_character", CharacterFile);
+				if (!filesByName.ContainsKey(SkeletonFile.Name)) filesByName.Add(SkeletonFile.Name, SkeletonFile);
+				if (!filesByName.ContainsKey(CharacterFile.Name)) filesByName.Add(CharacterFile.Name, CharacterFile);
 
-			SkeletonFile.DeleteExistingOutput();
-			CharacterFile.DeleteExistingOutput();
+				filesByName.Add($"{Identifier}_skeleton", SkeletonFile);
+				filesByName.Add($"{Identifier}_character", CharacterFile);
+			
+
+
+			//SkeletonFile.DeleteExistingOutput();
+			//CharacterFile.DeleteExistingOutput();
 
 			return filesByName.Keys.ToList();
+			}
 		}
-		public static Project Load(PackFile projectFile)
+		public static Project Load(PackFile projectFile, PackFileCache cache)
 		{
 			if (!projectFile.InputHandle.Exists) return new Project(); 
 
-			PackFileCharacter characterFile = GetCharacterFile(projectFile); 
+			PackFileCharacter characterFile = GetCharacterFile(projectFile, cache); 
 			if (!characterFile.InputHandle.Exists) return new Project();
 
-			var rigBehaviorPair = GetSkeletonAndBehaviorFile(projectFile, characterFile);
+			var rigBehaviorPair = GetSkeletonAndBehaviorFile(projectFile, characterFile, cache);
 
 			PackFile skeletonFile = rigBehaviorPair.skeleton; 
 			if (!skeletonFile.InputHandle.Exists) return new Project();
@@ -104,10 +109,12 @@ namespace Pandora.Core.Patchers.Skyrim
 			return project;
 		}
 
-		public static Project Load(string projectFilePath) => Load(new PackFile(projectFilePath));
+		public static Project Load(FileInfo file, PackFileCache cache) => Load(cache.LoadPackFile(file), cache);
+
+		//public static Project Load(string projectFilePath) => Load(new PackFile(projectFilePath));
 
 
-		private static PackFileCharacter GetCharacterFile(PackFile projectFile)
+		private static PackFileCharacter GetCharacterFile(PackFile projectFile, PackFileCache cache)
 		{
 
 
@@ -117,10 +124,10 @@ namespace Pandora.Core.Patchers.Skyrim
 
 			string characterFilePath = projectMap.Lookup("characterFilenames").Value.ToLower();
 
-			return new PackFileCharacter(new FileInfo(Path.Combine(projectFile.InputHandle.DirectoryName!, characterFilePath)));
+			return cache.LoadPackFileCharacter(new FileInfo(Path.Combine(projectFile.InputHandle.DirectoryName!, characterFilePath)));
 		}
 
-		private static (PackFile skeleton, PackFileGraph behavior) GetSkeletonAndBehaviorFile(PackFile projectFile, PackFileCharacter characterFile)
+		private static (PackFile skeleton, PackFileGraph behavior) GetSkeletonAndBehaviorFile(PackFile projectFile, PackFileCharacter characterFile, PackFileCache cache)
 		{
 			XMap characterMap =  characterFile.Map;
 
@@ -128,7 +135,7 @@ namespace Pandora.Core.Patchers.Skyrim
 
 			string behaviorFilePath = characterMap.Lookup(characterFile.BehaviorFilenamePath).Value;
 
-			return (new PackFile(new FileInfo(Path.Combine(projectFile.InputHandle.DirectoryName!, skeletonFilePath))), new PackFileGraph(new FileInfo(Path.Combine(projectFile.InputHandle.DirectoryName!, behaviorFilePath))));
+			return (cache.LoadPackFile(new FileInfo(Path.Combine(projectFile.InputHandle.DirectoryName!, skeletonFilePath))), cache.LoadPackFileGraph(new FileInfo(Path.Combine(projectFile.InputHandle.DirectoryName!, behaviorFilePath))));
 
 		}
 

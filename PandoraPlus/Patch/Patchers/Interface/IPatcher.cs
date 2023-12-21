@@ -13,6 +13,8 @@ namespace Pandora.Core.Patchers
 	{
 		public void SetTarget(List<IModInfo> mods);
 
+		public Task PreloadAsync();
+
 		public void Update();
 
 		public string GetPostUpdateMessages() => string.Empty; 

@@ -27,6 +27,11 @@ namespace Pandora.Core
 			await Configuration.Patcher.RunAsync(); 
 		}
 
+		public async Task PreloadAsync()
+		{
+			await Configuration.Patcher.PreloadAsync();
+		}
+
 		public string GetMessages()
 		{
 			return Configuration.Patcher.GetPostRunMessages();

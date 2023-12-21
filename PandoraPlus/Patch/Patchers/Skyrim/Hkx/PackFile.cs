@@ -2,6 +2,7 @@
 using Pandora.Core.Patchers.Skyrim;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -53,6 +54,7 @@ public class PackFile : IPatchFile, IEquatable<PackFile>
 
 	public PackFile(FileInfo file)
 	{
+
 		InputHandle = file;
 		OutputHandle = new FileInfo(file.FullName.Replace("Template", "meshes").Replace("\\Pandora_Engine\\Skyrim", ""));
 		using (var stream = file.OpenRead())
@@ -64,6 +66,9 @@ public class PackFile : IPatchFile, IEquatable<PackFile>
 		Name = Path.GetFileNameWithoutExtension(InputHandle.Name).ToLower();
 
 		UniqueName = Name;
+//#if DEBUG
+//		Debug.WriteLine($"- {UniqueName}");
+//#endif
 	}
 	public PackFile(FileInfo file, Project project)
 	{
@@ -78,6 +83,9 @@ public class PackFile : IPatchFile, IEquatable<PackFile>
 		Name = Path.GetFileNameWithoutExtension(InputHandle.Name).ToLower();
 
 		UniqueName = $"{ParentProject?.Identifier}~{Name}";
+//#if DEBUG
+//		Debug.WriteLine(UniqueName);
+//#endif
 	}
 
 	[MemberNotNull(nameof(classLookup))]
@@ -143,7 +151,6 @@ public class PackFile : IPatchFile, IEquatable<PackFile>
 
 			if (OutputHandle.Directory == null) return;
 			if (!OutputHandle.Directory.Exists) { OutputHandle.Directory.Create(); }
-			if (OutputHandle.Exists) { return; }
 			if (OutputHandle.Exists) { OutputHandle.Delete(); }
 			HKXHeader header = HKXHeader.SkyrimSE();
 			IHavokObject rootObject;
