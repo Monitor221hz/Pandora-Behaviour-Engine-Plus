@@ -72,7 +72,16 @@ namespace Pandora.MVVM.ViewModel
             LaunchCommand = new RelayCommand(LaunchEngine, CanLaunchEngine);
             ExitCommand = new RelayCommand(Exit);
 			activeModConfig = new FileInfo($"{currentDirectory}\\Pandora_Engine\\ActiveMods.txt");
+			CultureInfo culture;
+
+			culture = CultureInfo.CreateSpecificCulture("en-US");
+
+			CultureInfo.DefaultThreadCurrentCulture = culture;
+			CultureInfo.DefaultThreadCurrentUICulture = culture;
+			CultureInfo.CurrentCulture = culture;
+
 			preloadTask = Task.Run(Engine.PreloadAsync);
+
 		}
         public async Task LoadAsync()
         {
@@ -194,13 +203,7 @@ namespace Pandora.MVVM.ViewModel
 				engineRunning = true;
 				LaunchEnabled = !engineRunning;
 			}
-			CultureInfo culture;
-            
-			culture = CultureInfo.CreateSpecificCulture("en-US");
 
-			CultureInfo.DefaultThreadCurrentCulture = culture;
-			CultureInfo.DefaultThreadCurrentUICulture = culture;
-            CultureInfo.CurrentCulture = culture;
 
 			
             logText= string.Empty;
