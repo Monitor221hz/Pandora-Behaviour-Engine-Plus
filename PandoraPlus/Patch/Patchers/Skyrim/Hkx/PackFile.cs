@@ -172,7 +172,7 @@ public class PackFile : IPatchFile, IEquatable<PackFile>
 
 
 			var debugOuputHandle = new FileInfo(OutputHandle.FullName + ".xml");
-			if (debugOuputHandle.Exists) { return; }
+
 			using (var writeStream = debugOuputHandle.Create())
 			{
 
@@ -181,10 +181,10 @@ public class PackFile : IPatchFile, IEquatable<PackFile>
 			}
 			debugOuputHandle = new FileInfo(debugOuputHandle.DirectoryName + "\\m_" + debugOuputHandle.Name);
 
-			using (var writeStream = debugOuputHandle.Create())
-			{
-				Map.Save(writeStream);
-			}
+			//using (var writeStream = debugOuputHandle.Create())
+			//{
+			//	Map.Save(writeStream);
+			//}
 
 #else
 		try

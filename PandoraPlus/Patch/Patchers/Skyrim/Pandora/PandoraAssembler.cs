@@ -190,7 +190,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 		}
 		private void InjectGraphReference(PackFileGraph sourcePackFile, PackFileGraph destPackFile, PackFileChangeSet changeSet, string stateFolderName)
 		{
-			InjectEventsAndVariables(sourcePackFile, destPackFile, changeSet);
+			//InjectEventsAndVariables(sourcePackFile, destPackFile, changeSet);
 			string nameWithoutExtension = Path.GetFileNameWithoutExtension(sourcePackFile.OutputHandle.Name);
 			string refName = nameWithoutExtension.Replace(' ', '_');
 			var stateInfoPath = string.Format(stateMachineChildrenFormatPath, stateFolderName);

@@ -6,7 +6,7 @@
 		<hkobject name="#0082" class="hkbBehaviorGraphStringData" signature="0xc713064e">
 			
 			
-			<hkparam name="eventNames" numelements="119">
+			<hkparam name="eventNames" numelements="120">
 				<hkcstring>attackExit</hkcstring>
 				<hkcstring>attackRelease</hkcstring>
 				<hkcstring>bleedOutStart</hkcstring>
@@ -126,6 +126,7 @@
 				<hkcstring>RemoveCharacterControllerFromWorld</hkcstring>
 				<hkcstring>GetUpEnd</hkcstring>
 				<hkcstring>GetUpBegin</hkcstring>
+				<hkcstring>FNISDefault</hkcstring>
 			</hkparam>
 			<hkparam name="attributeNames" numelements="0"></hkparam>
 			<hkparam name="variableNames" numelements="72">
@@ -1097,7 +1098,7 @@
 					<hkparam name="type">VARIABLE_TYPE_POINTER</hkparam>
 				</hkobject>
 			</hkparam>
-			<hkparam name="eventInfos" numelements="119">
+			<hkparam name="eventInfos" numelements="120">
 				<hkobject>
 					<hkparam name="flags">0</hkparam>
 				</hkobject>
@@ -1455,6 +1456,9 @@
 				<hkobject>
 					<hkparam name="flags">0</hkparam>
 				</hkobject>
+				<hkobject>
+					<hkparam name="flags">0</hkparam>
+				</hkobject>				
 			</hkparam>
 			<hkparam name="wordMinVariableValues" numelements="0"></hkparam>
 			<hkparam name="wordMaxVariableValues" numelements="0"></hkparam>
@@ -3215,6 +3219,32 @@
 					<hkparam name="priority">0</hkparam>
 					<hkparam name="flags">FLAG_TO_NESTED_STATE_ID_IS_VALID|FLAG_IS_GLOBAL_WILDCARD|FLAG_DISABLE_CONDITION</hkparam>
 				</hkobject>
+				<hkobject>
+					<hkparam name="triggerInterval">
+						<hkobject>
+							<hkparam name="enterEventId">-1</hkparam>
+							<hkparam name="exitEventId">-1</hkparam>
+							<hkparam name="enterTime">0.000000</hkparam>
+							<hkparam name="exitTime">0.000000</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="initiateInterval">
+						<hkobject>
+							<hkparam name="enterEventId">-1</hkparam>
+							<hkparam name="exitEventId">-1</hkparam>
+							<hkparam name="enterTime">0.000000</hkparam>
+							<hkparam name="exitTime">0.000000</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="transition">#0148</hkparam>
+					<hkparam name="condition">null</hkparam>
+					<hkparam name="eventId">119</hkparam>
+					<hkparam name="toStateId">0</hkparam>
+					<hkparam name="fromNestedStateId">0</hkparam>
+					<hkparam name="toNestedStateId">0</hkparam>
+					<hkparam name="priority">0</hkparam>
+					<hkparam name="flags">FLAG_IS_GLOBAL_WILDCARD|FLAG_DISABLE_CONDITION</hkparam>
+				</hkobject>				
 			</hkparam>
 		</hkobject>
 
