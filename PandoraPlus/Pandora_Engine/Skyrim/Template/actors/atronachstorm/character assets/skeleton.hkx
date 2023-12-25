@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="ascii"?>
 <hkpackfile classversion="8" contentsversion="hk_2010.2.0-r1" toplevelobject="#0120">
-
 	<hksection name="__data__">
-
 		<hkobject name="#0122" class="hkaSkeleton" signature="0x366e8220">
-			
-			
 			<hkparam name="name">NPC Root [Root]</hkparam>
 			<hkparam name="parentIndices" numelements="33">
 				-1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -185,10 +181,7 @@
 			<hkparam name="floatSlots" numelements="0"></hkparam>
 			<hkparam name="localFrames" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0123" class="hkaSkeleton" signature="0x366e8220">
-			
-			
 			<hkparam name="name">Ragdoll_Pelvis</hkparam>
 			<hkparam name="parentIndices" numelements="27">
 				-1 0 0 0 2 1 3 3 3 3 3 3 3 7 4 8
@@ -337,10 +330,7 @@
 			<hkparam name="floatSlots" numelements="0"></hkparam>
 			<hkparam name="localFrames" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0121" class="hkaSkeletonMapper" signature="0x12df42a5">
-			
-			
 			<hkparam name="mapping">
 				<hkobject>
 					<hkparam name="skeletonA">#0123</hkparam>
@@ -492,10 +482,7 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0124" class="hkaSkeletonMapper" signature="0x12df42a5">
-			
-			
 			<hkparam name="mapping">
 				<hkobject>
 					<hkparam name="skeletonA">#0122</hkparam>
@@ -645,10 +632,7 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0126" class="hkpPositionConstraintMotor" signature="0x748fb303">
-			
-			
 			<hkparam name="type">TYPE_POSITION</hkparam>
 			<hkparam name="minForce">-1000000.000000</hkparam>
 			<hkparam name="maxForce">100.000000</hkparam>
@@ -657,10 +641,7 @@
 			<hkparam name="proportionalRecoveryVelocity">5.000000</hkparam>
 			<hkparam name="constantRecoveryVelocity">0.200000</hkparam>
 		</hkobject>
-
 		<hkobject name="#0125" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -748,70 +729,44 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0130" class="hkpBoxShape" signature="0x3444d2d5">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="halfExtents">(5.194798 7.071456 6.777843 5.194798)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0129" class="hkpConvexTranslateShape" signature="0x5ba0a5f7">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="childShape">
 				<hkobject>
 					<hkparam name="childShape">#0130</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="translation">(0.000000 0.071682 1.570921 0.000000)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0128" class="hkpRigidBody" signature="0x75f8d805">
-			
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="collidable">
 				<hkobject>
 					<hkparam name="shape">#0129</hkparam>
 					<hkparam name="shapeKey">4294967295</hkparam>
-					
-					
-					
 					<hkparam name="forceCollideOntoPpu">0</hkparam>
-					
 					<hkparam name="broadPhaseHandle">
 						<hkobject>
-							
 							<hkparam name="type">1</hkparam>
-							
 							<hkparam name="objectQualityType">4</hkparam>
 							<hkparam name="collisionFilterInfo">74176</hkparam>
 						</hkobject>
 					</hkparam>
-					
 					<hkparam name="allowedPenetrationDepth">0.100000</hkparam>
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="multiThreadCheck">
 				<hkobject>
-					
-					
-					
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="name">Ragdoll_L Hand</hkparam>
 			<hkparam name="properties" numelements="0"></hkparam>
-			
 			<hkparam name="material">
 				<hkobject>
 					<hkparam name="responseType">RESPONSE_SIMPLE_CONTACT</hkparam>
@@ -820,32 +775,21 @@
 					<hkparam name="restitution">0.800000</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="damageMultiplier">1.000000</hkparam>
-			
-			
 			<hkparam name="storageIndex">65535</hkparam>
 			<hkparam name="contactPointCallbackDelay">65535</hkparam>
-			
-			
-			
-			
 			<hkparam name="autoRemoveLevel">0</hkparam>
 			<hkparam name="numShapeKeysInContactPointProperties">0</hkparam>
 			<hkparam name="responseModifierFlags">0</hkparam>
 			<hkparam name="uid">4294967295</hkparam>
 			<hkparam name="spuCollisionCallback">
 				<hkobject>
-					
-					
 					<hkparam name="eventFilter">3</hkparam>
 					<hkparam name="userFilter">1</hkparam>
 				</hkobject>
 			</hkparam>
 			<hkparam name="motion">
 				<hkobject>
-					
-					
 					<hkparam name="type">MOTION_BOX_INERTIA</hkparam>
 					<hkparam name="deactivationIntegrateCounter">15</hkparam>
 					<hkparam name="deactivationNumInactiveFrames">49152 49152</hkparam>
@@ -881,76 +825,47 @@
 					<hkparam name="gravityFactor">1.000000</hkparam>
 				</hkobject>
 			</hkparam>
-			
-			
 			<hkparam name="localFrame">null</hkparam>
-			
 			<hkparam name="npData">0</hkparam>
 		</hkobject>
-
 		<hkobject name="#0133" class="hkpBoxShape" signature="0x3444d2d5">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="halfExtents">(4.596989 3.966364 6.067797 3.966364)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0132" class="hkpConvexTranslateShape" signature="0x5ba0a5f7">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="childShape">
 				<hkobject>
 					<hkparam name="childShape">#0133</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="translation">(0.175328 -0.434760 0.513415 0.000000)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0131" class="hkpRigidBody" signature="0x75f8d805">
-			
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="collidable">
 				<hkobject>
 					<hkparam name="shape">#0132</hkparam>
 					<hkparam name="shapeKey">4294967295</hkparam>
-					
-					
-					
 					<hkparam name="forceCollideOntoPpu">0</hkparam>
-					
 					<hkparam name="broadPhaseHandle">
 						<hkobject>
-							
 							<hkparam name="type">1</hkparam>
-							
 							<hkparam name="objectQualityType">4</hkparam>
 							<hkparam name="collisionFilterInfo">80736</hkparam>
 						</hkobject>
 					</hkparam>
-					
 					<hkparam name="allowedPenetrationDepth">0.100000</hkparam>
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="multiThreadCheck">
 				<hkobject>
-					
-					
-					
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="name">Ragdoll_L Finger 2</hkparam>
 			<hkparam name="properties" numelements="0"></hkparam>
-			
 			<hkparam name="material">
 				<hkobject>
 					<hkparam name="responseType">RESPONSE_SIMPLE_CONTACT</hkparam>
@@ -959,32 +874,21 @@
 					<hkparam name="restitution">0.800000</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="damageMultiplier">1.000000</hkparam>
-			
-			
 			<hkparam name="storageIndex">65535</hkparam>
 			<hkparam name="contactPointCallbackDelay">65535</hkparam>
-			
-			
-			
-			
 			<hkparam name="autoRemoveLevel">0</hkparam>
 			<hkparam name="numShapeKeysInContactPointProperties">0</hkparam>
 			<hkparam name="responseModifierFlags">0</hkparam>
 			<hkparam name="uid">4294967295</hkparam>
 			<hkparam name="spuCollisionCallback">
 				<hkobject>
-					
-					
 					<hkparam name="eventFilter">3</hkparam>
 					<hkparam name="userFilter">1</hkparam>
 				</hkobject>
 			</hkparam>
 			<hkparam name="motion">
 				<hkobject>
-					
-					
 					<hkparam name="type">MOTION_BOX_INERTIA</hkparam>
 					<hkparam name="deactivationIntegrateCounter">15</hkparam>
 					<hkparam name="deactivationNumInactiveFrames">49152 49152</hkparam>
@@ -1020,33 +924,20 @@
 					<hkparam name="gravityFactor">1.000000</hkparam>
 				</hkobject>
 			</hkparam>
-			
-			
 			<hkparam name="localFrame">null</hkparam>
-			
 			<hkparam name="npData">0</hkparam>
 		</hkobject>
-
 		<hkobject name="#0127" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0125</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0131 #0128</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_L Finger 2</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0134" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -1134,70 +1025,44 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0138" class="hkpBoxShape" signature="0x3444d2d5">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="halfExtents">(2.438189 2.543818 5.974110 2.438189)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0137" class="hkpConvexTranslateShape" signature="0x5ba0a5f7">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="childShape">
 				<hkobject>
 					<hkparam name="childShape">#0138</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="translation">(-0.451589 0.036611 0.671596 0.000000)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0136" class="hkpRigidBody" signature="0x75f8d805">
-			
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="collidable">
 				<hkobject>
 					<hkparam name="shape">#0137</hkparam>
 					<hkparam name="shapeKey">4294967295</hkparam>
-					
-					
-					
 					<hkparam name="forceCollideOntoPpu">0</hkparam>
-					
 					<hkparam name="broadPhaseHandle">
 						<hkobject>
-							
 							<hkparam name="type">1</hkparam>
-							
 							<hkparam name="objectQualityType">4</hkparam>
 							<hkparam name="collisionFilterInfo">80704</hkparam>
 						</hkobject>
 					</hkparam>
-					
 					<hkparam name="allowedPenetrationDepth">0.100000</hkparam>
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="multiThreadCheck">
 				<hkobject>
-					
-					
-					
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="name">Ragdoll_L Finger 1</hkparam>
 			<hkparam name="properties" numelements="0"></hkparam>
-			
 			<hkparam name="material">
 				<hkobject>
 					<hkparam name="responseType">RESPONSE_SIMPLE_CONTACT</hkparam>
@@ -1206,32 +1071,21 @@
 					<hkparam name="restitution">0.800000</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="damageMultiplier">1.000000</hkparam>
-			
-			
 			<hkparam name="storageIndex">65535</hkparam>
 			<hkparam name="contactPointCallbackDelay">65535</hkparam>
-			
-			
-			
-			
 			<hkparam name="autoRemoveLevel">0</hkparam>
 			<hkparam name="numShapeKeysInContactPointProperties">0</hkparam>
 			<hkparam name="responseModifierFlags">0</hkparam>
 			<hkparam name="uid">4294967295</hkparam>
 			<hkparam name="spuCollisionCallback">
 				<hkobject>
-					
-					
 					<hkparam name="eventFilter">3</hkparam>
 					<hkparam name="userFilter">1</hkparam>
 				</hkobject>
 			</hkparam>
 			<hkparam name="motion">
 				<hkobject>
-					
-					
 					<hkparam name="type">MOTION_BOX_INERTIA</hkparam>
 					<hkparam name="deactivationIntegrateCounter">15</hkparam>
 					<hkparam name="deactivationNumInactiveFrames">49152 49152</hkparam>
@@ -1267,33 +1121,20 @@
 					<hkparam name="gravityFactor">1.000000</hkparam>
 				</hkobject>
 			</hkparam>
-			
-			
 			<hkparam name="localFrame">null</hkparam>
-			
 			<hkparam name="npData">0</hkparam>
 		</hkobject>
-
 		<hkobject name="#0135" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0134</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0136 #0128</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_L Finger 1</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0139" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -1381,70 +1222,44 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0143" class="hkpBoxShape" signature="0x3444d2d5">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="halfExtents">(2.785844 3.240689 5.319064 2.785844)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0142" class="hkpConvexTranslateShape" signature="0x5ba0a5f7">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="childShape">
 				<hkobject>
 					<hkparam name="childShape">#0143</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="translation">(0.235960 -0.462844 0.781507 0.000000)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0141" class="hkpRigidBody" signature="0x75f8d805">
-			
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="collidable">
 				<hkobject>
 					<hkparam name="shape">#0142</hkparam>
 					<hkparam name="shapeKey">4294967295</hkparam>
-					
-					
-					
 					<hkparam name="forceCollideOntoPpu">0</hkparam>
-					
 					<hkparam name="broadPhaseHandle">
 						<hkobject>
-							
 							<hkparam name="type">1</hkparam>
-							
 							<hkparam name="objectQualityType">4</hkparam>
 							<hkparam name="collisionFilterInfo">80672</hkparam>
 						</hkobject>
 					</hkparam>
-					
 					<hkparam name="allowedPenetrationDepth">0.100000</hkparam>
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="multiThreadCheck">
 				<hkobject>
-					
-					
-					
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="name">Ragdoll_L Finger 4</hkparam>
 			<hkparam name="properties" numelements="0"></hkparam>
-			
 			<hkparam name="material">
 				<hkobject>
 					<hkparam name="responseType">RESPONSE_SIMPLE_CONTACT</hkparam>
@@ -1453,32 +1268,21 @@
 					<hkparam name="restitution">0.800000</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="damageMultiplier">1.000000</hkparam>
-			
-			
 			<hkparam name="storageIndex">65535</hkparam>
 			<hkparam name="contactPointCallbackDelay">65535</hkparam>
-			
-			
-			
-			
 			<hkparam name="autoRemoveLevel">0</hkparam>
 			<hkparam name="numShapeKeysInContactPointProperties">0</hkparam>
 			<hkparam name="responseModifierFlags">0</hkparam>
 			<hkparam name="uid">4294967295</hkparam>
 			<hkparam name="spuCollisionCallback">
 				<hkobject>
-					
-					
 					<hkparam name="eventFilter">3</hkparam>
 					<hkparam name="userFilter">1</hkparam>
 				</hkobject>
 			</hkparam>
 			<hkparam name="motion">
 				<hkobject>
-					
-					
 					<hkparam name="type">MOTION_BOX_INERTIA</hkparam>
 					<hkparam name="deactivationIntegrateCounter">15</hkparam>
 					<hkparam name="deactivationNumInactiveFrames">49152 49152</hkparam>
@@ -1514,33 +1318,20 @@
 					<hkparam name="gravityFactor">1.000000</hkparam>
 				</hkobject>
 			</hkparam>
-			
-			
 			<hkparam name="localFrame">null</hkparam>
-			
 			<hkparam name="npData">0</hkparam>
 		</hkobject>
-
 		<hkobject name="#0140" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0139</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0141 #0128</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_L Finger 4</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0144" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -1628,70 +1419,44 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0148" class="hkpBoxShape" signature="0x3444d2d5">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="halfExtents">(3.525241 2.877367 7.108606 2.877367)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0147" class="hkpConvexTranslateShape" signature="0x5ba0a5f7">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="childShape">
 				<hkobject>
 					<hkparam name="childShape">#0148</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="translation">(0.344684 -0.000004 0.724279 0.000000)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0146" class="hkpRigidBody" signature="0x75f8d805">
-			
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="collidable">
 				<hkobject>
 					<hkparam name="shape">#0147</hkparam>
 					<hkparam name="shapeKey">4294967295</hkparam>
-					
-					
-					
 					<hkparam name="forceCollideOntoPpu">0</hkparam>
-					
 					<hkparam name="broadPhaseHandle">
 						<hkobject>
-							
 							<hkparam name="type">1</hkparam>
-							
 							<hkparam name="objectQualityType">4</hkparam>
 							<hkparam name="collisionFilterInfo">80640</hkparam>
 						</hkobject>
 					</hkparam>
-					
 					<hkparam name="allowedPenetrationDepth">0.100000</hkparam>
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="multiThreadCheck">
 				<hkobject>
-					
-					
-					
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="name">Ragdoll_L Finger 3</hkparam>
 			<hkparam name="properties" numelements="0"></hkparam>
-			
 			<hkparam name="material">
 				<hkobject>
 					<hkparam name="responseType">RESPONSE_SIMPLE_CONTACT</hkparam>
@@ -1700,32 +1465,21 @@
 					<hkparam name="restitution">0.800000</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="damageMultiplier">1.000000</hkparam>
-			
-			
 			<hkparam name="storageIndex">65535</hkparam>
 			<hkparam name="contactPointCallbackDelay">65535</hkparam>
-			
-			
-			
-			
 			<hkparam name="autoRemoveLevel">0</hkparam>
 			<hkparam name="numShapeKeysInContactPointProperties">0</hkparam>
 			<hkparam name="responseModifierFlags">0</hkparam>
 			<hkparam name="uid">4294967295</hkparam>
 			<hkparam name="spuCollisionCallback">
 				<hkobject>
-					
-					
 					<hkparam name="eventFilter">3</hkparam>
 					<hkparam name="userFilter">1</hkparam>
 				</hkobject>
 			</hkparam>
 			<hkparam name="motion">
 				<hkobject>
-					
-					
 					<hkparam name="type">MOTION_BOX_INERTIA</hkparam>
 					<hkparam name="deactivationIntegrateCounter">15</hkparam>
 					<hkparam name="deactivationNumInactiveFrames">49152 49152</hkparam>
@@ -1761,33 +1515,20 @@
 					<hkparam name="gravityFactor">1.000000</hkparam>
 				</hkobject>
 			</hkparam>
-			
-			
 			<hkparam name="localFrame">null</hkparam>
-			
 			<hkparam name="npData">0</hkparam>
 		</hkobject>
-
 		<hkobject name="#0145" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0144</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0146 #0128</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_L Finger 3</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0149" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -1875,70 +1616,44 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0153" class="hkpBoxShape" signature="0x3444d2d5">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="halfExtents">(6.157831 6.853801 6.330202 6.157831)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0152" class="hkpConvexTranslateShape" signature="0x5ba0a5f7">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="childShape">
 				<hkobject>
 					<hkparam name="childShape">#0153</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="translation">(-0.000004 -0.000020 0.357225 0.000000)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0151" class="hkpRigidBody" signature="0x75f8d805">
-			
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="collidable">
 				<hkobject>
 					<hkparam name="shape">#0152</hkparam>
 					<hkparam name="shapeKey">4294967295</hkparam>
-					
-					
-					
 					<hkparam name="forceCollideOntoPpu">0</hkparam>
-					
 					<hkparam name="broadPhaseHandle">
 						<hkobject>
-							
 							<hkparam name="type">1</hkparam>
-							
 							<hkparam name="objectQualityType">4</hkparam>
 							<hkparam name="collisionFilterInfo">75264</hkparam>
 						</hkobject>
 					</hkparam>
-					
 					<hkparam name="allowedPenetrationDepth">0.100000</hkparam>
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="multiThreadCheck">
 				<hkobject>
-					
-					
-					
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="name">Ragdoll_R Hand</hkparam>
 			<hkparam name="properties" numelements="0"></hkparam>
-			
 			<hkparam name="material">
 				<hkobject>
 					<hkparam name="responseType">RESPONSE_SIMPLE_CONTACT</hkparam>
@@ -1947,32 +1662,21 @@
 					<hkparam name="restitution">0.800000</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="damageMultiplier">1.000000</hkparam>
-			
-			
 			<hkparam name="storageIndex">65535</hkparam>
 			<hkparam name="contactPointCallbackDelay">65535</hkparam>
-			
-			
-			
-			
 			<hkparam name="autoRemoveLevel">0</hkparam>
 			<hkparam name="numShapeKeysInContactPointProperties">0</hkparam>
 			<hkparam name="responseModifierFlags">0</hkparam>
 			<hkparam name="uid">4294967295</hkparam>
 			<hkparam name="spuCollisionCallback">
 				<hkobject>
-					
-					
 					<hkparam name="eventFilter">3</hkparam>
 					<hkparam name="userFilter">1</hkparam>
 				</hkobject>
 			</hkparam>
 			<hkparam name="motion">
 				<hkobject>
-					
-					
 					<hkparam name="type">MOTION_SPHERE_INERTIA</hkparam>
 					<hkparam name="deactivationIntegrateCounter">15</hkparam>
 					<hkparam name="deactivationNumInactiveFrames">49152 49152</hkparam>
@@ -2008,76 +1712,47 @@
 					<hkparam name="gravityFactor">1.000000</hkparam>
 				</hkobject>
 			</hkparam>
-			
-			
 			<hkparam name="localFrame">null</hkparam>
-			
 			<hkparam name="npData">0</hkparam>
 		</hkobject>
-
 		<hkobject name="#0156" class="hkpBoxShape" signature="0x3444d2d5">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="halfExtents">(3.733201 4.027695 7.318141 3.733201)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0155" class="hkpConvexTranslateShape" signature="0x5ba0a5f7">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="childShape">
 				<hkobject>
 					<hkparam name="childShape">#0156</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="translation">(0.000004 -0.916158 1.403704 0.000000)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0154" class="hkpRigidBody" signature="0x75f8d805">
-			
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="collidable">
 				<hkobject>
 					<hkparam name="shape">#0155</hkparam>
 					<hkparam name="shapeKey">4294967295</hkparam>
-					
-					
-					
 					<hkparam name="forceCollideOntoPpu">0</hkparam>
-					
 					<hkparam name="broadPhaseHandle">
 						<hkobject>
-							
 							<hkparam name="type">1</hkparam>
-							
 							<hkparam name="objectQualityType">4</hkparam>
 							<hkparam name="collisionFilterInfo">82656</hkparam>
 						</hkobject>
 					</hkparam>
-					
 					<hkparam name="allowedPenetrationDepth">0.100000</hkparam>
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="multiThreadCheck">
 				<hkobject>
-					
-					
-					
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="name">Ragdoll_R Finger 3</hkparam>
 			<hkparam name="properties" numelements="0"></hkparam>
-			
 			<hkparam name="material">
 				<hkobject>
 					<hkparam name="responseType">RESPONSE_SIMPLE_CONTACT</hkparam>
@@ -2086,32 +1761,21 @@
 					<hkparam name="restitution">0.800000</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="damageMultiplier">1.000000</hkparam>
-			
-			
 			<hkparam name="storageIndex">65535</hkparam>
 			<hkparam name="contactPointCallbackDelay">65535</hkparam>
-			
-			
-			
-			
 			<hkparam name="autoRemoveLevel">0</hkparam>
 			<hkparam name="numShapeKeysInContactPointProperties">0</hkparam>
 			<hkparam name="responseModifierFlags">0</hkparam>
 			<hkparam name="uid">4294967295</hkparam>
 			<hkparam name="spuCollisionCallback">
 				<hkobject>
-					
-					
 					<hkparam name="eventFilter">3</hkparam>
 					<hkparam name="userFilter">1</hkparam>
 				</hkobject>
 			</hkparam>
 			<hkparam name="motion">
 				<hkobject>
-					
-					
 					<hkparam name="type">MOTION_BOX_INERTIA</hkparam>
 					<hkparam name="deactivationIntegrateCounter">15</hkparam>
 					<hkparam name="deactivationNumInactiveFrames">49152 49152</hkparam>
@@ -2147,33 +1811,20 @@
 					<hkparam name="gravityFactor">1.000000</hkparam>
 				</hkobject>
 			</hkparam>
-			
-			
 			<hkparam name="localFrame">null</hkparam>
-			
 			<hkparam name="npData">0</hkparam>
 		</hkobject>
-
 		<hkobject name="#0150" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0149</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0154 #0151</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_R Finger 3</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0157" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -2261,70 +1912,44 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0161" class="hkpBoxShape" signature="0x3444d2d5">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="halfExtents">(4.813776 4.502664 7.965089 4.502664)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0160" class="hkpConvexTranslateShape" signature="0x5ba0a5f7">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="childShape">
 				<hkobject>
 					<hkparam name="childShape">#0161</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="translation">(-0.148902 -0.716785 1.394769 0.000000)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0159" class="hkpRigidBody" signature="0x75f8d805">
-			
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="collidable">
 				<hkobject>
 					<hkparam name="shape">#0160</hkparam>
 					<hkparam name="shapeKey">4294967295</hkparam>
-					
-					
-					
 					<hkparam name="forceCollideOntoPpu">0</hkparam>
-					
 					<hkparam name="broadPhaseHandle">
 						<hkobject>
-							
 							<hkparam name="type">1</hkparam>
-							
 							<hkparam name="objectQualityType">4</hkparam>
 							<hkparam name="collisionFilterInfo">82624</hkparam>
 						</hkobject>
 					</hkparam>
-					
 					<hkparam name="allowedPenetrationDepth">0.100000</hkparam>
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="multiThreadCheck">
 				<hkobject>
-					
-					
-					
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="name">Ragdoll_R Finger 2</hkparam>
 			<hkparam name="properties" numelements="0"></hkparam>
-			
 			<hkparam name="material">
 				<hkobject>
 					<hkparam name="responseType">RESPONSE_SIMPLE_CONTACT</hkparam>
@@ -2333,32 +1958,21 @@
 					<hkparam name="restitution">0.800000</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="damageMultiplier">1.000000</hkparam>
-			
-			
 			<hkparam name="storageIndex">65535</hkparam>
 			<hkparam name="contactPointCallbackDelay">65535</hkparam>
-			
-			
-			
-			
 			<hkparam name="autoRemoveLevel">0</hkparam>
 			<hkparam name="numShapeKeysInContactPointProperties">0</hkparam>
 			<hkparam name="responseModifierFlags">0</hkparam>
 			<hkparam name="uid">4294967295</hkparam>
 			<hkparam name="spuCollisionCallback">
 				<hkobject>
-					
-					
 					<hkparam name="eventFilter">3</hkparam>
 					<hkparam name="userFilter">1</hkparam>
 				</hkobject>
 			</hkparam>
 			<hkparam name="motion">
 				<hkobject>
-					
-					
 					<hkparam name="type">MOTION_BOX_INERTIA</hkparam>
 					<hkparam name="deactivationIntegrateCounter">15</hkparam>
 					<hkparam name="deactivationNumInactiveFrames">49152 49152</hkparam>
@@ -2394,33 +2008,20 @@
 					<hkparam name="gravityFactor">1.000000</hkparam>
 				</hkobject>
 			</hkparam>
-			
-			
 			<hkparam name="localFrame">null</hkparam>
-			
 			<hkparam name="npData">0</hkparam>
 		</hkobject>
-
 		<hkobject name="#0158" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0157</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0159 #0151</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_R Finger 2</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0162" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -2508,70 +2109,44 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0166" class="hkpBoxShape" signature="0x3444d2d5">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="halfExtents">(4.505000 3.146270 7.963425 3.146270)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0165" class="hkpConvexTranslateShape" signature="0x5ba0a5f7">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="childShape">
 				<hkobject>
 					<hkparam name="childShape">#0166</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="translation">(-0.282160 -0.507479 1.092818 0.000000)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0164" class="hkpRigidBody" signature="0x75f8d805">
-			
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="collidable">
 				<hkobject>
 					<hkparam name="shape">#0165</hkparam>
 					<hkparam name="shapeKey">4294967295</hkparam>
-					
-					
-					
 					<hkparam name="forceCollideOntoPpu">0</hkparam>
-					
 					<hkparam name="broadPhaseHandle">
 						<hkobject>
-							
 							<hkparam name="type">1</hkparam>
-							
 							<hkparam name="objectQualityType">4</hkparam>
 							<hkparam name="collisionFilterInfo">82592</hkparam>
 						</hkobject>
 					</hkparam>
-					
 					<hkparam name="allowedPenetrationDepth">0.100000</hkparam>
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="multiThreadCheck">
 				<hkobject>
-					
-					
-					
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="name">Ragdoll_R Finger 1</hkparam>
 			<hkparam name="properties" numelements="0"></hkparam>
-			
 			<hkparam name="material">
 				<hkobject>
 					<hkparam name="responseType">RESPONSE_SIMPLE_CONTACT</hkparam>
@@ -2580,32 +2155,21 @@
 					<hkparam name="restitution">0.800000</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="damageMultiplier">1.000000</hkparam>
-			
-			
 			<hkparam name="storageIndex">65535</hkparam>
 			<hkparam name="contactPointCallbackDelay">65535</hkparam>
-			
-			
-			
-			
 			<hkparam name="autoRemoveLevel">0</hkparam>
 			<hkparam name="numShapeKeysInContactPointProperties">0</hkparam>
 			<hkparam name="responseModifierFlags">0</hkparam>
 			<hkparam name="uid">4294967295</hkparam>
 			<hkparam name="spuCollisionCallback">
 				<hkobject>
-					
-					
 					<hkparam name="eventFilter">3</hkparam>
 					<hkparam name="userFilter">1</hkparam>
 				</hkobject>
 			</hkparam>
 			<hkparam name="motion">
 				<hkobject>
-					
-					
 					<hkparam name="type">MOTION_BOX_INERTIA</hkparam>
 					<hkparam name="deactivationIntegrateCounter">15</hkparam>
 					<hkparam name="deactivationNumInactiveFrames">49152 49152</hkparam>
@@ -2641,33 +2205,20 @@
 					<hkparam name="gravityFactor">1.000000</hkparam>
 				</hkobject>
 			</hkparam>
-			
-			
 			<hkparam name="localFrame">null</hkparam>
-			
 			<hkparam name="npData">0</hkparam>
 		</hkobject>
-
 		<hkobject name="#0163" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0162</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0164 #0151</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_R Finger 1</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0167" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -2755,70 +2306,44 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0171" class="hkpBoxShape" signature="0x3444d2d5">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="halfExtents">(5.382478 5.473088 12.062387 5.382478)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0170" class="hkpConvexTranslateShape" signature="0x5ba0a5f7">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="childShape">
 				<hkobject>
 					<hkparam name="childShape">#0171</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="translation">(-0.488465 -2.710739 1.527885 0.000000)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0169" class="hkpRigidBody" signature="0x75f8d805">
-			
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="collidable">
 				<hkobject>
 					<hkparam name="shape">#0170</hkparam>
 					<hkparam name="shapeKey">4294967295</hkparam>
-					
-					
-					
 					<hkparam name="forceCollideOntoPpu">0</hkparam>
-					
 					<hkparam name="broadPhaseHandle">
 						<hkobject>
-							
 							<hkparam name="type">1</hkparam>
-							
 							<hkparam name="objectQualityType">4</hkparam>
 							<hkparam name="collisionFilterInfo">71840</hkparam>
 						</hkobject>
 					</hkparam>
-					
 					<hkparam name="allowedPenetrationDepth">0.100000</hkparam>
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="multiThreadCheck">
 				<hkobject>
-					
-					
-					
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="name">Ragdoll_L Calf</hkparam>
 			<hkparam name="properties" numelements="0"></hkparam>
-			
 			<hkparam name="material">
 				<hkobject>
 					<hkparam name="responseType">RESPONSE_SIMPLE_CONTACT</hkparam>
@@ -2827,32 +2352,21 @@
 					<hkparam name="restitution">0.800000</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="damageMultiplier">1.000000</hkparam>
-			
-			
 			<hkparam name="storageIndex">65535</hkparam>
 			<hkparam name="contactPointCallbackDelay">65535</hkparam>
-			
-			
-			
-			
 			<hkparam name="autoRemoveLevel">0</hkparam>
 			<hkparam name="numShapeKeysInContactPointProperties">0</hkparam>
 			<hkparam name="responseModifierFlags">0</hkparam>
 			<hkparam name="uid">4294967295</hkparam>
 			<hkparam name="spuCollisionCallback">
 				<hkobject>
-					
-					
 					<hkparam name="eventFilter">3</hkparam>
 					<hkparam name="userFilter">1</hkparam>
 				</hkobject>
 			</hkparam>
 			<hkparam name="motion">
 				<hkobject>
-					
-					
 					<hkparam name="type">MOTION_BOX_INERTIA</hkparam>
 					<hkparam name="deactivationIntegrateCounter">15</hkparam>
 					<hkparam name="deactivationNumInactiveFrames">49152 49152</hkparam>
@@ -2888,76 +2402,47 @@
 					<hkparam name="gravityFactor">1.000000</hkparam>
 				</hkobject>
 			</hkparam>
-			
-			
 			<hkparam name="localFrame">null</hkparam>
-			
 			<hkparam name="npData">0</hkparam>
 		</hkobject>
-
 		<hkobject name="#0174" class="hkpBoxShape" signature="0x3444d2d5">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="halfExtents">(2.335440 2.963864 4.135712 2.335440)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0173" class="hkpConvexTranslateShape" signature="0x5ba0a5f7">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="childShape">
 				<hkobject>
 					<hkparam name="childShape">#0174</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="translation">(0.461381 0.433090 0.611459 0.000000)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0172" class="hkpRigidBody" signature="0x75f8d805">
-			
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="collidable">
 				<hkobject>
 					<hkparam name="shape">#0173</hkparam>
 					<hkparam name="shapeKey">4294967295</hkparam>
-					
-					
-					
 					<hkparam name="forceCollideOntoPpu">0</hkparam>
-					
 					<hkparam name="broadPhaseHandle">
 						<hkobject>
-							
 							<hkparam name="type">1</hkparam>
-							
 							<hkparam name="objectQualityType">4</hkparam>
 							<hkparam name="collisionFilterInfo">71296</hkparam>
 						</hkobject>
 					</hkparam>
-					
 					<hkparam name="allowedPenetrationDepth">0.100000</hkparam>
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="multiThreadCheck">
 				<hkobject>
-					
-					
-					
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="name">Ragdoll_L Foot Rock 2</hkparam>
 			<hkparam name="properties" numelements="0"></hkparam>
-			
 			<hkparam name="material">
 				<hkobject>
 					<hkparam name="responseType">RESPONSE_SIMPLE_CONTACT</hkparam>
@@ -2966,32 +2451,21 @@
 					<hkparam name="restitution">0.800000</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="damageMultiplier">1.000000</hkparam>
-			
-			
 			<hkparam name="storageIndex">65535</hkparam>
 			<hkparam name="contactPointCallbackDelay">65535</hkparam>
-			
-			
-			
-			
 			<hkparam name="autoRemoveLevel">0</hkparam>
 			<hkparam name="numShapeKeysInContactPointProperties">0</hkparam>
 			<hkparam name="responseModifierFlags">0</hkparam>
 			<hkparam name="uid">4294967295</hkparam>
 			<hkparam name="spuCollisionCallback">
 				<hkobject>
-					
-					
 					<hkparam name="eventFilter">3</hkparam>
 					<hkparam name="userFilter">1</hkparam>
 				</hkobject>
 			</hkparam>
 			<hkparam name="motion">
 				<hkobject>
-					
-					
 					<hkparam name="type">MOTION_BOX_INERTIA</hkparam>
 					<hkparam name="deactivationIntegrateCounter">15</hkparam>
 					<hkparam name="deactivationNumInactiveFrames">49152 49152</hkparam>
@@ -3027,33 +2501,20 @@
 					<hkparam name="gravityFactor">1.000000</hkparam>
 				</hkobject>
 			</hkparam>
-			
-			
 			<hkparam name="localFrame">null</hkparam>
-			
 			<hkparam name="npData">0</hkparam>
 		</hkobject>
-
 		<hkobject name="#0168" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0167</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0172 #0169</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_L Foot Rock 2</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0175" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -3141,70 +2602,44 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0179" class="hkpBoxShape" signature="0x3444d2d5">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="halfExtents">(1.167789 1.345769 1.400255 1.167789)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0178" class="hkpConvexTranslateShape" signature="0x5ba0a5f7">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="childShape">
 				<hkobject>
 					<hkparam name="childShape">#0179</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="translation">(-0.000000 0.000000 0.844112 0.000000)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0177" class="hkpRigidBody" signature="0x75f8d805">
-			
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="collidable">
 				<hkobject>
 					<hkparam name="shape">#0178</hkparam>
 					<hkparam name="shapeKey">4294967295</hkparam>
-					
-					
-					
 					<hkparam name="forceCollideOntoPpu">0</hkparam>
-					
 					<hkparam name="broadPhaseHandle">
 						<hkobject>
-							
 							<hkparam name="type">1</hkparam>
-							
 							<hkparam name="objectQualityType">4</hkparam>
 							<hkparam name="collisionFilterInfo">71264</hkparam>
 						</hkobject>
 					</hkparam>
-					
 					<hkparam name="allowedPenetrationDepth">0.100000</hkparam>
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="multiThreadCheck">
 				<hkobject>
-					
-					
-					
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="name">Ragdoll_L Foot Rock 1</hkparam>
 			<hkparam name="properties" numelements="0"></hkparam>
-			
 			<hkparam name="material">
 				<hkobject>
 					<hkparam name="responseType">RESPONSE_SIMPLE_CONTACT</hkparam>
@@ -3213,32 +2648,21 @@
 					<hkparam name="restitution">0.800000</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="damageMultiplier">1.000000</hkparam>
-			
-			
 			<hkparam name="storageIndex">65535</hkparam>
 			<hkparam name="contactPointCallbackDelay">65535</hkparam>
-			
-			
-			
-			
 			<hkparam name="autoRemoveLevel">0</hkparam>
 			<hkparam name="numShapeKeysInContactPointProperties">0</hkparam>
 			<hkparam name="responseModifierFlags">0</hkparam>
 			<hkparam name="uid">4294967295</hkparam>
 			<hkparam name="spuCollisionCallback">
 				<hkobject>
-					
-					
 					<hkparam name="eventFilter">3</hkparam>
 					<hkparam name="userFilter">1</hkparam>
 				</hkobject>
 			</hkparam>
 			<hkparam name="motion">
 				<hkobject>
-					
-					
 					<hkparam name="type">MOTION_SPHERE_INERTIA</hkparam>
 					<hkparam name="deactivationIntegrateCounter">15</hkparam>
 					<hkparam name="deactivationNumInactiveFrames">49152 49152</hkparam>
@@ -3274,33 +2698,20 @@
 					<hkparam name="gravityFactor">1.000000</hkparam>
 				</hkobject>
 			</hkparam>
-			
-			
 			<hkparam name="localFrame">null</hkparam>
-			
 			<hkparam name="npData">0</hkparam>
 		</hkobject>
-
 		<hkobject name="#0176" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0175</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0177 #0169</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_L Foot Rock 1</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0180" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -3388,70 +2799,44 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0184" class="hkpBoxShape" signature="0x3444d2d5">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="halfExtents">(2.531999 1.956600 4.135698 1.956600)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0183" class="hkpConvexTranslateShape" signature="0x5ba0a5f7">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="childShape">
 				<hkobject>
 					<hkparam name="childShape">#0184</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="translation">(-0.000001 0.000001 4.095696 0.000000)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0182" class="hkpRigidBody" signature="0x75f8d805">
-			
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="collidable">
 				<hkobject>
 					<hkparam name="shape">#0183</hkparam>
 					<hkparam name="shapeKey">4294967295</hkparam>
-					
-					
-					
 					<hkparam name="forceCollideOntoPpu">0</hkparam>
-					
 					<hkparam name="broadPhaseHandle">
 						<hkobject>
-							
 							<hkparam name="type">1</hkparam>
-							
 							<hkparam name="objectQualityType">4</hkparam>
 							<hkparam name="collisionFilterInfo">71232</hkparam>
 						</hkobject>
 					</hkparam>
-					
 					<hkparam name="allowedPenetrationDepth">0.100000</hkparam>
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="multiThreadCheck">
 				<hkobject>
-					
-					
-					
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="name">Ragdoll_L Foot Rock 3</hkparam>
 			<hkparam name="properties" numelements="0"></hkparam>
-			
 			<hkparam name="material">
 				<hkobject>
 					<hkparam name="responseType">RESPONSE_SIMPLE_CONTACT</hkparam>
@@ -3460,32 +2845,21 @@
 					<hkparam name="restitution">0.800000</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="damageMultiplier">1.000000</hkparam>
-			
-			
 			<hkparam name="storageIndex">65535</hkparam>
 			<hkparam name="contactPointCallbackDelay">65535</hkparam>
-			
-			
-			
-			
 			<hkparam name="autoRemoveLevel">0</hkparam>
 			<hkparam name="numShapeKeysInContactPointProperties">0</hkparam>
 			<hkparam name="responseModifierFlags">0</hkparam>
 			<hkparam name="uid">4294967295</hkparam>
 			<hkparam name="spuCollisionCallback">
 				<hkobject>
-					
-					
 					<hkparam name="eventFilter">3</hkparam>
 					<hkparam name="userFilter">1</hkparam>
 				</hkobject>
 			</hkparam>
 			<hkparam name="motion">
 				<hkobject>
-					
-					
 					<hkparam name="type">MOTION_BOX_INERTIA</hkparam>
 					<hkparam name="deactivationIntegrateCounter">15</hkparam>
 					<hkparam name="deactivationNumInactiveFrames">49152 49152</hkparam>
@@ -3521,33 +2895,20 @@
 					<hkparam name="gravityFactor">1.000000</hkparam>
 				</hkobject>
 			</hkparam>
-			
-			
 			<hkparam name="localFrame">null</hkparam>
-			
 			<hkparam name="npData">0</hkparam>
 		</hkobject>
-
 		<hkobject name="#0181" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0180</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0182 #0169</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_L Foot Rock 3</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0185" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -3635,70 +2996,44 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0189" class="hkpBoxShape" signature="0x3444d2d5">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="halfExtents">(6.133079 6.866538 15.919958 6.133079)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0188" class="hkpConvexTranslateShape" signature="0x5ba0a5f7">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="childShape">
 				<hkobject>
 					<hkparam name="childShape">#0189</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="translation">(0.000001 -0.502579 -0.916391 0.000000)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0187" class="hkpRigidBody" signature="0x75f8d805">
-			
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="collidable">
 				<hkobject>
 					<hkparam name="shape">#0188</hkparam>
 					<hkparam name="shapeKey">4294967295</hkparam>
-					
-					
-					
 					<hkparam name="forceCollideOntoPpu">0</hkparam>
-					
 					<hkparam name="broadPhaseHandle">
 						<hkobject>
-							
 							<hkparam name="type">1</hkparam>
-							
 							<hkparam name="objectQualityType">4</hkparam>
 							<hkparam name="collisionFilterInfo">67712</hkparam>
 						</hkobject>
 					</hkparam>
-					
 					<hkparam name="allowedPenetrationDepth">0.100000</hkparam>
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="multiThreadCheck">
 				<hkobject>
-					
-					
-					
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="name">Ragdoll_R Calf</hkparam>
 			<hkparam name="properties" numelements="0"></hkparam>
-			
 			<hkparam name="material">
 				<hkobject>
 					<hkparam name="responseType">RESPONSE_SIMPLE_CONTACT</hkparam>
@@ -3707,32 +3042,21 @@
 					<hkparam name="restitution">0.800000</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="damageMultiplier">1.000000</hkparam>
-			
-			
 			<hkparam name="storageIndex">65535</hkparam>
 			<hkparam name="contactPointCallbackDelay">65535</hkparam>
-			
-			
-			
-			
 			<hkparam name="autoRemoveLevel">0</hkparam>
 			<hkparam name="numShapeKeysInContactPointProperties">0</hkparam>
 			<hkparam name="responseModifierFlags">0</hkparam>
 			<hkparam name="uid">4294967295</hkparam>
 			<hkparam name="spuCollisionCallback">
 				<hkobject>
-					
-					
 					<hkparam name="eventFilter">3</hkparam>
 					<hkparam name="userFilter">1</hkparam>
 				</hkobject>
 			</hkparam>
 			<hkparam name="motion">
 				<hkobject>
-					
-					
 					<hkparam name="type">MOTION_BOX_INERTIA</hkparam>
 					<hkparam name="deactivationIntegrateCounter">15</hkparam>
 					<hkparam name="deactivationNumInactiveFrames">49152 49152</hkparam>
@@ -3768,76 +3092,47 @@
 					<hkparam name="gravityFactor">1.000000</hkparam>
 				</hkobject>
 			</hkparam>
-			
-			
 			<hkparam name="localFrame">null</hkparam>
-			
 			<hkparam name="npData">0</hkparam>
 		</hkobject>
-
 		<hkobject name="#0192" class="hkpBoxShape" signature="0x3444d2d5">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="halfExtents">(1.834800 2.193320 5.144091 1.834800)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0191" class="hkpConvexTranslateShape" signature="0x5ba0a5f7">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="childShape">
 				<hkobject>
 					<hkparam name="childShape">#0192</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="translation">(0.332035 0.171359 0.446891 0.000000)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0190" class="hkpRigidBody" signature="0x75f8d805">
-			
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="collidable">
 				<hkobject>
 					<hkparam name="shape">#0191</hkparam>
 					<hkparam name="shapeKey">4294967295</hkparam>
-					
-					
-					
 					<hkparam name="forceCollideOntoPpu">0</hkparam>
-					
 					<hkparam name="broadPhaseHandle">
 						<hkobject>
-							
 							<hkparam name="type">1</hkparam>
-							
 							<hkparam name="objectQualityType">4</hkparam>
 							<hkparam name="collisionFilterInfo">70176</hkparam>
 						</hkobject>
 					</hkparam>
-					
 					<hkparam name="allowedPenetrationDepth">0.100000</hkparam>
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="multiThreadCheck">
 				<hkobject>
-					
-					
-					
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="name">Ragdoll_R Foot Rock 2</hkparam>
 			<hkparam name="properties" numelements="0"></hkparam>
-			
 			<hkparam name="material">
 				<hkobject>
 					<hkparam name="responseType">RESPONSE_SIMPLE_CONTACT</hkparam>
@@ -3846,32 +3141,21 @@
 					<hkparam name="restitution">0.800000</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="damageMultiplier">1.000000</hkparam>
-			
-			
 			<hkparam name="storageIndex">65535</hkparam>
 			<hkparam name="contactPointCallbackDelay">65535</hkparam>
-			
-			
-			
-			
 			<hkparam name="autoRemoveLevel">0</hkparam>
 			<hkparam name="numShapeKeysInContactPointProperties">0</hkparam>
 			<hkparam name="responseModifierFlags">0</hkparam>
 			<hkparam name="uid">4294967295</hkparam>
 			<hkparam name="spuCollisionCallback">
 				<hkobject>
-					
-					
 					<hkparam name="eventFilter">3</hkparam>
 					<hkparam name="userFilter">1</hkparam>
 				</hkobject>
 			</hkparam>
 			<hkparam name="motion">
 				<hkobject>
-					
-					
 					<hkparam name="type">MOTION_BOX_INERTIA</hkparam>
 					<hkparam name="deactivationIntegrateCounter">15</hkparam>
 					<hkparam name="deactivationNumInactiveFrames">49152 49152</hkparam>
@@ -3907,33 +3191,20 @@
 					<hkparam name="gravityFactor">1.000000</hkparam>
 				</hkobject>
 			</hkparam>
-			
-			
 			<hkparam name="localFrame">null</hkparam>
-			
 			<hkparam name="npData">0</hkparam>
 		</hkobject>
-
 		<hkobject name="#0186" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0185</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0190 #0187</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_R Foot Rock 2</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0193" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -4021,70 +3292,44 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0197" class="hkpBoxShape" signature="0x3444d2d5">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="halfExtents">(11.702524 9.505942 19.909401 9.505942)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0196" class="hkpConvexTranslateShape" signature="0x5ba0a5f7">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="childShape">
 				<hkobject>
 					<hkparam name="childShape">#0197</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="translation">(-2.647875 -2.033760 -0.377080 0.000000)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0195" class="hkpRigidBody" signature="0x75f8d805">
-			
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="collidable">
 				<hkobject>
 					<hkparam name="shape">#0196</hkparam>
 					<hkparam name="shapeKey">4294967295</hkparam>
-					
-					
-					
 					<hkparam name="forceCollideOntoPpu">0</hkparam>
-					
 					<hkparam name="broadPhaseHandle">
 						<hkobject>
-							
 							<hkparam name="type">1</hkparam>
-							
 							<hkparam name="objectQualityType">4</hkparam>
 							<hkparam name="collisionFilterInfo">68896</hkparam>
 						</hkobject>
 					</hkparam>
-					
 					<hkparam name="allowedPenetrationDepth">0.100000</hkparam>
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="multiThreadCheck">
 				<hkobject>
-					
-					
-					
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="name">Ragdoll_R Arm</hkparam>
 			<hkparam name="properties" numelements="0"></hkparam>
-			
 			<hkparam name="material">
 				<hkobject>
 					<hkparam name="responseType">RESPONSE_SIMPLE_CONTACT</hkparam>
@@ -4093,32 +3338,21 @@
 					<hkparam name="restitution">0.800000</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="damageMultiplier">1.000000</hkparam>
-			
-			
 			<hkparam name="storageIndex">65535</hkparam>
 			<hkparam name="contactPointCallbackDelay">65535</hkparam>
-			
-			
-			
-			
 			<hkparam name="autoRemoveLevel">0</hkparam>
 			<hkparam name="numShapeKeysInContactPointProperties">0</hkparam>
 			<hkparam name="responseModifierFlags">0</hkparam>
 			<hkparam name="uid">4294967295</hkparam>
 			<hkparam name="spuCollisionCallback">
 				<hkobject>
-					
-					
 					<hkparam name="eventFilter">3</hkparam>
 					<hkparam name="userFilter">1</hkparam>
 				</hkobject>
 			</hkparam>
 			<hkparam name="motion">
 				<hkobject>
-					
-					
 					<hkparam name="type">MOTION_BOX_INERTIA</hkparam>
 					<hkparam name="deactivationIntegrateCounter">15</hkparam>
 					<hkparam name="deactivationNumInactiveFrames">49152 49152</hkparam>
@@ -4154,33 +3388,20 @@
 					<hkparam name="gravityFactor">1.000000</hkparam>
 				</hkobject>
 			</hkparam>
-			
-			
 			<hkparam name="localFrame">null</hkparam>
-			
 			<hkparam name="npData">0</hkparam>
 		</hkobject>
-
 		<hkobject name="#0194" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0193</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0151 #0195</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_R Hand</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0198" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -4268,70 +3489,44 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0202" class="hkpBoxShape" signature="0x3444d2d5">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="halfExtents">(2.754742 2.190071 6.196127 2.190071)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0201" class="hkpConvexTranslateShape" signature="0x5ba0a5f7">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="childShape">
 				<hkobject>
 					<hkparam name="childShape">#0202</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="translation">(0.252692 0.175958 0.366528 0.000000)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0200" class="hkpRigidBody" signature="0x75f8d805">
-			
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="collidable">
 				<hkobject>
 					<hkparam name="shape">#0201</hkparam>
 					<hkparam name="shapeKey">4294967295</hkparam>
-					
-					
-					
 					<hkparam name="forceCollideOntoPpu">0</hkparam>
-					
 					<hkparam name="broadPhaseHandle">
 						<hkobject>
-							
 							<hkparam name="type">1</hkparam>
-							
 							<hkparam name="objectQualityType">4</hkparam>
 							<hkparam name="collisionFilterInfo">70112</hkparam>
 						</hkobject>
 					</hkparam>
-					
 					<hkparam name="allowedPenetrationDepth">0.100000</hkparam>
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="multiThreadCheck">
 				<hkobject>
-					
-					
-					
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="name">Ragdoll_R Foot Rock 1</hkparam>
 			<hkparam name="properties" numelements="0"></hkparam>
-			
 			<hkparam name="material">
 				<hkobject>
 					<hkparam name="responseType">RESPONSE_SIMPLE_CONTACT</hkparam>
@@ -4340,32 +3535,21 @@
 					<hkparam name="restitution">0.800000</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="damageMultiplier">1.000000</hkparam>
-			
-			
 			<hkparam name="storageIndex">65535</hkparam>
 			<hkparam name="contactPointCallbackDelay">65535</hkparam>
-			
-			
-			
-			
 			<hkparam name="autoRemoveLevel">0</hkparam>
 			<hkparam name="numShapeKeysInContactPointProperties">0</hkparam>
 			<hkparam name="responseModifierFlags">0</hkparam>
 			<hkparam name="uid">4294967295</hkparam>
 			<hkparam name="spuCollisionCallback">
 				<hkobject>
-					
-					
 					<hkparam name="eventFilter">3</hkparam>
 					<hkparam name="userFilter">1</hkparam>
 				</hkobject>
 			</hkparam>
 			<hkparam name="motion">
 				<hkobject>
-					
-					
 					<hkparam name="type">MOTION_BOX_INERTIA</hkparam>
 					<hkparam name="deactivationIntegrateCounter">15</hkparam>
 					<hkparam name="deactivationNumInactiveFrames">49152 49152</hkparam>
@@ -4401,33 +3585,20 @@
 					<hkparam name="gravityFactor">1.000000</hkparam>
 				</hkobject>
 			</hkparam>
-			
-			
 			<hkparam name="localFrame">null</hkparam>
-			
 			<hkparam name="npData">0</hkparam>
 		</hkobject>
-
 		<hkobject name="#0199" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0198</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0200 #0187</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_R Foot Rock 1</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0203" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -4515,70 +3686,44 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0207" class="hkpBoxShape" signature="0x3444d2d5">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="halfExtents">(8.642541 6.972740 18.178736 6.972740)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0206" class="hkpConvexTranslateShape" signature="0x5ba0a5f7">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="childShape">
 				<hkobject>
 					<hkparam name="childShape">#0207</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="translation">(-0.533613 -0.000002 -0.907620 0.000000)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0205" class="hkpRigidBody" signature="0x75f8d805">
-			
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="collidable">
 				<hkobject>
 					<hkparam name="shape">#0206</hkparam>
 					<hkparam name="shapeKey">4294967295</hkparam>
-					
-					
-					
 					<hkparam name="forceCollideOntoPpu">0</hkparam>
-					
 					<hkparam name="broadPhaseHandle">
 						<hkobject>
-							
 							<hkparam name="type">1</hkparam>
-							
 							<hkparam name="objectQualityType">4</hkparam>
 							<hkparam name="collisionFilterInfo">68864</hkparam>
 						</hkobject>
 					</hkparam>
-					
 					<hkparam name="allowedPenetrationDepth">0.100000</hkparam>
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="multiThreadCheck">
 				<hkobject>
-					
-					
-					
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="name">Ragdoll_L Arm</hkparam>
 			<hkparam name="properties" numelements="0"></hkparam>
-			
 			<hkparam name="material">
 				<hkobject>
 					<hkparam name="responseType">RESPONSE_SIMPLE_CONTACT</hkparam>
@@ -4587,32 +3732,21 @@
 					<hkparam name="restitution">0.800000</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="damageMultiplier">1.000000</hkparam>
-			
-			
 			<hkparam name="storageIndex">65535</hkparam>
 			<hkparam name="contactPointCallbackDelay">65535</hkparam>
-			
-			
-			
-			
 			<hkparam name="autoRemoveLevel">0</hkparam>
 			<hkparam name="numShapeKeysInContactPointProperties">0</hkparam>
 			<hkparam name="responseModifierFlags">0</hkparam>
 			<hkparam name="uid">4294967295</hkparam>
 			<hkparam name="spuCollisionCallback">
 				<hkobject>
-					
-					
 					<hkparam name="eventFilter">3</hkparam>
 					<hkparam name="userFilter">1</hkparam>
 				</hkobject>
 			</hkparam>
 			<hkparam name="motion">
 				<hkobject>
-					
-					
 					<hkparam name="type">MOTION_BOX_INERTIA</hkparam>
 					<hkparam name="deactivationIntegrateCounter">15</hkparam>
 					<hkparam name="deactivationNumInactiveFrames">49152 49152</hkparam>
@@ -4648,33 +3782,20 @@
 					<hkparam name="gravityFactor">1.000000</hkparam>
 				</hkobject>
 			</hkparam>
-			
-			
 			<hkparam name="localFrame">null</hkparam>
-			
 			<hkparam name="npData">0</hkparam>
 		</hkobject>
-
 		<hkobject name="#0204" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0203</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0128 #0205</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_L Hand</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0208" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -4762,70 +3883,44 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0212" class="hkpBoxShape" signature="0x3444d2d5">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="halfExtents">(18.503119 22.659906 38.418152 18.503119)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0211" class="hkpConvexTranslateShape" signature="0x5ba0a5f7">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="childShape">
 				<hkobject>
 					<hkparam name="childShape">#0212</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="translation">(6.205074 2.867066 5.986655 0.000000)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0210" class="hkpRigidBody" signature="0x75f8d805">
-			
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="collidable">
 				<hkobject>
 					<hkparam name="shape">#0211</hkparam>
 					<hkparam name="shapeKey">4294967295</hkparam>
-					
-					
-					
 					<hkparam name="forceCollideOntoPpu">0</hkparam>
-					
 					<hkparam name="broadPhaseHandle">
 						<hkobject>
-							
 							<hkparam name="type">1</hkparam>
-							
 							<hkparam name="objectQualityType">4</hkparam>
 							<hkparam name="collisionFilterInfo">66656</hkparam>
 						</hkobject>
 					</hkparam>
-					
 					<hkparam name="allowedPenetrationDepth">0.100000</hkparam>
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="multiThreadCheck">
 				<hkobject>
-					
-					
-					
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="name">Ragdoll_Torso Main</hkparam>
 			<hkparam name="properties" numelements="0"></hkparam>
-			
 			<hkparam name="material">
 				<hkobject>
 					<hkparam name="responseType">RESPONSE_SIMPLE_CONTACT</hkparam>
@@ -4834,32 +3929,21 @@
 					<hkparam name="restitution">0.500000</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="damageMultiplier">1.000000</hkparam>
-			
-			
 			<hkparam name="storageIndex">65535</hkparam>
 			<hkparam name="contactPointCallbackDelay">65535</hkparam>
-			
-			
-			
-			
 			<hkparam name="autoRemoveLevel">0</hkparam>
 			<hkparam name="numShapeKeysInContactPointProperties">0</hkparam>
 			<hkparam name="responseModifierFlags">0</hkparam>
 			<hkparam name="uid">4294967295</hkparam>
 			<hkparam name="spuCollisionCallback">
 				<hkobject>
-					
-					
 					<hkparam name="eventFilter">3</hkparam>
 					<hkparam name="userFilter">1</hkparam>
 				</hkobject>
 			</hkparam>
 			<hkparam name="motion">
 				<hkobject>
-					
-					
 					<hkparam name="type">MOTION_BOX_INERTIA</hkparam>
 					<hkparam name="deactivationIntegrateCounter">15</hkparam>
 					<hkparam name="deactivationNumInactiveFrames">49152 49152</hkparam>
@@ -4895,76 +3979,47 @@
 					<hkparam name="gravityFactor">1.000000</hkparam>
 				</hkobject>
 			</hkparam>
-			
-			
 			<hkparam name="localFrame">null</hkparam>
-			
 			<hkparam name="npData">0</hkparam>
 		</hkobject>
-
 		<hkobject name="#0215" class="hkpBoxShape" signature="0x3444d2d5">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="halfExtents">(1.818000 2.018199 2.303100 1.818000)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0214" class="hkpConvexTranslateShape" signature="0x5ba0a5f7">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="childShape">
 				<hkobject>
 					<hkparam name="childShape">#0215</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="translation">(-0.000000 0.000004 0.659632 0.000000)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0213" class="hkpRigidBody" signature="0x75f8d805">
-			
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="collidable">
 				<hkobject>
 					<hkparam name="shape">#0214</hkparam>
 					<hkparam name="shapeKey">4294967295</hkparam>
-					
-					
-					
 					<hkparam name="forceCollideOntoPpu">0</hkparam>
-					
 					<hkparam name="broadPhaseHandle">
 						<hkobject>
-							
 							<hkparam name="type">1</hkparam>
-							
 							<hkparam name="objectQualityType">4</hkparam>
 							<hkparam name="collisionFilterInfo">69024</hkparam>
 						</hkobject>
 					</hkparam>
-					
 					<hkparam name="allowedPenetrationDepth">0.100000</hkparam>
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="multiThreadCheck">
 				<hkobject>
-					
-					
-					
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="name">Ragdoll_Torso Rock 2</hkparam>
 			<hkparam name="properties" numelements="0"></hkparam>
-			
 			<hkparam name="material">
 				<hkobject>
 					<hkparam name="responseType">RESPONSE_SIMPLE_CONTACT</hkparam>
@@ -4973,32 +4028,21 @@
 					<hkparam name="restitution">0.800000</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="damageMultiplier">1.000000</hkparam>
-			
-			
 			<hkparam name="storageIndex">65535</hkparam>
 			<hkparam name="contactPointCallbackDelay">65535</hkparam>
-			
-			
-			
-			
 			<hkparam name="autoRemoveLevel">0</hkparam>
 			<hkparam name="numShapeKeysInContactPointProperties">0</hkparam>
 			<hkparam name="responseModifierFlags">0</hkparam>
 			<hkparam name="uid">4294967295</hkparam>
 			<hkparam name="spuCollisionCallback">
 				<hkobject>
-					
-					
 					<hkparam name="eventFilter">3</hkparam>
 					<hkparam name="userFilter">1</hkparam>
 				</hkobject>
 			</hkparam>
 			<hkparam name="motion">
 				<hkobject>
-					
-					
 					<hkparam name="type">MOTION_BOX_INERTIA</hkparam>
 					<hkparam name="deactivationIntegrateCounter">15</hkparam>
 					<hkparam name="deactivationNumInactiveFrames">49152 49152</hkparam>
@@ -5034,33 +4078,20 @@
 					<hkparam name="gravityFactor">1.000000</hkparam>
 				</hkobject>
 			</hkparam>
-			
-			
 			<hkparam name="localFrame">null</hkparam>
-			
 			<hkparam name="npData">0</hkparam>
 		</hkobject>
-
 		<hkobject name="#0209" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0208</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0213 #0210</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_Torso Rock 2</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0216" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -5148,70 +4179,44 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0220" class="hkpBoxShape" signature="0x3444d2d5">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="halfExtents">(2.498400 2.126000 2.841176 2.126000)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0219" class="hkpConvexTranslateShape" signature="0x5ba0a5f7">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="childShape">
 				<hkobject>
 					<hkparam name="childShape">#0220</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="translation">(-0.059706 -0.000003 0.646190 0.000000)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0218" class="hkpRigidBody" signature="0x75f8d805">
-			
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="collidable">
 				<hkobject>
 					<hkparam name="shape">#0219</hkparam>
 					<hkparam name="shapeKey">4294967295</hkparam>
-					
-					
-					
 					<hkparam name="forceCollideOntoPpu">0</hkparam>
-					
 					<hkparam name="broadPhaseHandle">
 						<hkobject>
-							
 							<hkparam name="type">1</hkparam>
-							
 							<hkparam name="objectQualityType">4</hkparam>
 							<hkparam name="collisionFilterInfo">68992</hkparam>
 						</hkobject>
 					</hkparam>
-					
 					<hkparam name="allowedPenetrationDepth">0.100000</hkparam>
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="multiThreadCheck">
 				<hkobject>
-					
-					
-					
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="name">Ragdoll_Torso Rock 1</hkparam>
 			<hkparam name="properties" numelements="0"></hkparam>
-			
 			<hkparam name="material">
 				<hkobject>
 					<hkparam name="responseType">RESPONSE_SIMPLE_CONTACT</hkparam>
@@ -5220,32 +4225,21 @@
 					<hkparam name="restitution">0.800000</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="damageMultiplier">1.000000</hkparam>
-			
-			
 			<hkparam name="storageIndex">65535</hkparam>
 			<hkparam name="contactPointCallbackDelay">65535</hkparam>
-			
-			
-			
-			
 			<hkparam name="autoRemoveLevel">0</hkparam>
 			<hkparam name="numShapeKeysInContactPointProperties">0</hkparam>
 			<hkparam name="responseModifierFlags">0</hkparam>
 			<hkparam name="uid">4294967295</hkparam>
 			<hkparam name="spuCollisionCallback">
 				<hkobject>
-					
-					
 					<hkparam name="eventFilter">3</hkparam>
 					<hkparam name="userFilter">1</hkparam>
 				</hkobject>
 			</hkparam>
 			<hkparam name="motion">
 				<hkobject>
-					
-					
 					<hkparam name="type">MOTION_BOX_INERTIA</hkparam>
 					<hkparam name="deactivationIntegrateCounter">15</hkparam>
 					<hkparam name="deactivationNumInactiveFrames">49152 49152</hkparam>
@@ -5281,33 +4275,20 @@
 					<hkparam name="gravityFactor">1.000000</hkparam>
 				</hkobject>
 			</hkparam>
-			
-			
 			<hkparam name="localFrame">null</hkparam>
-			
 			<hkparam name="npData">0</hkparam>
 		</hkobject>
-
 		<hkobject name="#0217" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0216</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0218 #0210</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_Torso Rock 1</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0221" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -5395,70 +4376,44 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0225" class="hkpBoxShape" signature="0x3444d2d5">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="halfExtents">(17.731470 26.613840 22.742809 17.731470)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0224" class="hkpConvexTranslateShape" signature="0x5ba0a5f7">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="childShape">
 				<hkobject>
 					<hkparam name="childShape">#0225</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="translation">(0.223320 3.564397 3.319663 0.000000)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0223" class="hkpRigidBody" signature="0x75f8d805">
-			
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="collidable">
 				<hkobject>
 					<hkparam name="shape">#0224</hkparam>
 					<hkparam name="shapeKey">4294967295</hkparam>
-					
-					
-					
 					<hkparam name="forceCollideOntoPpu">0</hkparam>
-					
 					<hkparam name="broadPhaseHandle">
 						<hkobject>
-							
 							<hkparam name="type">1</hkparam>
-							
 							<hkparam name="objectQualityType">4</hkparam>
 							<hkparam name="collisionFilterInfo">68960</hkparam>
 						</hkobject>
 					</hkparam>
-					
 					<hkparam name="allowedPenetrationDepth">0.100000</hkparam>
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="multiThreadCheck">
 				<hkobject>
-					
-					
-					
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="name">Ragdoll_Torso R</hkparam>
 			<hkparam name="properties" numelements="0"></hkparam>
-			
 			<hkparam name="material">
 				<hkobject>
 					<hkparam name="responseType">RESPONSE_SIMPLE_CONTACT</hkparam>
@@ -5467,32 +4422,21 @@
 					<hkparam name="restitution">0.800000</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="damageMultiplier">1.000000</hkparam>
-			
-			
 			<hkparam name="storageIndex">65535</hkparam>
 			<hkparam name="contactPointCallbackDelay">65535</hkparam>
-			
-			
-			
-			
 			<hkparam name="autoRemoveLevel">0</hkparam>
 			<hkparam name="numShapeKeysInContactPointProperties">0</hkparam>
 			<hkparam name="responseModifierFlags">0</hkparam>
 			<hkparam name="uid">4294967295</hkparam>
 			<hkparam name="spuCollisionCallback">
 				<hkobject>
-					
-					
 					<hkparam name="eventFilter">3</hkparam>
 					<hkparam name="userFilter">1</hkparam>
 				</hkobject>
 			</hkparam>
 			<hkparam name="motion">
 				<hkobject>
-					
-					
 					<hkparam name="type">MOTION_BOX_INERTIA</hkparam>
 					<hkparam name="deactivationIntegrateCounter">15</hkparam>
 					<hkparam name="deactivationNumInactiveFrames">49152 49152</hkparam>
@@ -5528,33 +4472,20 @@
 					<hkparam name="gravityFactor">1.000000</hkparam>
 				</hkobject>
 			</hkparam>
-			
-			
 			<hkparam name="localFrame">null</hkparam>
-			
 			<hkparam name="npData">0</hkparam>
 		</hkobject>
-
 		<hkobject name="#0222" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0221</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0223 #0210</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_Torso R</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0226" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -5642,70 +4573,44 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0230" class="hkpBoxShape" signature="0x3444d2d5">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="halfExtents">(19.494421 24.007397 23.956141 19.494421)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0229" class="hkpConvexTranslateShape" signature="0x5ba0a5f7">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="childShape">
 				<hkobject>
 					<hkparam name="childShape">#0230</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="translation">(0.790037 0.000002 -2.918980 0.000000)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0228" class="hkpRigidBody" signature="0x75f8d805">
-			
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="collidable">
 				<hkobject>
 					<hkparam name="shape">#0229</hkparam>
 					<hkparam name="shapeKey">4294967295</hkparam>
-					
-					
-					
 					<hkparam name="forceCollideOntoPpu">0</hkparam>
-					
 					<hkparam name="broadPhaseHandle">
 						<hkobject>
-							
 							<hkparam name="type">1</hkparam>
-							
 							<hkparam name="objectQualityType">4</hkparam>
 							<hkparam name="collisionFilterInfo">68928</hkparam>
 						</hkobject>
 					</hkparam>
-					
 					<hkparam name="allowedPenetrationDepth">0.100000</hkparam>
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="multiThreadCheck">
 				<hkobject>
-					
-					
-					
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="name">Ragdoll_Torso L</hkparam>
 			<hkparam name="properties" numelements="0"></hkparam>
-			
 			<hkparam name="material">
 				<hkobject>
 					<hkparam name="responseType">RESPONSE_SIMPLE_CONTACT</hkparam>
@@ -5714,32 +4619,21 @@
 					<hkparam name="restitution">0.800000</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="damageMultiplier">1.000000</hkparam>
-			
-			
 			<hkparam name="storageIndex">65535</hkparam>
 			<hkparam name="contactPointCallbackDelay">65535</hkparam>
-			
-			
-			
-			
 			<hkparam name="autoRemoveLevel">0</hkparam>
 			<hkparam name="numShapeKeysInContactPointProperties">0</hkparam>
 			<hkparam name="responseModifierFlags">0</hkparam>
 			<hkparam name="uid">4294967295</hkparam>
 			<hkparam name="spuCollisionCallback">
 				<hkobject>
-					
-					
 					<hkparam name="eventFilter">3</hkparam>
 					<hkparam name="userFilter">1</hkparam>
 				</hkobject>
 			</hkparam>
 			<hkparam name="motion">
 				<hkobject>
-					
-					
 					<hkparam name="type">MOTION_SPHERE_INERTIA</hkparam>
 					<hkparam name="deactivationIntegrateCounter">15</hkparam>
 					<hkparam name="deactivationNumInactiveFrames">49152 49152</hkparam>
@@ -5775,33 +4669,20 @@
 					<hkparam name="gravityFactor">1.000000</hkparam>
 				</hkobject>
 			</hkparam>
-			
-			
 			<hkparam name="localFrame">null</hkparam>
-			
 			<hkparam name="npData">0</hkparam>
 		</hkobject>
-
 		<hkobject name="#0227" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0226</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0228 #0210</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_Torso L</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0231" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -5889,27 +4770,17 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0232" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0231</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0195 #0210</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_R Arm</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0233" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -5997,27 +4868,17 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0234" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0233</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0205 #0210</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_L Arm</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0235" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -6105,70 +4966,44 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0239" class="hkpBoxShape" signature="0x3444d2d5">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="halfExtents">(3.532692 11.396029 4.833936 3.532692)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0238" class="hkpConvexTranslateShape" signature="0x5ba0a5f7">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="childShape">
 				<hkobject>
 					<hkparam name="childShape">#0239</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="translation">(0.000000 -2.079763 1.415583 0.000000)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0237" class="hkpRigidBody" signature="0x75f8d805">
-			
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="collidable">
 				<hkobject>
 					<hkparam name="shape">#0238</hkparam>
 					<hkparam name="shapeKey">4294967295</hkparam>
-					
-					
-					
 					<hkparam name="forceCollideOntoPpu">0</hkparam>
-					
 					<hkparam name="broadPhaseHandle">
 						<hkobject>
-							
 							<hkparam name="type">1</hkparam>
-							
 							<hkparam name="objectQualityType">4</hkparam>
 							<hkparam name="collisionFilterInfo">68832</hkparam>
 						</hkobject>
 					</hkparam>
-					
 					<hkparam name="allowedPenetrationDepth">0.100000</hkparam>
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="multiThreadCheck">
 				<hkobject>
-					
-					
-					
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="name">Ragdoll_Head</hkparam>
 			<hkparam name="properties" numelements="0"></hkparam>
-			
 			<hkparam name="material">
 				<hkobject>
 					<hkparam name="responseType">RESPONSE_SIMPLE_CONTACT</hkparam>
@@ -6177,32 +5012,21 @@
 					<hkparam name="restitution">0.800000</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="damageMultiplier">1.000000</hkparam>
-			
-			
 			<hkparam name="storageIndex">65535</hkparam>
 			<hkparam name="contactPointCallbackDelay">65535</hkparam>
-			
-			
-			
-			
 			<hkparam name="autoRemoveLevel">0</hkparam>
 			<hkparam name="numShapeKeysInContactPointProperties">0</hkparam>
 			<hkparam name="responseModifierFlags">0</hkparam>
 			<hkparam name="uid">4294967295</hkparam>
 			<hkparam name="spuCollisionCallback">
 				<hkobject>
-					
-					
 					<hkparam name="eventFilter">3</hkparam>
 					<hkparam name="userFilter">1</hkparam>
 				</hkobject>
 			</hkparam>
 			<hkparam name="motion">
 				<hkobject>
-					
-					
 					<hkparam name="type">MOTION_BOX_INERTIA</hkparam>
 					<hkparam name="deactivationIntegrateCounter">15</hkparam>
 					<hkparam name="deactivationNumInactiveFrames">49152 49152</hkparam>
@@ -6238,33 +5062,20 @@
 					<hkparam name="gravityFactor">1.000000</hkparam>
 				</hkobject>
 			</hkparam>
-			
-			
 			<hkparam name="localFrame">null</hkparam>
-			
 			<hkparam name="npData">0</hkparam>
 		</hkobject>
-
 		<hkobject name="#0236" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0235</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0237 #0210</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_Head</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0240" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -6352,70 +5163,44 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0244" class="hkpBoxShape" signature="0x3444d2d5">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="halfExtents">(9.002675 7.866712 20.840418 7.866712)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0243" class="hkpConvexTranslateShape" signature="0x5ba0a5f7">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="childShape">
 				<hkobject>
 					<hkparam name="childShape">#0244</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="translation">(0.146601 1.089589 1.772028 0.000000)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0242" class="hkpRigidBody" signature="0x75f8d805">
-			
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="collidable">
 				<hkobject>
 					<hkparam name="shape">#0243</hkparam>
 					<hkparam name="shapeKey">4294967295</hkparam>
-					
-					
-					
 					<hkparam name="forceCollideOntoPpu">0</hkparam>
-					
 					<hkparam name="broadPhaseHandle">
 						<hkobject>
-							
 							<hkparam name="type">1</hkparam>
-							
 							<hkparam name="objectQualityType">4</hkparam>
 							<hkparam name="collisionFilterInfo">66752</hkparam>
 						</hkobject>
 					</hkparam>
-					
 					<hkparam name="allowedPenetrationDepth">0.100000</hkparam>
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="multiThreadCheck">
 				<hkobject>
-					
-					
-					
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="name">Ragdoll_L Leg</hkparam>
 			<hkparam name="properties" numelements="0"></hkparam>
-			
 			<hkparam name="material">
 				<hkobject>
 					<hkparam name="responseType">RESPONSE_SIMPLE_CONTACT</hkparam>
@@ -6424,32 +5209,21 @@
 					<hkparam name="restitution">0.800000</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="damageMultiplier">1.000000</hkparam>
-			
-			
 			<hkparam name="storageIndex">65535</hkparam>
 			<hkparam name="contactPointCallbackDelay">65535</hkparam>
-			
-			
-			
-			
 			<hkparam name="autoRemoveLevel">0</hkparam>
 			<hkparam name="numShapeKeysInContactPointProperties">0</hkparam>
 			<hkparam name="responseModifierFlags">0</hkparam>
 			<hkparam name="uid">4294967295</hkparam>
 			<hkparam name="spuCollisionCallback">
 				<hkobject>
-					
-					
 					<hkparam name="eventFilter">3</hkparam>
 					<hkparam name="userFilter">1</hkparam>
 				</hkobject>
 			</hkparam>
 			<hkparam name="motion">
 				<hkobject>
-					
-					
 					<hkparam name="type">MOTION_BOX_INERTIA</hkparam>
 					<hkparam name="deactivationIntegrateCounter">15</hkparam>
 					<hkparam name="deactivationNumInactiveFrames">49152 49152</hkparam>
@@ -6485,33 +5259,20 @@
 					<hkparam name="gravityFactor">1.000000</hkparam>
 				</hkobject>
 			</hkparam>
-			
-			
 			<hkparam name="localFrame">null</hkparam>
-			
 			<hkparam name="npData">0</hkparam>
 		</hkobject>
-
 		<hkobject name="#0241" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0240</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0169 #0242</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_L Calf</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0245" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -6599,70 +5360,44 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0249" class="hkpBoxShape" signature="0x3444d2d5">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="halfExtents">(6.500926 8.577060 16.267042 6.500926)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0248" class="hkpConvexTranslateShape" signature="0x5ba0a5f7">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">0.030000</hkparam>
 			<hkparam name="childShape">
 				<hkobject>
 					<hkparam name="childShape">#0249</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="translation">(1.082544 -0.000006 -1.059065 0.000000)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0247" class="hkpRigidBody" signature="0x75f8d805">
-			
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="collidable">
 				<hkobject>
 					<hkparam name="shape">#0248</hkparam>
 					<hkparam name="shapeKey">4294967295</hkparam>
-					
-					
-					
 					<hkparam name="forceCollideOntoPpu">0</hkparam>
-					
 					<hkparam name="broadPhaseHandle">
 						<hkobject>
-							
 							<hkparam name="type">1</hkparam>
-							
 							<hkparam name="objectQualityType">4</hkparam>
 							<hkparam name="collisionFilterInfo">66624</hkparam>
 						</hkobject>
 					</hkparam>
-					
 					<hkparam name="allowedPenetrationDepth">0.100000</hkparam>
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="multiThreadCheck">
 				<hkobject>
-					
-					
-					
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="name">Ragdoll_R Leg</hkparam>
 			<hkparam name="properties" numelements="0"></hkparam>
-			
 			<hkparam name="material">
 				<hkobject>
 					<hkparam name="responseType">RESPONSE_SIMPLE_CONTACT</hkparam>
@@ -6671,32 +5406,21 @@
 					<hkparam name="restitution">0.800000</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="damageMultiplier">1.000000</hkparam>
-			
-			
 			<hkparam name="storageIndex">65535</hkparam>
 			<hkparam name="contactPointCallbackDelay">65535</hkparam>
-			
-			
-			
-			
 			<hkparam name="autoRemoveLevel">0</hkparam>
 			<hkparam name="numShapeKeysInContactPointProperties">0</hkparam>
 			<hkparam name="responseModifierFlags">0</hkparam>
 			<hkparam name="uid">4294967295</hkparam>
 			<hkparam name="spuCollisionCallback">
 				<hkobject>
-					
-					
 					<hkparam name="eventFilter">3</hkparam>
 					<hkparam name="userFilter">1</hkparam>
 				</hkobject>
 			</hkparam>
 			<hkparam name="motion">
 				<hkobject>
-					
-					
 					<hkparam name="type">MOTION_BOX_INERTIA</hkparam>
 					<hkparam name="deactivationIntegrateCounter">15</hkparam>
 					<hkparam name="deactivationNumInactiveFrames">49152 49152</hkparam>
@@ -6732,33 +5456,20 @@
 					<hkparam name="gravityFactor">1.000000</hkparam>
 				</hkobject>
 			</hkparam>
-			
-			
 			<hkparam name="localFrame">null</hkparam>
-			
 			<hkparam name="npData">0</hkparam>
 		</hkobject>
-
 		<hkobject name="#0246" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0245</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0187 #0247</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_R Calf</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0250" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -6846,56 +5557,35 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0253" class="hkpCapsuleShape" signature="0xdd0b1fd3">
-			
-			
 			<hkparam name="userData">0</hkparam>
-			
 			<hkparam name="radius">13.502256</hkparam>
 			<hkparam name="vertexA">(-1.992552 0.000000 1.947792 13.502256)</hkparam>
 			<hkparam name="vertexB">(2.849834 0.000000 1.947792 13.502256)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0252" class="hkpRigidBody" signature="0x75f8d805">
-			
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="collidable">
 				<hkobject>
 					<hkparam name="shape">#0253</hkparam>
 					<hkparam name="shapeKey">4294967295</hkparam>
-					
-					
-					
 					<hkparam name="forceCollideOntoPpu">0</hkparam>
-					
 					<hkparam name="broadPhaseHandle">
 						<hkobject>
-							
 							<hkparam name="type">1</hkparam>
-							
 							<hkparam name="objectQualityType">4</hkparam>
 							<hkparam name="collisionFilterInfo">65568</hkparam>
 						</hkobject>
 					</hkparam>
-					
 					<hkparam name="allowedPenetrationDepth">0.100000</hkparam>
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="multiThreadCheck">
 				<hkobject>
-					
-					
-					
-					
 				</hkobject>
 			</hkparam>
 			<hkparam name="name">Ragdoll_Pelvis</hkparam>
 			<hkparam name="properties" numelements="0"></hkparam>
-			
 			<hkparam name="material">
 				<hkobject>
 					<hkparam name="responseType">RESPONSE_SIMPLE_CONTACT</hkparam>
@@ -6904,32 +5594,21 @@
 					<hkparam name="restitution">0.500000</hkparam>
 				</hkobject>
 			</hkparam>
-			
 			<hkparam name="damageMultiplier">1.000000</hkparam>
-			
-			
 			<hkparam name="storageIndex">65535</hkparam>
 			<hkparam name="contactPointCallbackDelay">65535</hkparam>
-			
-			
-			
-			
 			<hkparam name="autoRemoveLevel">0</hkparam>
 			<hkparam name="numShapeKeysInContactPointProperties">0</hkparam>
 			<hkparam name="responseModifierFlags">0</hkparam>
 			<hkparam name="uid">4294967295</hkparam>
 			<hkparam name="spuCollisionCallback">
 				<hkobject>
-					
-					
 					<hkparam name="eventFilter">3</hkparam>
 					<hkparam name="userFilter">1</hkparam>
 				</hkobject>
 			</hkparam>
 			<hkparam name="motion">
 				<hkobject>
-					
-					
 					<hkparam name="type">MOTION_SPHERE_INERTIA</hkparam>
 					<hkparam name="deactivationIntegrateCounter">15</hkparam>
 					<hkparam name="deactivationNumInactiveFrames">49152 49152</hkparam>
@@ -6965,33 +5644,20 @@
 					<hkparam name="gravityFactor">1.000000</hkparam>
 				</hkobject>
 			</hkparam>
-			
-			
 			<hkparam name="localFrame">null</hkparam>
-			
 			<hkparam name="npData">0</hkparam>
 		</hkobject>
-
 		<hkobject name="#0251" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0250</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0210 #0252</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_Torso Main</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0254" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -7079,27 +5745,17 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0255" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0254</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0247 #0252</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_R Leg</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0256" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -7187,27 +5843,17 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0257" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0256</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0242 #0252</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_L Leg</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0258" class="hkaRagdollInstance" signature="0x154948e8">
-			
-			
 			<hkparam name="rigidBodies" numelements="27">
 				#0252 #0242 #0247 #0210 #0187 #0169 #0237 #0205 #0195 #0228 #0223 #0218 #0213 #0128 #0200 #0151
 				#0190 #0182 #0177 #0172 #0164 #0159 #0154 #0146 #0141 #0136 #0131
@@ -7222,10 +5868,7 @@
 			</hkparam>
 			<hkparam name="skeleton">#0123</hkparam>
 		</hkobject>
-
 		<hkobject name="#0259" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -7313,27 +5956,17 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0260" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0259</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0213 #0210</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_Torso Rock 2</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0261" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -7421,27 +6054,17 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0262" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0261</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0218 #0210</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_Torso Rock 1</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0263" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -7529,27 +6152,17 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0264" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0263</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0223 #0210</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_Torso R</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0265" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -7637,27 +6250,17 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0266" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0265</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0228 #0210</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_Torso L</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0267" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -7745,27 +6348,17 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0268" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0267</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0154 #0151</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_R Finger 3</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0269" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -7853,27 +6446,17 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0270" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0269</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0159 #0151</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_R Finger 2</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0271" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -7961,27 +6544,17 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0272" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0271</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0164 #0151</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_R Finger 1</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0273" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -8069,27 +6642,17 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0274" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0273</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0151 #0195</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_R Hand</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0275" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -8177,27 +6740,17 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0276" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0275</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0195 #0210</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_R Arm</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0277" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -8285,27 +6838,17 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0278" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0277</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0141 #0128</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_L Finger 4</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0279" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -8393,27 +6936,17 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0280" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0279</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0146 #0128</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_L Finger 3</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0281" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -8501,27 +7034,17 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0282" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0281</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0131 #0128</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_L Finger 2</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0283" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -8609,27 +7132,17 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0284" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0283</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0136 #0128</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_L Finger 1</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0285" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -8717,27 +7230,17 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0286" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0285</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0128 #0205</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_L Hand</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0287" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -8825,27 +7328,17 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0288" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0287</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0205 #0210</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_L Arm</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0289" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -8933,27 +7426,17 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0290" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0289</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0237 #0210</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_Head</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0291" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -9041,27 +7524,17 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0292" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0291</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0210 #0252</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_Torso Main</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0293" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -9149,27 +7622,17 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0294" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0293</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0190 #0187</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_R Foot Rock 2</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0295" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -9257,27 +7720,17 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0296" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0295</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0200 #0187</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_R Foot Rock 1</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0297" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -9365,27 +7818,17 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0298" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0297</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0187 #0247</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_R Calf</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0299" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -9473,27 +7916,17 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0300" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0299</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0247 #0252</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_R Leg</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0301" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -9581,27 +8014,17 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0302" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0301</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0182 #0169</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_L Foot Rock 3</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0303" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -9689,27 +8112,17 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0304" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0303</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0172 #0169</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_L Foot Rock 2</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0305" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -9797,27 +8210,17 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0306" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0305</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0177 #0169</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_L Foot Rock 1</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0307" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -9905,27 +8308,17 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0308" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0307</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0169 #0242</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_L Calf</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0309" class="hkpRagdollConstraintData" signature="0x8fb5dd29">
-			
-			
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="atoms">
 				<hkobject>
@@ -10013,27 +8406,17 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0310" class="hkpConstraintInstance" signature="0x34eba5f">
-			
-			
-			
 			<hkparam name="data">#0309</hkparam>
 			<hkparam name="constraintModifiers">null</hkparam>
 			<hkparam name="entities">#0242 #0252</hkparam>
 			<hkparam name="priority">PRIORITY_PSI</hkparam>
 			<hkparam name="wantRuntime">true</hkparam>
 			<hkparam name="destructionRemapInfo">ON_DESTRUCTION_REMAP</hkparam>
-			
 			<hkparam name="name">Ragdoll_L Leg</hkparam>
 			<hkparam name="userData">0</hkparam>
-			
-			
 		</hkobject>
-
 		<hkobject name="#0311" class="hkpPhysicsSystem" signature="0xff724c17">
-			
-			
 			<hkparam name="rigidBodies" numelements="27">
 				#0252 #0242 #0169 #0177 #0172 #0182 #0247 #0187 #0200 #0190 #0210 #0237 #0205 #0128 #0136 #0131
 				#0146 #0141 #0195 #0151 #0164 #0159 #0154 #0228 #0223 #0218 #0213
@@ -10048,19 +8431,13 @@
 			<hkparam name="userData">0</hkparam>
 			<hkparam name="active">true</hkparam>
 		</hkobject>
-
 		<hkobject name="#0312" class="hkpPhysicsData" signature="0xc2a461e4">
-			
-			
 			<hkparam name="worldCinfo">null</hkparam>
 			<hkparam name="systems" numelements="1">
 				#0311
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0313" class="hkpShapeInfo" signature="0xea7f1d08">
-			
-			
 			<hkparam name="shape">#0214</hkparam>
 			<hkparam name="isHierarchicalCompound">false</hkparam>
 			<hkparam name="hkdShapesCollected">false</hkparam>
@@ -10072,37 +8449,24 @@
 			</hkparam>
 			<hkparam name="transform">(1.000000 0.000000 -0.000000)(-0.000000 0.991033 -0.133615)(0.000000 0.133615 0.991033)(2.707297 -20.998268 101.709389)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0314" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0313</hkparam>
 			<hkparam name="name">hkpShapeInfo</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0315" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0213</hkparam>
 			<hkparam name="name">hkRigidBody</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0316" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">Ragdoll_Torso Rock 2</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="2">
 				#0315 #0314
 			</hkparam>
 			<hkparam name="children" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0317" class="hkpShapeInfo" signature="0xea7f1d08">
-			
-			
 			<hkparam name="shape">#0219</hkparam>
 			<hkparam name="isHierarchicalCompound">false</hkparam>
 			<hkparam name="hkdShapesCollected">false</hkparam>
@@ -10114,37 +8478,24 @@
 			</hkparam>
 			<hkparam name="transform">(1.000000 0.000000 -0.000000)(-0.000000 0.991033 -0.133615)(0.000000 0.133615 0.991033)(-1.829948 -23.189411 110.240036)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0318" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0317</hkparam>
 			<hkparam name="name">hkpShapeInfo</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0319" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0218</hkparam>
 			<hkparam name="name">hkRigidBody</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0320" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">Ragdoll_Torso Rock 1</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="2">
 				#0319 #0318
 			</hkparam>
 			<hkparam name="children" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0321" class="hkpShapeInfo" signature="0xea7f1d08">
-			
-			
 			<hkparam name="shape">#0224</hkparam>
 			<hkparam name="isHierarchicalCompound">false</hkparam>
 			<hkparam name="hkdShapesCollected">false</hkparam>
@@ -10156,37 +8507,24 @@
 			</hkparam>
 			<hkparam name="transform">(1.000000 0.000000 -0.000000)(-0.000000 0.991033 -0.133614)(0.000000 0.133614 0.991033)(16.955212 -1.338156 137.721313)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0322" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0321</hkparam>
 			<hkparam name="name">hkpShapeInfo</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0323" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0223</hkparam>
 			<hkparam name="name">hkRigidBody</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0324" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">Ragdoll_Torso R</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="2">
 				#0323 #0322
 			</hkparam>
 			<hkparam name="children" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0325" class="hkpShapeInfo" signature="0xea7f1d08">
-			
-			
 			<hkparam name="shape">#0229</hkparam>
 			<hkparam name="isHierarchicalCompound">false</hkparam>
 			<hkparam name="hkdShapesCollected">false</hkparam>
@@ -10198,37 +8536,24 @@
 			</hkparam>
 			<hkparam name="transform">(1.000000 0.000002 -0.000000)(-0.000002 0.991033 -0.133614)(0.000000 0.133614 0.991033)(-15.833060 -1.338157 130.973328)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0326" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0325</hkparam>
 			<hkparam name="name">hkpShapeInfo</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0327" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0228</hkparam>
 			<hkparam name="name">hkRigidBody</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0328" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">Ragdoll_Torso L</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="2">
 				#0327 #0326
 			</hkparam>
 			<hkparam name="children" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0329" class="hkpShapeInfo" signature="0xea7f1d08">
-			
-			
 			<hkparam name="shape">#0155</hkparam>
 			<hkparam name="isHierarchicalCompound">false</hkparam>
 			<hkparam name="hkdShapesCollected">false</hkparam>
@@ -10240,37 +8565,24 @@
 			</hkparam>
 			<hkparam name="transform">(0.199738 0.944776 0.259812)(0.979227 -0.183016 -0.087294)(-0.034924 0.271851 -0.961705)(50.925671 13.753646 52.638893)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0330" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0329</hkparam>
 			<hkparam name="name">hkpShapeInfo</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0331" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0154</hkparam>
 			<hkparam name="name">hkRigidBody</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0332" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">Ragdoll_R Finger 3</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="2">
 				#0331 #0330
 			</hkparam>
 			<hkparam name="children" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0333" class="hkpShapeInfo" signature="0xea7f1d08">
-			
-			
 			<hkparam name="shape">#0160</hkparam>
 			<hkparam name="isHierarchicalCompound">false</hkparam>
 			<hkparam name="hkdShapesCollected">false</hkparam>
@@ -10282,37 +8594,24 @@
 			</hkparam>
 			<hkparam name="transform">(-0.847103 0.528235 0.058176)(0.531298 0.839373 0.114783)(0.011801 0.128142 -0.991686)(45.904572 26.168032 56.657780)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0334" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0333</hkparam>
 			<hkparam name="name">hkpShapeInfo</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0335" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0159</hkparam>
 			<hkparam name="name">hkRigidBody</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0336" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">Ragdoll_R Finger 2</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="2">
 				#0335 #0334
 			</hkparam>
 			<hkparam name="children" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0337" class="hkpShapeInfo" signature="0xea7f1d08">
-			
-			
 			<hkparam name="shape">#0165</hkparam>
 			<hkparam name="isHierarchicalCompound">false</hkparam>
 			<hkparam name="hkdShapesCollected">false</hkparam>
@@ -10324,37 +8623,24 @@
 			</hkparam>
 			<hkparam name="transform">(0.125868 -0.964935 -0.230343)(-0.972344 -0.073951 -0.221536)(0.196734 0.251856 -0.947557)(32.513020 16.378826 52.942101)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0338" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0337</hkparam>
 			<hkparam name="name">hkpShapeInfo</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0339" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0164</hkparam>
 			<hkparam name="name">hkRigidBody</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0340" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">Ragdoll_R Finger 1</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="2">
 				#0339 #0338
 			</hkparam>
 			<hkparam name="children" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0341" class="hkpShapeInfo" signature="0xea7f1d08">
-			
-			
 			<hkparam name="shape">#0152</hkparam>
 			<hkparam name="isHierarchicalCompound">false</hkparam>
 			<hkparam name="hkdShapesCollected">false</hkparam>
@@ -10366,28 +8652,18 @@
 			</hkparam>
 			<hkparam name="transform">(-0.041048 0.926450 0.374172)(0.998803 0.048022 -0.009328)(-0.026610 0.373341 -0.927312)(42.754150 12.421166 67.059921)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0342" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0341</hkparam>
 			<hkparam name="name">hkpShapeInfo</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0343" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0151</hkparam>
 			<hkparam name="name">hkRigidBody</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0344" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">Ragdoll_R Hand</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="2">
 				#0343 #0342
 			</hkparam>
@@ -10395,10 +8671,7 @@
 				#0340 #0336 #0332
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0345" class="hkpShapeInfo" signature="0xea7f1d08">
-			
-			
 			<hkparam name="shape">#0196</hkparam>
 			<hkparam name="isHierarchicalCompound">false</hkparam>
 			<hkparam name="hkdShapesCollected">false</hkparam>
@@ -10410,28 +8683,18 @@
 			</hkparam>
 			<hkparam name="transform">(-0.996486 0.054515 -0.063581)(0.027919 0.931951 0.361509)(0.078962 0.358464 -0.930198)(41.070724 2.348093 92.995102)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0346" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0345</hkparam>
 			<hkparam name="name">hkpShapeInfo</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0347" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0195</hkparam>
 			<hkparam name="name">hkRigidBody</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0348" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">Ragdoll_R Arm</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="2">
 				#0347 #0346
 			</hkparam>
@@ -10439,10 +8702,7 @@
 				#0344
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0349" class="hkpShapeInfo" signature="0xea7f1d08">
-			
-			
 			<hkparam name="shape">#0142</hkparam>
 			<hkparam name="isHierarchicalCompound">false</hkparam>
 			<hkparam name="hkdShapesCollected">false</hkparam>
@@ -10454,37 +8714,24 @@
 			</hkparam>
 			<hkparam name="transform">(-0.721658 -0.688916 -0.067852)(-0.664558 0.662009 0.346564)(-0.193835 0.295193 -0.935569)(-56.260094 20.027321 61.664627)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0350" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0349</hkparam>
 			<hkparam name="name">hkpShapeInfo</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0351" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0141</hkparam>
 			<hkparam name="name">hkRigidBody</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0352" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">Ragdoll_L Finger 4</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="2">
 				#0351 #0350
 			</hkparam>
 			<hkparam name="children" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0353" class="hkpShapeInfo" signature="0xea7f1d08">
-			
-			
 			<hkparam name="shape">#0147</hkparam>
 			<hkparam name="isHierarchicalCompound">false</hkparam>
 			<hkparam name="hkdShapesCollected">false</hkparam>
@@ -10496,37 +8743,24 @@
 			</hkparam>
 			<hkparam name="transform">(-0.965748 -0.259092 0.014236)(-0.233085 0.890303 0.391194)(-0.114029 0.374476 -0.920198)(-49.817818 24.573009 59.748692)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0354" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0353</hkparam>
 			<hkparam name="name">hkpShapeInfo</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0355" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0146</hkparam>
 			<hkparam name="name">hkRigidBody</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0356" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">Ragdoll_L Finger 3</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="2">
 				#0355 #0354
 			</hkparam>
 			<hkparam name="children" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0357" class="hkpShapeInfo" signature="0xea7f1d08">
-			
-			
 			<hkparam name="shape">#0132</hkparam>
 			<hkparam name="isHierarchicalCompound">false</hkparam>
 			<hkparam name="hkdShapesCollected">false</hkparam>
@@ -10538,37 +8772,24 @@
 			</hkparam>
 			<hkparam name="transform">(-0.893636 0.355316 0.274163)(0.410464 0.894107 0.179142)(-0.181479 0.272622 -0.944850)(-40.437645 24.434826 60.584797)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0358" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0357</hkparam>
 			<hkparam name="name">hkpShapeInfo</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0359" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0131</hkparam>
 			<hkparam name="name">hkRigidBody</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0360" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">Ragdoll_L Finger 2</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="2">
 				#0359 #0358
 			</hkparam>
 			<hkparam name="children" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0361" class="hkpShapeInfo" signature="0xea7f1d08">
-			
-			
 			<hkparam name="shape">#0137</hkparam>
 			<hkparam name="isHierarchicalCompound">false</hkparam>
 			<hkparam name="hkdShapesCollected">false</hkparam>
@@ -10580,37 +8801,24 @@
 			</hkparam>
 			<hkparam name="transform">(0.927568 0.345262 0.142870)(0.369169 -0.905861 -0.207675)(0.057718 0.245376 -0.967708)(-37.450668 9.749826 59.894947)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0362" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0361</hkparam>
 			<hkparam name="name">hkpShapeInfo</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0363" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0136</hkparam>
 			<hkparam name="name">hkRigidBody</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0364" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">Ragdoll_L Finger 1</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="2">
 				#0363 #0362
 			</hkparam>
 			<hkparam name="children" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0365" class="hkpShapeInfo" signature="0xea7f1d08">
-			
-			
 			<hkparam name="shape">#0129</hkparam>
 			<hkparam name="isHierarchicalCompound">false</hkparam>
 			<hkparam name="hkdShapesCollected">false</hkparam>
@@ -10622,28 +8830,18 @@
 			</hkparam>
 			<hkparam name="transform">(-0.068020 -0.886736 -0.457245)(-0.997596 0.054390 0.042925)(-0.013193 0.459066 -0.888304)(-45.327263 13.271605 70.543213)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0366" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0365</hkparam>
 			<hkparam name="name">hkpShapeInfo</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0367" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0128</hkparam>
 			<hkparam name="name">hkRigidBody</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0368" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">Ragdoll_L Hand</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="2">
 				#0367 #0366
 			</hkparam>
@@ -10651,10 +8849,7 @@
 				#0364 #0360 #0356 #0352
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0369" class="hkpShapeInfo" signature="0xea7f1d08">
-			
-			
 			<hkparam name="shape">#0206</hkparam>
 			<hkparam name="isHierarchicalCompound">false</hkparam>
 			<hkparam name="hkdShapesCollected">false</hkparam>
@@ -10666,28 +8861,18 @@
 			</hkparam>
 			<hkparam name="transform">(-0.992902 -0.054582 0.105674)(-0.001405 0.893801 0.448461)(-0.118929 0.445130 -0.887533)(-42.531807 1.443578 91.271194)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0370" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0369</hkparam>
 			<hkparam name="name">hkpShapeInfo</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0371" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0205</hkparam>
 			<hkparam name="name">hkRigidBody</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0372" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">Ragdoll_L Arm</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="2">
 				#0371 #0370
 			</hkparam>
@@ -10695,10 +8880,7 @@
 				#0368
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0373" class="hkpShapeInfo" signature="0xea7f1d08">
-			
-			
 			<hkparam name="shape">#0238</hkparam>
 			<hkparam name="isHierarchicalCompound">false</hkparam>
 			<hkparam name="hkdShapesCollected">false</hkparam>
@@ -10710,37 +8892,24 @@
 			</hkparam>
 			<hkparam name="transform">(1.000000 0.000000 -0.000000)(-0.000000 0.955822 -0.293947)(0.000000 0.293947 0.955822)(-5.187522 20.114504 160.227112)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0374" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0373</hkparam>
 			<hkparam name="name">hkpShapeInfo</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0375" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0237</hkparam>
 			<hkparam name="name">hkRigidBody</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0376" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">Ragdoll_Head</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="2">
 				#0375 #0374
 			</hkparam>
 			<hkparam name="children" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0377" class="hkpShapeInfo" signature="0xea7f1d08">
-			
-			
 			<hkparam name="shape">#0211</hkparam>
 			<hkparam name="isHierarchicalCompound">false</hkparam>
 			<hkparam name="hkdShapesCollected">false</hkparam>
@@ -10752,28 +8921,18 @@
 			</hkparam>
 			<hkparam name="transform">(1.000000 0.000000 -0.000000)(-0.000000 0.991033 -0.133614)(-0.000000 0.133614 0.991033)(0.000008 -1.338148 125.682007)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0378" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0377</hkparam>
 			<hkparam name="name">hkpShapeInfo</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0379" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0210</hkparam>
 			<hkparam name="name">hkRigidBody</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0380" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">Ragdoll_Torso Main</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="2">
 				#0379 #0378
 			</hkparam>
@@ -10781,10 +8940,7 @@
 				#0376 #0372 #0348 #0328 #0324 #0320 #0316
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0381" class="hkpShapeInfo" signature="0xea7f1d08">
-			
-			
 			<hkparam name="shape">#0191</hkparam>
 			<hkparam name="isHierarchicalCompound">false</hkparam>
 			<hkparam name="hkdShapesCollected">false</hkparam>
@@ -10796,37 +8952,24 @@
 			</hkparam>
 			<hkparam name="transform">(-0.999782 0.019267 0.008038)(0.020195 0.990173 0.138385)(-0.005293 0.138517 -0.990346)(16.334068 -15.982780 8.881054)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0382" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0381</hkparam>
 			<hkparam name="name">hkpShapeInfo</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0383" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0190</hkparam>
 			<hkparam name="name">hkRigidBody</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0384" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">Ragdoll_R Foot Rock 2</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="2">
 				#0383 #0382
 			</hkparam>
 			<hkparam name="children" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0385" class="hkpShapeInfo" signature="0xea7f1d08">
-			
-			
 			<hkparam name="shape">#0201</hkparam>
 			<hkparam name="isHierarchicalCompound">false</hkparam>
 			<hkparam name="hkdShapesCollected">false</hkparam>
@@ -10838,37 +8981,24 @@
 			</hkparam>
 			<hkparam name="transform">(-0.999782 0.019267 0.008038)(0.020195 0.990172 0.138387)(-0.005293 0.138519 -0.990346)(10.257868 -14.689543 11.666654)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0386" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0385</hkparam>
 			<hkparam name="name">hkpShapeInfo</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0387" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0200</hkparam>
 			<hkparam name="name">hkRigidBody</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0388" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">Ragdoll_R Foot Rock 1</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="2">
 				#0387 #0386
 			</hkparam>
 			<hkparam name="children" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0389" class="hkpShapeInfo" signature="0xea7f1d08">
-			
-			
 			<hkparam name="shape">#0188</hkparam>
 			<hkparam name="isHierarchicalCompound">false</hkparam>
 			<hkparam name="hkdShapesCollected">false</hkparam>
@@ -10880,28 +9010,18 @@
 			</hkparam>
 			<hkparam name="transform">(-0.999782 0.019268 0.008039)(0.011522 0.830320 -0.557167)(-0.017410 -0.556953 -0.830361)(12.956864 -3.863176 25.045338)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0390" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0389</hkparam>
 			<hkparam name="name">hkpShapeInfo</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0391" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0187</hkparam>
 			<hkparam name="name">hkRigidBody</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0392" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">Ragdoll_R Calf</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="2">
 				#0391 #0390
 			</hkparam>
@@ -10909,10 +9029,7 @@
 				#0388 #0384
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0393" class="hkpShapeInfo" signature="0xea7f1d08">
-			
-			
 			<hkparam name="shape">#0248</hkparam>
 			<hkparam name="isHierarchicalCompound">false</hkparam>
 			<hkparam name="hkdShapesCollected">false</hkparam>
@@ -10924,28 +9041,18 @@
 			</hkparam>
 			<hkparam name="transform">(-0.984159 -0.008643 0.177078)(0.044999 0.953925 0.296650)(-0.171483 0.299919 -0.938425)(16.154057 -1.970222 51.690491)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0394" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0393</hkparam>
 			<hkparam name="name">hkpShapeInfo</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0395" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0247</hkparam>
 			<hkparam name="name">hkRigidBody</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0396" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">Ragdoll_R Leg</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="2">
 				#0395 #0394
 			</hkparam>
@@ -10953,10 +9060,7 @@
 				#0392
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0397" class="hkpShapeInfo" signature="0xea7f1d08">
-			
-			
 			<hkparam name="shape">#0183</hkparam>
 			<hkparam name="isHierarchicalCompound">false</hkparam>
 			<hkparam name="hkdShapesCollected">false</hkparam>
@@ -10968,37 +9072,24 @@
 			</hkparam>
 			<hkparam name="transform">(-0.995010 0.026327 -0.096241)(0.019773 0.997460 0.068436)(0.097798 0.066191 -0.993002)(-14.811381 -12.885826 14.509176)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0398" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0397</hkparam>
 			<hkparam name="name">hkpShapeInfo</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0399" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0182</hkparam>
 			<hkparam name="name">hkRigidBody</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0400" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">Ragdoll_L Foot Rock 3</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="2">
 				#0399 #0398
 			</hkparam>
 			<hkparam name="children" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0401" class="hkpShapeInfo" signature="0xea7f1d08">
-			
-			
 			<hkparam name="shape">#0173</hkparam>
 			<hkparam name="isHierarchicalCompound">false</hkparam>
 			<hkparam name="hkdShapesCollected">false</hkparam>
@@ -11010,37 +9101,24 @@
 			</hkparam>
 			<hkparam name="transform">(-0.999782 0.019268 0.008038)(0.020195 0.990172 0.138386)(-0.005293 0.138518 -0.990346)(-9.060992 -10.733458 16.160137)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0402" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0401</hkparam>
 			<hkparam name="name">hkpShapeInfo</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0403" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0172</hkparam>
 			<hkparam name="name">hkRigidBody</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0404" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">Ragdoll_L Foot Rock 2</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="2">
 				#0403 #0402
 			</hkparam>
 			<hkparam name="children" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0405" class="hkpShapeInfo" signature="0xea7f1d08">
-			
-			
 			<hkparam name="shape">#0178</hkparam>
 			<hkparam name="isHierarchicalCompound">false</hkparam>
 			<hkparam name="hkdShapesCollected">false</hkparam>
@@ -11052,37 +9130,24 @@
 			</hkparam>
 			<hkparam name="transform">(-0.999782 0.019267 0.008039)(0.019011 0.999344 -0.030838)(-0.008628 -0.030679 -0.999492)(-13.949608 -13.686226 19.807392)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0406" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0405</hkparam>
 			<hkparam name="name">hkpShapeInfo</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0407" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0177</hkparam>
 			<hkparam name="name">hkRigidBody</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0408" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">Ragdoll_L Foot Rock 1</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="2">
 				#0407 #0406
 			</hkparam>
 			<hkparam name="children" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0409" class="hkpShapeInfo" signature="0xea7f1d08">
-			
-			
 			<hkparam name="shape">#0170</hkparam>
 			<hkparam name="isHierarchicalCompound">false</hkparam>
 			<hkparam name="hkdShapesCollected">false</hkparam>
@@ -11094,28 +9159,18 @@
 			</hkparam>
 			<hkparam name="transform">(-0.999929 0.001941 0.011767)(-0.006105 0.764243 -0.644899)(-0.010244 -0.644925 -0.764177)(-13.070963 0.254731 26.004265)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0410" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0409</hkparam>
 			<hkparam name="name">hkpShapeInfo</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0411" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0169</hkparam>
 			<hkparam name="name">hkRigidBody</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0412" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">Ragdoll_L Calf</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="2">
 				#0411 #0410
 			</hkparam>
@@ -11123,10 +9178,7 @@
 				#0408 #0404 #0400
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0413" class="hkpShapeInfo" signature="0xea7f1d08">
-			
-			
 			<hkparam name="shape">#0243</hkparam>
 			<hkparam name="isHierarchicalCompound">false</hkparam>
 			<hkparam name="hkdShapesCollected">false</hkparam>
@@ -11138,28 +9190,18 @@
 			</hkparam>
 			<hkparam name="transform">(-0.995458 0.067936 -0.066688)(0.043771 0.948713 0.313095)(0.084538 0.308754 -0.947378)(-14.022219 -0.499592 53.236023)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0414" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0413</hkparam>
 			<hkparam name="name">hkpShapeInfo</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0415" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0242</hkparam>
 			<hkparam name="name">hkRigidBody</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0416" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">Ragdoll_L Leg</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="2">
 				#0415 #0414
 			</hkparam>
@@ -11167,10 +9209,7 @@
 				#0412
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0417" class="hkpShapeInfo" signature="0xea7f1d08">
-			
-			
 			<hkparam name="shape">#0253</hkparam>
 			<hkparam name="isHierarchicalCompound">false</hkparam>
 			<hkparam name="hkdShapesCollected">false</hkparam>
@@ -11182,28 +9221,18 @@
 			</hkparam>
 			<hkparam name="transform">(1.000000 0.000000 -0.000000)(-0.000000 1.000000 0.000000)(0.000000 0.000000 1.000000)(-0.000003 -5.044170 77.180649)</hkparam>
 		</hkobject>
-
 		<hkobject name="#0418" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0417</hkparam>
 			<hkparam name="name">hkpShapeInfo</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0419" class="hkMemoryResourceHandle" signature="0xbffac086">
-			
-			
 			<hkparam name="variant">#0252</hkparam>
 			<hkparam name="name">hkRigidBody</hkparam>
 			<hkparam name="references" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0420" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">Ragdoll_Pelvis</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="2">
 				#0419 #0418
 			</hkparam>
@@ -11211,438 +9240,267 @@
 				#0416 #0396 #0380
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0421" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">Torso Main</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0422" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">R Hand</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0423" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC R UpperarmTwist1 [RUt1]</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0424" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC R Finger 3</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0425" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC R Finger 2</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0426" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC R Finger 1</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0427" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC R Hand [RHnd]</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="3">
 				#0426 #0425 #0424
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0428" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC R Forearm [RLar]</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="1">
 				#0427
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0429" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC R UpperArm [RUar]</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="2">
 				#0428 #0423
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0430" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC R Clavicle [RClv]</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="1">
 				#0429
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0431" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC L UpperarmTwist1 [LUt1]</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0432" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC L Finger 4</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0433" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC L Finger 3</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0434" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC L Finger 2</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0435" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC L Finger 1</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0436" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC L Hand [RHnd]</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="4">
 				#0435 #0434 #0433 #0432
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0437" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC L Forearm [RLar]</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="1">
 				#0436
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0438" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC L UpperArm [RUar]</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="2">
 				#0437 #0431
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0439" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC L Clavicle [RClv]</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="1">
 				#0438
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0440" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC Spine2 [Spn2]</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="2">
 				#0439 #0430
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0441" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC Spine1 [Spn1]</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="1">
 				#0440
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0442" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC Spine [Spn0]</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="1">
 				#0441
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0443" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC R Foot [Lft ]</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0444" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC R Calf [LClf]</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="1">
 				#0443
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0445" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC R Thigh [LThg]</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="1">
 				#0444
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0446" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC L Foot [Lft ]</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0447" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC L Calf [LClf]</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="1">
 				#0446
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0448" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC L Thigh [LThg]</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="1">
 				#0447
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0449" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC Pelvis [Pelv]</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="2">
 				#0448 #0445
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0450" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC COM [COM ]</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="2">
 				#0449 #0442
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0451" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">L Hand</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0452" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC Root [Root]</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="4">
 				#0451 #0450 #0422 #0421
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0453" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC R ToePivot</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0454" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC R HeelPivot</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="1">
 				#0453
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0455" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC R FootBox</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="1">
 				#0454
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0456" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC L ToePivot</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0457" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC L HeelPivot</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="1">
 				#0456
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0458" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC L FootBox</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="1">
 				#0457
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0459" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC Camera3rd FOV Helper</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0460" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC Camera3rd Ctrl</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="1">
 				#0459
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0461" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name">NPC</hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="4">
 				#0460 #0458 #0455 #0452
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0462" class="hkMemoryResourceContainer" signature="0x4762f92a">
-			
-			
 			<hkparam name="name"></hkparam>
-			
 			<hkparam name="resourceHandles" numelements="0"></hkparam>
 			<hkparam name="children" numelements="2">
 				#0461 #0420
 			</hkparam>
 		</hkobject>
-
 		<hkobject name="#0463" class="hkaAnimationContainer" signature="0x8dc20333">
-			
-			
 			<hkparam name="skeletons" numelements="2">
 				#0122 #0123
 			</hkparam>
@@ -11651,7 +9509,6 @@
 			<hkparam name="attachments" numelements="0"></hkparam>
 			<hkparam name="skins" numelements="0"></hkparam>
 		</hkobject>
-
 		<hkobject name="#0120" class="hkRootLevelContainer" signature="0x2772c11e">
 			<hkparam name="namedVariants" numelements="6">
 				<hkobject>
@@ -11686,7 +9543,5 @@
 				</hkobject>
 			</hkparam>
 		</hkobject>
-
 	</hksection>
-
 </hkpackfile>
