@@ -181,10 +181,10 @@ public class PackFile : IPatchFile, IEquatable<PackFile>
 			}
 			debugOuputHandle = new FileInfo(debugOuputHandle.DirectoryName + "\\m_" + debugOuputHandle.Name);
 
-			//using (var writeStream = debugOuputHandle.Create())
-			//{
-			//	Map.Save(writeStream);
-			//}
+			using (var writeStream = debugOuputHandle.Create())
+			{
+				Map.Save(writeStream);
+			}
 
 #else
 		try
