@@ -11,6 +11,8 @@ using Pandora.Core.Patchers.Skyrim;
 using Pandora.Patch.Patchers.Skyrim.AnimData;
 using XmlCake.Linq;
 using Pandora.Patch.Patchers.Skyrim.Nemesis;
+using System.Diagnostics.Eventing.Reader;
+
 namespace Pandora.Patch.Patchers.Skyrim;
 
 public class SkyrimPatcher : IPatcher
@@ -56,7 +58,9 @@ public class SkyrimPatcher : IPatcher
 
     public async Task UpdateAsync()
     {
-        //await assembler.LoadResourcesAsync();
+#if DEBUG
+		Parallel.ForEach(activeMods, mod => { assembler.AssemblePatch(mod); });
+#else
         try
         {
 			Parallel.ForEach(activeMods, mod => { assembler.AssemblePatch(mod); });
@@ -70,6 +74,8 @@ public class SkyrimPatcher : IPatcher
 			//    logger.Error($"Skyrim Patcher > Active Mods > Update > {exception.Message} > EXCEPTION");
 			//}
 		}
+#endif
+		//await assembler.LoadResourcesAsync();
        
 		//List<Task> assembleTasks = new List<Task>();
 		//foreach (var mod in activeMods)

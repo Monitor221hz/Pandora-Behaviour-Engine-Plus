@@ -133,10 +133,10 @@ public class PackFile : IPatchFile, IEquatable<PackFile>
 	}
 	
 	public void MapNode(string nodeName)
-	{
-		if (mappedNodeNames.Contains(nodeName)) return;
-		lock (mappedNodeNames)
+	{	
+		lock(mappedNodeNames)
 		{
+			if (mappedNodeNames.Contains(nodeName)) return;
 			mappedNodeNames.Add(nodeName);
 		}
 		lock(Map)
