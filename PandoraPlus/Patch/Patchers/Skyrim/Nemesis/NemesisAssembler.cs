@@ -30,7 +30,7 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 	private IXExpression replacePattern = new XSkipWrapExpression(new XStep(XmlNodeType.Comment, "CLOSE"),new XStep(XmlNodeType.Comment, "OPEN"), new XStep(XmlNodeType.Comment, "ORIGINAL"), new XStep(XmlNodeType.Comment, "CLOSE"));
     private IXExpression insertPattern = new XSkipWrapExpression(new XStep(XmlNodeType.Comment, "ORIGINAL"), new XStep(XmlNodeType.Comment, "OPEN"), new XStep(XmlNodeType.Comment, "CLOSE")); 
 
-    private XPathLookup lookup = new XPathLookup();
+    //private XPathLookup lookup = new XPathLookup();
     
     List<PackFile> packFiles = new List<PackFile>();
 
@@ -119,7 +119,7 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 	//to-fix: certain excerpts being misclassified as single replace edit when it is actually a replace and insert edit
 
 	//
-    public void ForwardReplaceEdit(PackFile packFile, XMatch match, PackFileChangeSet changeSet)
+    public void ForwardReplaceEdit(PackFile packFile, XMatch match, PackFileChangeSet changeSet, XPathLookup lookup)
     {
         List<XNode> newNodes = new List<XNode>();
         int separatorIndex = match.Count;
@@ -201,7 +201,7 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 
 	}
 
-    public void ForwardInsertEdit(PackFile packFile, XMatch match, PackFileChangeSet changeSet)
+    public void ForwardInsertEdit(PackFile packFile, XMatch match, PackFileChangeSet changeSet, XPathLookup lookup)
     {
         List<XNode> newNodes = match.nodes;
 		XNode? previousNode = newNodes.First().PreviousNode;
@@ -266,24 +266,24 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
         }
 	}
 
-    public bool MatchReplacePattern(PackFile packFile, List<XNode> nodes, PackFileChangeSet changeSet)
+    public bool MatchReplacePattern(PackFile packFile, List<XNode> nodes, PackFileChangeSet changeSet, XPathLookup lookup)
     {
         XMatchCollection matchCollection = replacePattern.Matches(nodes);
         if (!matchCollection.Success) return false;
         foreach(XMatch match in matchCollection)
         {
-            ForwardReplaceEdit(packFile, match, changeSet);
+            ForwardReplaceEdit(packFile, match, changeSet, lookup);
         }
         return true;
     }
 
-    public bool MatchInsertPattern(PackFile packFile, List<XNode> nodes, PackFileChangeSet changeSet)
+    public bool MatchInsertPattern(PackFile packFile, List<XNode> nodes, PackFileChangeSet changeSet, XPathLookup lookup)
     {
 		XMatchCollection matchCollection = insertPattern.Matches(nodes);
 		if (!matchCollection.Success) return false;
 		foreach(XMatch match in matchCollection)
         {
-            ForwardInsertEdit(packFile, match, changeSet); 
+            ForwardInsertEdit(packFile, match, changeSet, lookup); 
         }
 		return true;
 	}
@@ -312,7 +312,7 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 		FileInfo[] editFiles = folder.GetFiles("#*.txt");
 
 		pandoraConverter.TryGraphInjection(folder, targetPackFile, changeSet);
-
+		XPathLookup lookup = new XPathLookup();
 		foreach (FileInfo editFile in editFiles)
 		{
 			List<XNode> nodes =new List<XNode>();
@@ -329,13 +329,12 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 			}
 			
 
-			lock(lookup)
-			{
-				nodes = lookup.MapFromElement(element);
-			}
+
+			nodes = lookup.MapFromElement(element);
+
             lock (targetPackFile) targetPackFile.MapNode(nodeName);
-			bool hasInserts = MatchInsertPattern(targetPackFile, nodes, changeSet);
-			bool hasReplacements = MatchReplacePattern(targetPackFile, nodes, changeSet);
+			bool hasInserts = MatchInsertPattern(targetPackFile, nodes, changeSet, lookup);
+			bool hasReplacements = MatchReplacePattern(targetPackFile, nodes, changeSet, lookup);
 
 			if (!hasReplacements && !hasInserts)
             {
