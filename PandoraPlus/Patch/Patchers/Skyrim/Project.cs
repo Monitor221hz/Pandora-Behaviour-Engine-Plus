@@ -57,7 +57,7 @@ namespace Pandora.Core.Patchers.Skyrim
 			DirectoryInfo? behaviorFolder = BehaviorFile.InputHandle.Directory;
 			if (behaviorFolder == null) return new List<string>();
 
-			var behaviorFiles = behaviorFolder.GetFiles();
+			var behaviorFiles = behaviorFolder.GetFiles("*.hkx");
 
 
 			lock(filesByName)
