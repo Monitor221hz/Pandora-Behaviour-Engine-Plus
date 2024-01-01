@@ -54,7 +54,7 @@ namespace Pandora.Core.Patchers.Skyrim
 
 			foreach(var failedPackFile in ActivePackFiles.Where(pf => !pf.ExportSuccess))
 			{
-				builder.AppendLine($"FATAL: Could not export {failedPackFile.UniqueName}. Check Engine.log for more information.");
+				builder.AppendLine($"FATAL ERROR: Could not export {failedPackFile.UniqueName}. Check Engine.log for more information.");
 			}
 		}
 		public void GetAnimationInfo(StringBuilder builder)

@@ -156,6 +156,7 @@ public class PackFile : IPatchFile, IEquatable<PackFile>
 			if (OutputHandle.Exists) { OutputHandle.Delete(); }
 			HKXHeader header = HKXHeader.SkyrimSE();
 			IHavokObject rootObject;
+			ExportSuccess = true;
 #if DEBUG
 		Debug.WriteLine($"Export: {OutputHandle.FullName}");
 		using (var memoryStream = new MemoryStream())
@@ -212,11 +213,11 @@ public class PackFile : IPatchFile, IEquatable<PackFile>
 			{
 				Map.Save(writeStream);
 			}
-			return false;
+			ExportSuccess = false;
 		}
 #endif
 
-		return true;
+		return ExportSuccess;
 	}
 	public static void Unpack(FileInfo inputHandle)
 	{
