@@ -35,12 +35,12 @@ public class SkyrimPatcher : IPatcher
 
     public string GetPostRunMessages()
     {
-        StringBuilder logBuilder = new StringBuilder("Resources loaded successfully.\r\n");
+        StringBuilder logBuilder = new StringBuilder("Resources loaded successfully.\r\n\r\n");
 
 		for (int i = 0; i < activeMods.Count; i++)
         {
 			IModInfo mod = activeMods[i];
-            string modLine = $"Mod {i + 1} : {mod.Name} - v.{mod.Version}";
+            string modLine = $"Pandora Mod {i + 1} : {mod.Name} - v.{mod.Version}";
 			logBuilder.AppendLine(modLine);
             logger.Info(modLine);
         }

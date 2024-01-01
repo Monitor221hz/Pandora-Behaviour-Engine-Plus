@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Pandora.Patch.Patchers.Skyrim.Hkx;
 public class PackFileCache
 {
-	private Dictionary<string, PackFile> pathMap = new Dictionary<string, PackFile>();
+	private Dictionary<string, PackFile> pathMap = new Dictionary<string, PackFile>(StringComparer.OrdinalIgnoreCase);
 
 
 	public PackFile LoadPackFile(FileInfo file)

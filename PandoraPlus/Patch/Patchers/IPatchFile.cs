@@ -13,6 +13,6 @@ namespace Pandora.Patch.Patchers
 
 		public FileInfo OutputHandle { get; }
 
-		public void Export();
+		public bool Export();
 	}
 }

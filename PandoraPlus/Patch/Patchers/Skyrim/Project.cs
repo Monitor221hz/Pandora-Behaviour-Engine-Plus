@@ -20,7 +20,16 @@ namespace Pandora.Core.Patchers.Skyrim
 
 		public bool Valid { get; private set; }
 
-		public PackFile ProjectFile {  get; private set; }	
+		public PackFile ProjectFile {  get; private set; }
+
+		public DirectoryInfo? ProjectDirectory => ProjectFile.InputHandle.Directory;
+
+		public DirectoryInfo? OutputDirectory => ProjectFile.OutputHandle.Directory;
+
+		public DirectoryInfo? OutputBehaviorDirectory => BehaviorFile.OutputHandle.Directory;
+
+		public DirectoryInfo? OutputAnimationDirectory => new DirectoryInfo(Path.Join(OutputDirectory.FullName, "animations"));
+
 		public PackFileCharacter CharacterFile { get; private set; } 
 		public PackFile SkeletonFile { get; private set; }
 		public PackFileGraph BehaviorFile { get; private set; } 

@@ -78,7 +78,9 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 	}
 	public void GetPostMessages(StringBuilder builder)
 	{
+		projectManager.GetFNISInfo(builder);
 		projectManager.GetAnimationInfo(builder);
+		projectManager.GetExportInfo(builder);
 	}
 	public async Task LoadResourcesAsync()
 	{
@@ -314,7 +316,7 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 
 		FileInfo[] editFiles = folder.GetFiles("#*.txt");
 
-		pandoraConverter.TryGraphInjection(folder, targetPackFile, changeSet);
+		//pandoraConverter.TryGraphInjection(folder, targetPackFile, changeSet);
 		XPathLookup lookup = new XPathLookup();
 		foreach (FileInfo editFile in editFiles)
 		{

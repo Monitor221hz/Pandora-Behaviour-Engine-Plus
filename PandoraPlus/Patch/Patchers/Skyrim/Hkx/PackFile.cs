@@ -34,6 +34,8 @@ public class PackFile : IPatchFile, IEquatable<PackFile>
 
 	public PackFileDispatcher Dispatcher { get; private set; } = new PackFileDispatcher();
 
+	public bool ExportSuccess { get; private set; } = true;
+
 	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
 	public void ApplyChanges() => Dispatcher.ApplyChanges(this);
@@ -145,46 +147,46 @@ public class PackFile : IPatchFile, IEquatable<PackFile>
 		}
 	}
 
-	public void Export()
+	public bool Export()
 	{
 
 
-			if (OutputHandle.Directory == null) return;
+			if (OutputHandle.Directory == null) return false;
 			if (!OutputHandle.Directory.Exists) { OutputHandle.Directory.Create(); }
 			if (OutputHandle.Exists) { OutputHandle.Delete(); }
 			HKXHeader header = HKXHeader.SkyrimSE();
 			IHavokObject rootObject;
 #if DEBUG
+		Debug.WriteLine($"Export: {OutputHandle.FullName}");
+		using (var memoryStream = new MemoryStream())
+		{
+			Map.Save(memoryStream);
+			memoryStream.Position = 0;
+			var deserializer = new XmlDeserializer();
+			rootObject = deserializer.Deserialize(memoryStream, header, false);
+		}
+		using (var writeStream = OutputHandle.Create())
+		{
+			var binaryWriter = new BinaryWriterEx(writeStream);
+			var serializer = new PackFileSerializer();
+			serializer.Serialize(rootObject, binaryWriter, header);
+		}
 
-			using (var memoryStream = new MemoryStream())
-			{
-				Map.Save(memoryStream);
-				memoryStream.Position = 0;
-				var deserializer = new XmlDeserializer();
-				rootObject = deserializer.Deserialize(memoryStream, header, false);
-			}
-			using (var writeStream = OutputHandle.Create())
-			{
-				var binaryWriter = new BinaryWriterEx(writeStream);
-				var serializer = new PackFileSerializer();
-				serializer.Serialize(rootObject, binaryWriter, header);
-			}
 
+		var debugOuputHandle = new FileInfo(OutputHandle.FullName + ".xml");
 
-			var debugOuputHandle = new FileInfo(OutputHandle.FullName + ".xml");
+		using (var writeStream = debugOuputHandle.Create())
+		{
 
-			using (var writeStream = debugOuputHandle.Create())
-			{
+			var xmlSerializer = new HKX2.XmlSerializer();
+			xmlSerializer.Serialize(rootObject, header, writeStream);
+		}
+		debugOuputHandle = new FileInfo(debugOuputHandle.DirectoryName + "\\m_" + debugOuputHandle.Name);
 
-				var xmlSerializer = new HKX2.XmlSerializer();
-				xmlSerializer.Serialize(rootObject, header, writeStream);
-			}
-			debugOuputHandle = new FileInfo(debugOuputHandle.DirectoryName + "\\m_" + debugOuputHandle.Name);
-
-			using (var writeStream = debugOuputHandle.Create())
-			{
-				Map.Save(writeStream);
-			}
+		using (var writeStream = debugOuputHandle.Create())
+		{
+			Map.Save(writeStream);
+		}
 
 #else
 		try
@@ -210,10 +212,11 @@ public class PackFile : IPatchFile, IEquatable<PackFile>
 			{
 				Map.Save(writeStream);
 			}
+			return false;
 		}
 #endif
 
-
+		return true;
 	}
 	public static void Unpack(FileInfo inputHandle)
 	{
@@ -265,11 +268,11 @@ public class PackFile : IPatchFile, IEquatable<PackFile>
 
 	public bool Equals(PackFile? other)
 	{
-		return other != null && other.OutputHandle.FullName.Equals(this.OutputHandle.FullName);
+		return other != null && other.OutputHandle.FullName.Equals(this.OutputHandle.FullName, StringComparison.OrdinalIgnoreCase);
 	}
 	public override int GetHashCode()
 	{
-		return OutputHandle.FullName.GetHashCode();
+		return OutputHandle.FullName.GetHashCode(StringComparison.OrdinalIgnoreCase);
 	}
 
 	public override bool Equals(object? obj)
