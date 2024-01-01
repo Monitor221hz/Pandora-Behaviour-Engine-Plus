@@ -24,5 +24,10 @@ namespace Pandora.MVVM.View.Controls
         {
             InitializeComponent();
         }
+
+		private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+		{
+            LogTextBox.ScrollToEnd();
+        }
     }
 }

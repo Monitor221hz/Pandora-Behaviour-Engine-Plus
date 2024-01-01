@@ -18,6 +18,8 @@ namespace Pandora.Patch.Patchers
 
 		public void AssemblePatch(IModInfo mod);
 
+		public void GetPostMessages(StringBuilder builder);
+
 		public virtual async Task AssemblePatchAsync(IModInfo mod)
 		{
 			await Task.Run(() => AssemblePatch(mod));	

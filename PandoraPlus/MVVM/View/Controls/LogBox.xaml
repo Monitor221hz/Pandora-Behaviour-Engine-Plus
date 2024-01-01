@@ -16,7 +16,8 @@
                  BorderThickness="0"
                  FontFamily="Bahnschrift"
                  FontSize="13"
-                 Text="{ Binding LogText,UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+                 x:Name="LogTextBox"
+                 Text="{ Binding LogText,UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" TextChanged="TextBox_TextChanged">
         </TextBox>
     </Border>
 </UserControl>

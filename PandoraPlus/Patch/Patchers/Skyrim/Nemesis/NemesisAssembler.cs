@@ -76,7 +76,10 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 
 
 	}
-
+	public void GetPostMessages(StringBuilder builder)
+	{
+		projectManager.GetAnimationInfo(builder);
+	}
 	public async Task LoadResourcesAsync()
 	{
 		var animSetDataTask = Task.Run(() => { animSetDataManager.SplitAnimSetDataSingleFile(); });

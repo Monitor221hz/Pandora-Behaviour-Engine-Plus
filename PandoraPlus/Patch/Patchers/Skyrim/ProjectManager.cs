@@ -42,6 +42,23 @@ namespace Pandora.Core.Patchers.Skyrim
 
         }
 
+		public void GetAnimationInfo(StringBuilder builder)
+		{
+			var projects = projectMap.Values;
+			uint totalAnimationCount = 0;
+
+			builder.AppendLine();
+			foreach(var project in projects)
+			{
+				var animCount = project.CharacterFile.NewAnimationCount; 
+				if (animCount == 0) { continue; }
+				totalAnimationCount+= animCount;	
+				builder.AppendLine($"{animCount} animations added to {project.Identifier}.");
+			}
+			builder.AppendLine();
+			builder.AppendLine($"{totalAnimationCount} total animations added.");
+		}
+
 		public bool TryGetProject(string name, out Project? project) => projectMap.TryGetValue(name, out project);
 		public bool ProjectExists(string name) => projectMap.ContainsKey(name);
 

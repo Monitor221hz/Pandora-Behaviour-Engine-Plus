@@ -44,6 +44,10 @@ public class SkyrimPatcher : IPatcher
 			logBuilder.AppendLine(modLine);
             logger.Info(modLine);
         }
+
+        assembler.GetPostMessages(logBuilder);
+
+        
         return logBuilder.ToString();
     }
 

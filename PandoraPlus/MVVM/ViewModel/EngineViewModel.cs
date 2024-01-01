@@ -119,7 +119,7 @@ namespace Pandora.MVVM.ViewModel
         {
             App.Current.MainWindow.Close();
         }
-
+        internal async Task ClearLogBox() => LogText = "";
         internal async Task WriteLogBoxLine(string text)
         {
             StringBuilder sb = new StringBuilder(LogText);
@@ -217,11 +217,15 @@ namespace Pandora.MVVM.ViewModel
 			await Task.Run(async() => { await Engine.LaunchAsync(activeMods); }); 
             
             timer.Stop();
-            await WriteLogBoxLine($"Launch finished in {Math.Round(timer.ElapsedMilliseconds / 1000.0, 2)} seconds");
+
+            await ClearLogBox();
+           
 
             await WriteLogBoxLine(Engine.GetMessages());
 
-            await Task.Run(() => { SaveActiveMods(activeMods); });
+			await WriteLogBoxLine($"Launch finished in {Math.Round(timer.ElapsedMilliseconds / 1000.0, 2)} seconds");
+
+			await Task.Run(() => { SaveActiveMods(activeMods); });
 
 			Engine = new BehaviourEngine();
             preloadTask = Task.Run(Engine.PreloadAsync);
