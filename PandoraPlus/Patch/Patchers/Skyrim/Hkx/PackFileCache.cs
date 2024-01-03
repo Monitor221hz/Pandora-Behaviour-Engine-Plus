@@ -10,7 +10,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx;
 public class PackFileCache
 {
 	private Dictionary<string, PackFile> pathMap = new Dictionary<string, PackFile>(StringComparer.OrdinalIgnoreCase);
-
+	private static readonly FileInfo PreviousOutputFile = new FileInfo(Directory.GetCurrentDirectory() + "\\Pandora_Engine\\PreviousOutput.txt");
 
 	public PackFile LoadPackFile(FileInfo file)
 	{
@@ -92,13 +92,35 @@ public class PackFileCache
 
 	public void DeletePackFileOutput()
 	{
-		lock (pathMap)
+		if (!PreviousOutputFile.Exists) { return;  }
+
+		using (FileStream readStream = PreviousOutputFile.OpenRead())
 		{
-			foreach (var packFile in pathMap.Values)
+			using (StreamReader reader = new StreamReader(readStream))
 			{
-				lock (packFile)
+				string? expectedLine; 
+				while((expectedLine = reader.ReadLine()) != null)
 				{
-					if (packFile.OutputHandle.Exists) { packFile.OutputHandle.Delete(); }
+					FileInfo file = new FileInfo(expectedLine);
+					if (!file.Exists) { continue; }
+
+					file.Delete();
+				}
+			}
+		}
+	}
+
+	public void SavePackFileOutput(IEnumerable<PackFile> packFiles)
+	{
+		using (FileStream readStream = PreviousOutputFile.OpenWrite())
+		{
+			using (StreamWriter writer = new StreamWriter(readStream))
+			{
+				foreach(PackFile packFile in packFiles)
+				{
+					if (!packFile.ExportSuccess || !packFile.OutputHandle.Exists) { continue; }
+
+					writer.WriteLine(packFile.OutputHandle.FullName);
 				}
 			}
 		}

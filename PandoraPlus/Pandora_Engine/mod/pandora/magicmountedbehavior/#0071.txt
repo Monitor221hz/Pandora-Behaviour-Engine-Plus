@@ -1,11 +1,9 @@
-		<hkobject name="#0077" class="hkbBehaviorGraphStringData" signature="0xc713064e">
-			<hkparam name="eventNames" numelements="97">
+		<hkobject name="#0071" class="hkbBehaviorGraphStringData" signature="0xc713064e">
+			<hkparam name="eventNames" numelements="95">
 				<hkcstring>staggerStop</hkcstring>
 				<hkcstring>MRh_Equipped_Event</hkcstring>
 				<hkcstring>shoutStop</hkcstring>
 				<hkcstring>shoutStart</hkcstring>
-				<hkcstring>moveStop</hkcstring>
-				<hkcstring>moveStart</hkcstring>
 				<hkcstring>SneakStop</hkcstring>
 				<hkcstring>SneakStart</hkcstring>
 				<hkcstring>turnStop</hkcstring>
@@ -91,23 +89,15 @@
 				<hkcstring>BeginCastVoice</hkcstring>
 				<hkcstring>NPCshoutStart</hkcstring>
 				<hkcstring>bowZoomStart</hkcstring>
-				<hkcstring>Event00</hkcstring>
 				<hkcstring>SoundPlay.WPNBowZoomIn</hkcstring>
 				<hkcstring>bowReset</hkcstring>
 				<hkcstring>arrowDetach</hkcstring>
 				<hkcstring>attackStop</hkcstring>
 				<hkcstring>SneakSprintStartRoll</hkcstring>
-<!-- MOD_CODE ~colis~ OPEN -->
-				<hkcstring>Collision_Start</hkcstring>
-				<hkcstring>Collision_Add</hkcstring>
-				<hkcstring>Collision_Remove</hkcstring>
-				<hkcstring>Collision_ClearTargets</hkcstring>
-				<hkcstring>Collision_AttackEnd</hkcstring>
-				<hkcstring>Collision_AttackStart</hkcstring>
-<!-- CLOSE -->
+				<hkcstring>MC_shoutStart</hkcstring>
 			</hkparam>
 			<hkparam name="attributeNames" numelements="0"></hkparam>
-			<hkparam name="variableNames" numelements="81">
+			<hkparam name="variableNames" numelements="79">
 				<hkcstring>blendDefault</hkcstring>
 				<hkcstring>blendMove1stP</hkcstring>
 				<hkcstring>blendMoveStop</hkcstring>
@@ -128,7 +118,6 @@
 				<hkcstring>i1stPerson</hkcstring>
 				<hkcstring>iSyncSprintState</hkcstring>
 				<hkcstring>iIsInSneak</hkcstring>
-				<hkcstring>iSyncIdleLocomotion</hkcstring>
 				<hkcstring>bMRh_Ready</hkcstring>
 				<hkcstring>staggerMagnitude</hkcstring>
 				<hkcstring>IsStaggering</hkcstring>
@@ -139,7 +128,11 @@
 				<hkcstring>IsShouting</hkcstring>
 				<hkcstring>iState</hkcstring>
 				<hkcstring>iState_NPCDefault</hkcstring>
+<!-- MOD_CODE ~pandora~ OPEN -->
 				<hkcstring> iState_NPCSneaking</hkcstring>
+<!-- ORIGINAL -->
+				<hkcstring> iState_NPCSneaking</hkcstring>
+<!-- CLOSE -->
 				<hkcstring>InDualMagicState</hkcstring>
 				<hkcstring>iDualMagicState</hkcstring>
 				<hkcstring>bMLh_Ready</hkcstring>
@@ -188,13 +181,9 @@
 				<hkcstring>Pitch</hkcstring>
 				<hkcstring>BowAimOffsetHeading</hkcstring>
 				<hkcstring>BowAimOffsetPitch</hkcstring>
-				<hkcstring>bVoiceReady</hkcstring>
 			</hkparam>
-			<hkparam name="characterPropertyNames" numelements="7">
+			<hkparam name="characterPropertyNames" numelements="4">
 				<hkcstring>LeftArm</hkcstring>
-				<hkcstring>UpperBody</hkcstring>
-				<hkcstring>ExcludeRootAndCamera</hkcstring>
-				<hkcstring>Hands</hkcstring>
 				<hkcstring>MRhFavorBoneSwitch</hkcstring>
 				<hkcstring>MLhFavorBoneSwitch</hkcstring>
 				<hkcstring>RightArm</hkcstring>

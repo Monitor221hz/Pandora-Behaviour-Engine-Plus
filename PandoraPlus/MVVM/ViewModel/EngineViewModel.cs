@@ -81,11 +81,12 @@ namespace Pandora.MVVM.ViewModel
 			CultureInfo.CurrentCulture = culture;
 
 			preloadTask = Task.Run(Engine.PreloadAsync);
-
 		}
         public async Task LoadAsync()
         {
-            List<IModInfo> modInfos = new List<IModInfo>();
+			
+
+			List<IModInfo> modInfos = new List<IModInfo>();
 #if DEBUG
             modInfos = await modinfoProvider?.GetInstalledMods("C:\\Games\\Skyrim Modding\\Creation Tools\\Skyrim.Behavior.Tool\\PandoraTEST\\Pandora_Engine\\mod")!;
 #endif
@@ -112,7 +113,7 @@ namespace Pandora.MVVM.ViewModel
             modInfos = modInfos.OrderBy(m => m.Priority == 0).ThenBy(m => m.Priority).ToList();
 
             foreach(var modInfo in modInfos) { Mods.Add(modInfo);  }
-
+            await WriteLogBoxLine("Mods loaded.");
 		}
 
         public void Exit(object? p)
@@ -211,6 +212,18 @@ namespace Pandora.MVVM.ViewModel
             await WriteLogBoxLine("Engine launched.");
             await preloadTask;
             List<IModInfo> activeMods = GetActiveModsByPriority();
+
+            IModInfo? baseModInfo = Mods.Where(m => m.Code == "pandora").FirstOrDefault();
+
+            if (baseModInfo == null) { await WriteLogBoxLine("FATAL ERROR: Pandora Base does not exist. Ensure the engine was installed properly and data is not corrupted."); return; }
+			if (!baseModInfo.Active)
+			{
+				baseModInfo.Active = true;
+				activeMods.Add(baseModInfo);
+			}
+			baseModInfo.Priority = uint.MaxValue;
+
+
 
 			Stopwatch timer = Stopwatch.StartNew();
 

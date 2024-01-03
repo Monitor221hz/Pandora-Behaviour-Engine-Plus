@@ -49,7 +49,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			 //reverse is necessary so that validator doesn't remove the original element if a duplicate is found
 
 
-			var uniqueEventNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+			var uniqueEventNames = new HashSet<string>();
 			var uniqueVariableNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
 			eventIndices.Clear();

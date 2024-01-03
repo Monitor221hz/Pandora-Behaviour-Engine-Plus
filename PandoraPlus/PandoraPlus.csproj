@@ -65,7 +65,6 @@
 
   <ItemGroup>
     <Folder Include="MVVM\Model\Interface\" />
-    <Folder Include="Nemesis_Engine\mod\colis\magicbehavior\" />
     <Folder Include="Pandora_Engine\Skyrim\Process\" />
     <Folder Include="Patch\Havok\" />
     <Folder Include="Patch\Patchers\Interface\Variants\" />
@@ -84,15 +83,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Nemesis_Engine\mod\colis\magicbehavior\#0077.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Nemesis_Engine\mod\evfmgo\magicbehavior\#0077.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Nemesis_Engine\mod\tdmv\magicbehavior\#0077.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -121,6 +111,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Pandora_Engine\mod\pandora\info.ini">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Pandora_Engine\mod\pandora\magicbehavior\#0077.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Pandora_Engine\mod\pandora\magicmountedbehavior\#0071.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Pandora_Engine\Skyrim\Template\actors\ambient\chicken\behaviors\chickenbehavior.hkx">

@@ -91,26 +91,7 @@ namespace Pandora.Core.Patchers.Skyrim
 
 
 		
-		public async Task LoadTrackedProjectsAsync()
-		{
-			FileInfo projectList = new FileInfo($"{templateFolder.FullName}\\vanilla_projectpaths.txt");
-			List<Task> projectLoadTasks = new List<Task>();
-			string? expectedLine = null;
-			List<string> projectPaths = new List<string>();
-			using (var readStream = projectList.OpenRead())
-			{
-				using (var streamReader = new StreamReader(readStream))
-				{
-					while ((expectedLine = streamReader.ReadLine()) != null)
-					{
-						if (String.IsNullOrWhiteSpace(expectedLine)) continue;
-						projectPaths.Add(expectedLine);
-					}
-				}
-			}
 
-			Parallel.ForEach(projectPaths, projectFilePath => { LoadProject(projectFilePath); });
-		}
 		public void LoadTrackedProjects()
 		{
 			FileInfo projectList = new FileInfo($"{templateFolder.FullName}\\vanilla_projectpaths.txt");
@@ -132,7 +113,6 @@ namespace Pandora.Core.Patchers.Skyrim
 			{
 				LoadProject(projectPath);
 			}
-
 		}
 		public void ExtractProjects()
 		{
@@ -260,12 +240,12 @@ namespace Pandora.Core.Patchers.Skyrim
 
 		}
 
-		public void ApplyPatchesParallel()
+		public async Task ApplyPatchesParallel()
 		{
 #if DEBUG
 			Debug.WriteLine("Export Started! ");
 #endif
-			packFileCache.DeletePackFileOutput();
+			Task deleteOutputTask = Task.Run(packFileCache.DeletePackFileOutput);
 			try
 			{
 				Parallel.ForEach(projectMap.Values, project => { fnisParser.ScanProjectAnimlist(project); });
@@ -285,7 +265,10 @@ namespace Pandora.Core.Patchers.Skyrim
 //#if DEBUG || DEBUGRELEASE
 //			foreach(PackFile packFile in ActivePackFiles) { Debug.WriteLine(packFile.UniqueName);  }
 //#endif
+			await deleteOutputTask;
 			Parallel.ForEach(ActivePackFiles, packFile => { CompleteExportSuccess = packFile.Export(); });
+
+			packFileCache.SavePackFileOutput(ActivePackFiles);
 
 		}
 	}

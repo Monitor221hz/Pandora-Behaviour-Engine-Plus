@@ -34,11 +34,11 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
     
     List<PackFile> packFiles = new List<PackFile>();
 
-	private DirectoryInfo engineFolder = new DirectoryInfo(Directory.GetCurrentDirectory() + "\\Pandora_Engine");
+	private static readonly DirectoryInfo engineFolder = new DirectoryInfo(Directory.GetCurrentDirectory() + "\\Pandora_Engine");
 
-	private DirectoryInfo templateFolder = new DirectoryInfo(Directory.GetCurrentDirectory() + "\\Pandora_Engine\\Skyrim\\Template");
+	private static readonly DirectoryInfo templateFolder = new DirectoryInfo(Directory.GetCurrentDirectory() + "\\Pandora_Engine\\Skyrim\\Template");
 
-	private DirectoryInfo outputFolder = new DirectoryInfo($"{Directory.GetCurrentDirectory()}\\meshes");
+	private static readonly DirectoryInfo outputFolder = new DirectoryInfo($"{Directory.GetCurrentDirectory()}\\meshes");
 
 	private ProjectManager projectManager;
 
@@ -85,7 +85,7 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 	public async Task LoadResourcesAsync()
 	{
 		var animSetDataTask = Task.Run(() => { animSetDataManager.SplitAnimSetDataSingleFile(); });
-		projectManager.LoadTrackedProjects();
+		await Task.Run(projectManager.LoadTrackedProjects);
 		await Task.Run(() => { animDataManager.SplitAnimationDataSingleFile(projectManager); });
 		await animSetDataTask; 
 
@@ -112,9 +112,11 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 	{
 		var animSetDataTask = Task.Run(() => { animSetDataManager.MergeAnimSetDataSingleFile(); });
 
-		await Task.Run(() => { projectManager.ApplyPatchesParallel(); });
+		
 
 		var animDataTask = Task.Run(() => { animDataManager.MergeAnimDataSingleFile(); });
+
+		await projectManager.ApplyPatchesParallel();
 
 		await animDataTask;
 		await animSetDataTask;
@@ -173,7 +175,7 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 						break;
 					case XmlNodeType.Element:
 						//packFile.Editor.QueueReplaceElement(lookup.LookupPath(node), (XElement)newNodes[i - separatorIndex - 1]);
-						changeSet.AddChange(new ReplaceElementChange(lookup.LookupPath(node), (XElement)newNode));
+						changeSet.AddChange(new ReplaceElementChange(lookup.LookupPath(newNode), (XElement)newNode));
 						//lock (packFile.edits) packFile.edits.AddChange(new ReplaceElementChange(lookup.LookupPath(node), (XElement)newNodes[i - separatorIndex - 1],modInfo));
 						break;
 					default:
