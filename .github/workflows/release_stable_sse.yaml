@@ -5,10 +5,6 @@ on:
     tags:
         - "v*.*.*"
     branches: ["stable-sse"]
-  pull_request:
-    tags:
-        - "v*.*.*"  
-    branches: ["stable-sse"]
 
 env:
   build-mode: Release # Release | Debug
