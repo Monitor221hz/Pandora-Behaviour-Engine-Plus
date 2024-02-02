@@ -61,6 +61,9 @@ jobs:
          path: ./
          merge-multiple: true
          
+      - name: Zip Artifact For Deployment
+        run: zip release.zip ./* -r
+         
       - name: Create Release
         env:
          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
