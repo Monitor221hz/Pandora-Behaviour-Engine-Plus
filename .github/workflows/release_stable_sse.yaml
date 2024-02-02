@@ -2,8 +2,12 @@ name: release_stable_sse
 
 on:
   push:
+    tags:
+        - "v*.*.*"
     branches: ["stable-sse"]
   pull_request:
+    tags:
+        - "v*.*.*"  
     branches: ["stable-sse"]
 
 env:
@@ -48,16 +52,8 @@ jobs:
       - name: Build
         run: dotnet build "./PandoraPlus.sln" --configuration ${{ env.build-mode }}
 
-      - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: Pandora.Behaviour.Engine
-          path: |
-            ./PandoraPlus/bin/${{ env.build-mode }}/net7.0-windows
-            
       - name: Upload Release
         uses: softprops/action-gh-release@v0.1.15
-        if: ${{startsWith(github.ref, 'refs/tags/') }}
         with:
           files: ./PandoraPlus/bin/${{ env.build-mode }}/net7.0-windows
     
