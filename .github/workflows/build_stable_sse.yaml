@@ -58,14 +58,11 @@ jobs:
         uses: actions/download-artifact@v4
         with:
          name: Pandora.Behaviour.Engine
-         
-      - name: Find Zip File
-        run: |
-          ZIP_PATH=$(find ./ -type f -name 'Pandora.Behaviour.Engine.zip')
-          echo "Path of Pandora.Behaviour.Engine.zip: $ZIP_PATH"
+         path: ./
+         merge-multiple: true
 
       - name: Upload Release
         uses: softprops/action-gh-release@v0.1.13
         with:
           files: |
-            ${{ env.ZIP_PATH }}
+            ./*.zip
