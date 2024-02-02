@@ -1,4 +1,5 @@
 # Pandora Behaviour Engine+
+[![build](https://github.com/Monitor144hz/Pandora-Behaviour-Engine-Plus/actions/workflows/build.yaml/badge.svg)](https://github.com/Monitor144hz/Pandora-Behaviour-Engine-Plus/actions/workflows/build.yaml)
 
 A modular and lightweight behavior engine for TES Skyrim SE, for creatures and humanoids.  
 
