@@ -219,6 +219,7 @@ namespace Pandora.Core.Patchers.Skyrim
 			return false;
 		}
 		
+
 		public bool ApplyPatches()
 		{
 			packFileCache.DeletePackFileOutput();

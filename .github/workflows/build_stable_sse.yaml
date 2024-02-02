@@ -1,4 +1,4 @@
-name: release_stable_sse
+name: build_stable_sse
 
 on:
   push:
@@ -58,11 +58,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
          name: Pandora.Behaviour.Engine
-        
 
       - name: Upload Release
         uses: softprops/action-gh-release@v0.1.15
         with:
           files: |
-            */*.zip
+            ${{github.workspace}}/Pandora.Behaviour.Engine.zip
     
