@@ -30,7 +30,7 @@ namespace Pandora.MVVM.View
         {
             InitializeComponent();
             
-            _viewModel = new EngineViewModel(new NemesisModInfoProvider());
+            _viewModel = new EngineViewModel();
             DataContext = _viewModel;
             Loaded += EngineViewLoaded;
         }

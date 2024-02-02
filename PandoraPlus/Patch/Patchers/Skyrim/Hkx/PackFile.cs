@@ -208,7 +208,7 @@ public class PackFile : IPatchFile, IEquatable<PackFile>
 		}
 		catch(Exception ex) 
 		{
-			Logger.Fatal($"Export > {ParentProject?.Identifier}~{Name} > FAILED > {ex.Message}");
+			Logger.Fatal($"Export > {ParentProject?.Identifier}~{Name} > FAILED > {ex.ToString()}");
 			using (var writeStream = OutputHandle.Create())
 			{
 				Map.Save(writeStream);

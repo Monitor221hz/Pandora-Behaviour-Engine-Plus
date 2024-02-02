@@ -27,7 +27,9 @@ namespace Pandora.MVVM.Model
 
         public Version Version { get; } = new Version(1,0,0);
 
-        public uint Priority { get; set; } = 0;
+		public IModInfo.ModFormat Format { get; } = IModInfo.ModFormat.Nemesis;
+
+		public uint Priority { get; set; } = 0;
 
         //internal string Auto { get; set; } = "Default";
         //internal string RequiredFile { get; set; } = "Default";

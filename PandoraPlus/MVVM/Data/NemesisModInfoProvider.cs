@@ -28,11 +28,13 @@ public class NemesisModInfoProvider : IModInfoProvider
         var modFolders = folder.GetDirectories();
 
         foreach( var modFolder in modFolders ) 
-        {       
-            var files = modFolder.GetFiles("*.ini");
-            if (files.Length == 0) { continue; }
-
-            foreach( var file in files ) { infoFiles.Add(file); }
+        {
+            var infoFile = new FileInfo(Path.Join(modFolder.FullName, "info.ini"));
+            if (!infoFile.Exists) 
+            { 
+                continue; 
+            }
+            infoFiles.Add(infoFile);
         }
 
         foreach (var file in infoFiles)

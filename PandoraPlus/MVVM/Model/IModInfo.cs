@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -7,8 +8,16 @@ using System.Threading.Tasks;
 
 namespace Pandora.Core
 {
+    
     public interface IModInfo
     {
+        public enum ModFormat
+        {
+            FNIS, 
+            Nemesis, 
+            Pandora
+        }
+
         public string Name { get; }
 
         public string Author { get; }
@@ -21,6 +30,7 @@ namespace Pandora.Core
 
         public DirectoryInfo Folder { get; }
 
+        public ModFormat Format { get; }
 
 		public bool Active { get; set;  }
 

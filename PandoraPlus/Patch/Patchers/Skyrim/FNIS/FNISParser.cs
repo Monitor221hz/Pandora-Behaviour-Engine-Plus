@@ -32,6 +32,7 @@ public class FNISParser
 		{"atronachfrostproject~atronachfrostbehavior", "#0439" },
 		{"atronachstormproject~atronachstormbehavior", "#0369" },
 		{"bearproject~bearbehavior", "#0151" },
+		{"chaurusproject~chaurusbehavior", "#0495" },
 		{"dogproject~dogbehavior", "#0144" },
 		{"wolfproject~wolfbehavior", "#0169" },
 		{"defaultfemale~0_master", "#0340" },
@@ -49,6 +50,7 @@ public class FNISParser
 		{"dragonproject~dragonbehavior", "#1610" },
 		{"dragon_priest~dragon_priest", "#0758" },
 		{"draugrproject~draugrbehavior", "#1998" },
+		{"draugrskeletonproject~draugrbehavior", "#1998" },
 		{"hagravenproject~hagravenbehavior", "#0634" },
 		{"horkerproject~horkerbehavior", "#0161" },
 		{"horseproject~horsebehavior", "#0493" },
@@ -77,7 +79,7 @@ public class FNISParser
 		{"scribproject~scribbehavior", "#0578" }
 	};
 
-	private static readonly Dictionary<string, string> linkedProjectMap = new Dictionary<string, string>()
+	private static readonly Dictionary<string, string> linkedCharacterMap = new Dictionary<string, string>()
 	{
 		{"defaultmale", "defaultfemale" },
 		{"defaultfemale", "defaultmale" },
@@ -87,9 +89,15 @@ public class FNISParser
 		{"dogproject", "wolfproject" }
 	};
 
+	private static readonly Dictionary<string, string> animListExcludeMap = new Dictionary<string, string>()
+	{
+		{"dogproject", "wolf" },
+		{"wolfproject", "dog" }
+	};
+
 	private HashSet<string> parsedFolders = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-	public HashSet<LimitedModInfo> ModInfos { get; private set; } = new HashSet<LimitedModInfo>();
+	public HashSet<FNISModInfo> ModInfos { get; private set; } = new HashSet<FNISModInfo>();
 
     public FNISParser(ProjectManager manager)
     {
@@ -100,24 +108,23 @@ public class FNISParser
 	{
 		var animationsFolder = project.OutputAnimationDirectory;
 		var behaviorFolder = project.OutputBehaviorDirectory;
-		if (animationsFolder == null || behaviorFolder == null || !animationsFolder.Exists || !behaviorFolder.Exists) { return; }
+		if (animationsFolder == null || behaviorFolder == null || !behaviorFolder.Exists) { return; }
 		lock (parsedFolders)
 		{
-			if (parsedFolders.Contains(animationsFolder.FullName) || parsedFolders.Contains(behaviorFolder.FullName)) { return; }
+			if (parsedFolders.Contains(behaviorFolder.FullName)) { return; }
 
 			parsedFolders.Add(animationsFolder.FullName);
 			parsedFolders.Add(behaviorFolder.FullName);
 		}
+		var modFiles = behaviorFolder.GetFiles("FNIS*.hkx");
 
-		var behaviorFiles = behaviorFolder.GetFiles("FNIS*.hkx");
+		if (modFiles.Length > 0) { projectManager.ActivatePackFile(project.BehaviorFile); }
 
-		if (behaviorFiles.Length > 0) { projectManager.ActivatePackFile(project.BehaviorFile); }
-
-		foreach (var behaviorFile in behaviorFiles)
+		foreach (var modFile in modFiles)
 		{
-			InjectGraphReference(behaviorFile, project.BehaviorFile);
+			InjectGraphReference(modFile, project.BehaviorFile);
 		}
-
+		if (!animationsFolder.Exists) { return; }
 		var modAnimationFolders = animationsFolder.GetDirectories();
 
 		if (modAnimationFolders.Length == 0) { return; }
@@ -131,13 +138,12 @@ public class FNISParser
 		if (!stateMachineMap.TryGetValue(destPackFile.UniqueName, out stateFolderName!)) { return false; }
 
 		destPackFile.MapNode(stateFolderName);
-		
-		//InjectEventsAndVariables(sourcePackFile, destPackFile, changeSet);
+
 		string nameWithoutExtension = Path.GetFileNameWithoutExtension(sourceFile.Name);
 		string refName = nameWithoutExtension.Replace(' ', '_');
 		var stateInfoPath = string.Format("{0}/states", stateFolderName);
 		var graphPath = $"{destPackFile.OutputHandle.Directory?.Name}\\{nameWithoutExtension}.hkx";
-		var modInfo = new LimitedModInfo(sourceFile);
+		var modInfo = new FNISModInfo(sourceFile);
 		lock (ModInfos) ModInfos.Add(modInfo);
 		var changeSet = new PackFileChangeSet(modInfo);
 
@@ -161,13 +167,19 @@ public class FNISParser
 	private void ParseAnimlistFolder(DirectoryInfo folder, Project project, ProjectManager projectManager)
 	{
 		var animlistFiles = folder.GetFiles("*list.txt");
+
+		if (animListExcludeMap.TryGetValue(project.Identifier, out var excludeName))
+		{
+			animlistFiles = animlistFiles.Where(f => !f.Name.EndsWith(excludeName)).ToArray();
+		}
+
 		if (animlistFiles.Length == 0) { return; }
 
 		
 
 		List<PackFileCharacter> characterFiles = new List<PackFileCharacter> { project.CharacterFile };
 
-		if (linkedProjectMap.TryGetValue(project.Identifier, out var linkedProjectIdentifier) && projectManager.TryGetProject(linkedProjectIdentifier, out var linkedProject))
+		if (linkedCharacterMap.TryGetValue(project.Identifier, out var linkedProjectIdentifier) && projectManager.TryGetProject(linkedProjectIdentifier, out var linkedProject))
 		{
 			characterFiles.Add(linkedProject!.CharacterFile);
 			
@@ -184,7 +196,7 @@ public class FNISParser
 
 		List<PackFileChangeSet> changeSets = new List<PackFileChangeSet>();
 
-		for(int i = 0; i < characterPackFiles.Count; i++) { changeSets.Add(new PackFileChangeSet(new LimitedModInfo(file)));  }
+		for(int i = 0; i < characterPackFiles.Count; i++) { changeSets.Add(new PackFileChangeSet(new FNISModInfo(file)));  }
 
 
 		var parentFolder = file.Directory;

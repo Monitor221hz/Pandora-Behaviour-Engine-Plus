@@ -22,6 +22,10 @@ public class PackFileGraph : PackFile
 
 	private XElement? variableTypeContainer;
 
+	public uint InitialEventCount { get; private set; } = 0;
+	public uint InitialVariableCount {  get; private set; } = 0;
+
+
 	public string EventNamesPath { get; private set; }
 
 	public string EventFlagsPath {  get; private set; }
@@ -70,6 +74,9 @@ public class PackFileGraph : PackFile
 		variableValueContainer = Map.Lookup(VariableValuesPath);
 
 		variableTypeContainer = Map.Lookup(VariableTypesPath);
+
+		InitialEventCount = (uint)eventNameContainer.Elements().Count();
+		InitialVariableCount = (uint)variableNameContainer.Elements().Count();	
 	}
 
 

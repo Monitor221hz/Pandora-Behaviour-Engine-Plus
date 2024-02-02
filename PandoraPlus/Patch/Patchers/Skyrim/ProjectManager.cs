@@ -219,7 +219,7 @@ namespace Pandora.Core.Patchers.Skyrim
 			return false;
 		}
 		
-		public void ApplyPatches()
+		public bool ApplyPatches()
 		{
 			packFileCache.DeletePackFileOutput();
 
@@ -237,10 +237,10 @@ namespace Pandora.Core.Patchers.Skyrim
 			//	packFile.Map.Save(Path.Join(Directory.GetCurrentDirectory(), packFile.InputHandle.Name));
 			//	packFile.Export();
 			//}
-
+			return true;
 		}
 
-		public async Task ApplyPatchesParallel()
+		public async Task<bool> ApplyPatchesParallel()
 		{
 #if DEBUG
 			Debug.WriteLine("Export Started! ");
@@ -269,6 +269,8 @@ namespace Pandora.Core.Patchers.Skyrim
 			Parallel.ForEach(ActivePackFiles, packFile => { CompleteExportSuccess = packFile.Export(); });
 
 			packFileCache.SavePackFileOutput(ActivePackFiles);
+
+			return CompleteExportSuccess;
 
 		}
 	}

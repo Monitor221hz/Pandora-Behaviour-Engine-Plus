@@ -22,8 +22,10 @@ namespace Pandora.MVVM.ViewModel
 {
     public class EngineViewModel : INotifyPropertyChanged
     {
-        private readonly IModInfoProvider modinfoProvider;
-        private string logText = "";
+        private readonly NemesisModInfoProvider nemesisModInfoProvider = new NemesisModInfoProvider();
+        private readonly PandoraModInfoProvider pandoraModInfoProvider = new PandoraModInfoProvider();
+
+		private string logText = "";
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -66,9 +68,8 @@ namespace Pandora.MVVM.ViewModel
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        public EngineViewModel(IModInfoProvider modinfoProvider)
+        public EngineViewModel()
         {
-            this.modinfoProvider = modinfoProvider;
             LaunchCommand = new RelayCommand(LaunchEngine, CanLaunchEngine);
             ExitCommand = new RelayCommand(Exit);
 			activeModConfig = new FileInfo($"{currentDirectory}\\Pandora_Engine\\ActiveMods.txt");
@@ -87,11 +88,9 @@ namespace Pandora.MVVM.ViewModel
 			
 
 			List<IModInfo> modInfos = new List<IModInfo>();
-#if DEBUG
-            modInfos = await modinfoProvider?.GetInstalledMods("C:\\Games\\Skyrim Modding\\Creation Tools\\Skyrim.Behavior.Tool\\PandoraTEST\\Pandora_Engine\\mod")!;
-#endif
-			modInfos.AddRange(await modinfoProvider?.GetInstalledMods(currentDirectory + "\\Nemesis_Engine\\mod")!);
-			modInfos.AddRange(await modinfoProvider?.GetInstalledMods(currentDirectory + "\\Pandora_Engine\\mod")!);
+
+			modInfos.AddRange(await nemesisModInfoProvider?.GetInstalledMods(currentDirectory + "\\Nemesis_Engine\\mod")!);
+			modInfos.AddRange(await pandoraModInfoProvider?.GetInstalledMods(currentDirectory + "\\Pandora_Engine\\mod")!);
 
 
 			for (int i = 0; i < modInfos.Count; i++)
@@ -226,19 +225,28 @@ namespace Pandora.MVVM.ViewModel
 
 
 			Stopwatch timer = Stopwatch.StartNew();
-
-			await Task.Run(async() => { await Engine.LaunchAsync(activeMods); }); 
+            bool success = false;
+			await Task.Run(async() => { success = await Engine.LaunchAsync(activeMods); }); 
+            
             
             timer.Stop();
 
             await ClearLogBox();
            
 
-            await WriteLogBoxLine(Engine.GetMessages());
+            await WriteLogBoxLine(Engine.GetMessages(success));
 
-			await WriteLogBoxLine($"Launch finished in {Math.Round(timer.ElapsedMilliseconds / 1000.0, 2)} seconds");
-
-			await Task.Run(() => { SaveActiveMods(activeMods); });
+            if (!success)
+            {
+                await WriteLogBoxLine($"Launch aborted. Existing output was not cleared, and current patch list will not be saved.");
+            }
+            else
+            {
+				await WriteLogBoxLine($"Launch finished in {Math.Round(timer.ElapsedMilliseconds / 1000.0, 2)} seconds");
+				await Task.Run(() => { SaveActiveMods(activeMods); });
+			}
+            
+			
 
 			Engine = new BehaviourEngine();
             preloadTask = Task.Run(Engine.PreloadAsync);

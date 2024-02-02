@@ -24,9 +24,9 @@ namespace Pandora.Patch.Patchers
 		{
 			await Task.Run(() => AssemblePatch(mod));	
 		}
-		public void ApplyPatches();
+		public bool ApplyPatches();
 
-		public Task ApplyPatchesAsync();
+		public Task<bool> ApplyPatchesAsync();
 
 		public List<(FileInfo inFile, FileInfo outFile)> GetExportFiles(); 
 

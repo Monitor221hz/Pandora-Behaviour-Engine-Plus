@@ -24,7 +24,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 			if (!injectFolder.Exists) { return; }
 
 
-			Assembler.AssembleGraphInjection(injectFolder, packFile, changeSet);
+			//Assembler.AssembleGraphInjection(injectFolder, packFile, changeSet);
 		}
 
 		

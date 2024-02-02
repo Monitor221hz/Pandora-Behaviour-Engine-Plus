@@ -39,12 +39,9 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 	private static readonly DirectoryInfo templateFolder = new DirectoryInfo(Directory.GetCurrentDirectory() + "\\Pandora_Engine\\Skyrim\\Template");
 
 	private static readonly DirectoryInfo outputFolder = new DirectoryInfo($"{Directory.GetCurrentDirectory()}\\meshes");
-
-	private ProjectManager projectManager;
-
-	private AnimSetDataManager animSetDataManager;
-
-	private AnimDataManager animDataManager;
+	public ProjectManager ProjectManager { get; private set; }
+	public AnimDataManager AnimDataManager { get; private set; }
+	public AnimSetDataManager AnimSetDataManager { get; private set; }
 
 	private PandoraConverter pandoraConverter;
 
@@ -54,20 +51,20 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 
 
 
-		projectManager = new ProjectManager(templateFolder, outputFolder);
-		animSetDataManager = new AnimSetDataManager(templateFolder, outputFolder);
-		animDataManager = new AnimDataManager(templateFolder, outputFolder);
+		ProjectManager = new ProjectManager(templateFolder, outputFolder);
+		AnimSetDataManager = new AnimSetDataManager(templateFolder, outputFolder);
+		AnimDataManager = new AnimDataManager(templateFolder, outputFolder);
 
-		pandoraConverter = new PandoraConverter(projectManager, animSetDataManager, animDataManager);
+		pandoraConverter = new PandoraConverter(ProjectManager, AnimSetDataManager, AnimDataManager);
     }
 
 	public NemesisAssembler(ProjectManager projManager, AnimSetDataManager animSDManager, AnimDataManager animDManager)
 	{
-		this.projectManager = projManager;
-		this.animSetDataManager = animSDManager;
-		this.animDataManager = animDManager;
+		this.ProjectManager = projManager;
+		this.AnimSetDataManager = animSDManager;
+		this.AnimDataManager = animDManager;
 
-		pandoraConverter = new PandoraConverter(projectManager, animSetDataManager, animDataManager);
+		pandoraConverter = new PandoraConverter(ProjectManager, AnimSetDataManager, AnimDataManager);
 	}
 
     public void LoadResources()
@@ -78,15 +75,15 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 	}
 	public void GetPostMessages(StringBuilder builder)
 	{
-		projectManager.GetFNISInfo(builder);
-		projectManager.GetAnimationInfo(builder);
-		projectManager.GetExportInfo(builder);
+		ProjectManager.GetFNISInfo(builder);
+		ProjectManager.GetAnimationInfo(builder);
+		ProjectManager.GetExportInfo(builder);
 	}
 	public async Task LoadResourcesAsync()
 	{
-		var animSetDataTask = Task.Run(() => { animSetDataManager.SplitAnimSetDataSingleFile(); });
-		await Task.Run(projectManager.LoadTrackedProjects);
-		await Task.Run(() => { animDataManager.SplitAnimationDataSingleFile(projectManager); });
+		var animSetDataTask = Task.Run(() => { AnimSetDataManager.SplitAnimSetDataSingleFile(); });
+		await Task.Run(ProjectManager.LoadTrackedProjects);
+		await Task.Run(() => { AnimDataManager.SplitAnimationDataSingleFile(ProjectManager); });
 		await animSetDataTask; 
 
 	}
@@ -106,20 +103,22 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 		}
 	}
     
-	public void ApplyPatches() => projectManager.ApplyPatches();
+	public bool ApplyPatches() => ProjectManager.ApplyPatches();
 
-	public async Task ApplyPatchesAsync()
+	public async Task<bool> ApplyPatchesAsync()
 	{
-		var animSetDataTask = Task.Run(() => { animSetDataManager.MergeAnimSetDataSingleFile(); });
+		var animSetDataTask = Task.Run(() => { AnimSetDataManager.MergeAnimSetDataSingleFile(); });
 
 		
 
-		var animDataTask = Task.Run(() => { animDataManager.MergeAnimDataSingleFile(); });
+		var animDataTask = Task.Run(() => { AnimDataManager.MergeAnimDataSingleFile(); });
 
-		await projectManager.ApplyPatchesParallel();
+		var mainTask = await ProjectManager.ApplyPatchesParallel();
 
 		await animDataTask;
 		await animSetDataTask;
+
+		return mainTask;
 
 	}
 
@@ -187,14 +186,23 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 		for (int i = separatorIndex + 1; i < match.Count - 1; i++)
 		{
 			XNode node = match[i];
-
-
 			switch (node.NodeType)
 			{
 				case XmlNodeType.Text:
-					//packFile.Editor.QueueRemoveText(lookup.LookupPath(node), ((XText)node).Value);
-					changeSet.AddChange(new RemoveTextChange(lookup.LookupPath(node), ((XText)node).Value));
-					//lock (packFile.edits) packFile.edits.AddChange(new RemoveTextChange(lookup.LookupPath(node), ((XText)node).Value, modInfo));
+					StringBuilder previousTextBuilder = new StringBuilder();
+
+					while (previousNode != null && previousNode.NodeType == XmlNodeType.Text)
+					{
+						previousTextBuilder.Append(((XText)previousNode!).Value);
+						previousNode = previousNode.PreviousNode;
+					}
+
+					string preText = previousTextBuilder.ToString();
+					string oldText = ((XText)node).Value;
+
+					//packFile.Editor.QueueReplaceText(lookup.LookupPath(node), ((XText)node).Value, ((XText)newNodes[i - separatorIndex - 1]).Value);
+
+					changeSet.AddChange(new ReplaceTextChange(lookup.LookupPath(node), preText, oldText, string.Empty));
 					break;
 				case XmlNodeType.Element:
 					//packFile.Editor.QueueRemoveElement(lookup.LookupPath(node));
@@ -311,10 +319,10 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 
 	private bool AssemblePackFilePatch(DirectoryInfo folder, IModInfo modInfo)
     {
-		if (!projectManager.ContainsPackFile(folder.Name)) return false;
+		if (!ProjectManager.ContainsPackFile(folder.Name)) return false;
 		var changeSet = new PackFileChangeSet(modInfo);
 		var modName = modInfo.Name;
-		var targetPackFile = projectManager.ActivatePackFile(folder.Name);
+		var targetPackFile = ProjectManager.ActivatePackFile(folder.Name);
 
 		FileInfo[] editFiles = folder.GetFiles("#*.txt");
 
@@ -361,7 +369,7 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 	public List<(FileInfo inFile, FileInfo outFile)> GetExportFiles()
 	{
 		List < (FileInfo inFile, FileInfo outFile) > exportFiles = new List<(FileInfo inFile, FileInfo outFile)> ();
-		foreach (PackFile packFile in projectManager.ActivePackFiles)
+		foreach (PackFile packFile in ProjectManager.ActivePackFiles)
         {
             exportFiles.Add((packFile.InputHandle, new FileInfo(Path.Join(Directory.GetCurrentDirectory(), packFile.InputHandle.Name)))); 
         }

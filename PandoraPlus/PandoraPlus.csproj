@@ -83,6 +83,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="meshes\.gitkeep">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -960,5 +963,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="if &quot;$(ConfigurationName)&quot; == &quot;Debug&quot; (&#xD;&#xA;    xcopy &quot;$(ProjectDir)Pandora_Engine\*&quot; &quot;$(PANDORA_TEST_ENV)\Pandora_Engine\&quot; /Y /E /I&#xD;&#xA;    xcopy &quot;$(ProjectDir)meshes\*&quot; &quot;$(PANDORA_TEST_ENV)\meshes\&quot; /Y /E /I&#xD;&#xA;)" />
+  </Target>
 
 </Project>

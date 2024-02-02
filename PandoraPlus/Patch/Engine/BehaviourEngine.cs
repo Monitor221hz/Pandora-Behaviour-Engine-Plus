@@ -20,11 +20,13 @@ namespace Pandora.Core
 			Configuration.Patcher.Run();
 		}
 
-		public async Task LaunchAsync(List<IModInfo> mods)
+		public async Task<bool> LaunchAsync(List<IModInfo> mods)
 		{
 			Configuration.Patcher.SetTarget(mods);
-			await Configuration.Patcher.UpdateAsync();
-			await Configuration.Patcher.RunAsync(); 
+
+			if (!await Configuration.Patcher.UpdateAsync()) { return false; }
+
+			return await Configuration.Patcher.RunAsync();
 		}
 
 		public async Task PreloadAsync()
@@ -32,9 +34,9 @@ namespace Pandora.Core
 			await Configuration.Patcher.PreloadAsync();
 		}
 
-		public string GetMessages()
+		public string GetMessages(bool success)
 		{
-			return Configuration.Patcher.GetPostRunMessages();
+			return success ? Configuration.Patcher.GetPostRunMessages() : Configuration.Patcher.GetFailureMessages();
 		}
 	}
 

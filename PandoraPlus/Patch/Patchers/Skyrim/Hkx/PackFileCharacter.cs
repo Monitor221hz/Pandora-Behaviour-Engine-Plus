@@ -17,7 +17,7 @@ public class PackFileCharacter : PackFile
 
 	private XElement? animationNamesContainer;
 
-	private uint initialAnimationCount = 0;
+	public uint InitialAnimationCount { get; private set; } = 0;
 
 	public string AnimationNamesPath { get; private set; }
 
@@ -41,13 +41,13 @@ public class PackFileCharacter : PackFile
 		BehaviorFilenamePath = $"{characterStringDataPath}/behaviorFilename";
 
 		animationNamesContainer = Map.Lookup(AnimationNamesPath);
-		initialAnimationCount = NewAnimationCount;
+		InitialAnimationCount = NewAnimationCount;
 	}
 
 
 	public List<XElement> AnimationNames => animationNamesContainer!.Elements().ToList();
 
-	public uint NewAnimationCount => ((uint)AnimationNames.Count - initialAnimationCount);
+	public uint NewAnimationCount => ((uint)AnimationNames.Count - InitialAnimationCount);
 
 
 }

@@ -22,9 +22,9 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 	public class PandoraAssembler
 	{
 		private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-		private ProjectManager projectManager { get; set; }	
-		private AnimDataManager animDataManager { get; set; }	
-		private AnimSetDataManager animSetDataManager { get; set; }
+		public ProjectManager ProjectManager { get; private set; }	
+		public AnimDataManager AnimDataManager { get; private set; }	
+		public AnimSetDataManager AnimSetDataManager { get; private set; }
 
 		private DirectoryInfo engineFolder = new DirectoryInfo(Directory.GetCurrentDirectory() + "\\Pandora_Engine");
 
@@ -36,263 +36,182 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 
 		private static readonly string stateMachineChildrenFormatPath = "{0}/states";
 
+		private static readonly Dictionary<string, ChangeType> changeTypeNameMap =  Enum.GetValues(typeof(ChangeType)).Cast<ChangeType>().ToDictionary(c => c.ToString(), v => v, StringComparer.OrdinalIgnoreCase);
+
 		public PandoraAssembler()
 		{
-			projectManager = new ProjectManager(templateFolder, outputFolder);
-			animSetDataManager = new AnimSetDataManager(templateFolder, outputFolder);
-			animDataManager = new AnimDataManager(templateFolder, outputFolder);
+			ProjectManager = new ProjectManager(templateFolder, outputFolder);
+			AnimSetDataManager = new AnimSetDataManager(templateFolder, outputFolder);
+			AnimDataManager = new AnimDataManager(templateFolder, outputFolder);
 		}
-
+		public PandoraAssembler(NemesisAssembler nemesisAssembler)
+		{
+			ProjectManager = nemesisAssembler.ProjectManager;
+			AnimSetDataManager = nemesisAssembler.AnimSetDataManager;
+			AnimDataManager = nemesisAssembler.AnimDataManager;
+		}
 		public PandoraAssembler(ProjectManager projManager, AnimSetDataManager animSDManager, AnimDataManager animDManager)
 		{
-			this.projectManager = projManager;
-			this.animSetDataManager = animSDManager;
-			this.animDataManager = animDManager;
+			this.ProjectManager = projManager;
+			this.AnimSetDataManager = animSDManager;
+			this.AnimDataManager = animDManager;
 		}
-		
-		private bool AssembleUnknownEdits(DirectoryInfo folder, out List<XElement> elements, out List<string> strings, ChangeType changeType)
+		public void AssembleEdit(ChangeType changeType, XElement element, PackFileChangeSet changeSet)
 		{
-			var textFiles = folder.GetFiles("*.txt");
-			var xmlFiles = folder.GetFiles("*.xml");
-			elements = new List<XElement>();
-			strings = new List<string>(); 
-			foreach ( var file in textFiles )
+			XAttribute? pathAttribute = element.Attribute("path");
+			if (pathAttribute == null) { return; }
+
+			bool isPathEmpty = string.IsNullOrWhiteSpace(pathAttribute.Value);
+
+			XAttribute? textAttribute = element.Attribute("text");
+			XAttribute? preTextAttribute = element.Attribute("preText");
+
+			switch (changeType)
 			{
-				using (var readStream = file.OpenRead())
-				{
-					using (var reader = new StreamReader(readStream))
+				case ChangeType.Remove:
+					if (textAttribute == null)
 					{
-						string? expectedLine; 
-						while ((expectedLine = reader.ReadLine()) != null)
-						{
-							if (String.IsNullOrWhiteSpace(expectedLine)) continue; 
-							strings.Add(expectedLine);
-						}
+						changeSet.AddChange(new RemoveElementChange(pathAttribute.Value));
+						break;
 					}
-				}
-			}
-			foreach( var file in xmlFiles )
-			{
-				try
-				{
-					elements.Add(XElement.Load(file.FullName));
-				}
-				catch (Exception e) 
-				{
-					Logger.Error($"Pandora Assembler > File {file.FullName} > Load > FAILED > {e.Message}");
-				}
-			}
-			return elements.Count > 0 || strings.Count > 0;
-		}
+					//assume text
+					if (String.IsNullOrWhiteSpace(element.Value) || String.IsNullOrWhiteSpace(textAttribute.Value)) { break; }
 
-		private void TagUnknownEdits(List<XElement> elements, List<string> strings, ChangeType changeType)
-		{
-			switch(changeType)
-			{
+					if (preTextAttribute == null)
+					{
+						changeSet.AddChange(new RemoveTextChange(pathAttribute.Value, textAttribute.Value));
+						break;
+					}
+					changeSet.AddChange(new ReplaceTextChange(pathAttribute.Value, preTextAttribute.Value, textAttribute.Value, string.Empty));
 
-			}
-		}
-		private void ForwardReplaceEdits(string path, PackFileChangeSet changeSet, List<XElement> elements, List<string> strings)
-		{
-			foreach(var element in elements )
-			{
-				changeSet.AddChange(new ReplaceElementChange(path,element));
-			}
-		}
-
-		private bool TryLoadPackedFileGraph(FileInfo file, out PackFileGraph? packFile)
-		{
-			FileInfo? existingFile;
-			bool cached = cachedFiles.TryGetValue(file.Name, out existingFile);
-			if (cached) { file = existingFile!; }
-
-			var unpackedFile = new FileInfo(Path.ChangeExtension(file.FullName, ".xml"));
-			packFile = null;
-			
-			try
-			{
-				packFile = unpackedFile.Exists ? new PackFileGraph(unpackedFile) : new PackFileGraph(PackFile.GetUnpackedHandle(file));
-				packFile.Activate();
-
-				if (!cached) { cachedFiles.Add(file.Name, file); }
-
-			}
-			catch (Exception ex)
-			{
-				//add log message later
-				return false;	
-			}
-			return true;
-		}
-		private bool TryLoadPackFileGraph(FileInfo file, out PackFileGraph? packFile)
-		{
-			packFile = null; 
-			try
-			{
-				packFile = new PackFileGraph(file);
-				packFile.Activate();
-			}
-			catch 
-			(Exception ex)
-			{ 
-				return false; 
-			}
-			return true;
-		}
-		private void IdentifyUnknownEdits(string name, List<XElement> elements, List<string> values)
-		{
-			switch(name)
-			{
-				case "replace":
-					TagUnknownEdits(elements, values, ChangeType.Replace);
 					break;
-				case "remove":
-					TagUnknownEdits(elements, values, ChangeType.Remove);
+
+				case ChangeType.Insert:
+					if (element.IsEmpty) { break; }
+					if (element.HasElements)
+					{
+						if (!isPathEmpty)
+						{
+							foreach (var childElement in element.Elements()) { changeSet.AddChange(new InsertElementChange(pathAttribute.Value, childElement)); }
+							break;
+						}
+
+						foreach (var childElement in element.Elements()) { changeSet.AddChange(new PushElementChange(PackFile.ROOT_CONTAINER_NAME, element)); }
+						break;
+					}
+					if (textAttribute == null || isPathEmpty) { break; }
+
+					changeSet.AddChange(new InsertTextChange(pathAttribute.Value, textAttribute.Value, element.Value));
+
 					break;
-				case "insert":
-					TagUnknownEdits(elements, values, ChangeType.Insert);
+				case ChangeType.Append:
+					if (element.IsEmpty) { break; }
+					if (element.HasElements)
+					{
+						if (!isPathEmpty)
+						{
+							foreach (var childElement in element.Elements()) { changeSet.AddChange(new AppendElementChange(pathAttribute.Value, childElement));  }
+							break;
+						}
+
+						foreach (var childElement in element.Elements()) { changeSet.AddChange(new PushElementChange(PackFile.ROOT_CONTAINER_NAME, element)); }
+						break;
+					}
+
+					if (isPathEmpty) { break; }
+					changeSet.AddChange(new AppendTextChange(pathAttribute.Value, element.Value));
+
 					break;
-				case "append":
-					TagUnknownEdits(elements, values, ChangeType.Append);
+
+				case ChangeType.Replace:
+					if (element.IsEmpty || isPathEmpty) { break; }
+					if (textAttribute == null && element.HasElements)
+					{
+						foreach(var childElement in element.Elements()) { changeSet.AddChange(new ReplaceElementChange(pathAttribute.Value, new XElement(childElement))); } 
+						break;
+					}
+					if (textAttribute == null) { break; }
+					if (preTextAttribute == null)
+					{
+						changeSet.AddChange(new ReplaceTextChange(pathAttribute.Value, string.Empty, textAttribute.Value, element.Value));
+						break;
+					}
+					changeSet.AddChange(new ReplaceTextChange(pathAttribute.Value, preTextAttribute.Value, textAttribute.Value, element.Value));
 					break;
+
 				default:
 					break;
-			}
-		}
-		private void InjectEventsAndVariables(PackFileGraph sourcePackFile, PackFileGraph destPackFile, PackFileChangeSet destChangeSet)
-		{
-			var eventNameElements = sourcePackFile.EventNames;
-			var eventFlagElements = sourcePackFile.EventFlags;
 
-			var variableNameElements = sourcePackFile.VariableNames;
-			var variableValueElements = sourcePackFile.VariableValues;
-			var variableTypeElements = sourcePackFile.VariableTypes;
 
-			for (int i = 0; i < eventNameElements.Count; i++)
-			{
-				destChangeSet.AddChange(new AppendElementChange(destPackFile.EventNamesPath, eventNameElements[i]));
-				destChangeSet.AddChange(new AppendElementChange(destPackFile.EventFlagsPath, eventFlagElements[i]));
-			}
-
-			for (int i = 0; i < variableNameElements.Count; i++)
-			{
-				destChangeSet.AddChange(new AppendElementChange(destPackFile.VariableNamesPath, variableNameElements[i]));
-				destChangeSet.AddChange(new AppendElementChange(destPackFile.VariableValuesPath, variableValueElements[i]));
-				destChangeSet.AddChange(new AppendElementChange(destPackFile.VariableTypesPath, variableTypeElements[i]));
 			}
 		}
 
-		private void InjectGraphAnimations(PackFileGraph sourcePackFile, PackFileCharacter destPackFile, PackFileChangeSet changeSet)
+		public void AssembleTypedEdits(ChangeType changeType, XElement container, PackFileChangeSet changeSet)
 		{
-			var animationNames = sourcePackFile.GetAnimationFilePaths();
-			//projectManager.ActivatePackFile((PackFile)destPackFile);
-			foreach(var animationName in animationNames) { changeSet.AddChange(new AppendElementChange(destPackFile.AnimationNamesPath, new XElement("hkcstring", animationName))); }
-		}
-		private void InjectGraphReference(PackFileGraph sourcePackFile, PackFileGraph destPackFile, PackFileChangeSet changeSet, string stateFolderName)
-		{
-			//InjectEventsAndVariables(sourcePackFile, destPackFile, changeSet);
-			string nameWithoutExtension = Path.GetFileNameWithoutExtension(sourcePackFile.OutputHandle.Name);
-			string refName = nameWithoutExtension.Replace(' ', '_');
-			var stateInfoPath = string.Format(stateMachineChildrenFormatPath, stateFolderName);
-			var graphPath = $"{destPackFile.OutputHandle.Directory?.Name}\\{nameWithoutExtension}.hkx";
-
-
-			PatchNodeCreator nodeMaker = new PatchNodeCreator(changeSet.Origin.Code);
-
-			string behaviorRefName;
-			var behaviorRef = nodeMaker.CreateBehaviorReferenceGenerator(refName, graphPath, out behaviorRefName);
-			XElement behaviorRefElement = nodeMaker.TranslateToLinq<hkbBehaviorReferenceGenerator>(behaviorRef, behaviorRefName);
-
-			string stateInfoName;
-			var stateInfo = nodeMaker.CreateSimpleStateInfo(behaviorRef, out stateInfoName);
-			XElement stateInfoElement = nodeMaker.TranslateToLinq<hkbStateMachineStateInfo>(stateInfo, stateInfoName);
-
-			changeSet.AddChange(new AppendElementChange(PackFile.ROOT_CONTAINER_NAME, behaviorRefElement));
-			changeSet.AddChange(new AppendElementChange(PackFile.ROOT_CONTAINER_NAME, stateInfoElement));
-			changeSet.AddChange(new AppendTextChange(stateInfoPath, stateInfoName));
-		}
-		public void AssembleGraphInjection(DirectoryInfo injectFolder, PackFile destPackFile, PackFileChangeSet changeSet)
-		{
-			if (destPackFile is not PackFileGraph && destPackFile is not PackFileCharacter) { return; }
-
-
-			if (destPackFile is PackFileCharacter)
+			foreach (var element in container.Elements())
 			{
-				foreach (var file in injectFolder.GetFiles("*.xml"))
+				AssembleEdit(changeType, element, changeSet);
+			}
+		}
+
+		public void AssembleEdits(XElement container, PackFileChangeSet changeSet)
+		{
+			if (!container.HasElements) { return; }	
+			foreach (var element in container.Elements())
+			{
+
+				if (changeTypeNameMap.TryGetValue(element.Name.ToString(), out ChangeType changeType))
 				{
-					PackFileGraph? sourcePackFile; 
-
-					if (!TryLoadPackFileGraph(file, out sourcePackFile)) { continue; }
-
-					InjectGraphAnimations(sourcePackFile!, (PackFileCharacter)destPackFile, changeSet);
+					if (element.HasAttributes) 
+					{
+						AssembleEdit(changeType, element, changeSet);
+						continue;
+					}
+					AssembleTypedEdits(changeType, element, changeSet);
+					continue;
 				}
-				return; 
-			}
-
-			var stateFolders = injectFolder.GetDirectories();
-
-			foreach (var stateFolder in stateFolders)
-			{
-
-				destPackFile.MapNode(stateFolder.Name);
-
-				foreach(var file in stateFolder.GetFiles("*.xml"))
-				{
-					PackFileGraph? sourcePackFile;
-
-					if (!TryLoadPackFileGraph(file, out sourcePackFile)) { continue; }
-
-					InjectGraphReference(sourcePackFile!, (PackFileGraph)destPackFile, changeSet, stateFolder.Name);
-				}
+				AssembleEdits(element, changeSet);
+				
 			}
 		}
-		private bool AssemblePackFilePatch(DirectoryInfo folder, IModInfo modInfo)
+		public bool AssemblePackFilePatch(FileInfo file, IModInfo modInfo)
 		{
-			if (!projectManager.ContainsPackFile(folder.Name)) return false;
+
+			var name = Path.GetFileNameWithoutExtension(file.Name);
+			if (!ProjectManager.ContainsPackFile(name)) return false;
+
 			var changeSet = new PackFileChangeSet(modInfo);
-			var modName = modInfo.Name;
-			var targetPackFile = projectManager.ActivatePackFile(folder.Name);
-			
-			var subFolders = modInfo.Folder.GetDirectories();
-			if (subFolders.Length == 0) return false;
-			List<string> values;
-			List<XElement> elements; 
-			foreach ( var subFolder in subFolders )
+			var targetPackFile = ProjectManager.ActivatePackFile(name);
+
+			XElement container;
+			using (FileStream stream = file.OpenRead())
 			{
-				if (!AssembleUnknownEdits(subFolder, out elements, out values, ChangeType.Remove)) continue; 
-
-				switch (subFolder.Name.ToLower())
-				{
-					case "replace":
-						TagUnknownEdits(elements, values, ChangeType.Replace);
-						break;
-					case "delete":
-						TagUnknownEdits(elements, values, ChangeType.Remove);
-						break;
-					case "insert":
-						break;
-					case "append":
-						break;
-					case "inject": //special case for injecting behavior files
-						AssembleGraphInjection(subFolder, targetPackFile, changeSet);
-						break;
-					default:
-						break;
-				}
+				container = XElement.Load(stream);
 			}
+			var editContainer = container;
 
+			if (editContainer == null) { return false;  }
 
+			AssembleEdits(editContainer, changeSet);
 
+			targetPackFile.Dispatcher.AddChangeSet(changeSet);
 			return true;
 		}
-
+		public void AssemblePatch(IModInfo modInfo)
+		{
+			var patchFolder = new DirectoryInfo(Path.Join(modInfo.Folder.FullName, "patches"));
+			foreach( var file in patchFolder.GetFiles("*.xml"))
+			{
+				AssemblePackFilePatch(file, modInfo);
+			}
+		}
 		public void AssembleAnimDataPatch(DirectoryInfo folder)
 		{
 			var files = folder.GetFiles();
 			foreach (var file in files)
 			{
 				Project? targetProject;
-				if (!file.Exists || !projectManager.TryGetProject(Path.GetFileNameWithoutExtension(file.Name.ToLower()), out targetProject)) continue;
+				if (!file.Exists || !ProjectManager.TryGetProject(Path.GetFileNameWithoutExtension(file.Name.ToLower()), out targetProject)) continue;
 
 				using (var readStream = file.OpenRead())
 				{
@@ -314,7 +233,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 
 			foreach (DirectoryInfo subDirInfo in directoryInfo.GetDirectories())
 			{
-				if (!animSetDataManager.AnimSetDataMap.TryGetValue(subDirInfo.Name, out targetAnimSetData)) return;
+				if (!AnimSetDataManager.AnimSetDataMap.TryGetValue(subDirInfo.Name, out targetAnimSetData)) return;
 				var patchFiles = subDirInfo.GetFiles();
 
 				foreach (var patchFile in patchFiles)

@@ -7,7 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Pandora.MVVM.Model;
-public class LimitedModInfo : IModInfo
+
+public class FNISModInfo : IModInfo
 {
 	public string Name { get; private set; }
 
@@ -16,6 +17,8 @@ public class LimitedModInfo : IModInfo
 	public string Author { get; private set; } = "unknown";
 
 	public Version Version { get; private set; } = new Version();
+
+	public IModInfo.ModFormat Format { get; } = IModInfo.ModFormat.FNIS;
 
 	public string URL { get; private set; } = "null";
 
@@ -26,7 +29,7 @@ public class LimitedModInfo : IModInfo
 	public bool Active { get; set; } = true;
 	public uint Priority { get;  set; } = 0;
 
-	public LimitedModInfo(FileInfo file)
+	public FNISModInfo(FileInfo file)
 	{
 		Name = file.Name;
 		Folder = file.Directory!;

@@ -11,6 +11,20 @@ namespace Pandora.Core.Patchers
 {
 	public interface IPatcher
 	{
+		[Flags]
+		public enum PatcherFlags
+		{
+			None = 0,
+			PreloadFailed = 1 << 1,
+			UpdateFailed = 1 << 2, 
+			LaunchFailed = 1 << 3,
+			Success = ~PreloadFailed & ~UpdateFailed & ~LaunchFailed
+		}
+		public PatcherFlags Flags { get; }	
+
+		public string GetVersionString();
+
+		public Version GetVersion();
 		public void SetTarget(List<IModInfo> mods);
 
 		public Task PreloadAsync();
@@ -21,13 +35,12 @@ namespace Pandora.Core.Patchers
 
 		public void Run();
 
-		public string GetPostRunMessages() => string.Empty;	
+		public string GetPostRunMessages() => string.Empty;
 
-		public async Task UpdateAsync()
-		{
-			await Task.Run(() => { Update(); }); 
-		}
+		public string GetFailureMessages();
 
-		public  Task RunAsync();
+		public Task<bool> UpdateAsync();
+
+		public  Task<bool> RunAsync();
 	}
 }
