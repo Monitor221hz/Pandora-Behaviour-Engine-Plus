@@ -60,9 +60,19 @@ jobs:
          name: Pandora.Behaviour.Engine
          path: ./
          merge-multiple: true
-
-      - name: Upload Release
-        uses: softprops/action-gh-release@v0.1.13
-        with:
-          files: |
-            ./*.zip
+         
+      - name: Create Release
+        env:
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >-
+         gh release create "${{ github.ref }}"
+         "Pandora.Behaviour.Engine.zip"
+         --generate-notes
+         --title "Pandora Behaviour Engine ${{ github.ref }}"
+        
+      - name: Upload Artifact to Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >-
+          gh release upload ${{ github.ref }} ./*.zip
+    
