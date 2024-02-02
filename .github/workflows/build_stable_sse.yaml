@@ -60,8 +60,8 @@ jobs:
          name: Pandora.Behaviour.Engine
 
       - name: Upload Release
-        uses: softprops/action-gh-release@v0.1.15
+        uses: softprops/action-gh-release@v0.1.13
         with:
           files: |
-           ./Pandora.Behaviour.Engine.zip
+           .\Pandora.Behaviour.Engine.zip
     
