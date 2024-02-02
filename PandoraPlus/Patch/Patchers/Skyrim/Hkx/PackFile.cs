@@ -158,7 +158,6 @@ public class PackFile : IPatchFile, IEquatable<PackFile>
 			IHavokObject rootObject;
 			ExportSuccess = true;
 #if DEBUG
-		Debug.WriteLine($"Export: {OutputHandle.FullName}");
 		using (var memoryStream = new MemoryStream())
 		{
 			Map.Save(memoryStream);

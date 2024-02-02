@@ -242,9 +242,6 @@ namespace Pandora.Core.Patchers.Skyrim
 
 		public async Task<bool> ApplyPatchesParallel()
 		{
-#if DEBUG
-			Debug.WriteLine("Export Started! ");
-#endif
 			Task deleteOutputTask = Task.Run(packFileCache.DeletePackFileOutput);
 			try
 			{
