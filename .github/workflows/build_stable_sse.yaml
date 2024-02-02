@@ -66,13 +66,7 @@ jobs:
          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: >-
          gh release create "${{ github.ref }}"
-         "Pandora.Behaviour.Engine.zip"
+         "./*.zip"
          --generate-notes
          --title "Pandora Behaviour Engine ${{ github.ref }}"
-        
-      - name: Upload Artifact to Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: >-
-          gh release upload ${{ github.ref }} ./*.zip
     
