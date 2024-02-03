@@ -62,7 +62,7 @@ jobs:
          merge-multiple: true
          
       - name: Zip Artifact For Deployment
-        run: zip release.zip ./* -r
+        run: Compress-Archive -Path ./* -Destination ./release.zip
          
       - name: Create Release
         env:
