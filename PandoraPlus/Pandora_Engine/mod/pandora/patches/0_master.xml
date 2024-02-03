@@ -1,0 +1,37 @@
+<patch>
+	<append>
+		<edit path="#0106/variableNames">
+			<hkcstring>bIsPandoraLocked</hkcstring>
+			<hkcstring>bIsPandoraGenerated</hkcstring>
+		</edit>
+		<edit path="#0107/wordVariableValues">
+			<hkobject>
+				<hkparam name="value">0</hkparam>
+			</hkobject>
+			<hkobject>
+				<hkparam name="value">1</hkparam>
+			</hkobject>
+		</edit>
+		<edit path="#0108/variableInfos">
+			<hkobject>
+				<hkparam name="role">
+					<hkobject>
+						<hkparam name="role">ROLE_DEFAULT</hkparam>
+						<hkparam name="flags">0</hkparam>
+					</hkobject>
+				</hkparam>
+				<hkparam name="type">VARIABLE_TYPE_INT32</hkparam>
+			</hkobject>
+			<hkobject>
+				<hkparam name="role">
+					<hkobject>
+						<hkparam name="role">ROLE_DEFAULT</hkparam>
+						<hkparam name="flags">0</hkparam>
+					</hkobject>
+				</hkparam>
+				<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+			</hkobject>
+		</edit>
+	</append>
+
+</patch>
