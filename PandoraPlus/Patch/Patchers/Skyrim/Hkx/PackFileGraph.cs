@@ -75,11 +75,11 @@ public class PackFileGraph : PackFile
 
 		variableTypeContainer = Map.Lookup(VariableTypesPath);
 
-		InitialEventCount = (uint)eventNameContainer.Elements().Count();
-		InitialVariableCount = (uint)variableNameContainer.Elements().Count();	
+		var eventCountAttribute = eventNameContainer.Attribute("numelements");
+		var variableCountAttribute = variableNameContainer.Attribute("numelements");
+		InitialEventCount = eventCountAttribute != null ? uint.Parse(eventCountAttribute.Value) : (uint)eventNameContainer.Elements().Count();
+		InitialVariableCount = variableCountAttribute != null ? uint.Parse(variableCountAttribute.Value) : (uint)variableNameContainer.Elements().Count();	
 	}
-
-
 
 	public List<string> GetAnimationFilePaths()
 	{
