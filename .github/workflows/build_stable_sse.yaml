@@ -69,7 +69,7 @@ jobs:
          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: >-
          gh release create "${{ github.ref }}"
-         "./*.zip"
+         "./release.zip"
          --generate-notes
          --title "Pandora Behaviour Engine ${{ github.ref }}"
     
