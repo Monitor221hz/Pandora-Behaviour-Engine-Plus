@@ -62,7 +62,7 @@ jobs:
          merge-multiple: true
          
       - name: Zip Artifact For Deployment
-        run: Compress-Archive -Path ./* -Destination ./Output/Pandora_Behaviour_Engine.zip
+        run: Compress-Archive -Path ./Output/* -Destination ./Output/Pandora_Behaviour_Engine.zip
          
       - name: Create Release
         env:
