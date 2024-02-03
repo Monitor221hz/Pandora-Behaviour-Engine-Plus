@@ -87,7 +87,7 @@ public class SkyrimPatcher : IPatcher
     {
 
         logger.Info($"Skyrim Patcher {GetVersionString()}");
-#if DEBUG
+
 		//Parallel.ForEach(activeMods, mod => { assembler.AssemblePatch(mod); });
 
         try
@@ -113,7 +113,7 @@ public class SkyrimPatcher : IPatcher
             Flags |= PatcherFlags.UpdateFailed;
             logger.Fatal($"Skyrim Patcher > Active Mods > Update > FAILED > {ex.ToString()}");
         }
-#endif
+
         //await assembler.LoadResourcesAsync();
 
         //List<Task> assembleTasks = new List<Task>();

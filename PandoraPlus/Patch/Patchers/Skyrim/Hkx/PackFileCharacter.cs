@@ -41,7 +41,9 @@ public class PackFileCharacter : PackFile
 		BehaviorFilenamePath = $"{characterStringDataPath}/behaviorFilename";
 
 		animationNamesContainer = Map.Lookup(AnimationNamesPath);
-		InitialAnimationCount = NewAnimationCount;
+
+		var animationCountAttribute = animationNamesContainer.Attribute("numelements");
+		InitialAnimationCount = (animationCountAttribute != null) ? uint.Parse(animationCountAttribute.Value) : NewAnimationCount;
 	}
 
 

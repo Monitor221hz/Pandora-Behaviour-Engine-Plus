@@ -58,18 +58,18 @@ jobs:
         uses: actions/download-artifact@v4
         with:
          name: Pandora.Behaviour.Engine
-         path: ./
+         path: ./Output
          merge-multiple: true
          
       - name: Zip Artifact For Deployment
-        run: Compress-Archive -Path ./* -Destination ./Pandora_Behaviour_Engine.zip
+        run: Compress-Archive -Path ./Output/* -Destination ./Output/Pandora_Behaviour_Engine.zip
          
       - name: Create Release
         env:
          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: >-
-         gh release create "${{ github.ref }}"
-         "./Pandora_Behaviour_Engine.zip"
+         gh release create "${{ github.ref_name }}"
+         "./Output/Pandora_Behaviour_Engine.zip"
          --generate-notes
-         --title "Pandora Behaviour Engine ${{ github.ref }}"
+         --title "Pandora Behaviour Engine ${{ github.ref_name }}"
     
