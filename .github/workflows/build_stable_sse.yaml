@@ -68,8 +68,8 @@ jobs:
         env:
          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: >-
-         gh release create "${{ github.ref }}"
+         gh release create "${{ github.ref_name }}"
          "./Pandora_Behaviour_Engine.zip"
          --generate-notes
-         --title "Pandora Behaviour Engine ${{ github.ref }}"
+         --title "Pandora Behaviour Engine ${{ github.ref_name }}"
     
