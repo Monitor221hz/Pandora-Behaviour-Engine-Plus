@@ -55,9 +55,10 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			eventIndices.Clear();
 			variableIndices.Clear();
 
-			int eventLowerBound = (int)(graph.InitialEventCount - 1);
-			int variableLowerBound = (int)(graph.InitialVariableCount - 1);
+			int eventLowerBound = eventNameElements.Count - (int)(graph.InitialEventCount) - 1;
+			int variableLowerBound = variableNameElements.Count - (int)(graph.InitialVariableCount) - 1;
 
+			
 			for (int i = eventLowerBound; i >= 0; i--)
 			{
 				var eventNameElement = eventNameElements[i];
