@@ -70,13 +70,13 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 
 					eventNameElements.RemoveAt(i);
 					eventFlagElements.RemoveAt(i);
-					Logger.Warn($"Validator > {graph.ParentProject?.Identifier}~{graph.Name} > Duplicate Event > {eventName} > REMOVED");
+					Logger.Warn($"Validator > {graph.ParentProject?.Identifier}~{graph.Name} > Duplicate Event > {eventName} > Index > {i} > REMOVED");
 					continue;
 				}
 //#if DEBUG
-//				Logger.Debug($"Validator > {packFile.ParentProject?.Identifier}~{packFile.Name} > Mapped Event > {eventName} > Index {i}");
+//				Logger.Debug($"Validator > {graph.ParentProject?.Identifier}~{graph.Name} > Mapped Event > {eventName} > Index {i}");
 //#endif
-				
+
 			}
 
 			for (int i = variableLowerBound; i >= 0; i--)
@@ -92,7 +92,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 					variableNameElements.RemoveAt(i);
 					variableTypeElements.RemoveAt(i);
 					variableValueElements.RemoveAt(i);
-					Logger.Warn($"Validator > {graph.ParentProject?.Identifier}~{graph.Name} > Duplicate Variable > {variableName} > REMOVED");
+					Logger.Warn($"Validator > {graph.ParentProject?.Identifier}~{graph.Name} > Duplicate Variable > {variableName} > Index > {i} > REMOVED");
 					continue; 
 				}
 //#if DEBUG
@@ -100,11 +100,13 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 //#endif
 				
 			}
-			for (int i = 0; i < eventNameElements.Count; i++)
+			eventLowerBound -= 2;
+			variableLowerBound -= 2;
+			for (int i = 0; i < eventLowerBound; i++)
 			{
 				eventIndices.Add(eventNameElements[i].Value, eventNameElements.Count - 1 - i);
 			}
-			for (int i = 0; i < variableNameElements.Count; i++)
+			for (int i = 0; i < variableLowerBound; i++)
 			{
 				variableIndices.Add(variableNameElements[i].Value, variableNameElements.Count - 1 - i);
 			}
