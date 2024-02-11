@@ -1,0 +1,62 @@
+# ref: https://docs.github.com/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-githubs-form-schema
+name: Bug Report
+description: Bug report (Users)
+title: "[Bug]: "
+labels: ["bug"]
+
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: What version of our software are you running?
+      placeholder: "Example: v1.0.0-alpha"
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproducing-the-problem
+    attributes:
+      label: Provide Instructions on Reproducing the Problem
+      description: |
+        When submitting a bug report, please provide the steps that another user should take to reproduce the same issue.
+        Always write your report under the assumption that the developers have no information about the bug, as is the case most of the time
+    validations:
+      required: true
+
+  - type: textarea
+    id: relevant-files
+    attributes:
+      label: Provide Relevant Files
+      description: |
+        At the bare minimum, the Engine.log file should be submitted so that the author can look through the log messages for more information, as well as see the patch list of mods available.
+
+        Ideally, the entire output of the engine should be zipped up and attached to provide the most information possible.
+
+        Keep in mind that users are not in a position to decide which files will contribute to debugging the problem, unless they are familiar with the source code and behavior. When in doubt, include as many relevant files as possible.
+      render: Shell
+      placeholder: |
+        Engine.log.zip (Highly recommended)
+
+        or
+
+        The log messages
+    validations:
+      required: true
+
+  - type: textarea
+    id: visual-proof
+    attributes:
+      label: Provide Visual Proof (optional)
+      description: Provide an image or video of the issue if possible.
+
+  - type: checkboxes
+    id: contributing-to-development
+    attributes:
+      label: Contributing To Development
+      description: |
+        Reports that follow very little or none of these guidelines will be ignored, and likely closed.
+        Please take some extra time to create a good report, so that developers can fix the issue quicker and easier.
+      options:
+        - label: I read this project's [Contributing To Development](https://github.com/Monitor144hz/Pandora-Behaviour-Engine-Plus/wiki/Contributing-To-Development)
+          required: true
