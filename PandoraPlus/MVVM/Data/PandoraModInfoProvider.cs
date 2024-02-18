@@ -1,5 +1,5 @@
 ﻿using Pandora.Core;
-using Pandora.MVVM.Model;
+
 using System;
 using System.Collections.Generic;
 using System.IO;

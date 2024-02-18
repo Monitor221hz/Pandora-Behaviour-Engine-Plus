@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace Pandora.MVVM.Model;
+namespace Pandora.Core;
 //<mod>
 //	<name></name>
 //	<author></author>

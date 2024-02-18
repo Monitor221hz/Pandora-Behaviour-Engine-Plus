@@ -7,8 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Pandora.Core;
 
-namespace Pandora.MVVM.Model
-{
+namespace Pandora.Core;
+
     public class NemesisModInfo : IModInfo
     {
 
@@ -92,4 +92,4 @@ namespace Pandora.MVVM.Model
 			//add metadata later
 		}
     }
-}
+

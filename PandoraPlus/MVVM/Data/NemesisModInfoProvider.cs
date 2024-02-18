@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Pandora.Core;
-using Pandora.MVVM.Model;
+
 namespace Pandora.MVVM.Data;
 
 
