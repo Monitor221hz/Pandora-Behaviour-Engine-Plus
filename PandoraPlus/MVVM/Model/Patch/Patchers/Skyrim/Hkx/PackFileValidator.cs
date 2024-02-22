@@ -102,11 +102,11 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			}
 			eventLowerBound -= 2;
 			variableLowerBound -= 2;
-			for (int i = 0; i < eventLowerBound; i++)
+			for (int i = 0; i < eventNameElements.Count; i++)
 			{
 				eventIndices.Add(eventNameElements[i].Value, eventNameElements.Count - 1 - i);
 			}
-			for (int i = 0; i < variableLowerBound; i++)
+			for (int i = 0; i < variableNameElements.Count; i++)
 			{
 				variableIndices.Add(variableNameElements[i].Value, variableNameElements.Count - 1 - i);
 			}
