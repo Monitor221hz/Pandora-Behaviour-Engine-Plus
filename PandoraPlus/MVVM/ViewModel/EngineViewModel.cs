@@ -1,5 +1,5 @@
 ﻿using Pandora.MVVM.Data;
-using Pandora.MVVM.Model;
+
 using Pandora.Command;
 using Pandora.Core;
 using System.Collections.ObjectModel;

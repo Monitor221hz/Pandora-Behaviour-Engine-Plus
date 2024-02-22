@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Pandora.MVVM.Model;
+namespace Pandora.Core;
 
 public class FNISModInfo : IModInfo
 {

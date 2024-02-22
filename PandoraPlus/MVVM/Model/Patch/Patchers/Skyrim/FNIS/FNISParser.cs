@@ -1,7 +1,6 @@
 ﻿using HKX2;
 using Pandora.Core;
 using Pandora.Core.Patchers.Skyrim;
-using Pandora.MVVM.Model;
 using Pandora.Patch.Patchers.Skyrim.AnimData;
 using Pandora.Patch.Patchers.Skyrim.AnimSetData;
 using Pandora.Patch.Patchers.Skyrim.Hkx;
