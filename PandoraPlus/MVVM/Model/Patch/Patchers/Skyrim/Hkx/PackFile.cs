@@ -158,6 +158,12 @@ public class PackFile : IPatchFile, IEquatable<PackFile>
 			IHavokObject rootObject;
 			ExportSuccess = true;
 #if DEBUG
+		var debugOuputHandle = new FileInfo(OutputHandle.DirectoryName + "\\m_" + OutputHandle.Name + ".xml");
+
+		using (var writeStream = debugOuputHandle.Create())
+		{
+			Map.Save(writeStream);
+		}
 		using (var memoryStream = new MemoryStream())
 		{
 			Map.Save(memoryStream);
@@ -172,8 +178,7 @@ public class PackFile : IPatchFile, IEquatable<PackFile>
 			serializer.Serialize(rootObject, binaryWriter, header);
 		}
 
-
-		var debugOuputHandle = new FileInfo(OutputHandle.FullName + ".xml");
+		debugOuputHandle = new FileInfo(OutputHandle.FullName + ".xml");
 
 		using (var writeStream = debugOuputHandle.Create())
 		{
@@ -181,12 +186,7 @@ public class PackFile : IPatchFile, IEquatable<PackFile>
 			var xmlSerializer = new HKX2.XmlSerializer();
 			xmlSerializer.Serialize(rootObject, header, writeStream);
 		}
-		debugOuputHandle = new FileInfo(debugOuputHandle.DirectoryName + "\\m_" + debugOuputHandle.Name);
 
-		using (var writeStream = debugOuputHandle.Create())
-		{
-			Map.Save(writeStream);
-		}
 
 #else
 		try

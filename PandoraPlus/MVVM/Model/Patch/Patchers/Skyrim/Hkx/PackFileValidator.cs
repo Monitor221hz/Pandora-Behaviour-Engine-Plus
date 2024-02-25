@@ -104,11 +104,11 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			variableLowerBound -= 2;
 			for (int i = 0; i < eventNameElements.Count; i++)
 			{
-				eventIndices.Add(eventNameElements[i].Value, eventNameElements.Count - 1 - i);
+				if (!eventIndices.ContainsKey(eventNameElements[i].Value)) eventIndices.Add(eventNameElements[i].Value, eventNameElements.Count - 1 - i);
 			}
 			for (int i = 0; i < variableNameElements.Count; i++)
 			{
-				variableIndices.Add(variableNameElements[i].Value, variableNameElements.Count - 1 - i);
+				if (!variableIndices.ContainsKey(eventNameElements[i].Value)) variableIndices.Add(variableNameElements[i].Value, variableNameElements.Count - 1 - i);
 			}
 			return true; 
 		}
