@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -34,17 +35,17 @@ namespace Pandora.Core.Patchers.Skyrim
 		public PackFile SkeletonFile { get; private set; }
 		public PackFileGraph BehaviorFile { get; private set; } 
 
-		public ProjectAnimData AnimData { get; set; }
-
+		public ProjectAnimData? AnimData { get; set; }
 
 		public Project()
 		{
 			Valid = false;
-			ProjectFile = new PackFile("");
-
-#if DEBUG
-			throw new InvalidDataException("Could not initialize project because of invalid data");
-#endif
+		}
+		public Project(PackFile projectFile)
+		{
+			Valid = false;
+			ProjectFile = projectFile;
+			Identifier = Path.GetFileNameWithoutExtension(ProjectFile.InputHandle.Name);
 		}
 		public Project(PackFile projectfile, PackFileCharacter characterfile, PackFile skeletonfile, PackFileGraph behaviorfile)
 		{
@@ -93,7 +94,7 @@ namespace Pandora.Core.Patchers.Skyrim
 			return filesByName.Keys.ToList();
 			}
 		}
-		public static Project Load(PackFile projectFile, PackFileCache cache)
+		public static Project Create(PackFile projectFile, PackFileCache cache)
 		{
 			if (!projectFile.InputHandle.Exists) return new Project(); 
 
@@ -117,8 +118,30 @@ namespace Pandora.Core.Patchers.Skyrim
 
 			return project;
 		}
+		public bool Load(PackFileCache cache)
+		{
+			if (!ProjectFile.InputHandle.Exists) return false;
 
-		public static Project Load(FileInfo file, PackFileCache cache) => Load(cache.LoadPackFile(file), cache);
+			ProjectFile = ProjectFile;
+			CharacterFile = GetCharacterFile(ProjectFile, cache);
+			if (!CharacterFile.InputHandle.Exists) return false;
+
+			var (skeleton, behavior) = GetSkeletonAndBehaviorFile(ProjectFile, CharacterFile, cache);
+
+			SkeletonFile = skeleton;
+			if (!SkeletonFile.InputHandle.Exists) return false;
+
+			BehaviorFile = behavior;
+			if (!BehaviorFile.InputHandle.Exists) return false;
+
+			ProjectFile.ParentProject = this;
+			CharacterFile.ParentProject = this;
+			SkeletonFile.ParentProject = this;
+			BehaviorFile.ParentProject = this;
+
+			return true;
+		}
+		public static Project Load(FileInfo file, PackFileCache cache) => Create(cache.LoadPackFile(file), cache);
 
 		//public static Project Load(string projectFilePath) => Load(new PackFile(projectFilePath));
 

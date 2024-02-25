@@ -5,10 +5,12 @@ using Pandora.Patch.Patchers.Skyrim.AnimSetData;
 using Pandora.Patch.Patchers.Skyrim.FNIS;
 using Pandora.Patch.Patchers.Skyrim.Hkx;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Reflection.PortableExecutable;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -21,7 +23,6 @@ namespace Pandora.Core.Patchers.Skyrim
 	{
 		private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 		private Dictionary<string, Project> projectMap { get; set; } = new Dictionary<string, Project>();
-
 		private Dictionary<string, Project> fileProjectMap { get; set; } = new Dictionary<string, Project>(); 
 
 		private Dictionary<string, List<Project>> linkedProjectMap { get; set; } = new Dictionary<string, List<Project>>();
@@ -109,9 +110,59 @@ namespace Pandora.Core.Patchers.Skyrim
 					}
 				}
 			}
+			var stopwatch = Stopwatch.StartNew();
+			LoadProjects(projectPaths);
+			stopwatch.Stop();
+			Debug.WriteLine($"Projects loaded in {stopwatch.ElapsedMilliseconds}ms");
+		}
+		public void LoadProjects(List<string> projectPaths)
+		{
 			foreach (var projectPath in projectPaths)
 			{
-				LoadProject(projectPath);
+				var project = LoadProject(projectPath);
+				if (project == null) continue;
+				ExtractProject(project);
+			}
+		}
+		public void LoadProjectsParallel(List<string> projectPaths)
+		{
+			List<Project> projects = new List<Project>();
+			List<List<Project>> projectChunks = new List<List<Project>>();
+			foreach(var projectPath in projectPaths)
+			{
+				var project = LoadProjectHeader(projectPath);
+				if (project == null) continue;
+				projects.Add(project);
+			}
+			List<Project> buffer = new List<Project>();
+			for(int i = 0; i < projects.Count; i++)
+			{
+				buffer.Add(projects[i]);
+				if ((i % 10 == 0 && i > 0) || i == projects.Count-1)
+				{
+					var chunk = new List<Project>();
+					foreach(var project in buffer) {  chunk.Add(project); }
+					projectChunks.Add(chunk);
+					buffer.Clear();
+				} 
+			}
+			foreach(var chunk in projectChunks)
+			{
+				Parallel.ForEach(chunk, project =>
+				{
+					project.Load(packFileCache);
+				});
+			}
+			//Partitioner<Project> partitioner = Partitioner.Create(projects);
+
+			//Parallel.ForEach(partitioner, (project, loopstate) =>
+			//{
+			//	project.Load(packFileCache);
+			//});
+
+			foreach (var project in projects)
+			{
+				ExtractProject(project);
 			}
 		}
 		public void ExtractProjects()
@@ -132,9 +183,9 @@ namespace Pandora.Core.Patchers.Skyrim
 				//ExtractProject(project);
 
 		}
-		public void LoadProject(string projectFilePath)
+		public Project? LoadProject(string projectFilePath)
 		{
-			if (String.IsNullOrWhiteSpace(projectFilePath)) return;
+			if (String.IsNullOrWhiteSpace(projectFilePath)) return null;
 
 			lock (projectMap)
 			{
@@ -143,9 +194,22 @@ namespace Pandora.Core.Patchers.Skyrim
 
 				projectMap.Add(project.Identifier, project);
 
-				lock (project) ExtractProject(project);
+				//lock (project) ExtractProject(project);
+				return project;
 			}
 
+		}
+		public Project? LoadProjectHeader(string projectFilePath)
+		{
+			if (String.IsNullOrEmpty(projectFilePath)) return null;
+			lock (projectMap)
+			{
+				var project = new Project(packFileCache.LoadPackFile(new FileInfo(Path.Join(templateFolder.FullName, projectFilePath))));
+
+				projectMap.Add(project.Identifier, project);
+
+				return project;
+			}
 		}
 
 		private void ExtractProject(Project project)
