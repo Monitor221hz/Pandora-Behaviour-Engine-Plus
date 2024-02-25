@@ -108,7 +108,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			}
 			for (int i = 0; i < variableNameElements.Count; i++)
 			{
-				if (!variableIndices.ContainsKey(eventNameElements[i].Value)) variableIndices.Add(variableNameElements[i].Value, variableNameElements.Count - 1 - i);
+				if (!variableIndices.ContainsKey(variableNameElements[i].Value)) variableIndices.Add(variableNameElements[i].Value, variableNameElements.Count - 1 - i);
 			}
 			return true; 
 		}
