@@ -26,12 +26,14 @@ namespace Pandora.MVVM.ViewModel
         private readonly PandoraModInfoProvider pandoraModInfoProvider = new PandoraModInfoProvider();
 
 		private string logText = "";
+        private HashSet<string> startupArguments = new(StringComparer.OrdinalIgnoreCase);
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 		public bool? DialogResult { get; set; } = true;
+        public bool CloseOnFinish { get; } = false; 
 
         public BehaviourEngine Engine { get; private set; } = new BehaviourEngine();
 
@@ -70,6 +72,7 @@ namespace Pandora.MVVM.ViewModel
         }
         public EngineViewModel()
         {
+            startupArguments = Environment.GetCommandLineArgs().ToHashSet(StringComparer.OrdinalIgnoreCase);
             LaunchCommand = new RelayCommand(LaunchEngine, CanLaunchEngine);
             ExitCommand = new RelayCommand(Exit);
 			activeModConfig = new FileInfo($"{currentDirectory}\\Pandora_Engine\\ActiveMods.txt");
@@ -82,6 +85,12 @@ namespace Pandora.MVVM.ViewModel
 			CultureInfo.CurrentCulture = culture;
 
 			preloadTask = Task.Run(Engine.PreloadAsync);
+            if (startupArguments.Contains("autorun")) 
+            {
+                CloseOnFinish = true;
+                LaunchCommand.Execute(null);
+			}
+
 		}
         public async Task LoadAsync()
         {
@@ -203,8 +212,6 @@ namespace Pandora.MVVM.ViewModel
 				engineRunning = true;
 				LaunchEnabled = !engineRunning;
 			}
-
-
 			
             logText= string.Empty;
 
@@ -244,7 +251,13 @@ namespace Pandora.MVVM.ViewModel
             {
 				await WriteLogBoxLine($"Launch finished in {Math.Round(timer.ElapsedMilliseconds / 1000.0, 2)} seconds");
 				await Task.Run(() => { SaveActiveMods(activeMods); });
+
+                if (CloseOnFinish) 
+                { 
+                    System.Windows.Application.Current.Shutdown(); 
+                }
 			}
+
             
 			
 
