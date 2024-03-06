@@ -110,10 +110,7 @@ namespace Pandora.Core.Patchers.Skyrim
 					}
 				}
 			}
-			var stopwatch = Stopwatch.StartNew();
 			LoadProjects(projectPaths);
-			stopwatch.Stop();
-			Debug.WriteLine($"Projects loaded in {stopwatch.ElapsedMilliseconds}ms");
 		}
 		public void LoadProjects(List<string> projectPaths)
 		{
@@ -323,10 +320,6 @@ namespace Pandora.Core.Patchers.Skyrim
 				packFile.ApplyChanges();
 			});
 
-
-//#if DEBUG || DEBUGRELEASE
-//			foreach(PackFile packFile in ActivePackFiles) { Debug.WriteLine(packFile.UniqueName);  }
-//#endif
 			await deleteOutputTask;
 			Parallel.ForEach(ActivePackFiles, packFile => { CompleteExportSuccess = packFile.Export(); });
 
