@@ -24,15 +24,22 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimData
 
 		public void AddDummyClipData(string clipName)
 		{
-			if (dummyClipNames.Contains(clipName)) return; 
+			lock(dummyClipNames)
+			{
+				if (dummyClipNames.Contains(clipName)) return;
+			}
+			
 
 
 			var id = manager.GetNextValidID().ToString();
 			Blocks.Add(new ClipDataBlock(clipName,id));
 
 			BoundMotionDataProject?.AddDummyClipMotionData(id);
-
-			dummyClipNames.Add(clipName);
+			lock(dummyClipNames)
+			{
+				dummyClipNames.Add(clipName);
+			}
+			
 		}
 		
         public static ProjectAnimData ReadProject(StreamReader reader, int lineLimit, AnimDataManager manager)

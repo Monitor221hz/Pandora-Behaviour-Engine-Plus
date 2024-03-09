@@ -14,13 +14,13 @@ public class MotionData
 
 	public void AddDummyClipMotionData(string id)
 	{
-		Blocks.Add(new ClipMotionDataBlock(id));
+		lock (Blocks) { Blocks.Add(new ClipMotionDataBlock(id)); }
 	}
 	public static MotionData ReadProject(StreamReader reader, int lineLimit)
 	{
 		MotionData project = new MotionData();
 		int i = 1; //+1 to account for 1 empty line 
-		string whiteSpace = "";
+		string? whiteSpace = "";
 
 		while (whiteSpace != null && i < lineLimit)
 		{
