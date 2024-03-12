@@ -82,7 +82,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			for (int i = variableLowerBound; i >= 0; i--)
 			{
 				var variableNameElement = variableNameElements[i];	
-				var variableName = variableNameElement.Value;
+				var variableName = variableNameElement.Value.Trim();
 				if (!uniqueVariableNames.Add(variableName))
 				{
 					variableNameElement.Remove();
