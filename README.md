@@ -1,5 +1,13 @@
 # Pandora Behaviour Engine+
-[![build](https://github.com/Monitor144hz/Pandora-Behaviour-Engine-Plus/actions/workflows/build.yaml/badge.svg)](https://github.com/Monitor144hz/Pandora-Behaviour-Engine-Plus/actions/workflows/build.yaml) ![Discord](https://img.shields.io/discord/1218265541106466826?logo=discord&logoColor=white&color=7289da&link=https%3A%2F%2Fdiscord.gg%2F8nUQCWMn3w&link=https%3A%2F%2Fdiscord.gg%2F8nUQCWMn3w)
+
+<div>
+    <a href="https://github.com/Monitor144hz/Pandora-Behaviour-Engine-Plus/actions/workflows/build.yaml" target="_blank">
+        <img src="https://github.com/Monitor144hz/Pandora-Behaviour-Engine-Plus/actions/workflows/build.yaml/badge.svg" alt="CI Tests">
+    </a>
+    <a href="https://discord.gg/8nUQCWMn3w" target="_blank">
+        <img src="https://img.shields.io/discord/1218265541106466826?logo=discord&logoColor=white&color=7289da" alt="Discord">
+    </a>
+</div>
 
 
 
