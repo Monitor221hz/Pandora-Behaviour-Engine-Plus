@@ -323,7 +323,7 @@ namespace Pandora.Core.Patchers.Skyrim
 			await deleteOutputTask;
 
 
-			return CompleteExportSuccess;
+			return true;
 
 		}
 		public void SaveCache()

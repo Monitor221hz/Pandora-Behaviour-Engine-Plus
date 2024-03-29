@@ -15,7 +15,7 @@ public interface Exporter<T>
 	public bool ExportParallel(IEnumerable<T> objs)
 	{
 		bool success = true;
-		Parallel.ForEach(objs, obj => { success = Export(obj); });
+		Parallel.ForEach(objs, obj => { if (!Export(obj)) { success = false; } });
 		return success;
 	}
 }
