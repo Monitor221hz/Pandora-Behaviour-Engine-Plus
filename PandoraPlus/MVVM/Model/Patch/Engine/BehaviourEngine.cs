@@ -10,9 +10,16 @@ namespace Pandora.Core
 	public class BehaviourEngine
 	{
 		public IEngineConfiguration Configuration { get; private set; } = new SkyrimConfiguration();
-		
 
-		public void Launch(List<IModInfo> mods)
+        public BehaviourEngine()
+        {
+            
+        }
+        public BehaviourEngine(IEngineConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+        public void Launch(List<IModInfo> mods)
 		{
 
 			Configuration.Patcher.SetTarget(mods); 

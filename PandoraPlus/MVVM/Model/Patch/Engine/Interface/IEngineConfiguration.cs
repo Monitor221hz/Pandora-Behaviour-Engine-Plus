@@ -3,6 +3,7 @@ using Pandora.Core.IOManagers;
 using Pandora.Core.Patchers;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.Intrinsics.X86;
 using System.Text;
@@ -18,6 +19,5 @@ namespace Pandora.Core
 
 		public IPatcher Patcher { get; }
 
-		public PathManager Exporter { get; }
 	}
 }

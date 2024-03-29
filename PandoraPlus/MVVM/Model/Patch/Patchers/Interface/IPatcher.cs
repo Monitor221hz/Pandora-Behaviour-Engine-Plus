@@ -1,5 +1,7 @@
 ﻿
+using Pandora.Core.IOManagers;
 using Pandora.Patch.Patchers;
+using Pandora.Patch.Patchers.Skyrim.Hkx;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,7 +22,7 @@ namespace Pandora.Core.Patchers
 			LaunchFailed = 1 << 3,
 			Success = ~PreloadFailed & ~UpdateFailed & ~LaunchFailed
 		}
-		public PatcherFlags Flags { get; }	
+		public PatcherFlags Flags { get; }
 
 		public string GetVersionString();
 
@@ -42,5 +44,9 @@ namespace Pandora.Core.Patchers
 		public Task<bool> UpdateAsync();
 
 		public  Task<bool> RunAsync();
+
+		public void SetOutputPath(DirectoryInfo directoryInfo); 
+
+		public void SetOutputPath(string outputPath) => SetOutputPath(new DirectoryInfo(outputPath));
 	}
 }

@@ -146,7 +146,10 @@ public class PackFile : IPatchFile, IEquatable<PackFile>
 			Map.MapSlice(nodeName);
 		}
 	}
-
+	public void FlagExportFailure()
+	{
+		ExportSuccess = false;
+	}
 	public bool Export()
 	{
 
@@ -156,7 +159,7 @@ public class PackFile : IPatchFile, IEquatable<PackFile>
 			if (OutputHandle.Exists) { OutputHandle.Delete(); }
 			HKXHeader header = HKXHeader.SkyrimSE();
 			IHavokObject rootObject;
-			ExportSuccess = true;
+
 #if DEBUG
 		var debugOuputHandle = new FileInfo(OutputHandle.DirectoryName + "\\m_" + OutputHandle.Name + ".xml");
 
