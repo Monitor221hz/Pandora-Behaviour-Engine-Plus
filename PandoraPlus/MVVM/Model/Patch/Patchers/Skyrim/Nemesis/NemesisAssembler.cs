@@ -1,6 +1,9 @@
 ﻿using NLog;
 using Pandora.Core;
+using Pandora.Core.IOManagers;
 using Pandora.Core.Patchers.Skyrim;
+using Pandora.Patch.IOManagers;
+using Pandora.Patch.IOManagers.Skyrim;
 using Pandora.Patch.Patchers.Skyrim.AnimData;
 using Pandora.Patch.Patchers.Skyrim.AnimSetData;
 using Pandora.Patch.Patchers.Skyrim.Hkx;
@@ -45,7 +48,7 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 
 	private PandoraConverter pandoraConverter;
 
-
+	private Exporter<PackFile> exporter = new PackFileExporter();
 	public NemesisAssembler()
     {
 
@@ -57,9 +60,18 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 
 		pandoraConverter = new PandoraConverter(ProjectManager, AnimSetDataManager, AnimDataManager);
     }
-
-	public NemesisAssembler(ProjectManager projManager, AnimSetDataManager animSDManager, AnimDataManager animDManager)
+	public NemesisAssembler(Exporter<PackFile> ioManager)
 	{
+		this.exporter = ioManager;
+		ProjectManager = new ProjectManager(templateFolder, outputFolder);
+		AnimSetDataManager = new AnimSetDataManager(templateFolder, outputFolder);
+		AnimDataManager = new AnimDataManager(templateFolder, outputFolder);
+
+		pandoraConverter = new PandoraConverter(ProjectManager, AnimSetDataManager, AnimDataManager);
+	}
+	public NemesisAssembler(Exporter<PackFile> ioManager, ProjectManager projManager, AnimSetDataManager animSDManager, AnimDataManager animDManager)
+	{
+		this.exporter = ioManager;
 		this.ProjectManager = projManager;
 		this.AnimSetDataManager = animSDManager;
 		this.AnimDataManager = animDManager;
@@ -107,18 +119,20 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 
 	public async Task<bool> ApplyPatchesAsync()
 	{
+		
 		var animSetDataTask = Task.Run(() => { AnimSetDataManager.MergeAnimSetDataSingleFile(); });
 
 		
 
 		var animDataTask = Task.Run(() => { AnimDataManager.MergeAnimDataSingleFile(); });
-
+		
 		var mainTask = await ProjectManager.ApplyPatchesParallel();
+		bool exportSuccess = exporter.ExportParallel(ProjectManager.ActivePackFiles);
 
 		await animDataTask;
 		await animSetDataTask;
 
-		return mainTask;
+		return mainTask && exportSuccess;
 
 	}
 
@@ -376,4 +390,6 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 
         return exportFiles; 
 	}
+
+
 }

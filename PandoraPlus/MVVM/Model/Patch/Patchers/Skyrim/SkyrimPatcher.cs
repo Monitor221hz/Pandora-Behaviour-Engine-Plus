@@ -14,6 +14,10 @@ using Pandora.Patch.Patchers.Skyrim.Nemesis;
 using System.Diagnostics.Eventing.Reader;
 using System.Security.AccessControl;
 using Pandora.Patch.Patchers.Skyrim.Pandora;
+using Pandora.Core.IOManagers;
+using Pandora.Patch.Patchers.Skyrim.Hkx;
+using Pandora.Patch.IOManagers;
+using Pandora.Patch.IOManagers.Skyrim;
 
 namespace Pandora.Patch.Patchers.Skyrim;
 using PatcherFlags = IPatcher.PatcherFlags;
@@ -26,8 +30,9 @@ public class SkyrimPatcher : IPatcher
 
 
     public void SetTarget(List<IModInfo> mods) => activeMods = mods;
+    private Exporter<PackFile> exporter = new PackFileExporter();
 
-    private NemesisAssembler nemesisAssembler { get; set; } = new NemesisAssembler();
+    private NemesisAssembler nemesisAssembler { get; set; } 
 
     private PandoraAssembler pandoraAssembler { get; set; }
 
@@ -41,8 +46,15 @@ public class SkyrimPatcher : IPatcher
 
     public SkyrimPatcher()
     {
-        pandoraAssembler = new PandoraAssembler(nemesisAssembler);
+        nemesisAssembler = new NemesisAssembler();
+		pandoraAssembler = new PandoraAssembler(nemesisAssembler);
     }
+    public SkyrimPatcher(Exporter<PackFile> manager)
+    {
+        exporter = manager;
+        nemesisAssembler = new NemesisAssembler(manager);
+		pandoraAssembler = new PandoraAssembler(nemesisAssembler);
+	}
     public string GetPostRunMessages()
     {
         StringBuilder logBuilder;
@@ -141,5 +153,8 @@ public class SkyrimPatcher : IPatcher
 		await nemesisAssembler.LoadResourcesAsync();
 	}
 
-
+	public void SetOutputPath(DirectoryInfo directoryInfo)
+	{
+		exporter.ExportDirectory = directoryInfo;
+	}
 }

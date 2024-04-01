@@ -321,12 +321,14 @@ namespace Pandora.Core.Patchers.Skyrim
 			});
 
 			await deleteOutputTask;
-			Parallel.ForEach(ActivePackFiles, packFile => { CompleteExportSuccess = packFile.Export(); });
 
+
+			return true;
+
+		}
+		public void SaveCache()
+		{
 			packFileCache.SavePackFileOutput(ActivePackFiles);
-
-			return CompleteExportSuccess;
-
 		}
 	}
 }

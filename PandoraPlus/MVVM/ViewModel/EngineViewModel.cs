@@ -17,6 +17,8 @@ using System.IO;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
+using Pandora.Core.Engine.Configs;
+using System.Security.Policy;
 
 namespace Pandora.MVVM.ViewModel
 {
@@ -33,7 +35,7 @@ namespace Pandora.MVVM.ViewModel
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 		public bool? DialogResult { get; set; } = true;
-        public bool CloseOnFinish { get; } = false; 
+        private bool closeOnFinish = false; 
 
         public BehaviourEngine Engine { get; private set; } = new BehaviourEngine();
 
@@ -83,13 +85,9 @@ namespace Pandora.MVVM.ViewModel
 			CultureInfo.DefaultThreadCurrentCulture = culture;
 			CultureInfo.DefaultThreadCurrentUICulture = culture;
 			CultureInfo.CurrentCulture = culture;
-
+			ReadStartupArguments();
 			preloadTask = Task.Run(Engine.PreloadAsync);
-            if (startupArguments.Contains("autorun")) 
-            {
-                CloseOnFinish = true;
-                LaunchCommand.Execute(null);
-			}
+            
 
 		}
         public async Task LoadAsync()
@@ -142,7 +140,44 @@ namespace Pandora.MVVM.ViewModel
             sb.Append(text);
             LogText = sb.ToString();
         }
+        private void ReadStartupArguments()
+        {
+            if (startupArguments.Remove("-skyrimDebug64"))
+            {
+				Engine = new BehaviourEngine(new SkyrimDebugConfiguration());
+			}
+            if (startupArguments.Remove("-autoClose"))
+            {
+				closeOnFinish = true;
+			}
+            foreach(var arg in startupArguments)
+            {
+                if (arg.StartsWith("-o:", StringComparison.OrdinalIgnoreCase))
+                {
+                    var argArr = arg.AsSpan();
+                    var pathArr = argArr.Slice(3);
+                    Engine.Configuration.Patcher.SetOutputPath(pathArr.Trim().ToString());
+                    continue;
+                }
+    //            if (arg.Equals("-sseDebug", StringComparison.OrdinalIgnoreCase))
+    //            {
+    //                Engine = new BehaviourEngine(new SkyrimDebugConfiguration());
+    //                continue;
+    //            }
+    //            if (arg.Equals("-autorun", StringComparison.OrdinalIgnoreCase))
+    //            {
+				//	closeOnFinish = true;
+				//	launchImmediate = true;
+    //                continue;
+				//}
+            }
+			if (startupArguments.Remove("-autorun"))
+			{
+				closeOnFinish = true;
+				LaunchCommand.Execute(null);
+			}
 
+        }
         private bool LoadActiveMods(List<IModInfo> loadedMods)
         {
             if (!activeModConfig.Exists) return false;
@@ -252,7 +287,7 @@ namespace Pandora.MVVM.ViewModel
 				await WriteLogBoxLine($"Launch finished in {Math.Round(timer.ElapsedMilliseconds / 1000.0, 2)} seconds");
 				await Task.Run(() => { SaveActiveMods(activeMods); });
 
-                if (CloseOnFinish) 
+                if (closeOnFinish) 
                 { 
                     System.Windows.Application.Current.Shutdown(); 
                 }

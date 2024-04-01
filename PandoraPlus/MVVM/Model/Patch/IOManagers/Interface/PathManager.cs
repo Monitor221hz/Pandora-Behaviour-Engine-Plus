@@ -9,10 +9,10 @@ namespace Pandora.Core.IOManagers
 {
 	public interface PathManager
 	{
-		public bool Export(FileInfo inFile, FileInfo outFile);
+		public bool Export(FileInfo inFile);
 
-		public bool Import(FileInfo inFile);
+		public DirectoryInfo Import(FileInfo inFile);
 
-		public bool Export(string inPath, string outPath) => Export(new FileInfo(inPath), new FileInfo(outPath));
+
 	}
 }
