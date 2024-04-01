@@ -65,6 +65,7 @@
 
   <ItemGroup>
     <Folder Include="MVVM\Model\Interface\" />
+    <Folder Include="Nemesis_Engine\mod\amco\1hm_behavior\" />
     <Folder Include="Pandora_Engine\Skyrim\Process\" />
   </ItemGroup>
 
@@ -285,6 +286,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Pandora_Engine\mod\pandora\patches\0_master.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Pandora_Engine\mod\pandora\patches\dragonbehavior.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Pandora_Engine\mod\pandora\patches\magicbehavior.xml">
