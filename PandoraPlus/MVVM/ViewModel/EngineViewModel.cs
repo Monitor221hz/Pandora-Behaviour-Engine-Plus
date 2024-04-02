@@ -40,11 +40,13 @@ namespace Pandora.MVVM.ViewModel
         public BehaviourEngine Engine { get; private set; } = new BehaviourEngine();
 
         public RelayCommand LaunchCommand { get; }
+        public RelayCommand SetEngineConfigCommand { get; }
         public RelayCommand ExitCommand { get; }
 
         public ObservableCollection<IModInfo> Mods { get; set; } = new ObservableCollection<IModInfo>();
 
-        public bool LaunchEnabled { get; set; } = true;
+	
+		public bool LaunchEnabled { get; set; } = true;
 
 
 
@@ -59,6 +61,15 @@ namespace Pandora.MVVM.ViewModel
         private static DirectoryInfo currentDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
 
         private Task preloadTask;
+        private ObservableCollection<IEngineConfigurationFactory> engineConfigs = new ObservableCollection<IEngineConfigurationFactory>();
+		public ObservableCollection<IEngineConfigurationFactory> EngineConfigs 
+        { get => engineConfigs; 
+            set 
+            { 
+                engineConfigs = value; 
+                RaisePropertyChanged(nameof(EngineConfigs));
+            } 
+        }
 
 		public string LogText { 
             get => logText;
@@ -77,6 +88,7 @@ namespace Pandora.MVVM.ViewModel
             startupArguments = Environment.GetCommandLineArgs().ToHashSet(StringComparer.OrdinalIgnoreCase);
             LaunchCommand = new RelayCommand(LaunchEngine, CanLaunchEngine);
             ExitCommand = new RelayCommand(Exit);
+            SetEngineConfigCommand = new RelayCommand(SetEngineConfiguration, CanLaunchEngine);
 			activeModConfig = new FileInfo($"{currentDirectory}\\Pandora_Engine\\ActiveMods.txt");
 			CultureInfo culture;
 
@@ -86,10 +98,14 @@ namespace Pandora.MVVM.ViewModel
 			CultureInfo.DefaultThreadCurrentUICulture = culture;
 			CultureInfo.CurrentCulture = culture;
 			ReadStartupArguments();
+            FilterEngineConfigurations();
 			preloadTask = Task.Run(Engine.PreloadAsync);
-            
-
 		}
+        private void FilterEngineConfigurations()
+        {
+            EngineConfigs.Add(new EngineConfigurationViewModel<SkyrimConfiguration>("Skyrim SE/AE", SetEngineConfigCommand));
+            EngineConfigs.Add(new EngineConfigurationViewModel<SkyrimDebugConfiguration>("Skyrim SE/AE Debug", SetEngineConfigCommand));
+        }
         public async Task LoadAsync()
         {
 			
@@ -239,7 +255,13 @@ namespace Pandora.MVVM.ViewModel
         }
 
         private List<IModInfo> GetActiveModsByPriority() => AssignModPriorities(Mods.Where(m => m.Active).ToList());
-
+		private async void SetEngineConfiguration(object? config)
+		{
+			if (config == null) { return; }
+			IEngineConfigurationFactory engineConfiguration = (IEngineConfigurationFactory)config;
+            await preloadTask;
+			Engine = new BehaviourEngine(engineConfiguration.Config);
+		}
 		private async void LaunchEngine(object? parameter)
         {
 			lock (LaunchCommand)

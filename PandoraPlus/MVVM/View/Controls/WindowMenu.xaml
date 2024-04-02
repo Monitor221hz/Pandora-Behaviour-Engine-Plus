@@ -5,33 +5,44 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Pandora.MVVM.View.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="30" d:DesignWidth="500">
+             d:DesignHeight="20" d:DesignWidth="500">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition Width="Auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <Rectangle Grid.Column="0" Grid.ColumnSpan="3" Height="30"
-                   VerticalAlignment="Top"
-                   Fill="Black"
-                   RadiusX="5"
-                   RadiusY="5">
-        </Rectangle>
-        <Rectangle Grid.Column="2" Height="25" Width="25"
-                   HorizontalAlignment="Right"
-                   VerticalAlignment="Center"
-                   Fill="{StaticResource ControlColor}"
-                   RadiusX="5"
-                   RadiusY="5">
-        </Rectangle>
-        <Image Source="..\..\..\Assets\cancel.png" Grid.Column="2" Width="25" Height="25" RenderOptions.BitmapScalingMode="Fant">
-            
-            
-        </Image>
-        <Button Grid.Column="2" Width="25" Height="25" Background="Transparent"
-                Command="{Binding ExitCommand}">
-            
-        </Button>
+        
+        <Menu Background="{StaticResource ControlColorSolid}" 
+              Foreground="{StaticResource HeaderTextGradient}"
+              BorderThickness="0">
+            <MenuItem 
+                Background="{StaticResource ControlColorSolid}"
+                Header="config" 
+                BorderThickness="0" 
+                ItemsSource="{Binding EngineConfigs}">
+                <MenuItem.ItemContainerStyle>
+                    <Style TargetType="MenuItem">
+                        <Setter Property="BorderThickness" Value="0"></Setter>
+                        <Setter Property="Background" Value="{StaticResource ControlColorSolid}"></Setter>
+                        <Setter Property="Foreground" Value="{StaticResource ParagraphTextGradient}"></Setter>
+                        <Setter Property="Header" Value="{Binding Name}"></Setter>
+                        <Setter Property="Command" Value="{Binding SetCommand}"></Setter>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type MenuItem}">
+                                    <Border Background="{TemplateBinding Background}">
+                                        <ContentPresenter Content="{TemplateBinding Header}" Margin="20 3 10 3" />
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsHighlighted" Value="True">
+                                            <Setter Property="Background"  Value="{StaticResource HighlightColor}"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </MenuItem.ItemContainerStyle>
+            </MenuItem>
+        </Menu>
     </Grid>
 </UserControl>
