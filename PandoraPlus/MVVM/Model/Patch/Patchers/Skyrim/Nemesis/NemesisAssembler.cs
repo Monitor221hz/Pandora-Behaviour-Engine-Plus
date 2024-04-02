@@ -114,6 +114,18 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 
 		}
 	}
+	public void AssemblePatch(IModInfo modInfo, DirectoryInfo folder)
+	{
+		DirectoryInfo[] subFolders = folder.GetDirectories();
+		foreach (DirectoryInfo subFolder in subFolders)
+		{
+			if (AssemblePackFilePatch(subFolder, modInfo)) continue;
+			if (subFolder.Name == "animationsetdatasinglefile") AssembleAnimSetDataPatch(subFolder);
+			if (subFolder.Name == "animationdatasinglefile") AssembleAnimDataPatch(subFolder);
+			if (subFolder.Name == "animdata") subFolder.Delete(true);
+
+		}
+	}
     
 	public bool ApplyPatches() => ProjectManager.ApplyPatches();
 
@@ -330,53 +342,71 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 	{
 		pandoraConverter.Assembler.AssembleAnimSetDataPatch(directoryInfo);
 	}
-
-	private bool AssemblePackFilePatch(DirectoryInfo folder, IModInfo modInfo)
-    {
-		if (!ProjectManager.ContainsPackFile(folder.Name)) return false;
+	private PackFileChangeSet AssemblePackFileChanges(PackFile packFile, IModInfo modInfo, DirectoryInfo folder)
+	{
+		FileInfo[] editFiles = folder.GetFiles("#*.txt");
 		var changeSet = new PackFileChangeSet(modInfo);
 		var modName = modInfo.Name;
-		var targetPackFile = ProjectManager.ActivatePackFile(folder.Name);
-
-		FileInfo[] editFiles = folder.GetFiles("#*.txt");
-
-		//pandoraConverter.TryGraphInjection(folder, targetPackFile, changeSet);
 		XPathLookup lookup = new XPathLookup();
 		foreach (FileInfo editFile in editFiles)
 		{
-			List<XNode> nodes =new List<XNode>();
+			List<XNode> nodes = new List<XNode>();
 			string nodeName = Path.GetFileNameWithoutExtension(editFile.Name);
 			XElement element;
 			try
 			{
 				element = XElement.Load(editFile.FullName);
 			}
-			catch(XmlException e)
+			catch (XmlException e)
 			{
 				Logger.Error($"Nemesis Assembler > File {editFile.FullName} > Load > FAILED > {e.Message}");
 				continue;
 			}
-			
-
-
 			nodes = lookup.MapFromElement(element);
 
-            lock (targetPackFile) targetPackFile.MapNode(nodeName);
-			bool hasInserts = MatchInsertPattern(targetPackFile, nodes, changeSet, lookup);
-			bool hasReplacements = MatchReplacePattern(targetPackFile, nodes, changeSet, lookup);
+			lock (packFile) packFile.MapNode(nodeName);
+			bool hasInserts = MatchInsertPattern(packFile, nodes, changeSet, lookup);
+			bool hasReplacements = MatchReplacePattern(packFile, nodes, changeSet, lookup);
 
 			if (!hasReplacements && !hasInserts)
-            {
-				if (targetPackFile.Map.PathExists(modName))
+			{
+				if (packFile.Map.PathExists(modName))
 				{
 					Logger.Error($"Nemesis Assembler > File {editFile.FullName} >  No Edits Found > Load > SKIPPED");
 					continue;
 				}
 				changeSet.AddChange(new PushElementChange(PackFile.ROOT_CONTAINER_NAME, element));
-				//targetPackFile.edits.AddChange(new InsertElementChange(PackFile.ROOT_CONTAINER_NAME+"/top", element, modInfo));
-            }
+			}
 		}
-		lock (targetPackFile) targetPackFile.Dispatcher.AddChangeSet(changeSet);
+		return changeSet;
+	}
+	private bool AssemblePackFilePatch(DirectoryInfo folder,Project project,IModInfo modInfo)
+	{
+		PackFile targetPackFile;
+		if (!ProjectManager.TryActivatePackFile(folder.Name, project, out targetPackFile!))
+		{
+			return false;
+		}
+		lock (targetPackFile) targetPackFile.Dispatcher.AddChangeSet(AssemblePackFileChanges(targetPackFile, modInfo, folder));
+		return true;
+	}
+	private bool AssemblePackFilePatch(DirectoryInfo folder, IModInfo modInfo)
+    {
+		PackFile targetPackFile; 
+		if (!ProjectManager.TryActivatePackFile(folder.Name, out targetPackFile!))
+		{
+			Project targetProject;
+			if (!ProjectManager.TryLookupProjectFolder(folder.Name, out targetProject!)) {  return false; }
+
+
+			DirectoryInfo[] subFolders = folder.GetDirectories();
+			foreach(DirectoryInfo subFolder in subFolders) 
+			{
+				AssemblePackFilePatch(subFolder, targetProject, modInfo);
+			}
+			return true;
+		}
+		lock (targetPackFile) targetPackFile.Dispatcher.AddChangeSet(AssemblePackFileChanges(targetPackFile, modInfo, folder));
 		return true;
 	}
 

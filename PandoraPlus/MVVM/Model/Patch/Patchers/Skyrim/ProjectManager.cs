@@ -25,6 +25,8 @@ namespace Pandora.Core.Patchers.Skyrim
 		private Dictionary<string, Project> projectMap { get; set; } = new Dictionary<string, Project>();
 		private Dictionary<string, Project> fileProjectMap { get; set; } = new Dictionary<string, Project>(); 
 
+		private Dictionary<string, Project> folderProjectMap { get; set;} = new Dictionary<string, Project>();
+
 		private Dictionary<string, List<Project>> linkedProjectMap { get; set; } = new Dictionary<string, List<Project>>();
 
 		private DirectoryInfo templateFolder { get; set; }
@@ -117,7 +119,7 @@ namespace Pandora.Core.Patchers.Skyrim
 			foreach (var projectPath in projectPaths)
 			{
 				var project = LoadProject(projectPath);
-				if (project == null) continue;
+				if (project == null || !project.Valid) continue;
 				ExtractProject(project);
 			}
 		}
@@ -219,9 +221,25 @@ namespace Pandora.Core.Patchers.Skyrim
 					if (!fileProjectMap.ContainsKey(file)) fileProjectMap.Add(file, project);
 				}
 			}
-
+			lock(folderProjectMap)
+			{
+				if (!folderProjectMap.ContainsKey(project.ProjectDirectory!.Name))
+				{
+					folderProjectMap.Add(project.ProjectDirectory!.Name, project);
+				}
+			}
 		}
-		
+		private bool TryLookupNestedPackFile(string name, out PackFile? packFile)
+		{
+			packFile = null;
+			string[] sections = name.Split('~');
+			Project project; 
+			if (!projectMap.TryGetValue(sections[0], out project!))
+			{
+				return false; 
+			}
+			return project.TryLookupPackFile(name, out packFile);
+		}
 		private PackFile LookupNestedPackFile(string name)
 		{
 			string[] sections = name.Split('~'); 
@@ -244,6 +262,20 @@ namespace Pandora.Core.Patchers.Skyrim
 		public bool ProjectLoaded(string name) => projectMap.ContainsKey(name);
 		public Project LookupProject(string name) => projectMap[name];
 
+		public bool TryLookupPackFile(string name, out PackFile? packFile)
+		{
+			name = name.ToLower();
+			packFile = null;
+			if (name.Contains('~'))
+			{
+				return TryLookupNestedPackFile(name, out packFile);
+			}
+			Project project; 
+			if (!fileProjectMap.TryGetValue(name, out project!)) { return false; }
+
+			return project.TryLookupPackFile(name, out packFile);
+
+		}
 		public PackFile LookupPackFile(string name)
 		{
 			name = name.ToLower();
@@ -254,7 +286,42 @@ namespace Pandora.Core.Patchers.Skyrim
 		{
 			return name.Contains('~') ? ContainsNestedPackFile(name) : fileProjectMap.ContainsKey(name) && fileProjectMap[name].ContainsPackFile(name);
 		}
-
+		public bool TryLookupProjectFolder(string name, out Project? project)
+		{
+			return folderProjectMap.TryGetValue(name, out project);
+		}
+		public bool TryActivatePackFile(string name, Project project, out PackFile? packFile)
+		{
+			packFile = null;
+			if (!project.TryLookupPackFile(name, out packFile))
+			{
+				return false;
+			}
+			lock (ActivePackFiles)
+				lock (packFile)
+				{
+					if (ActivePackFiles.Contains(packFile)) { return true; }
+					ActivePackFiles.Add(packFile);
+					packFile.Activate();
+				}
+			return true;
+		}
+		public bool TryActivatePackFile(string name, out PackFile? packFile)
+		{
+			packFile = null; 
+			if (!TryLookupPackFile(name, out packFile!))
+			{
+				return false; 
+			}
+			lock (ActivePackFiles)
+				lock (packFile)
+				{
+					if (ActivePackFiles.Contains(packFile)) { return true; }
+					ActivePackFiles.Add(packFile);
+					packFile.Activate();
+				}
+			return true;
+		}
 		public PackFile ActivatePackFile(string name)
 		{
 			

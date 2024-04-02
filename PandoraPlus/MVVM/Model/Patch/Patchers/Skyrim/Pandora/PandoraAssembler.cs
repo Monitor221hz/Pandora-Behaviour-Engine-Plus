@@ -178,10 +178,10 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 		{
 
 			var name = Path.GetFileNameWithoutExtension(file.Name);
-			if (!ProjectManager.ContainsPackFile(name)) return false;
+			PackFile targetPackFile; 
+			if (!ProjectManager.TryActivatePackFile(name, out targetPackFile!)) { return false; }
 
 			var changeSet = new PackFileChangeSet(modInfo);
-			var targetPackFile = ProjectManager.ActivatePackFile(name);
 
 			XElement container;
 			using (FileStream stream = file.OpenRead())
