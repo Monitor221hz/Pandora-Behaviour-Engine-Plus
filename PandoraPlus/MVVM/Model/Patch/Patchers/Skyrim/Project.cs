@@ -23,13 +23,13 @@ namespace Pandora.Core.Patchers.Skyrim
 
 		public PackFile ProjectFile {  get; private set; }
 
-		public DirectoryInfo? ProjectDirectory => ProjectFile.InputHandle.Directory;
+		public DirectoryInfo? ProjectDirectory => ProjectFile?.InputHandle.Directory;
 
-		public DirectoryInfo? OutputDirectory => ProjectFile.OutputHandle.Directory;
+		public DirectoryInfo? OutputDirectory => ProjectFile?.OutputHandle.Directory;
 
-		public DirectoryInfo? OutputBehaviorDirectory => BehaviorFile.OutputHandle.Directory;
+		public DirectoryInfo? OutputBehaviorDirectory => BehaviorFile?.OutputHandle.Directory;
 
-		public DirectoryInfo? OutputAnimationDirectory => new DirectoryInfo(Path.Join(OutputDirectory.FullName, "animations"));
+		public DirectoryInfo? OutputAnimationDirectory => new DirectoryInfo(Path.Join(OutputDirectory?.FullName, "animations"));
 
 		public PackFileCharacter CharacterFile { get; private set; } 
 		public PackFile SkeletonFile { get; private set; }
@@ -59,6 +59,8 @@ namespace Pandora.Core.Patchers.Skyrim
 		}
 		
 		public PackFile LookupPackFile(string name) => filesByName[name];
+
+		public bool TryLookupPackFile(string name, out PackFile? packFile) => filesByName.TryGetValue(name, out packFile);
 
 		public bool ContainsPackFile(string name) => filesByName.ContainsKey(name);
 
