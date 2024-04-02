@@ -50,7 +50,7 @@ public class FNISParser
 		{"dragon_priest~dragon_priest", "#0758" },
 		{"draugrproject~draugrbehavior", "#1998" },
 		{"draugrskeletonproject~draugrbehavior", "#1998" },
-		{"hagravenproject~hagravenbehavior", "#0634" },
+		{"hagravenproject~havgravenbehavior", "#0634" },
 		{"horkerproject~horkerbehavior", "#0161" },
 		{"horseproject~horsebehavior", "#0493" },
 		{"icewraithproject~icewraithbehavior", "#0262" },
