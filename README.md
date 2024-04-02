@@ -27,6 +27,7 @@ Built with backwards compatibility in mind for [Nemesis Unlimited Behavior Engin
   * [Mod Cache](#mod-cache)
   * [Patch Hub](#patch-hub)
 * [For Mod Authors](#for-mod-authors)
+  * [Patch Format](#patch-format)
   * [File Targeting](#file-targeting)
     * [Unique Identifiers](#unique-identifiers)
     * [Indirect Identifiers](#indirect-identifiers)
@@ -87,7 +88,8 @@ Pandora has a drag and drop priority system. Higher priority mods will overwrite
 ### Mod Cache
 Pandora saves the active mods to an external cache file after the engine successfully finishes its patching process. When the cache is loaded, all active mods are shown at the top with relative priority preserved, for better readability. To clear the cache, delete `Pandora_Engine/ActiveMods.txt`. 
 
-### Patch Hub (Deprecated)
+### Patch Hub
+**(Deprecated) (NO LONGER NEEDED)**
 
 Patches for FNIS posers and other mods [available here](https://modding-guild.com/mod/pandora-behaviour-engine-patch-hub/) and also in the releases tab.
 
@@ -114,6 +116,56 @@ One of the mods does not have motion data. That is not a Pandora issue, it is a 
 
 ## For Mod Authors
 This section exists to inform current behavior authors of the key differences and features of Pandora, it's not a guide for making behavior mods.
+### Patch Format
+In addition to supporting almost all of Nemesis patch format, Pandora uses its own format which is more efficient and fault-tolerant.
+
+Patches in the new Pandora format do not use multiple text files per behavior graph, only a single xml file per graph with all edits self-contained in the below format.
+```xml
+
+<patch>
+    <replace>
+    <edit path="#xxxx\...\..."><!-- content --></edit>
+    </replace>
+    <insert>
+    <edit path="#xxxx\...\..."><!-- content --></edit>
+    </insert>
+    <append>
+    <edit path="#xxxx\...\..."><!-- content --></edit>
+    </append>
+    <loose>
+    <edit path="#xxxx\...\..."><!--content --></edit>
+    </loose>
+</patch>
+```
+Edits have the following format:
+```xml
+<edit path="#xxxx\...\..."><!-- XText xor XElement --></edit>
+```
+
+An example of a patch file:
+
+```xml
+<patch>
+	<replace>
+		<edit path="#0885/legs/Element0/maxAnkleHeightMS">
+			<hkparam name="maxAnkleHeightMS">0.700000</hkparam>
+		</edit>
+		<edit path="#0885/legs/Element0/hipIndex">
+			<hkparam name="hipIndex">12</hkparam>
+		</edit>
+		<edit path="#0885/legs/Element0/kneeIndex">
+			<hkparam name="kneeIndex">13</hkparam>
+		</edit>
+		<edit path="#0885/legs/Element0/ankleIndex">
+			<hkparam name="ankleIndex">14</hkparam>
+		</edit>
+		<edit path="#0885/legs/Element0/isPlantedMS">
+			<hkparam name="isPlantedMS">false</hkparam>
+		</edit>
+	</replace>
+</patch>
+```
+
 ### File Targeting
 
 #### Unique Identifiers
