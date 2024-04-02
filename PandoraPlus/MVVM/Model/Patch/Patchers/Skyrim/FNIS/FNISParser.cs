@@ -70,7 +70,7 @@ public class FNISParser
 		{"chaurusflyer~chaurusflyerbehavior", "#0402" },
 		{"vampirebruteproject~vampirebrutebehavior", "#0502" },
 		{"benthiclurkerproject~benthiclurkerbehavior", "#0708" },
-		{"boarriekling~boarbehavior", "#0548" },
+		{"boarriekling~boarbehavior", "#0584" },
 		{"ballistacenturion~bcbehavior", "#0475" },
 		{"hmdaedra~hmdaedra", "#0490" },
 		{"netchproject~netchbehavior", "#0279" },
