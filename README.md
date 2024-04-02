@@ -25,7 +25,7 @@ Built with backwards compatibility in mind for [Nemesis Unlimited Behavior Engin
   * [Troubleshooting](#troubleshooting)
   * [Patch Order](#patch-order)
   * [Mod Cache](#mod-cache)
-  * [Patch Hub](#patch-hub)
+  * [Startup Arguments](#startup-arguments)
 * [For Mod Authors](#for-mod-authors)
   * [Patch Format](#patch-format)
   * [File Targeting](#file-targeting)
@@ -73,9 +73,12 @@ Install [.NET 7 Desktop Runtime](https://dotnet.microsoft.com/en-us/download/dot
 <summary>Vortex Users</summary>
 <br/>
 
-1. Install Pandora Behaviour Engine as a mod and make sure it is active.
-2. Run the program either manually or after adding it to the tools dashboard.
-3. Tick the patches you want and click Launch. 
+1. Install Pandora Behaviour Engine outside of the mods folder.
+2. Add it to the tools dashboard.
+  2.a) It is highly recommended you set a custom output mod folder using `-o:{path}` in the 'Command Line' field.
+  2.b) Ensure that the 'Start In' field is set to the Skyrim data directory.
+4. Run the program either manually or after adding it to the tools dashboard.
+5. Tick the patches you want and click Launch. 
 
 </details>
 
@@ -88,12 +91,7 @@ Pandora has a drag and drop priority system. Higher priority mods will overwrite
 ### Mod Cache
 Pandora saves the active mods to an external cache file after the engine successfully finishes its patching process. When the cache is loaded, all active mods are shown at the top with relative priority preserved, for better readability. To clear the cache, delete `Pandora_Engine/ActiveMods.txt`. 
 
-### Patch Hub
-**(Deprecated) (NO LONGER NEEDED)**
 
-Patches for FNIS posers and other mods [available here](https://modding-guild.com/mod/pandora-behaviour-engine-patch-hub/) and also in the releases tab.
-
-Note that hidden mods are not active by default if there was data loaded from a cache.
 
 ### Troubleshooting
 
@@ -113,6 +111,14 @@ One of the mods does not have motion data. That is not a Pandora issue, it is a 
 
 <br/>
 <br/>
+
+## Startup Arguments
+Pandora has a variety of startup arguments to support customizability. 
+
+`-autorun`: runs the engine using the same active mods as cached from the last successful run.
+`-autoclose`: closes the engine automatically upon finishing a single launch.
+`-skyrimdebug64`: produces debug `.xml` files alongside normal `.hkx` output. Only for authors that know what they're doing.
+`-o:{output path}`: sets a custom output path.
 
 ## For Mod Authors
 This section exists to inform current behavior authors of the key differences and features of Pandora, it's not a guide for making behavior mods.
