@@ -31,7 +31,7 @@ public class FNISParser
 		{"atronachfrostproject~atronachfrostbehavior", "#0439" },
 		{"atronachstormproject~atronachstormbehavior", "#0369" },
 		{"bearproject~bearbehavior", "#0151" },
-		{"chaurusproject~chaurusbehavior", "#0052" },
+		{"chaurusproject~chaurusbehavior", "#0509" },
 		{"dogproject~dogbehavior", "#0144" },
 		{"wolfproject~wolfbehavior", "#0169" },
 		{"defaultfemale~0_master", "#0340" },
