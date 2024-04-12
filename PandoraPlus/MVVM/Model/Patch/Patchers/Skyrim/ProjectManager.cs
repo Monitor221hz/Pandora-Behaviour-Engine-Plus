@@ -85,6 +85,7 @@ namespace Pandora.Core.Patchers.Skyrim
 			{
 				fnisModCount++;
 				builder.AppendLine($"FNIS Mod {fnisModCount} : {modInfo.Name}");
+				Logger.Info($"FNIS Mod {fnisModCount} : {modInfo.Name}");
 			}
 		}
 
