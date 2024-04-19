@@ -20,6 +20,7 @@ using System.Threading;
 using Pandora.Core.Engine.Configs;
 using System.Security.Policy;
 
+
 namespace Pandora.MVVM.ViewModel
 {
     public class EngineViewModel : INotifyPropertyChanged
@@ -61,13 +62,13 @@ namespace Pandora.MVVM.ViewModel
         private static DirectoryInfo currentDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
 
         private Task preloadTask;
-        private ObservableCollection<IEngineConfigurationFactory> engineConfigs = new ObservableCollection<IEngineConfigurationFactory>();
-		public ObservableCollection<IEngineConfigurationFactory> EngineConfigs 
+        private ObservableCollection<IEngineConfigurationViewModel> engineConfigs = new ObservableCollection<IEngineConfigurationViewModel>();
+		public ObservableCollection<IEngineConfigurationViewModel> EngineConfigurationViewModels 
         { get => engineConfigs; 
             set 
             { 
                 engineConfigs = value; 
-                RaisePropertyChanged(nameof(EngineConfigs));
+                RaisePropertyChanged(nameof(EngineConfigurationViewModels));
             } 
         }
 
@@ -98,13 +99,29 @@ namespace Pandora.MVVM.ViewModel
 			CultureInfo.DefaultThreadCurrentUICulture = culture;
 			CultureInfo.CurrentCulture = culture;
 			ReadStartupArguments();
-            FilterEngineConfigurations();
+            SetupConfigurationOptions();
 			preloadTask = Task.Run(Engine.PreloadAsync);
 		}
-        private void FilterEngineConfigurations()
+        private void SetupConfigurationOptions()
         {
-            EngineConfigs.Add(new EngineConfigurationViewModel<SkyrimConfiguration>("Skyrim SE/AE", SetEngineConfigCommand));
-            EngineConfigs.Add(new EngineConfigurationViewModel<SkyrimDebugConfiguration>("Skyrim SE/AE Debug", SetEngineConfigCommand));
+            EngineConfigurationViewModels.Add(
+                new EngineConfigurationViewModelContainer("Skyrim SE/AE",
+                    new EngineConfigurationViewModelContainer("Behavior", 
+
+                        new EngineConfigurationViewModelContainer("Patch",
+                            new EngineConfigurationViewModel<SkyrimConfiguration>("Normal", SetEngineConfigCommand),
+                            new EngineConfigurationViewModel<SkyrimDebugConfiguration>("Debug", SetEngineConfigCommand)
+                        ),
+                        new EngineConfigurationViewModelContainer("Convert"
+                            
+                        ),
+                        new EngineConfigurationViewModelContainer("Validate"
+                        )
+					    )
+				    )
+                );
+            //EngineConfigs.Add(new EngineConfigurationViewModel<SkyrimConfiguration>("Skyrim SE/AE", SetEngineConfigCommand));
+            //EngineConfigs.Add(new EngineConfigurationViewModel<SkyrimDebugConfiguration>("Skyrim SE/AE Debug", SetEngineConfigCommand));
         }
         public async Task LoadAsync()
         {
@@ -260,7 +277,8 @@ namespace Pandora.MVVM.ViewModel
 			if (config == null) { return; }
 			IEngineConfigurationFactory engineConfiguration = (IEngineConfigurationFactory)config;
             await preloadTask;
-			Engine = new BehaviourEngine(engineConfiguration.Config);
+            var newConfig = engineConfiguration.Config;
+			Engine = newConfig != null ? new BehaviourEngine(newConfig) : Engine;
 		}
 		private async void LaunchEngine(object? parameter)
         {

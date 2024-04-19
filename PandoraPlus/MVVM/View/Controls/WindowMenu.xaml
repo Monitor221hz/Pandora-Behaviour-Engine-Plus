@@ -10,22 +10,37 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        
+
         <Menu Background="{StaticResource ControlColorSolid}" 
               Foreground="{StaticResource HeaderTextGradient}"
               BorderThickness="0">
             <MenuItem 
                 Background="{StaticResource ControlColorSolid}"
-                Header="config" 
+                Header="Configuration" 
                 BorderThickness="0" 
-                ItemsSource="{Binding EngineConfigs}">
+                ItemsSource="{Binding EngineConfigurationViewModels}">
+                <MenuItem.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding NestedViewModels}">
+                        <TextBlock Text="{Binding Name}"></TextBlock>
+                    </HierarchicalDataTemplate>
+                </MenuItem.ItemTemplate>
                 <MenuItem.ItemContainerStyle>
+                    <Style TargetType="MenuItem">
+                        <Setter Property="BorderThickness" Value="0"></Setter>
+                        <Setter Property="Background" Value="{StaticResource HeaderTextGradient}"></Setter>
+                        <Setter Property="Foreground" Value="{StaticResource BackgroundHorizontalGradient}"></Setter>
+                        <Setter Property="Command" Value="{Binding SetCommand}"></Setter>
+                        <Setter Property="CommandParameter" Value="{Binding }"></Setter>
+                    </Style>
+                </MenuItem.ItemContainerStyle>
+                <!--<MenuItem.ItemContainerStyle>
                     <Style TargetType="MenuItem">
                         <Setter Property="BorderThickness" Value="0"></Setter>
                         <Setter Property="Background" Value="{StaticResource ControlColorSolid}"></Setter>
                         <Setter Property="Foreground" Value="{StaticResource ParagraphTextGradient}"></Setter>
                         <Setter Property="Header" Value="{Binding Name}"></Setter>
                         <Setter Property="Command" Value="{Binding SetCommand}"></Setter>
+                        <Setter Property="ItemsSource" Value="{Binding NestedViewModels}"></Setter>
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type MenuItem}">
@@ -41,8 +56,9 @@
                             </Setter.Value>
                         </Setter>
                     </Style>
-                </MenuItem.ItemContainerStyle>
+                </MenuItem.ItemContainerStyle>-->
             </MenuItem>
         </Menu>
     </Grid>
+
 </UserControl>
