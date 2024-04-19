@@ -18,7 +18,8 @@
                 Background="{StaticResource ControlColorSolid}"
                 Header="Configuration" 
                 BorderThickness="0" 
-                ItemsSource="{Binding EngineConfigurationViewModels}">
+                ItemsSource="{Binding EngineConfigurationViewModels}"
+                FontFamily="Bahnschrift">
                 <MenuItem.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding NestedViewModels}">
                         <TextBlock Text="{Binding Name}"></TextBlock>
@@ -26,6 +27,7 @@
                 </MenuItem.ItemTemplate>
                 <MenuItem.ItemContainerStyle>
                     <Style TargetType="MenuItem">
+                        <Setter Property="FontFamily" Value="Bahnschrift"></Setter>
                         <Setter Property="BorderThickness" Value="0"></Setter>
                         <Setter Property="Background" Value="{StaticResource HeaderTextGradient}"></Setter>
                         <Setter Property="Foreground" Value="{StaticResource BackgroundHorizontalGradient}"></Setter>
