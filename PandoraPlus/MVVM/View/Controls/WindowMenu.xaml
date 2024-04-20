@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Pandora.MVVM.View.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="20" d:DesignWidth="500">
+             d:DesignHeight="50" d:DesignWidth="500">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
@@ -19,7 +19,8 @@
                 Header="Configuration" 
                 BorderThickness="0" 
                 ItemsSource="{Binding EngineConfigurationViewModels}"
-                FontFamily="Bahnschrift">
+                FontFamily="Bahnschrift"
+                Padding="5">
                 <MenuItem.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding NestedViewModels}">
                         <TextBlock Text="{Binding Name}"></TextBlock>
@@ -35,30 +36,6 @@
                         <Setter Property="CommandParameter" Value="{Binding }"></Setter>
                     </Style>
                 </MenuItem.ItemContainerStyle>
-                <!--<MenuItem.ItemContainerStyle>
-                    <Style TargetType="MenuItem">
-                        <Setter Property="BorderThickness" Value="0"></Setter>
-                        <Setter Property="Background" Value="{StaticResource ControlColorSolid}"></Setter>
-                        <Setter Property="Foreground" Value="{StaticResource ParagraphTextGradient}"></Setter>
-                        <Setter Property="Header" Value="{Binding Name}"></Setter>
-                        <Setter Property="Command" Value="{Binding SetCommand}"></Setter>
-                        <Setter Property="ItemsSource" Value="{Binding NestedViewModels}"></Setter>
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type MenuItem}">
-                                    <Border Background="{TemplateBinding Background}">
-                                        <ContentPresenter Content="{TemplateBinding Header}" Margin="20 3 10 3" />
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsHighlighted" Value="True">
-                                            <Setter Property="Background"  Value="{StaticResource HighlightColor}"/>
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </MenuItem.ItemContainerStyle>-->
             </MenuItem>
         </Menu>
     </Grid>
