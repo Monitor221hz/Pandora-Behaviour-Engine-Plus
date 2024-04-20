@@ -5,33 +5,39 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Pandora.MVVM.View.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="30" d:DesignWidth="500">
+             d:DesignHeight="50" d:DesignWidth="500">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition Width="Auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <Rectangle Grid.Column="0" Grid.ColumnSpan="3" Height="30"
-                   VerticalAlignment="Top"
-                   Fill="Black"
-                   RadiusX="5"
-                   RadiusY="5">
-        </Rectangle>
-        <Rectangle Grid.Column="2" Height="25" Width="25"
-                   HorizontalAlignment="Right"
-                   VerticalAlignment="Center"
-                   Fill="{StaticResource ControlColor}"
-                   RadiusX="5"
-                   RadiusY="5">
-        </Rectangle>
-        <Image Source="..\..\..\Assets\cancel.png" Grid.Column="2" Width="25" Height="25" RenderOptions.BitmapScalingMode="Fant">
-            
-            
-        </Image>
-        <Button Grid.Column="2" Width="25" Height="25" Background="Transparent"
-                Command="{Binding ExitCommand}">
-            
-        </Button>
+
+        <Menu Background="{StaticResource ControlColorSolid}" 
+              Foreground="{StaticResource HeaderTextGradient}"
+              BorderThickness="0">
+            <MenuItem 
+                Background="{StaticResource ControlColorSolid}"
+                Header="Configuration" 
+                BorderThickness="0" 
+                ItemsSource="{Binding EngineConfigurationViewModels}"
+                FontFamily="Bahnschrift"
+                Padding="5">
+                <MenuItem.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding NestedViewModels}">
+                        <TextBlock Text="{Binding Name}"></TextBlock>
+                    </HierarchicalDataTemplate>
+                </MenuItem.ItemTemplate>
+                <MenuItem.ItemContainerStyle>
+                    <Style TargetType="MenuItem">
+                        <Setter Property="FontFamily" Value="Bahnschrift"></Setter>
+                        <Setter Property="BorderThickness" Value="0"></Setter>
+                        <Setter Property="Background" Value="{StaticResource HeaderTextGradient}"></Setter>
+                        <Setter Property="Foreground" Value="{StaticResource BackgroundHorizontalGradient}"></Setter>
+                        <Setter Property="Command" Value="{Binding SetCommand}"></Setter>
+                        <Setter Property="CommandParameter" Value="{Binding }"></Setter>
+                    </Style>
+                </MenuItem.ItemContainerStyle>
+            </MenuItem>
+        </Menu>
     </Grid>
+
 </UserControl>

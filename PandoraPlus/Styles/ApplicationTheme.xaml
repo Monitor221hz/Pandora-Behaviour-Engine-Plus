@@ -2,8 +2,9 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
 
-    
-    
+
+
+
     <LinearGradientBrush x:Key="HighlightGradient" StartPoint="0,0" EndPoint="0,1">
         <GradientStop Color="White" Offset="0.0" />
         <GradientStop Color="Pink" Offset="1" />
@@ -12,7 +13,7 @@
     <SolidColorBrush x:Key ="HighlightColor" Color="MediumPurple"></SolidColorBrush>
     
     <SolidColorBrush x:Key ="ControlColor" Color="#212121"  Opacity=".5"></SolidColorBrush>
-
+    <SolidColorBrush x:Key="ControlColorSolid" Color="#212121"></SolidColorBrush>
     <LinearGradientBrush x:Key ="BackgroundVerticalGradient" StartPoint="0,0" EndPoint="0,1">
         <GradientStop Color="#292537" Offset="0.0" />
 
@@ -152,6 +153,20 @@
             </Setter.Value>
             
         </Setter>
+    </Style>
+
+
+    <Style x:Key="ControlMenuItemStyle" TargetType="{x:Type MenuItem}">
+        <Setter Property="Focusable" Value="false"/>
+        <Style.Triggers>
+            <Trigger Property="IsHighlighted" Value="True">
+                <Setter Property="Background"
+                            Value="{StaticResource HighlightColor}" />
+                <Setter Property="BorderBrush"
+                            Value="{x:Null}" />
+                <Setter Property="FontFamily" Value="Bahnschrift"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
 

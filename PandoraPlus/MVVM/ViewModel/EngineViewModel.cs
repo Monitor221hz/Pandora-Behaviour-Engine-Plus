@@ -20,6 +20,7 @@ using System.Threading;
 using Pandora.Core.Engine.Configs;
 using System.Security.Policy;
 
+
 namespace Pandora.MVVM.ViewModel
 {
     public class EngineViewModel : INotifyPropertyChanged
@@ -40,11 +41,13 @@ namespace Pandora.MVVM.ViewModel
         public BehaviourEngine Engine { get; private set; } = new BehaviourEngine();
 
         public RelayCommand LaunchCommand { get; }
+        public RelayCommand SetEngineConfigCommand { get; }
         public RelayCommand ExitCommand { get; }
 
         public ObservableCollection<IModInfo> Mods { get; set; } = new ObservableCollection<IModInfo>();
 
-        public bool LaunchEnabled { get; set; } = true;
+	
+		public bool LaunchEnabled { get; set; } = true;
 
 
 
@@ -59,6 +62,18 @@ namespace Pandora.MVVM.ViewModel
         private static DirectoryInfo currentDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
 
         private Task preloadTask;
+
+        private ObservableCollection<IEngineConfigurationViewModel> engineConfigs = new ObservableCollection<IEngineConfigurationViewModel>();
+		public ObservableCollection<IEngineConfigurationViewModel> EngineConfigurationViewModels 
+        { get => engineConfigs; 
+            set 
+            { 
+                engineConfigs = value; 
+                RaisePropertyChanged(nameof(EngineConfigurationViewModels));
+            } 
+        }
+
+
 		public string LogText { 
             get => logText;
             set
@@ -76,6 +91,7 @@ namespace Pandora.MVVM.ViewModel
             startupArguments = Environment.GetCommandLineArgs().ToHashSet(StringComparer.OrdinalIgnoreCase);
             LaunchCommand = new RelayCommand(LaunchEngine, CanLaunchEngine);
             ExitCommand = new RelayCommand(Exit);
+            SetEngineConfigCommand = new RelayCommand(SetEngineConfiguration, CanLaunchEngine);
 			activeModConfig = new FileInfo($"{currentDirectory}\\Pandora_Engine\\ActiveMods.txt");
 			CultureInfo culture;
 
@@ -85,10 +101,35 @@ namespace Pandora.MVVM.ViewModel
 			CultureInfo.DefaultThreadCurrentUICulture = culture;
 			CultureInfo.CurrentCulture = culture;
 			ReadStartupArguments();
+            SetupConfigurationOptions();
 			preloadTask = Task.Run(Engine.PreloadAsync);
+
 			LaunchCommand.Execute(null);
 
+
 		}
+        private void SetupConfigurationOptions()
+        {
+            EngineConfigurationViewModels.Add(
+                new EngineConfigurationViewModelContainer("Skyrim SE/AE",
+                    new EngineConfigurationViewModelContainer("Behavior", 
+
+                        new EngineConfigurationViewModelContainer("Patch",
+                            new EngineConfigurationViewModel<SkyrimConfiguration>("Normal", SetEngineConfigCommand),
+                            new EngineConfigurationViewModel<SkyrimDebugConfiguration>("Debug", SetEngineConfigCommand)
+                        )
+                        //,
+                        //new EngineConfigurationViewModelContainer("Convert"
+                            
+                        //),
+                        //new EngineConfigurationViewModelContainer("Validate"
+                        //)
+					    )
+				    )
+                );
+            //EngineConfigs.Add(new EngineConfigurationViewModel<SkyrimConfiguration>("Skyrim SE/AE", SetEngineConfigCommand));
+            //EngineConfigs.Add(new EngineConfigurationViewModel<SkyrimDebugConfiguration>("Skyrim SE/AE Debug", SetEngineConfigCommand));
+        }
         public async Task LoadAsync()
         {
 			
@@ -238,7 +279,14 @@ namespace Pandora.MVVM.ViewModel
         }
 
         private List<IModInfo> GetActiveModsByPriority() => AssignModPriorities(Mods.Where(m => m.Active).ToList());
-
+		private async void SetEngineConfiguration(object? config)
+		{
+			if (config == null) { return; }
+			IEngineConfigurationFactory engineConfiguration = (IEngineConfigurationFactory)config;
+            await preloadTask;
+            var newConfig = engineConfiguration.Config;
+			Engine = newConfig != null ? new BehaviourEngine(newConfig) : Engine;
+		}
 		private async void LaunchEngine(object? parameter)
         {
 			lock (LaunchCommand)
