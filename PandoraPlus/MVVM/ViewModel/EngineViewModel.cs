@@ -111,12 +111,13 @@ namespace Pandora.MVVM.ViewModel
                         new EngineConfigurationViewModelContainer("Patch",
                             new EngineConfigurationViewModel<SkyrimConfiguration>("Normal", SetEngineConfigCommand),
                             new EngineConfigurationViewModel<SkyrimDebugConfiguration>("Debug", SetEngineConfigCommand)
-                        ),
-                        new EngineConfigurationViewModelContainer("Convert"
-                            
-                        ),
-                        new EngineConfigurationViewModelContainer("Validate"
                         )
+                        //,
+                        //new EngineConfigurationViewModelContainer("Convert"
+                            
+                        //),
+                        //new EngineConfigurationViewModelContainer("Validate"
+                        //)
 					    )
 				    )
                 );
