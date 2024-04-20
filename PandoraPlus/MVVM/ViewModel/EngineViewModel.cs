@@ -104,7 +104,7 @@ namespace Pandora.MVVM.ViewModel
             SetupConfigurationOptions();
 			preloadTask = Task.Run(Engine.PreloadAsync);
 
-			LaunchCommand.Execute(null);
+			if (autoRun) { LaunchCommand.Execute(null); }
 
 
 		}
