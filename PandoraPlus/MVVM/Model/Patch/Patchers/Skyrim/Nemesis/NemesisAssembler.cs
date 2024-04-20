@@ -183,7 +183,8 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 				{
 					case XmlNodeType.Text:
 						
-						StringBuilder previousTextBuilder = new StringBuilder();
+						StringBuilder previousTextBuilder = new ();
+						StringBuilder bufferTextBuilder = new(); 
 						bool skipText = false;
 						previousNode = newNode.PreviousNode?.PreviousNode;
 						while (previousNode != null)
@@ -195,15 +196,24 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 								{
 									skipText = true;
 								}
-								else
+								else if (comment.Value.Contains("open", StringComparison.OrdinalIgnoreCase))
+								{
+									skipText = false;
+									previousTextBuilder.Insert(0, bufferTextBuilder);
+									bufferTextBuilder = bufferTextBuilder.Clear();
+								}
+								else if (comment.Value.Contains("original", StringComparison.OrdinalIgnoreCase))
 								{
 									skipText = false; 
+									bufferTextBuilder = bufferTextBuilder.Clear();
 								}
 									previousNode = previousNode.PreviousNode;
 									continue;
-								}
+							}
 							if (skipText) 
 							{
+								bufferTextBuilder.Insert(0, '\n');
+								bufferTextBuilder.Insert(0, previousNode.ToString());
 								previousNode = previousNode.PreviousNode;
 								continue; 
 							}
@@ -279,9 +289,10 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 					{
 						changeSet.AddChange(new AppendTextChange(nodePath, ((XText)node).Value));
 						break;
-					} 
+					}
 
-					StringBuilder previousTextBuilder = new StringBuilder();
+					StringBuilder previousTextBuilder = new();
+					StringBuilder bufferTextBuilder = new();
 					bool skipText = false;
 					previousNode = node.PreviousNode?.PreviousNode;
 					while (previousNode != null)
@@ -293,15 +304,24 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 							{
 								skipText = true;
 							}
-							else
+							else if (comment.Value.Contains("open", StringComparison.OrdinalIgnoreCase))
 							{
 								skipText = false;
+								previousTextBuilder.Insert(0, bufferTextBuilder);
+								bufferTextBuilder = bufferTextBuilder.Clear();
+							}
+							else if (comment.Value.Contains("original", StringComparison.OrdinalIgnoreCase))
+							{
+								skipText = false;
+								bufferTextBuilder = bufferTextBuilder.Clear();
 							}
 							previousNode = previousNode.PreviousNode;
 							continue;
 						}
 						if (skipText)
 						{
+							bufferTextBuilder.Insert(0, '\n');
+							bufferTextBuilder.Insert(0, previousNode.ToString());
 							previousNode = previousNode.PreviousNode;
 							continue;
 						}

@@ -17,7 +17,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 		private static readonly Regex whiteSpaceRegex = new Regex(@"\s+", RegexOptions.Compiled);
 		public static string GetTrimElementValue(XElement element)
 		{
-			return element.Value.TrimEnd(trimChars);
+			return whiteSpaceRegex.Replace(element.Value.Trim(), " ");
 		}
 		public static XElement ReplaceElement(PackFile packFile, string path, XElement element) => packFile.Map.ReplaceElement(path, element);
 
@@ -56,16 +56,16 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			}
 			preValue = whiteSpaceRegex.Replace(preValue.Trim(), " ");
 			oldValue = whiteSpaceRegex.Replace(oldValue.Trim(), " ");
-			newValue = ' ' + whiteSpaceRegex.Replace(newValue.Trim(), " ")+ ' ';
+			newValue = ' ' + whiteSpaceRegex.Replace(newValue.Trim(), " ");
 
 			ReadOnlySpan<char> headSpan = source.AsSpan(0, preValue.Length);
-			ReadOnlySpan<char> tailSpan = source.AsSpan(preValue.Length+oldValue.Length+2);
+			ReadOnlySpan<char> tailSpan = source.AsSpan(preValue.Length+oldValue.Length+1);
+			
 
-			int sourceHash = source.GetHashCode();
 			int sourceLength = source.Length;
 
 			element.SetValue(String.Concat(headSpan, newValue, tailSpan));
-			if ((sourceLength - oldValue.Length + newValue.Length) != element.Value.Length || sourceHash == element.Value.GetHashCode()) 
+			if ((sourceLength - oldValue.Length + newValue.Length) != element.Value.Length) 
 			{ 
 				return false; 
 			}
@@ -83,12 +83,12 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			
 			XElement element = packFile.SafeNavigateTo(path);
 			string source = GetTrimElementValue(element);
-
-			newValue = whiteSpaceRegex.Replace(newValue.Trim(), " ");
+			newValue = ' ' + whiteSpaceRegex.Replace(newValue.Trim(), " ") + ' ';
 
 			insertAfterValue = whiteSpaceRegex.Replace(insertAfterValue.Trim(), " ");
-
-			element.SetValue(source.Insert(insertAfterValue,' ', newValue+Environment.NewLine));
+			var headSpan = source.AsSpan(0,insertAfterValue.Length);
+			var tailSpan = source.AsSpan(insertAfterValue.Length + 1);
+			element.SetValue(String.Concat(headSpan, newValue, tailSpan));
 		}
 
 		public static void AppendText(PackFile packFile, string path, string newValue)
