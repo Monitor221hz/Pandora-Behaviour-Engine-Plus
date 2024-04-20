@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Xml.Linq;
-using XmlCake.String;
+using Pandora.Core.Extensions;
 
 namespace Pandora.Patch.Patchers.Skyrim.Hkx
 {
 	public partial class PackFileEditor
 	{
 		static private readonly char[] trimChars = new char[3] { '\n', '\r', '\t' };
+		private static readonly Regex whiteSpaceRegex = new Regex(@"\s+", RegexOptions.Compiled);
 		public static string GetTrimElementValue(XElement element)
 		{
 			return element.Value.TrimEnd(trimChars);
@@ -42,8 +43,9 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 		{
 			
 			XElement element = packFile.SafeNavigateTo(path);
-			if (String.IsNullOrWhiteSpace(oldValue)) return false;	
-			string source = element.Value.Trim().Replace("\t", "").Replace('\n', ' ');
+			if (String.IsNullOrWhiteSpace(oldValue)) return false;
+
+			string source = whiteSpaceRegex.Replace(element.Value.Trim(), " ");
 			if (String.IsNullOrWhiteSpace(newValue))
 			{
 
@@ -52,17 +54,17 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 				element.SetValue(newValue);
 				return true;
 			}
-			preValue = preValue.Trim().Replace("\t", "").Replace('\n', ' ');
-			oldValue = oldValue.Trim().Replace("\t", "").Replace('\n', ' ');
-			newValue = newValue.Trim().Replace("\t", "").Replace('\n', ' ');
+			preValue = whiteSpaceRegex.Replace(preValue.Trim(), " ");
+			oldValue = whiteSpaceRegex.Replace(oldValue.Trim(), " ");
+			newValue = ' ' + whiteSpaceRegex.Replace(newValue.Trim(), " ")+ ' ';
 
-			int skipCount = preValue.Length > 0 ? Regex.Matches(preValue, oldValue).Count() : 0;
-			//if (skipCount == 0) return false;
+			ReadOnlySpan<char> headSpan = source.AsSpan(0, preValue.Length);
+			ReadOnlySpan<char> tailSpan = source.AsSpan(preValue.Length+oldValue.Length+2);
+
 			int sourceHash = source.GetHashCode();
-			int sourceLength = source.Length; 
-			
-			
-			element.SetValue(source.Replace(oldValue, newValue, skipCount+1));
+			int sourceLength = source.Length;
+
+			element.SetValue(String.Concat(headSpan, newValue, tailSpan));
 			if ((sourceLength - oldValue.Length + newValue.Length) != element.Value.Length || sourceHash == element.Value.GetHashCode()) 
 			{ 
 				return false; 
@@ -70,15 +72,21 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			return true; 
 
 		}
+		public static bool SetText(PackFile packFile, string path, string newValue)
+		{
+			XElement element = packFile.SafeNavigateTo(path);
+			element.SetValue(newValue);
+			return true;
+		}
 		public static void InsertText(PackFile packFile, string path, string insertAfterValue, string newValue)
 		{
 			
 			XElement element = packFile.SafeNavigateTo(path);
 			string source = GetTrimElementValue(element);
 
-			newValue = newValue.Trim().Replace("\t", "").Replace('\n', ' ');
+			newValue = whiteSpaceRegex.Replace(newValue.Trim(), " ");
 
-			insertAfterValue = insertAfterValue.Trim().Replace("\t", "").Replace('\n', ' ');
+			insertAfterValue = whiteSpaceRegex.Replace(insertAfterValue.Trim(), " ");
 
 			element.SetValue(source.Insert(insertAfterValue,' ', newValue+Environment.NewLine));
 		}
@@ -88,7 +96,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			XElement element = packFile.SafeNavigateTo(path);
 			string source = GetTrimElementValue(element);
 
-			newValue = newValue.Trim().Replace("\t", "").Replace('\n', ' ');
+			newValue = whiteSpaceRegex.Replace(newValue.Trim(), " ");
 			element.SetValue(source.Append(' ', newValue+Environment.NewLine));
 		}
 		public static void RemoveText(PackFile packFile, string path, string value)
@@ -96,7 +104,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			XElement element = packFile.SafeNavigateTo(path);
 			if (String.IsNullOrWhiteSpace(value)) return;
 			string source = element.Value;
-			value = value.Trim().Replace("\t", "").Replace('\n', ' '); 
+			value = whiteSpaceRegex.Replace(value.Trim(), " "); 
 
 			element.SetValue(source.Replace(value, string.Empty, true));
 		}
