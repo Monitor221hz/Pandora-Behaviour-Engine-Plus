@@ -35,8 +35,8 @@ namespace Pandora.MVVM.ViewModel
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 		public bool? DialogResult { get; set; } = true;
-        private bool closeOnFinish = false; 
-
+        private bool closeOnFinish = false;
+        private bool autoRun = false; 
         public BehaviourEngine Engine { get; private set; } = new BehaviourEngine();
 
         public RelayCommand LaunchCommand { get; }
@@ -59,7 +59,6 @@ namespace Pandora.MVVM.ViewModel
         private static DirectoryInfo currentDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
 
         private Task preloadTask;
-
 		public string LogText { 
             get => logText;
             set
@@ -87,7 +86,7 @@ namespace Pandora.MVVM.ViewModel
 			CultureInfo.CurrentCulture = culture;
 			ReadStartupArguments();
 			preloadTask = Task.Run(Engine.PreloadAsync);
-            
+			LaunchCommand.Execute(null);
 
 		}
         public async Task LoadAsync()
@@ -174,7 +173,7 @@ namespace Pandora.MVVM.ViewModel
 			if (startupArguments.Remove("-autorun"))
 			{
 				closeOnFinish = true;
-				LaunchCommand.Execute(null);
+				autoRun = true;
 			}
 
         }
