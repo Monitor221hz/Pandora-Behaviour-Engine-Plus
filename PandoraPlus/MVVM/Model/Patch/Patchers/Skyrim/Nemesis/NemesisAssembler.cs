@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 
 using System.Xml;
 using System.Xml.Linq;
+using System.Xml.XPath;
 using XmlCake.Linq;
 using XmlCake.Linq.Expressions;
 
@@ -158,7 +159,7 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 
 		XNode? previousNode = match[0].PreviousNode;
 		
-		foreach(var node in match) { node.Remove();  }
+		//foreach(var node in match) { node.Remove();  }
 		for (int i = 1; i < separatorIndex; i++)
         {
 
@@ -178,15 +179,36 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 			{
 				XNode node = match[i];
 				XNode newNode = newNodes[i - separatorIndex - 1];
-
 				switch (node.NodeType)
 				{
 					case XmlNodeType.Text:
+						
 						StringBuilder previousTextBuilder = new StringBuilder();
-
-						while (previousNode != null && previousNode.NodeType == XmlNodeType.Text)
+						bool skipText = false;
+						previousNode = newNode.PreviousNode?.PreviousNode;
+						while (previousNode != null)
 						{
-							previousTextBuilder.Append(((XText)previousNode!).Value);
+							if (previousNode.NodeType == XmlNodeType.Comment)
+							{
+								var comment = (XComment)previousNode;
+								if (comment.Value.Contains("close", StringComparison.OrdinalIgnoreCase))
+								{
+									skipText = true;
+								}
+								else
+								{
+									skipText = false; 
+								}
+									previousNode = previousNode.PreviousNode;
+									continue;
+								}
+							if (skipText) 
+							{
+								previousNode = previousNode.PreviousNode;
+								continue; 
+							}
+							previousTextBuilder.Insert(0, '\n');
+							previousTextBuilder.Insert(0,previousNode.ToString());
 							previousNode = previousNode.PreviousNode;
 						}
 
@@ -198,6 +220,8 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 						changeSet.AddChange(new ReplaceTextChange(lookup.LookupPath(node), preText, oldText, newText));
 						//lock (packFile.edits) packFile.edits.AddChange(new ReplaceTextChange(lookup.LookupPath(node), ((XText)node).Value, ((XText)newNodes[i - separatorIndex - 1]).Value,modInfo));
 						break;
+						
+
 					case XmlNodeType.Element:
 						//packFile.Editor.QueueReplaceElement(lookup.LookupPath(node), (XElement)newNodes[i - separatorIndex - 1]);
 						changeSet.AddChange(new ReplaceElementChange(lookup.LookupPath(newNode), (XElement)newNode));
@@ -215,21 +239,7 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 			switch (node.NodeType)
 			{
 				case XmlNodeType.Text:
-					StringBuilder previousTextBuilder = new StringBuilder();
 
-					while (previousNode != null && previousNode.NodeType == XmlNodeType.Text)
-					{
-						previousTextBuilder.Append(((XText)previousNode!).Value);
-						previousNode = previousNode.PreviousNode;
-					}
-
-					string preText = previousTextBuilder.ToString();
-					string oldText = ((XText)node).Value;
-
-					//packFile.Editor.QueueReplaceText(lookup.LookupPath(node), ((XText)node).Value, ((XText)newNodes[i - separatorIndex - 1]).Value);
-
-					changeSet.AddChange(new ReplaceTextChange(lookup.LookupPath(node), preText, oldText, string.Empty));
-					break;
 				case XmlNodeType.Element:
 					//packFile.Editor.QueueRemoveElement(lookup.LookupPath(node));
 					changeSet.AddChange(new RemoveElementChange(lookup.LookupPath(node)));
@@ -245,11 +255,10 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
     public void ForwardInsertEdit(PackFile packFile, XMatch match, PackFileChangeSet changeSet, XPathLookup lookup)
     {
         List<XNode> newNodes = match.nodes;
-		XNode? previousNode = newNodes.First().PreviousNode;
+		XNode? previousNode;
 		XNode? nextNode = newNodes.Last().NextNode;
 		
 
-		foreach(var node in newNodes) { node.Remove(); }	
 		newNodes.RemoveAt(0);
 		newNodes.RemoveAt(newNodes.Count - 1);
 		bool isTextInsert = nextNode != null && nextNode.NodeType == XmlNodeType.Text;
@@ -273,10 +282,31 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 					} 
 
 					StringBuilder previousTextBuilder = new StringBuilder();
-
-					while (previousNode != null && previousNode.NodeType == XmlNodeType.Text)
+					bool skipText = false;
+					previousNode = node.PreviousNode?.PreviousNode;
+					while (previousNode != null)
 					{
-						previousTextBuilder.Append(((XText)previousNode!).Value);
+						if (previousNode.NodeType == XmlNodeType.Comment)
+						{
+							var comment = (XComment)previousNode;
+							if (comment.Value.Contains("close", StringComparison.OrdinalIgnoreCase))
+							{
+								skipText = true;
+							}
+							else
+							{
+								skipText = false;
+							}
+							previousNode = previousNode.PreviousNode;
+							continue;
+						}
+						if (skipText)
+						{
+							previousNode = previousNode.PreviousNode;
+							continue;
+						}
+						previousTextBuilder.Insert(0, '\n');
+						previousTextBuilder.Insert(0, previousNode.ToString());
 						previousNode = previousNode.PreviousNode;
 					}
 
