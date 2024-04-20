@@ -5,6 +5,14 @@ title: "[Bug]: "
 labels: ["bug"]
 
 body:
+  - type: checkboxes
+    id: no-duplicate-feature
+    attributes:
+      label: Check for duplicate issues
+      options:
+        - label: I have verified that there are no duplicate [issues](https://github.com/Monitor144hz/Pandora-Behaviour-Engine-Plus/issues).
+          required: true
+
   - type: input
     id: version
     attributes:
