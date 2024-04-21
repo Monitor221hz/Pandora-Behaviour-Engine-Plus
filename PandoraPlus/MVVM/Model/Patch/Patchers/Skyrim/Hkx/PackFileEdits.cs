@@ -1,23 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Pandora.Core.Extensions;
+using System;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Media;
 using System.Xml.Linq;
-using Pandora.Core.Extensions;
 
 namespace Pandora.Patch.Patchers.Skyrim.Hkx
 {
 	public partial class PackFileEditor
 	{
-		static private readonly char[] trimChars = new char[3] { '\n', '\r', '\t' };
+		private static readonly Regex bracketRegex = new Regex(@"(\(|\))+", RegexOptions.Compiled);
 		private static readonly Regex whiteSpaceRegex = new Regex(@"\s+", RegexOptions.Compiled);
-		public static string GetTrimElementValue(XElement element)
+		private static string NormalizeElementValue(XElement element)
 		{
-			return whiteSpaceRegex.Replace(element.Value.Trim(), " ");
+			var value = whiteSpaceRegex.Replace(element.Value.Trim(), " ");
+			if (value.Length > 0 && value[0] == '(')
+			{
+				value = bracketRegex.Replace(value, string.Empty);
+			}
+			return value;
+		}
+
+		private static string NormalizeStringValue(string value)
+		{
+			return whiteSpaceRegex.Replace(value.Trim(), " ");
 		}
 		public static XElement ReplaceElement(PackFile packFile, string path, XElement element) => packFile.Map.ReplaceElement(path, element);
 
@@ -45,7 +51,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			XElement element = packFile.SafeNavigateTo(path);
 			if (String.IsNullOrWhiteSpace(oldValue)) return false;
 
-			string source = whiteSpaceRegex.Replace(element.Value.Trim(), " ");
+			string source = NormalizeElementValue(element);
 			if (String.IsNullOrWhiteSpace(newValue))
 			{
 
@@ -54,17 +60,18 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 				element.SetValue(newValue);
 				return true;
 			}
-			preValue = whiteSpaceRegex.Replace(preValue.Trim(), " ");
-			oldValue = whiteSpaceRegex.Replace(oldValue.Trim(), " ");
-			newValue = ' ' + whiteSpaceRegex.Replace(newValue.Trim(), " ");
+			preValue = NormalizeStringValue(preValue);
+			oldValue = NormalizeStringValue(oldValue);
 
 			ReadOnlySpan<char> headSpan = source.AsSpan(0, preValue.Length);
 			ReadOnlySpan<char> tailSpan = source.AsSpan(preValue.Length+oldValue.Length+1);
 			
-
 			int sourceLength = source.Length;
 
-			element.SetValue(String.Concat(headSpan, newValue, tailSpan));
+			//normalize string to prevent range errors on later operations
+			source = NormalizeStringValue(String.Concat(headSpan, " " + newValue + " ", tailSpan)); //pad spaces as bare minimum; don't want array values to be twinned
+			element.SetValue(source);
+
 			if ((sourceLength - oldValue.Length + newValue.Length) != element.Value.Length) 
 			{ 
 				return false; 
@@ -82,31 +89,32 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 		{
 			
 			XElement element = packFile.SafeNavigateTo(path);
-			string source = GetTrimElementValue(element);
-			newValue = ' ' + whiteSpaceRegex.Replace(newValue.Trim(), " ") + ' ';
+			string source = NormalizeElementValue(element);
 
-			insertAfterValue = whiteSpaceRegex.Replace(insertAfterValue.Trim(), " ");
+			insertAfterValue = NormalizeStringValue(insertAfterValue);
 			var headSpan = source.AsSpan(0,insertAfterValue.Length);
 			var tailSpan = source.AsSpan(insertAfterValue.Length + 1);
-			element.SetValue(String.Concat(headSpan, newValue, tailSpan));
+
+			source = NormalizeStringValue(String.Concat(headSpan, newValue, tailSpan));
+			element.SetValue(source);
 		}
 
 		public static void AppendText(PackFile packFile, string path, string newValue)
 		{
 			XElement element = packFile.SafeNavigateTo(path);
-			string source = GetTrimElementValue(element);
+			string source = NormalizeElementValue(element);
 
-			newValue = whiteSpaceRegex.Replace(newValue.Trim(), " ");
-			element.SetValue(source.Append(' ', newValue+Environment.NewLine));
+			newValue = NormalizeStringValue(newValue);
+			source = NormalizeStringValue(String.Concat(source, " ", newValue, " "));
+			element.SetValue(source);
 		}
 		public static void RemoveText(PackFile packFile, string path, string value)
 		{
 			XElement element = packFile.SafeNavigateTo(path);
 			if (String.IsNullOrWhiteSpace(value)) return;
 			string source = element.Value;
-			value = whiteSpaceRegex.Replace(value.Trim(), " "); 
-
-			element.SetValue(source.Replace(value, string.Empty, true));
+			source = NormalizeStringValue(source.Replace(value, string.Empty, true));
+			element.SetValue(source);
 		}
 	}
 }
