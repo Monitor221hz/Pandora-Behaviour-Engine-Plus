@@ -9,21 +9,17 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 {
 	public partial class PackFileEditor
 	{
-		private static readonly Regex bracketRegex = new Regex(@"(\(|\))+", RegexOptions.Compiled);
-		private static readonly Regex whiteSpaceRegex = new Regex(@"\s+", RegexOptions.Compiled);
+		private static readonly char[] trimChars = new char[] {'\t', '\r', '\n', ')', '(' };
+		private static readonly Regex whiteSpaceRegex = new Regex(@"(?:\s|\(|\)){2,}", RegexOptions.Compiled);
 		private static string NormalizeElementValue(XElement element)
 		{
-			var value = whiteSpaceRegex.Replace(element.Value.Trim(), " ");
-			if (value.Length > 0 && value[0] == '(')
-			{
-				value = bracketRegex.Replace(value, string.Empty);
-			}
+			var value = whiteSpaceRegex.Replace(element.Value.Trim(trimChars), " ");
 			return value;
 		}
 
 		private static string NormalizeStringValue(string value)
 		{
-			return whiteSpaceRegex.Replace(value.Trim(), " ");
+			return whiteSpaceRegex.Replace(value.Trim(trimChars), " ");
 		}
 		public static XElement ReplaceElement(PackFile packFile, string path, XElement element) => packFile.Map.ReplaceElement(path, element);
 
@@ -72,10 +68,6 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			source = NormalizeStringValue(String.Concat(headSpan, " " + newValue + " ", tailSpan)); //pad spaces as bare minimum; don't want array values to be twinned
 			element.SetValue(source);
 
-			if ((sourceLength - oldValue.Length + newValue.Length) != element.Value.Length) 
-			{ 
-				return false; 
-			}
 			return true; 
 
 		}
