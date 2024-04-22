@@ -12,20 +12,20 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 
 		public string Path { get; private set; }
 
-		private string insertValue;
+		private string markerValue;
 		private string value;
 
 
-		public InsertTextChange(string path, string insertAfterValue, string value)
+		public InsertTextChange(string path, string preValue, string markerValue, string value)
 		{
 			Path = path; 
-			this.insertValue = insertAfterValue;
+			this.markerValue = markerValue;
 			this.value = value;
 		}
 
 		public bool Apply(PackFile packFile)
 		{
-			PackFileEditor.InsertText(packFile, Path, insertValue,  value);
+			PackFileEditor.InsertText(packFile, Path, markerValue,  value);
 			return true;
 		}
 

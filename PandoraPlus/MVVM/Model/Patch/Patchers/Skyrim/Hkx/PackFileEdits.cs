@@ -10,7 +10,8 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 	public partial class PackFileEditor
 	{
 		private static readonly char[] trimChars = new char[] {'\t', '\r', '\n', ')', '(' };
-		private static readonly Regex whiteSpaceRegex = new Regex(@"(?:\s|\(|\)){2,}", RegexOptions.Compiled);
+		private static readonly Regex whiteSpaceRegex = new Regex(@"(?:\s|\(|\))+", RegexOptions.Compiled);
+		private static readonly Regex escapeRegex = new Regex(@"(?:\*|\+|\?|\||\^|\.|\#)", RegexOptions.Compiled); 
 		private static string NormalizeElementValue(XElement element)
 		{
 			var value = whiteSpaceRegex.Replace(element.Value.Trim(trimChars), " ");
@@ -48,24 +49,35 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			if (String.IsNullOrWhiteSpace(oldValue)) return false;
 
 			string source = NormalizeElementValue(element);
-			if (String.IsNullOrWhiteSpace(newValue))
+			//if (String.IsNullOrWhiteSpace(newValue))
+			//{
+
+			//	int index = source.IndexOf(oldValue, StringComparison.Ordinal);
+			//	newValue = (index < 0) ? source : source.Remove(index, oldValue.Length);
+			//	element.SetValue(newValue);
+			//	return true;
+			//}
+			//preValue = NormalizeStringValue(preValue);
+			//oldValue = NormalizeStringValue(oldValue);
+			oldValue = whiteSpaceRegex.Replace(escapeRegex.Replace(oldValue, "\\$&"), "\\s*");
+
+			//ReadOnlySpan<char> headSpan = source.AsSpan(0, preValue.Length);
+			//ReadOnlySpan<char> tailSpan = source.AsSpan(preValue.Length+oldValue.Length+1);
+
+			Regex targetRegex = new Regex(oldValue);
+			int targetMatchIndex = targetRegex.Count(preValue);
+			int matchIndex = -1; 
+			for(var match = targetRegex.Match(source); match.Success; match = match.NextMatch())
 			{
-
-				int index = source.IndexOf(oldValue, StringComparison.Ordinal);
-				newValue = (index < 0) ? source : source.Remove(index, oldValue.Length);
-				element.SetValue(newValue);
-				return true;
+				matchIndex++;
+				if (matchIndex == targetMatchIndex)
+				{
+					source = String.Concat(source.AsSpan(0, match.Index), newValue, source.AsSpan(match.Index + match.Length));
+					break; 
+				}
+				
 			}
-			preValue = NormalizeStringValue(preValue);
-			oldValue = NormalizeStringValue(oldValue);
-
-			ReadOnlySpan<char> headSpan = source.AsSpan(0, preValue.Length);
-			ReadOnlySpan<char> tailSpan = source.AsSpan(preValue.Length+oldValue.Length+1);
-			
-			int sourceLength = source.Length;
-
-			//normalize string to prevent range errors on later operations
-			source = NormalizeStringValue(String.Concat(headSpan, " " + newValue + " ", tailSpan)); //pad spaces as bare minimum; don't want array values to be twinned
+			if (matchIndex == -1) { return false; }
 			element.SetValue(source);
 
 			return true; 
@@ -77,15 +89,15 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			element.SetValue(newValue);
 			return true;
 		}
-		public static void InsertText(PackFile packFile, string path, string insertAfterValue, string newValue)
+		public static void InsertText(PackFile packFile, string path, string markerValue, string newValue)
 		{
 			
 			XElement element = packFile.SafeNavigateTo(path);
 			string source = NormalizeElementValue(element);
 
-			insertAfterValue = NormalizeStringValue(insertAfterValue);
-			var headSpan = source.AsSpan(0,insertAfterValue.Length);
-			var tailSpan = source.AsSpan(insertAfterValue.Length + 1);
+			markerValue = NormalizeStringValue(markerValue);
+			var headSpan = source.AsSpan(0,markerValue.Length);
+			var tailSpan = source.AsSpan(markerValue.Length + 1);
 
 			source = NormalizeStringValue(String.Concat(headSpan, newValue, tailSpan));
 			element.SetValue(source);
