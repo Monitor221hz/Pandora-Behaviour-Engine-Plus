@@ -28,7 +28,7 @@ namespace Pandora.MVVM.ViewModel
         private readonly NemesisModInfoProvider nemesisModInfoProvider = new NemesisModInfoProvider();
         private readonly PandoraModInfoProvider pandoraModInfoProvider = new PandoraModInfoProvider();
 
-		private string logText = "";
+		
         private HashSet<string> startupArguments = new(StringComparer.OrdinalIgnoreCase);
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -44,6 +44,7 @@ namespace Pandora.MVVM.ViewModel
         public RelayCommand SetEngineConfigCommand { get; }
         public RelayCommand ExitCommand { get; }
 
+        private List<IModInfo>  hiddenMods = new List<IModInfo>();
         public ObservableCollection<IModInfo> Mods { get; set; } = new ObservableCollection<IModInfo>();
 
 	
@@ -64,6 +65,8 @@ namespace Pandora.MVVM.ViewModel
         private Task preloadTask;
 
         private ObservableCollection<IEngineConfigurationViewModel> engineConfigs = new ObservableCollection<IEngineConfigurationViewModel>();
+		
+
 		public ObservableCollection<IEngineConfigurationViewModel> EngineConfigurationViewModels 
         { get => engineConfigs; 
             set 
@@ -73,7 +76,7 @@ namespace Pandora.MVVM.ViewModel
             } 
         }
 
-
+		private string logText = "";
 		public string LogText { 
             get => logText;
             set
@@ -82,7 +85,56 @@ namespace Pandora.MVVM.ViewModel
                 RaisePropertyChanged(nameof(LogText));
             }
         }
-        private void RaisePropertyChanged([CallerMemberName] string? propertyName=null)
+        private string searchText = "";
+		public string SearchText { get => searchText; 
+            set 
+            { 
+                searchText = value;
+                if (String.IsNullOrEmpty(searchText))
+                {
+					AssignModPriorities(Mods.Where(m => m.Active).ToList());
+					var sortedModInfos = Mods.Concat(hiddenMods).OrderBy(m => m.Priority == 0).ThenBy(m => m.Priority).ToList();
+					hiddenMods.Clear();
+                    Mods.Clear();
+                    foreach(var mod in sortedModInfos)
+                    {
+                        Mods.Add(mod);
+                    }
+				}
+                else
+                {
+					HashSet<IModInfo> foundMods = SearchModInfos(searchText, Mods).ToHashSet();
+					for (int i = Mods.Count - 1; i >= 0; i--)
+					{
+						IModInfo mod = Mods[i];
+						if (foundMods.Contains(mod))
+						{
+							continue;
+						}
+						hiddenMods.Add(mod);
+						Mods.RemoveAt(i);
+					}
+					foundMods = SearchModInfos(searchText, hiddenMods).ToHashSet();
+					for (int i = hiddenMods.Count - 1; i >= 0; i--)
+					{
+						IModInfo? mod = hiddenMods[i];
+						if (!foundMods.Contains(mod))
+						{
+							continue;
+						}
+						Mods.Add(mod);
+						hiddenMods.RemoveAt(i);
+					}
+				}
+                RaisePropertyChanged(nameof(SearchText));
+            } 
+        }
+        private IEnumerable<IModInfo> SearchModInfos(string searchText, IEnumerable<IModInfo> mods)
+        {
+            return mods.Where(m => m.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+
+		}
+		private void RaisePropertyChanged([CallerMemberName] string? propertyName=null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

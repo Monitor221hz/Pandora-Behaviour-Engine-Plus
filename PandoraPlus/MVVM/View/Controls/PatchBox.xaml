@@ -9,62 +9,91 @@
              d:DesignHeight="200" d:DesignWidth="500">
 
 
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Margin="0">
+            <TextBox Foreground="{StaticResource HeaderTextGradient}"
+                     Background="{StaticResource ControlColorSolid}"
+                     BorderThickness="0"
+                     Margin="8 2 2 2"
+                     Padding="2"
+                     FontFamily="Bahnschrift"
+                     FontSize="12"
+                     Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            </TextBox>
+            <TextBlock Margin="8 2 2 2" 
+                       Padding="2"
+                       Foreground="{StaticResource TransparentParagraphTextGradient}"
+                       Background="Transparent"
+                       FontFamily="Bahnschrift"
+                       FontSize="12"
+                       IsHitTestVisible="False"
+                       Text="Search"
+                       TextAlignment="Left">
+            </TextBlock>
 
-    <Border CornerRadius="10" Background="{StaticResource ControlColor}">
+        </Grid>
 
-        <ListView x:Name ="ModListView" 
-                  Background="Transparent" 
-                  Margin="5 5 5 5" 
-                  BorderThickness="0"
-                  ItemsSource="{Binding Mods, Mode=TwoWay}"
-                  ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                  ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                  Focusable="False"
-                  ItemContainerStyle="{StaticResource ListViewItemStyle}"
-                  dd:DragDrop.IsDragSource="True"
-                  dd:DragDrop.IsDropTarget="True"
-                  >
+        <Border Grid.Row="1" CornerRadius="10" Background="{StaticResource ControlColor}">
+
+            <ListView x:Name ="ModListView" 
+                      Background="Transparent" 
+                      Margin="5 5 5 5" 
+                      BorderThickness="0"
+                      ItemsSource="{Binding Mods, Mode=TwoWay}"
+                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                      ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                      Focusable="False"
+                      ItemContainerStyle="{StaticResource ListViewItemStyle}"
+                      dd:DragDrop.IsDragSource="True"
+                      dd:DragDrop.IsDropTarget="True"
+                      >
             
-            <ListView.View>
-                <GridView ColumnHeaderContainerStyle="{StaticResource ColumnHeaderStyle}">
-                    <GridViewColumn Header="Mod" Width="275">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <CheckBox Margin="5 0 5 0" IsChecked="{Binding Active}">
-                                    </CheckBox>
-                                    <TextBlock Text="{Binding Path=Name}"  Foreground = "{StaticResource HeaderTextGradient}" FontFamily="Bahnschrift">
+                <ListView.View>
+                    <GridView ColumnHeaderContainerStyle="{StaticResource ColumnHeaderStyle}">
+                        <GridViewColumn Header="Mod" Width="275">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <CheckBox Margin="5 0 5 0" IsChecked="{Binding Active}">
+                                        </CheckBox>
+                                        <TextBlock Text="{Binding Path=Name}"  Foreground = "{StaticResource HeaderTextGradient}" FontFamily="Bahnschrift">
 
-                                    </TextBlock>
-                                </StackPanel>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
 
-                    <GridViewColumn Header="Author" Width="125">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding Path=Author}"  Foreground="{StaticResource HeaderTextGradient}" FontFamily="Bahnschrift">
-                                    </TextBlock>
-                                </StackPanel>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
+                        <GridViewColumn Header="Author" Width="125">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Path=Author}"  Foreground="{StaticResource HeaderTextGradient}" FontFamily="Bahnschrift">
+                                        </TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
                         
-                    </GridViewColumn>
-                    <GridViewColumn Header="Version">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding Path=URL}" Foreground="{StaticResource HeaderTextGradient}" FontFamily="Bahnschrift">
-                                    </TextBlock>
-                                </StackPanel>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                </GridView>
-            </ListView.View>
-        </ListView>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Version">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Path=URL}" Foreground="{StaticResource HeaderTextGradient}" FontFamily="Bahnschrift">
+                                        </TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
         
-    </Border>
+        </Border>        
+    </Grid>
+
 </UserControl>
