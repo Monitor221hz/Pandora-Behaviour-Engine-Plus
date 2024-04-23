@@ -89,18 +89,22 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			element.SetValue(newValue);
 			return true;
 		}
-		public static void InsertText(PackFile packFile, string path, string markerValue, string newValue)
+		public static bool InsertText(PackFile packFile, string path, string markerValue, string newValue)
 		{
 			
 			XElement element = packFile.SafeNavigateTo(path);
 			string source = NormalizeElementValue(element);
 
 			markerValue = NormalizeStringValue(markerValue);
-			var headSpan = source.AsSpan(0,markerValue.Length);
-			var tailSpan = source.AsSpan(markerValue.Length + 1);
+			var match = Regex.Match(source, markerValue);
+			if (!match.Success) {  return false; }
+			source = string.Concat(source.AsSpan(0, match.Index), newValue, source.AsSpan(match.Index));
 
-			source = NormalizeStringValue(String.Concat(headSpan, newValue, tailSpan));
+			//var headSpan = source.AsSpan(0,markerValue.Length);
+			//var tailSpan = source.AsSpan(markerValue.Length + 1);
 			element.SetValue(source);
+
+			return true; 
 		}
 
 		public static void AppendText(PackFile packFile, string path, string newValue)

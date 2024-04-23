@@ -16,7 +16,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 		private string value;
 
 
-		public InsertTextChange(string path, string preValue, string markerValue, string value)
+		public InsertTextChange(string path, string markerValue, string value)
 		{
 			Path = path; 
 			this.markerValue = markerValue;
@@ -25,8 +25,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 
 		public bool Apply(PackFile packFile)
 		{
-			PackFileEditor.InsertText(packFile, Path, markerValue,  value);
-			return true;
+			return PackFileEditor.InsertText(packFile, Path, markerValue,  value);
 		}
 
 		public bool Revert(PackFile packFile)
