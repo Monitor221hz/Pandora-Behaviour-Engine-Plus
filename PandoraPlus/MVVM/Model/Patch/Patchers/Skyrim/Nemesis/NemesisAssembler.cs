@@ -249,7 +249,7 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 			switch (node.NodeType)
 			{
 				case XmlNodeType.Text:
-
+					break;
 				case XmlNodeType.Element:
 					//packFile.Editor.QueueRemoveElement(lookup.LookupPath(node));
 					changeSet.AddChange(new RemoveElementChange(lookup.LookupPath(node)));
