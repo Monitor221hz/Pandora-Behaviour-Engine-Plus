@@ -25,6 +25,8 @@ public class FNISParser
 
 	private static readonly Regex hkxRegex = new Regex("\\S*\\.hkx", RegexOptions.IgnoreCase);
 
+	private static readonly Regex animLineRegex = new Regex(@"^([^('|\s)])\s*(-\S+)*\s*(\S+)\s+(\S+.hkx)(?:[^\S\r\n]+(\S+))*", RegexOptions.Compiled);
+
 	private static readonly Dictionary<string, string> stateMachineMap = new Dictionary<string, string>()
 	{
 		{"atronachflame~atronachflamebehavior", "#0414" },
@@ -187,6 +189,24 @@ public class FNISParser
 		foreach (var animlistFile in animlistFiles)
 		{
 			ParseAnimlist(animlistFile, characterFiles);
+		}
+	}
+
+	private void ParseAnimLine(string line)
+	{
+		var match = animLineRegex.Match(line); 
+
+		if (!match.Success) { return;  }
+
+		/*
+		 * <AnimType> [-<option,option,...>] <AnimEvent> <AnimFile> [<AnimObject> ...] 
+		 * 1			2						3			4			5
+		 */
+		
+		var animType = match.Groups[1].Value;
+		if (animType == "ofa")
+		{
+
 		}
 	}
 	private void ParseAnimlist(FileInfo file, List<PackFileCharacter> characterPackFiles)
