@@ -50,9 +50,14 @@ namespace Pandora.MVVM.ViewModel
 	
 		public bool LaunchEnabled { get; set; } = true;
 
+		public string SearchBGText { get => searchBGText; set
+            {
+                searchBGText = value;
+                RaisePropertyChanged(nameof(SearchBGText));
+            }
+        }
 
-
-        private bool engineRunning = false;
+		private bool engineRunning = false;
 
         private FileInfo activeModConfig; 
 
@@ -85,12 +90,15 @@ namespace Pandora.MVVM.ViewModel
                 RaisePropertyChanged(nameof(LogText));
             }
         }
+        private string cachedSearchText = string.Empty;
         private string searchText = "";
+		private string searchBGText = "Search";
+
 		public string SearchText { get => searchText; 
             set 
             { 
-                searchText = value;
-                if (String.IsNullOrEmpty(searchText))
+                
+                if (String.IsNullOrEmpty(value))
                 {
 					AssignModPriorities(Mods.Where(m => m.Active).ToList());
 					var sortedModInfos = Mods.Concat(hiddenMods).OrderBy(m => m.Priority == 0).ThenBy(m => m.Priority).ToList();
@@ -100,10 +108,13 @@ namespace Pandora.MVVM.ViewModel
                     {
                         Mods.Add(mod);
                     }
+                    SearchBGText = cachedSearchText;
+                    cachedSearchText = string.Empty;
 				}
                 else
                 {
-					HashSet<IModInfo> foundMods = SearchModInfos(searchText, Mods).ToHashSet();
+					SearchBGText = string.Empty;
+					HashSet<IModInfo> foundMods = SearchModInfos(value, Mods).ToHashSet();
 					for (int i = Mods.Count - 1; i >= 0; i--)
 					{
 						IModInfo mod = Mods[i];
@@ -114,7 +125,7 @@ namespace Pandora.MVVM.ViewModel
 						hiddenMods.Add(mod);
 						Mods.RemoveAt(i);
 					}
-					foundMods = SearchModInfos(searchText, hiddenMods).ToHashSet();
+					foundMods = SearchModInfos(value, hiddenMods).ToHashSet();
 					for (int i = hiddenMods.Count - 1; i >= 0; i--)
 					{
 						IModInfo? mod = hiddenMods[i];
@@ -126,7 +137,12 @@ namespace Pandora.MVVM.ViewModel
 						hiddenMods.RemoveAt(i);
 					}
 				}
-                RaisePropertyChanged(nameof(SearchText));
+                if (cachedSearchText.Length < value.Length)
+                {
+                    cachedSearchText = value;
+                }
+				searchText = value;
+				RaisePropertyChanged(nameof(SearchText));
             } 
         }
         private IEnumerable<IModInfo> SearchModInfos(string searchText, IEnumerable<IModInfo> mods)

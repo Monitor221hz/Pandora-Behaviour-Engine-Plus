@@ -31,7 +31,7 @@
                        FontFamily="Bahnschrift"
                        FontSize="12"
                        IsHitTestVisible="False"
-                       Text="Search"
+                       Text="{Binding SearchBGText, Mode=OneWay}"
                        TextAlignment="Left">
             </TextBlock>
 
