@@ -8,7 +8,7 @@
 		<hkobject name="#0029" class="hkbCharacterStringData" signature="0x655b42bc">
 			<hkparam name="deformableSkinNames" numelements="0"></hkparam>
 			<hkparam name="rigidSkinNames" numelements="0"></hkparam>
-			<hkparam name="animationNames" numelements="111">
+			<hkparam name="animationNames" numelements="122">
 				<hkcstring>Animations\1HM_AggroWarning1.HKX</hkcstring>
 				<hkcstring>Animations\1HM_Attack1.HKX</hkcstring>
 				<hkcstring>Animations\1HM_Attack2.HKX</hkcstring>
@@ -52,6 +52,7 @@
 				<hkcstring>Animations\BowWalkForwardRight.HKX</hkcstring>
 				<hkcstring>Animations\BowWalkLeft.HKX</hkcstring>
 				<hkcstring>Animations\BowWalkRight.HKX</hkcstring>
+				<hkcstring>Animations\FrozenPose1.HKX</hkcstring>
 				<hkcstring>Animations\GetupFaceDown.HKX</hkcstring>
 				<hkcstring>Animations\GetupFaceUp.HKX</hkcstring>
 				<hkcstring>Animations\H2HAttack1.HKX</hkcstring>
@@ -119,11 +120,22 @@
 				<hkcstring>Animations\PodExitFalling.HKX</hkcstring>
 				<hkcstring>Animations\PodExitIdle.HKX</hkcstring>
 				<hkcstring>Animations\PodExitLand.HKX</hkcstring>
+				<hkcstring>Animations\StaffConcentration.HKX</hkcstring>
+				<hkcstring>Animations\StaffConcentrationIntro.HKX</hkcstring>
+				<hkcstring>Animations\StaffConcentrationOut.HKX</hkcstring>
+				<hkcstring>Animations\StaffFireForget.HKX</hkcstring>
+				<hkcstring>Animations\StaffFireForgetIntro.HKX</hkcstring>
+				<hkcstring>Animations\StaffFireForgetOutro.HKX</hkcstring>
+				<hkcstring>Animations\StaffH2HAttack1.HKX</hkcstring>
+				<hkcstring>Animations\StaffIdle.HKX</hkcstring>
+				<hkcstring>Animations\StaffTurnLeft90.HKX</hkcstring>
+				<hkcstring>Animations\StaffTurnRight90.HKX</hkcstring>
 				<hkcstring>Animations\SwimForward.HKX</hkcstring>
 			</hkparam>
 			<hkparam name="animationFilenames" numelements="0"></hkparam>
-			<hkparam name="characterPropertyNames" numelements="1">
+			<hkparam name="characterPropertyNames" numelements="2">
 				<hkcstring>UpperBody</hkcstring>
+				<hkcstring>StaffMagicNode</hkcstring>
 			</hkparam>
 			<hkparam name="retargetingSkeletonMapperFilenames" numelements="0"></hkparam>
 			<hkparam name="lodNames" numelements="0"></hkparam>
@@ -180,6 +192,17 @@
 		<hkobject name="#0031" class="hkbBoneWeightArray" signature="0xcd902b77">
 			<hkparam name="variableBindingSet">null</hkparam>
 			<hkparam name="boneWeights" numelements="85">
+				0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
+				0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000
+				0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
+				0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
+				0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
+				0.000000 0.000000 0.000000 0.000000 0.000000
+			</hkparam>
+		</hkobject>
+		<hkobject name="#0032" class="hkbBoneWeightArray" signature="0xcd902b77">
+			<hkparam name="variableBindingSet">null</hkparam>
+			<hkparam name="boneWeights" numelements="85">
 				0.000000 0.000000 0.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 1.000000 1.000000
 				1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
 				1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
@@ -188,18 +211,21 @@
 				1.000000 1.000000 1.000000 1.000000 1.000000
 			</hkparam>
 		</hkobject>
-		<hkobject name="#0032" class="hkbVariableValueSet" signature="0x27812d8d">
-			<hkparam name="wordVariableValues" numelements="1">
+		<hkobject name="#0033" class="hkbVariableValueSet" signature="0x27812d8d">
+			<hkparam name="wordVariableValues" numelements="2">
 				<hkobject>
 					<hkparam name="value">0</hkparam>
 				</hkobject>
+				<hkobject>
+					<hkparam name="value">1</hkparam>
+				</hkobject>
 			</hkparam>
 			<hkparam name="quadVariableValues" numelements="0"></hkparam>
-			<hkparam name="variantVariableValues" numelements="1">
-				#0031
+			<hkparam name="variantVariableValues" numelements="2">
+				#0032 #0031
 			</hkparam>
 		</hkobject>
-		<hkobject name="#0033" class="hkbCharacterData" signature="0x300d6808">
+		<hkobject name="#0034" class="hkbCharacterData" signature="0x300d6808">
 			<hkparam name="characterControllerInfo">
 				<hkobject>
 					<hkparam name="capsuleHeight">1.700000</hkparam>
@@ -211,7 +237,16 @@
 			<hkparam name="modelUpMS">(0.000000 0.000000 1.000000 0.000000)</hkparam>
 			<hkparam name="modelForwardMS">(1.000000 0.000000 0.000000 0.000000)</hkparam>
 			<hkparam name="modelRightMS">(-0.000000 -1.000000 -0.000000 0.000000)</hkparam>
-			<hkparam name="characterPropertyInfos" numelements="1">
+			<hkparam name="characterPropertyInfos" numelements="2">
+				<hkobject>
+					<hkparam name="role">
+						<hkobject>
+							<hkparam name="role">ROLE_DEFAULT</hkparam>
+							<hkparam name="flags">0</hkparam>
+						</hkobject>
+					</hkparam>
+					<hkparam name="type">VARIABLE_TYPE_POINTER</hkparam>
+				</hkobject>
 				<hkobject>
 					<hkparam name="role">
 						<hkobject>
@@ -223,7 +258,7 @@
 				</hkobject>
 			</hkparam>
 			<hkparam name="numBonesPerLod" numelements="0"></hkparam>
-			<hkparam name="characterPropertyValues">#0032</hkparam>
+			<hkparam name="characterPropertyValues">#0033</hkparam>
 			<hkparam name="footIkDriverInfo">#0030</hkparam>
 			<hkparam name="handIkDriverInfo">null</hkparam>
 			<hkparam name="stringData">#0029</hkparam>
@@ -235,7 +270,7 @@
 				<hkobject>
 					<hkparam name="name">hkbCharacterData</hkparam>
 					<hkparam name="className">hkbCharacterData</hkparam>
-					<hkparam name="variant">#0033</hkparam>
+					<hkparam name="variant">#0034</hkparam>
 				</hkobject>
 			</hkparam>
 		</hkobject>
