@@ -80,7 +80,7 @@ namespace Pandora.MVVM.ViewModel
                 RaisePropertyChanged(nameof(EngineConfigurationViewModels));
             } 
         }
-
+        private IEngineConfigurationFactory engineConfigurationFactory;
 		private string logText = "";
 		public string LogText { 
             get => logText;
@@ -178,12 +178,14 @@ namespace Pandora.MVVM.ViewModel
 		}
         private void SetupConfigurationOptions()
         {
-            EngineConfigurationViewModels.Add(
+            engineConfigurationFactory = new EngineConfigurationViewModel<SkyrimConfiguration>("Normal", SetEngineConfigCommand);
+
+			EngineConfigurationViewModels.Add(
                 new EngineConfigurationViewModelContainer("Skyrim SE/AE",
                     new EngineConfigurationViewModelContainer("Behavior", 
 
                         new EngineConfigurationViewModelContainer("Patch",
-                            new EngineConfigurationViewModel<SkyrimConfiguration>("Normal", SetEngineConfigCommand),
+                            (EngineConfigurationViewModel<SkyrimConfiguration>)engineConfigurationFactory,
                             new EngineConfigurationViewModel<SkyrimDebugConfiguration>("Debug", SetEngineConfigCommand)
                         )
                         //,
@@ -195,9 +197,10 @@ namespace Pandora.MVVM.ViewModel
 					    )
 				    )
                 );
-            //EngineConfigs.Add(new EngineConfigurationViewModel<SkyrimConfiguration>("Skyrim SE/AE", SetEngineConfigCommand));
-            //EngineConfigs.Add(new EngineConfigurationViewModel<SkyrimDebugConfiguration>("Skyrim SE/AE Debug", SetEngineConfigCommand));
-        }
+			
+			//EngineConfigs.Add(new EngineConfigurationViewModel<SkyrimConfiguration>("Skyrim SE/AE", SetEngineConfigCommand));
+			//EngineConfigs.Add(new EngineConfigurationViewModel<SkyrimDebugConfiguration>("Skyrim SE/AE Debug", SetEngineConfigCommand));
+		}
         public async Task LoadAsync()
         {
 			
@@ -350,9 +353,9 @@ namespace Pandora.MVVM.ViewModel
 		private async void SetEngineConfiguration(object? config)
 		{
 			if (config == null) { return; }
-			IEngineConfigurationFactory engineConfiguration = (IEngineConfigurationFactory)config;
+			engineConfigurationFactory = (IEngineConfigurationFactory)config;
             await preloadTask;
-            var newConfig = engineConfiguration.Config;
+            var newConfig = engineConfigurationFactory.Config;
 			Engine = newConfig != null ? new BehaviourEngine(newConfig) : Engine;
 		}
 		private async void LaunchEngine(object? parameter)
@@ -365,9 +368,10 @@ namespace Pandora.MVVM.ViewModel
 			
             logText= string.Empty;
 
-            await WriteLogBoxLine("Engine launched.");
+            
             await preloadTask;
-            List<IModInfo> activeMods = GetActiveModsByPriority();
+			
+			List<IModInfo> activeMods = GetActiveModsByPriority();
 
             IModInfo? baseModInfo = Mods.Where(m => m.Code == "pandora").FirstOrDefault();
 
@@ -389,9 +393,10 @@ namespace Pandora.MVVM.ViewModel
             timer.Stop();
 
             await ClearLogBox();
-           
-
-            await WriteLogBoxLine(Engine.GetMessages(success));
+            var configInfoMessage = $"Engine launched with configuration: {Engine.Configuration.Name}";
+			await WriteLogBoxLine(configInfoMessage);
+            logger.Info(configInfoMessage);
+			await WriteLogBoxLine(Engine.GetMessages(success));
 
             if (!success)
             {
@@ -408,11 +413,11 @@ namespace Pandora.MVVM.ViewModel
                 }
 			}
 
-            
-			
 
-			Engine = new BehaviourEngine();
-            preloadTask = Task.Run(Engine.PreloadAsync);
+
+			var newConfig = engineConfigurationFactory.Config;
+            Engine = newConfig != null ? new BehaviourEngine(newConfig) : new BehaviourEngine();
+			preloadTask = Task.Run(Engine.PreloadAsync);
 
 			lock (LaunchCommand)
             {
