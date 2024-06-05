@@ -36,6 +36,14 @@
         <GradientStop Offset="0.0" Color="White" />
         <GradientStop Offset="1.0" Color="Silver" />
     </LinearGradientBrush>
+    <LinearGradientBrush x:Key ="OpaqueParagraphTextGradient" StartPoint="0,0" EndPoint="0,1" Opacity="0.5">
+        <GradientStop Offset="0.0" Color="White"/>
+        <GradientStop Offset="1.0" Color="Silver" />
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key ="TransparentParagraphTextGradient" StartPoint="0,0" EndPoint="0,1" Opacity="0.25">
+        <GradientStop Offset="0.0" Color="White"/>
+        <GradientStop Offset="1.0" Color="Silver" />
+    </LinearGradientBrush>
 
 
     <Style x:Key ="ListViewItemStyle" TargetType="{x:Type ListViewItem}">
@@ -95,7 +103,7 @@
             </Setter.Value>
         </Setter>
         <Setter Property="OverridesDefaultStyle" Value="True" />
-        <Setter Property="Background" Value="Green" />
+        
         <Setter Property="Foreground">
             <Setter.Value>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
