@@ -368,8 +368,9 @@ namespace Pandora.MVVM.ViewModel
 			
             logText= string.Empty;
 
-            
-            await preloadTask;
+			var configInfoMessage = $"Engine launched with configuration: {Engine.Configuration.Name}";
+			await WriteLogBoxLine(configInfoMessage);
+			await preloadTask;
 			
 			List<IModInfo> activeMods = GetActiveModsByPriority();
 
@@ -392,9 +393,6 @@ namespace Pandora.MVVM.ViewModel
             
             timer.Stop();
 
-            await ClearLogBox();
-            var configInfoMessage = $"Engine launched with configuration: {Engine.Configuration.Name}";
-			await WriteLogBoxLine(configInfoMessage);
             logger.Info(configInfoMessage);
 			await WriteLogBoxLine(Engine.GetMessages(success));
 
