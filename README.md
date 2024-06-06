@@ -105,9 +105,13 @@ It's recommended to pass the log on to the relevant mod author if a specific mod
 
 <br/>
 
-**My animation has no movement!"**
+**My animation has no movement!**
 
 One of the mods does not have motion data. That is not a Pandora issue, it is a mod issue. 
+
+**It says 0 animations added or fails to output files!**
+
+Run the engine as administrator or move the engine install out of a protected location.
 
 <br/>
 <br/>
