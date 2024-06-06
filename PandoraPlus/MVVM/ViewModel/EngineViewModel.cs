@@ -28,7 +28,7 @@ namespace Pandora.MVVM.ViewModel
         private readonly NemesisModInfoProvider nemesisModInfoProvider = new NemesisModInfoProvider();
         private readonly PandoraModInfoProvider pandoraModInfoProvider = new PandoraModInfoProvider();
 
-		private string logText = "";
+		
         private HashSet<string> startupArguments = new(StringComparer.OrdinalIgnoreCase);
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -44,14 +44,20 @@ namespace Pandora.MVVM.ViewModel
         public RelayCommand SetEngineConfigCommand { get; }
         public RelayCommand ExitCommand { get; }
 
+        private List<IModInfo>  hiddenMods = new List<IModInfo>();
         public ObservableCollection<IModInfo> Mods { get; set; } = new ObservableCollection<IModInfo>();
 
 	
 		public bool LaunchEnabled { get; set; } = true;
 
+		public string SearchBGText { get => searchBGText; set
+            {
+                searchBGText = value;
+                RaisePropertyChanged(nameof(SearchBGText));
+            }
+        }
 
-
-        private bool engineRunning = false;
+		private bool engineRunning = false;
 
         private FileInfo activeModConfig; 
 
@@ -64,6 +70,8 @@ namespace Pandora.MVVM.ViewModel
         private Task preloadTask;
 
         private ObservableCollection<IEngineConfigurationViewModel> engineConfigs = new ObservableCollection<IEngineConfigurationViewModel>();
+		
+
 		public ObservableCollection<IEngineConfigurationViewModel> EngineConfigurationViewModels 
         { get => engineConfigs; 
             set 
@@ -72,8 +80,8 @@ namespace Pandora.MVVM.ViewModel
                 RaisePropertyChanged(nameof(EngineConfigurationViewModels));
             } 
         }
-
-
+        private IEngineConfigurationFactory engineConfigurationFactory;
+		private string logText = "";
 		public string LogText { 
             get => logText;
             set
@@ -82,7 +90,67 @@ namespace Pandora.MVVM.ViewModel
                 RaisePropertyChanged(nameof(LogText));
             }
         }
-        private void RaisePropertyChanged([CallerMemberName] string? propertyName=null)
+        private string cachedSearchText = string.Empty;
+        private string searchText = "";
+		private string searchBGText = "Search";
+
+		public string SearchText { get => searchText; 
+            set 
+            { 
+                
+                if (String.IsNullOrEmpty(value))
+                {
+					AssignModPriorities(Mods.Where(m => m.Active).ToList());
+					var sortedModInfos = Mods.Concat(hiddenMods).OrderBy(m => m.Priority == 0).ThenBy(m => m.Priority).ToList();
+					hiddenMods.Clear();
+                    Mods.Clear();
+                    foreach(var mod in sortedModInfos)
+                    {
+                        Mods.Add(mod);
+                    }
+                    SearchBGText = cachedSearchText;
+                    cachedSearchText = string.Empty;
+				}
+                else
+                {
+					SearchBGText = string.Empty;
+					HashSet<IModInfo> foundMods = SearchModInfos(value, Mods).ToHashSet();
+					for (int i = Mods.Count - 1; i >= 0; i--)
+					{
+						IModInfo mod = Mods[i];
+						if (foundMods.Contains(mod))
+						{
+							continue;
+						}
+						hiddenMods.Add(mod);
+						Mods.RemoveAt(i);
+					}
+					foundMods = SearchModInfos(value, hiddenMods).ToHashSet();
+					for (int i = hiddenMods.Count - 1; i >= 0; i--)
+					{
+						IModInfo? mod = hiddenMods[i];
+						if (!foundMods.Contains(mod))
+						{
+							continue;
+						}
+						Mods.Add(mod);
+						hiddenMods.RemoveAt(i);
+					}
+				}
+                if (cachedSearchText.Length < value.Length)
+                {
+                    cachedSearchText = value;
+                }
+				searchText = value;
+				RaisePropertyChanged(nameof(SearchText));
+            } 
+        }
+        private IEnumerable<IModInfo> SearchModInfos(string searchText, IEnumerable<IModInfo> mods)
+        {
+            return mods.Where(m => m.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+
+		}
+		private void RaisePropertyChanged([CallerMemberName] string? propertyName=null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -110,12 +178,14 @@ namespace Pandora.MVVM.ViewModel
 		}
         private void SetupConfigurationOptions()
         {
-            EngineConfigurationViewModels.Add(
+            engineConfigurationFactory = new EngineConfigurationViewModel<SkyrimConfiguration>("Normal", SetEngineConfigCommand);
+
+			EngineConfigurationViewModels.Add(
                 new EngineConfigurationViewModelContainer("Skyrim SE/AE",
                     new EngineConfigurationViewModelContainer("Behavior", 
 
                         new EngineConfigurationViewModelContainer("Patch",
-                            new EngineConfigurationViewModel<SkyrimConfiguration>("Normal", SetEngineConfigCommand),
+                            (EngineConfigurationViewModel<SkyrimConfiguration>)engineConfigurationFactory,
                             new EngineConfigurationViewModel<SkyrimDebugConfiguration>("Debug", SetEngineConfigCommand)
                         )
                         //,
@@ -127,9 +197,10 @@ namespace Pandora.MVVM.ViewModel
 					    )
 				    )
                 );
-            //EngineConfigs.Add(new EngineConfigurationViewModel<SkyrimConfiguration>("Skyrim SE/AE", SetEngineConfigCommand));
-            //EngineConfigs.Add(new EngineConfigurationViewModel<SkyrimDebugConfiguration>("Skyrim SE/AE Debug", SetEngineConfigCommand));
-        }
+			
+			//EngineConfigs.Add(new EngineConfigurationViewModel<SkyrimConfiguration>("Skyrim SE/AE", SetEngineConfigCommand));
+			//EngineConfigs.Add(new EngineConfigurationViewModel<SkyrimDebugConfiguration>("Skyrim SE/AE Debug", SetEngineConfigCommand));
+		}
         public async Task LoadAsync()
         {
 			
@@ -282,10 +353,11 @@ namespace Pandora.MVVM.ViewModel
 		private async void SetEngineConfiguration(object? config)
 		{
 			if (config == null) { return; }
-			IEngineConfigurationFactory engineConfiguration = (IEngineConfigurationFactory)config;
+			engineConfigurationFactory = (IEngineConfigurationFactory)config;
             await preloadTask;
-            var newConfig = engineConfiguration.Config;
+            var newConfig = engineConfigurationFactory.Config;
 			Engine = newConfig != null ? new BehaviourEngine(newConfig) : Engine;
+            preloadTask = Engine.PreloadAsync();
 		}
 		private async void LaunchEngine(object? parameter)
         {
@@ -297,9 +369,11 @@ namespace Pandora.MVVM.ViewModel
 			
             logText= string.Empty;
 
-            await WriteLogBoxLine("Engine launched.");
-            await preloadTask;
-            List<IModInfo> activeMods = GetActiveModsByPriority();
+			var configInfoMessage = $"Engine launched with configuration: {Engine.Configuration.Name}";
+			await WriteLogBoxLine(configInfoMessage);
+			await preloadTask;
+			
+			List<IModInfo> activeMods = GetActiveModsByPriority();
 
             IModInfo? baseModInfo = Mods.Where(m => m.Code == "pandora").FirstOrDefault();
 
@@ -320,10 +394,8 @@ namespace Pandora.MVVM.ViewModel
             
             timer.Stop();
 
-            await ClearLogBox();
-           
-
-            await WriteLogBoxLine(Engine.GetMessages(success));
+            logger.Info(configInfoMessage);
+			await WriteLogBoxLine(Engine.GetMessages(success));
 
             if (!success)
             {
@@ -340,11 +412,11 @@ namespace Pandora.MVVM.ViewModel
                 }
 			}
 
-            
-			
 
-			Engine = new BehaviourEngine();
-            preloadTask = Task.Run(Engine.PreloadAsync);
+
+			var newConfig = engineConfigurationFactory.Config;
+            Engine = newConfig != null ? new BehaviourEngine(newConfig) : new BehaviourEngine();
+			preloadTask = Task.Run(Engine.PreloadAsync);
 
 			lock (LaunchCommand)
             {

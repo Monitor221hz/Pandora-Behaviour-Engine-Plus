@@ -233,12 +233,13 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 
 			foreach (DirectoryInfo subDirInfo in directoryInfo.GetDirectories())
 			{
-				if (!AnimSetDataManager.AnimSetDataMap.TryGetValue(subDirInfo.Name, out targetAnimSetData)) return;
+				if (!AnimSetDataManager.AnimSetDataMap.TryGetValue(subDirInfo.Name, out targetAnimSetData)) continue;
 				var patchFiles = subDirInfo.GetFiles();
 
 				foreach (var patchFile in patchFiles)
 				{
 					AnimSet? targetAnimSet;
+
 					if (!targetAnimSetData.AnimSetsByName.TryGetValue(patchFile.Name, out targetAnimSet)) continue;
 
 					using (var readStream = patchFile.OpenRead())
@@ -262,7 +263,35 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 					}
 				}
 			}
+			foreach (FileInfo patchFile in directoryInfo.GetFiles("*.txt"))
+			{
+				if (!AnimSetDataManager.AnimSetDataMap.TryGetValue(Path.GetFileNameWithoutExtension(patchFile.Name), out targetAnimSetData)) continue;
+				List<SetCachedAnimInfo> animInfos = new();
+				using (var readStream = patchFile.OpenRead())
+				{
+					using (var reader = new StreamReader(readStream))
+					{
+						string? expectedPath;
+						while ((expectedPath = reader.ReadLine()) != null)
+						{
+							if (string.IsNullOrWhiteSpace(expectedPath)) continue;
 
+							string animationName = Path.GetFileNameWithoutExtension(expectedPath);
+							string folder = Path.GetDirectoryName(expectedPath)!;
+							var animInfo = SetCachedAnimInfo.Encode(folder, animationName);
+							animInfos.Add(animInfo);
+						}
+					}
+				}
+				foreach (var animSet in targetAnimSetData.AnimSets)
+				{
+					foreach (var animInfo in animInfos)
+					{
+						animSet.AddAnimInfo(animInfo);
+					}
+				}
+				break;
+			}
 
 
 
