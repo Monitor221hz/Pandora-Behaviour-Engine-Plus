@@ -357,6 +357,7 @@ namespace Pandora.MVVM.ViewModel
             await preloadTask;
             var newConfig = engineConfigurationFactory.Config;
 			Engine = newConfig != null ? new BehaviourEngine(newConfig) : Engine;
+            preloadTask = Engine.PreloadAsync();
 		}
 		private async void LaunchEngine(object? parameter)
         {
