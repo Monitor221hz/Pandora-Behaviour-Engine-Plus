@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pandora.Patch.Patchers.Skyrim.Hkx;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 namespace Pandora.Patch.Patchers.Skyrim.FNIS;
 public class FNISAnimation
 {
+	public static readonly Regex AnimLineRegex = new Regex(@"^([^('|\s)]+)\s*(-\S+)*\s*(\S+)\s+(\S+.hkx)(?:[^\S\r\n]+(\S+))*", RegexOptions.Compiled);
 	public enum AnimType
 	{
 		Basic, 
@@ -72,6 +74,9 @@ public class FNISAnimation
 	public AnimType Type { get; private set; } = AnimType.Basic;
 	public AnimFlags Flags { get; private set; } = AnimFlags.None;
 
+	private List<string> animObjectNames = new();
+	public FNISAnimation NextAnimation { get; private set; }
+
 	/// <summary>
 	/// Assumes that match has the groups specified in the animLine regex.
 	/// </summary>
@@ -82,6 +87,10 @@ public class FNISAnimation
 		if (animTypePrefixes.TryGetValue(match.Groups[1].Value, out animType))
 		{
 			Type = animType;
+		}
+		else
+		{
+			throw new ArgumentException("Match did not have animTypePrefix");
 		}
 
 		if (match.Groups[2].Success)
@@ -96,14 +105,15 @@ public class FNISAnimation
 				}
 			}
 		}
-
 		if (Flags.HasFlag(AnimFlags.AnimObjects) && match.Groups[5].Success)
 		{
-
+			foreach(Capture capture in match.Groups[5].Captures)
+			{
+				animObjectNames.Add(capture.Value);
+			}
 		}
-
 	}
-	List<Chan>
+	
 
 
 }

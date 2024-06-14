@@ -25,7 +25,7 @@ public class FNISParser
 
 	private static readonly Regex hkxRegex = new Regex("\\S*\\.hkx", RegexOptions.IgnoreCase);
 
-	private static readonly Regex animLineRegex = new Regex(@"^([^('|\s)])\s*(-\S+)*\s*(\S+)\s+(\S+.hkx)(?:[^\S\r\n]+(\S+))*", RegexOptions.Compiled);
+	private static readonly Regex animLineRegex = new Regex(@"^([^('|\s)]+)\s*(-\S+)*\s*(\S+)\s+(\S+.hkx)(?:[^\S\r\n]+(\S+))*", RegexOptions.Compiled);
 
 	private static readonly Dictionary<string, string> stateMachineMap = new Dictionary<string, string>()
 	{
@@ -152,11 +152,11 @@ public class FNISParser
 
 		string behaviorRefName;
 		var behaviorRef = nodeMaker.CreateBehaviorReferenceGenerator(refName, graphPath, out behaviorRefName);
-		XElement behaviorRefElement = nodeMaker.TranslateToLinq<hkbBehaviorReferenceGenerator>(behaviorRef, behaviorRefName);
+		XElement behaviorRefElement = nodeMaker.TranslateToXml<hkbBehaviorReferenceGenerator>(behaviorRef, behaviorRefName);
 
 		string stateInfoName;
 		var stateInfo = nodeMaker.CreateSimpleStateInfo(behaviorRef, out stateInfoName);
-		XElement stateInfoElement = nodeMaker.TranslateToLinq<hkbStateMachineStateInfo>(stateInfo, stateInfoName);
+		XElement stateInfoElement = nodeMaker.TranslateToXml<hkbStateMachineStateInfo>(stateInfo, stateInfoName);
 
 		changeSet.AddChange(new AppendElementChange(PackFile.ROOT_CONTAINER_NAME, behaviorRefElement));
 		changeSet.AddChange(new AppendElementChange(PackFile.ROOT_CONTAINER_NAME, stateInfoElement));

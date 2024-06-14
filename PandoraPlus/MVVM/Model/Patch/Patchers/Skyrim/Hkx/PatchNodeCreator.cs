@@ -2,6 +2,7 @@
 using Pandora.Core;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,25 +14,54 @@ public class PatchNodeCreator
 	private XmlSerializer serializer = new XmlSerializer();
 
 	private readonly string newNodePrefix;
+
+	private const string havokStringName = "hkcstring";
+	private const string havokParamName = "hkparam";
 	private uint nodeCount = 0;
 
     public PatchNodeCreator(string newPrefix)
     {
         newNodePrefix = newPrefix;
     }
-	public string GenerateNodeName(string uniqueName)
+	public static XElement TranslateToXml(string str)
 	{
-		var name = $"#{uniqueName}${nodeCount.ToString()}i";
-		nodeCount++;
-		return name;
+		return new XElement(havokStringName, str);
 	}
-	public XElement TranslateToLinq<T>(T hkobject, string nodeName) where T : IHavokObject
+	public static XElement TranslateToXml(string name, string value)
+	{
+		return new XElement(havokParamName, new XAttribute("name", name), value);
+	}
+	public static XElement TranslateToXml(XElement element)
+	{
+		var hkObject = new XElement("hkobject"); 
+		hkObject.Add(element);
+		return hkObject;
+	}
+	public XElement TranslateToXml<T>(T hkobject, string nodeName) where T : IHavokObject
 	{
 		var element = serializer.WriteDetachedNode<T>(hkobject, nodeName); 
 		hkobject.WriteXml(serializer, element);
 		return element;
 	}
 
+	public string GenerateNodeName(string uniqueName)
+	{
+		var name = $"#{uniqueName}${uniqueName.GetHashCode()}{nodeCount.ToString()}i";
+		nodeCount = nodeCount == uint.MaxValue ? 0 : nodeCount + 1; 
+		return name;
+	}
+
+	public bool AddAnimationPath(PackFileCharacter characterPackFile, PackFileChangeSet changeSet, string animationPath)
+	{
+		changeSet.AddChange(new AppendElementChange(characterPackFile.AnimationNamesPath, TranslateToXml(animationPath)));
+		return true; 
+	}
+	public bool AddDefaultEvent(PackFileGraph graphPackFile, PackFileChangeSet changeSet, string eventName)
+	{
+		changeSet.AddChange(new AppendElementChange(graphPackFile.EventNamesPath, TranslateToXml(eventName)));
+		changeSet.AddChange(new AppendElementChange(graphPackFile.EventFlagsPath, TranslateToXml(TranslateToXml("flags", "0"))));
+		return true; 
+	}
 	public hkbBehaviorReferenceGenerator CreateBehaviorReferenceGenerator(string behaviorName, out string nodeName)
 	{
 		nodeName = GenerateNodeName(behaviorName);
