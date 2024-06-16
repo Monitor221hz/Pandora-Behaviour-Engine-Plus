@@ -17,6 +17,17 @@ namespace Pandora.Core;
 [XmlRoot(ElementName ="mod")]
 public class PandoraModInfo : IModInfo
 {
+	public override int GetHashCode()
+	{
+		return Code.GetHashCode();
+	}
+	public bool Equals(IModInfo? other)
+	{
+		return other == null ? false :
+			Code == other.Code &&
+			Version == other.Version;
+	}
+
 	[XmlIgnore]
 	public bool Active { get; set; } = false;
 

@@ -10,6 +10,16 @@ namespace Pandora.Core;
 
 public class FNISModInfo : IModInfo
 {
+	public override int GetHashCode()
+	{
+		return Code.GetHashCode();
+	}
+	public bool Equals(IModInfo? other)
+	{
+		return other == null ? false :
+			Code == other.Code &&
+			Version == other.Version;
+	}
 	public string Name { get; private set; }
 
 	public string Description { get; private set; } = string.Empty;

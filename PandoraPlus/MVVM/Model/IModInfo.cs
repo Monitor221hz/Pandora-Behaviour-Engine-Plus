@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.IO;
@@ -8,8 +9,10 @@ using System.Threading.Tasks;
 
 namespace Pandora.Core
 {
-    
-    public interface IModInfo
+    /// <summary>
+    /// Strongly recommended to implement GetHashCode() in addition to IEquatable.
+    /// </summary>
+	public interface IModInfo : IEquatable<IModInfo>
     {
         public enum ModFormat
         {
