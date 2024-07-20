@@ -50,7 +50,7 @@ Built with backwards compatibility in mind for [Nemesis Unlimited Behavior Engin
 ## For Users
 
 ### Quickstart
-Install [.NET 7 Desktop Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/7.0) if you do not have it installed.  
+Install [.NET 8 Desktop Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) if you do not have it installed.  
 
 <br/>
 
