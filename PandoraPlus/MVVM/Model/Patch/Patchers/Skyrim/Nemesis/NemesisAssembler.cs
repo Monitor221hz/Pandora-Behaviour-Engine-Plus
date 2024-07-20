@@ -56,8 +56,8 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 
 
 		ProjectManager = new ProjectManager(templateFolder, outputFolder);
-		AnimSetDataManager = new AnimSetDataManager(templateFolder, outputFolder);
-		AnimDataManager = new AnimDataManager(templateFolder, outputFolder);
+		AnimSetDataManager = new AnimSetDataManager(templateFolder, exporter.ExportDirectory);
+		AnimDataManager = new AnimDataManager(templateFolder, exporter.ExportDirectory);
 
 		pandoraConverter = new PandoraConverter(ProjectManager, AnimSetDataManager, AnimDataManager);
     }
@@ -65,8 +65,8 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 	{
 		this.exporter = ioManager;
 		ProjectManager = new ProjectManager(templateFolder, outputFolder);
-		AnimSetDataManager = new AnimSetDataManager(templateFolder, outputFolder);
-		AnimDataManager = new AnimDataManager(templateFolder, outputFolder);
+		AnimSetDataManager = new AnimSetDataManager(templateFolder, exporter.ExportDirectory);
+		AnimDataManager = new AnimDataManager(templateFolder, exporter.ExportDirectory);
 
 		pandoraConverter = new PandoraConverter(ProjectManager, AnimSetDataManager, AnimDataManager);
 	}
