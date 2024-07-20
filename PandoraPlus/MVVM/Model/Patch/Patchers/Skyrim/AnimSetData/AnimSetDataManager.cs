@@ -28,10 +28,10 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimSetData
 
 		public Dictionary<string, ProjectAnimSetData> AnimSetDataMap { get; private set; } = new Dictionary<string, ProjectAnimSetData>();
 
-		public AnimSetDataManager(DirectoryInfo templateFolder, DirectoryInfo outputFolder)
+		public AnimSetDataManager(DirectoryInfo templateFolder, DirectoryInfo currentFolder)
         {
 			this.templateFolder = templateFolder;
-			this.outputFolder = outputFolder;
+			this.outputFolder = new DirectoryInfo(Path.Join(currentFolder.FullName, "meshes"));
 			templateAnimSetDataSingleFile = new FileInfo($"{templateFolder.FullName}\\{ANIMSETDATA_FILENAME}");
 			outputAnimSetDataSingleFile = new FileInfo($"{outputFolder.FullName}\\{ANIMSETDATA_FILENAME}");
 			vanillaHkxFiles = new FileInfo($"{templateFolder.FullName}\\vanilla_hkxpaths.txt");

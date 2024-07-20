@@ -34,10 +34,10 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimData
 
 		private int LastID { get; set; } = 32767;
 
-        public AnimDataManager(DirectoryInfo templateFolder, DirectoryInfo outputFolder)
+        public AnimDataManager(DirectoryInfo templateFolder, DirectoryInfo currentFolder)
         {
 			this.templateFolder = templateFolder;
-			this.outputFolder = outputFolder;
+			this.outputFolder = new DirectoryInfo(Path.Join(currentFolder.FullName, "meshes"));
             templateAnimDataSingleFile = new FileInfo($"{templateFolder.FullName}\\{ANIMDATA_FILENAME}");
 			outputAnimDataSingleFile = new FileInfo($"{outputFolder.FullName}\\{ANIMDATA_FILENAME}");
 		}
