@@ -1,6 +1,7 @@
 ﻿using Pandora.Core.Patchers.Skyrim;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,8 @@ public class PackFileCache
 {
 	private Dictionary<string, PackFile> pathMap = new Dictionary<string, PackFile>(StringComparer.OrdinalIgnoreCase);
 	private static readonly FileInfo PreviousOutputFile = new FileInfo(Directory.GetCurrentDirectory() + "\\Pandora_Engine\\PreviousOutput.txt");
+
+	private Dictionary<PackFile, List<Project>> sharedPackFileProjectMap = new(); 
 
 	public PackFile LoadPackFile(FileInfo file)
 	{
@@ -89,7 +92,10 @@ public class PackFileCache
 
 		return (PackFileCharacter)packFile;
 	}
-
+	public bool TryLookupSharedProjects(PackFile packFile, [NotNullWhen(true)] out List<Project>? projects)
+	{
+		return sharedPackFileProjectMap.TryGetValue(packFile, out projects); 
+	}
 	public void DeletePackFileOutput()
 	{
 		if (!PreviousOutputFile.Exists) { return;  }

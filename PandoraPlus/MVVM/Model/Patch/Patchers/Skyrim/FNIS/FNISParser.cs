@@ -9,8 +9,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Sources;
@@ -24,6 +22,8 @@ public class FNISParser
 	private static readonly HashSet<string> animTypePrefixes = new HashSet<string>() { "b", "s", "so", "fu", "fuo", "+", "ofa", "pa", "km", "aa", "ch" };
 
 	private static readonly Regex hkxRegex = new Regex("\\S*\\.hkx", RegexOptions.IgnoreCase);
+
+	private static readonly Regex animLineRegex = new Regex(@"^([^('|\s)]+)\s*(-\S+)*\s*(\S+)\s+(\S+.hkx)(?:[^\S\r\n]+(\S+))*", RegexOptions.Compiled);
 
 	private static readonly Dictionary<string, string> stateMachineMap = new Dictionary<string, string>()
 	{
@@ -78,16 +78,6 @@ public class FNISParser
 		{"scribproject~scribbehavior", "#0578" }
 	};
 
-	private static readonly Dictionary<string, string> linkedCharacterMap = new Dictionary<string, string>()
-	{
-		{"defaultmale", "defaultfemale" },
-		{"defaultfemale", "defaultmale" },
-		{"draugrskeletonproject", "draugrproject" },
-		{"draugrproject", "draugrskeletonproject" },
-		{"wolfproject", "dogproject" },
-		{"dogproject", "wolfproject" }
-	};
-
 	private static readonly Dictionary<string, string> animListExcludeMap = new Dictionary<string, string>()
 	{
 		{"dogproject", "wolf" },
@@ -102,7 +92,8 @@ public class FNISParser
     {
 		projectManager = manager;
     }
-	private ProjectManager projectManager { get;  }
+	private ProjectManager projectManager;
+	private PatchNodeCreator patchNodeCreator = new("fnis");
     public void ScanProjectAnimlist(Project project)
 	{
 		var animationsFolder = project.OutputAnimationDirectory;
@@ -128,7 +119,13 @@ public class FNISParser
 
 		if (modAnimationFolders.Length == 0) { return; }
 
-		Parallel.ForEach(modAnimationFolders, folder => { ParseAnimlistFolder(folder, project, projectManager); });
+		//Parallel.ForEach(modAnimationFolders, folder => { ParseAnimlistFolder(folder, project, projectManager); });
+
+		foreach (var modAnimationFolder in modAnimationFolders)
+		{
+			if (modAnimationFolder == null) { continue; }
+			ParseAnimlistFolder(modAnimationFolder, project, projectManager);
+		}
 	}
 	private bool InjectGraphReference(FileInfo sourceFile, PackFileGraph destPackFile)
 	{
@@ -149,20 +146,24 @@ public class FNISParser
 		PatchNodeCreator nodeMaker = new PatchNodeCreator(changeSet.Origin.Code);
 
 		string behaviorRefName;
-		var behaviorRef = nodeMaker.CreateBehaviorReferenceGenerator(refName, graphPath, out behaviorRefName);
-		XElement behaviorRefElement = nodeMaker.TranslateToLinq<hkbBehaviorReferenceGenerator>(behaviorRef, behaviorRefName);
+		var behaviorRef = patchNodeCreator.CreateBehaviorReferenceGenerator(refName, graphPath, out behaviorRefName);
+		XElement behaviorRefElement = patchNodeCreator.Serializer.WriteRegisteredNode<hkbBehaviorReferenceGenerator>(behaviorRef);
 
 		string stateInfoName;
-		var stateInfo = nodeMaker.CreateSimpleStateInfo(behaviorRef, out stateInfoName);
-		XElement stateInfoElement = nodeMaker.TranslateToLinq<hkbStateMachineStateInfo>(stateInfo, stateInfoName);
+		var stateInfo = patchNodeCreator.CreateSimpleStateInfo(behaviorRef, out stateInfoName);
+		XElement stateInfoElement = patchNodeCreator.Serializer.WriteRegisteredNamedObject<hkbStateMachineStateInfo>(stateInfo, stateInfoName);
 
-		changeSet.AddChange(new AppendElementChange(PackFile.ROOT_CONTAINER_NAME, behaviorRefElement));
-		changeSet.AddChange(new AppendElementChange(PackFile.ROOT_CONTAINER_NAME, stateInfoElement));
+		//changeSet.AddChange(new AppendElementChange(PackFile.ROOT_CONTAINER_NAME, behaviorRefElement));
+		//changeSet.AddChange(new AppendElementChange(PackFile.ROOT_CONTAINER_NAME, stateInfoElement));
+		//changeSet.AddChange(new AppendTextChange(stateInfoPath, stateInfoName));
+		changeSet.AddElementAsChange(behaviorRefElement);
+		changeSet.AddElementAsChange(stateInfoElement);
 		changeSet.AddChange(new AppendTextChange(stateInfoPath, stateInfoName));
 
 		destPackFile.Dispatcher.AddChangeSet(changeSet);
 		return true;
 	}
+
 	private void ParseAnimlistFolder(DirectoryInfo folder, Project project, ProjectManager projectManager)
 	{
 		var animlistFiles = folder.GetFiles("*list.txt");
@@ -174,66 +175,12 @@ public class FNISParser
 
 		if (animlistFiles.Length == 0) { return; }
 
-		
-
-		List<PackFileCharacter> characterFiles = new List<PackFileCharacter> { project.CharacterFile };
-
-		if (linkedCharacterMap.TryGetValue(project.Identifier, out var linkedProjectIdentifier) && projectManager.TryGetProject(linkedProjectIdentifier, out var linkedProject))
-		{
-			characterFiles.Add(linkedProject!.CharacterFile);
-			
-		}
-		foreach(var characterFile in characterFiles) { projectManager.ActivatePackFile(characterFile); }
+		List<FNISAnimationList> animLists = new(); 
 		foreach (var animlistFile in animlistFiles)
 		{
-			ParseAnimlist(animlistFile, characterFiles);
+			animLists.Add(FNISAnimationList.FromFile(animlistFile));
 		}
-	}
-	private void ParseAnimlist(FileInfo file, List<PackFileCharacter> characterPackFiles)
-	{
-
-
-		List<PackFileChangeSet> changeSets = new List<PackFileChangeSet>();
-
-		for(int i = 0; i < characterPackFiles.Count; i++) { changeSets.Add(new PackFileChangeSet(new FNISModInfo(file)));  }
-
-
-		var parentFolder = file.Directory;
-		if (parentFolder == null) { return; }
-
-
-		var ancestorFolder = parentFolder.Parent;
-		if (ancestorFolder == null) { return; }
-
-
-		var root = Path.Combine(ancestorFolder.Name, parentFolder.Name);
-
-		using (var readStream = file.OpenRead())
-		{
-			using (var reader = new StreamReader(readStream))
-			{
-				string? expectedLine; 
-				while((expectedLine = reader.ReadLine()) != null)
-				{
-					if (string.IsNullOrWhiteSpace(expectedLine) || expectedLine[0] == '\'') { continue; }
-
-					var match = hkxRegex.Match(expectedLine);
-					if (!match.Success) { continue; }
-					
-					var animationPath = Path.Combine(root, match.Value);
-					for (int i = 0; i < changeSets.Count; i++)
-					{
-						changeSets[i].AddChange(new AppendElementChange(characterPackFiles[i].AnimationNamesPath, new XElement("hkcstring", animationPath)));
-					}
-					
-				}
-			}
-		}
-		for (int i = 0; i< characterPackFiles.Count ; i++)
-		{
-			characterPackFiles[i].Dispatcher.AddChangeSet(changeSets[i]);
-		}
-		
+		Parallel.ForEach(animLists, animlist => { animlist.BuildPatches(project, projectManager, patchNodeCreator); }); 
 	}
 
 

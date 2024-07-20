@@ -26,17 +26,6 @@ public class PackFileDispatcher
 
 	private PackFileValidator packFileValidator { get; set; } = new PackFileValidator();
 
-	public void AddChange(IPackFileChange change)
-	{
-		if (change.AssociatedType == System.Xml.XmlNodeType.Element)
-		{
-			elementChanges.Add(change);
-		}
-		else if (change.AssociatedType == System.Xml.XmlNodeType.Text)
-		{
-			textChanges.Add(change);
-		}
-	}
 
 	public void AddChangeSet(PackFileChangeSet changeSet)
 	{
