@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net7.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <Configurations>Debug;Release;Debug(No Logging)</Configurations>
@@ -10,7 +9,6 @@
     <AssemblyName>Pandora Behaviour Engine+</AssemblyName>
     <ApplicationIcon>butterfly_icon.ico</ApplicationIcon>
   </PropertyGroup>
-
   <ItemGroup>
     <None Remove="Assets\cancel.png" />
     <None Remove="Assets\curly-wing-gold.png" />
@@ -34,11 +32,9 @@
     <None Remove="Fonts\Montserrat-Thin.ttf" />
     <None Remove="Fonts\Montserrat-ThinItalic.ttf" />
   </ItemGroup>
-
   <ItemGroup>
     <Content Include="butterfly_icon.ico" />
   </ItemGroup>
-
   <ItemGroup>
     <Resource Include="Assets\cancel.png" />
     <Resource Include="Assets\curly-wing-gold.png" />
@@ -62,25 +58,21 @@
     <Resource Include="Fonts\Montserrat-Thin.ttf" />
     <Resource Include="Fonts\Montserrat-ThinItalic.ttf" />
   </ItemGroup>
-
   <ItemGroup>
     <Folder Include="MVVM\Model\Interface\" />
     <Folder Include="Nemesis_Engine\mod\amco\1hm_behavior\" />
     <Folder Include="Nemesis_Engine\mod\snusnu\animationsetdatasinglefile\" />
     <Folder Include="Pandora_Engine\Skyrim\Process\" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="gong-wpf-dragdrop" Version="3.2.1" />
     <PackageReference Include="Nito.HashAlgorithms.CRC" Version="1.0.1" />
     <PackageReference Include="NLog" Version="5.2.5" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\third_party\HKX2-Library\HKX2 WPF\HKX2.csproj" />
     <ProjectReference Include="..\third_party\XML-Cake\XML Cake\XML Cake.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -93,14 +85,12 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
   </ItemGroup>
-
   <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-
   <ItemGroup>
     <None Update="FNIS.esp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -1178,9 +1168,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="if &quot;$(ConfigurationName)&quot; == &quot;Debug&quot; (&#xD;&#xA;    xcopy &quot;$(ProjectDir)Pandora_Engine\*&quot; &quot;$(PANDORA_TEST_ENV)\Pandora_Engine\&quot; /Y /E /I&#xD;&#xA;    xcopy &quot;$(ProjectDir)meshes\*&quot; &quot;$(PANDORA_TEST_ENV)\meshes\&quot; /Y /E /I&#xD;&#xA;)" />
   </Target>
-
 </Project>

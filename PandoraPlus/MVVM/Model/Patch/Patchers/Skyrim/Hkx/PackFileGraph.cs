@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace Pandora.Patch.Patchers.Skyrim.Hkx;
-public class PackFileGraph : PackFile
+public class PackFileGraph : PackFile, IEquatable<PackFileGraph>
 {
 
 	private XElement? eventNameContainer;
@@ -118,6 +118,16 @@ public class PackFileGraph : PackFile
 		base.Activate();
 		LoadEventsAndVariables();
 	}
+
+	public bool Equals(PackFileGraph? other)
+	{
+		return base.Equals(other);
+	}
+	public override int GetHashCode()
+	{
+		return base.GetHashCode();
+	}
+
 	public List<XElement> EventNames => eventNameContainer!.Elements().ToList();
 
 	public List<XElement> EventFlags => eventFlagContainer!.Elements().ToList();
