@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Security.Cryptography.Xml;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -11,12 +12,13 @@ using System.Xml.Linq;
 namespace Pandora.Patch.Patchers.Skyrim.Hkx;
 public class PatchNodeCreator
 {
-	private XmlSerializer serializer = new XmlSerializer();
+	public XmlSerializer Serializer { get; } = new XmlSerializer();
 
 	private readonly string newNodePrefix;
 
 	private const string havokStringName = "hkcstring";
 	private const string havokParamName = "hkparam";
+	private HashSet<string> uniqueNames = new(StringComparer.OrdinalIgnoreCase);
 	private uint nodeCount = 0;
 
     public PatchNodeCreator(string newPrefix)
@@ -37,20 +39,42 @@ public class PatchNodeCreator
 		hkObject.Add(element);
 		return hkObject;
 	}
-	public XElement TranslateToXml<T>(T hkobject, string nodeName) where T : IHavokObject
+	public static string AsEventFormat(string name)
 	{
-		var element = serializer.WriteDetachedNode<T>(hkobject, nodeName); 
-		hkobject.WriteXml(serializer, element);
-		return element;
+		return $"$eventID[{name}]$";
 	}
-
+	public bool IsUnique(string uniqueName) => uniqueNames.Contains(uniqueName);
+	public string GenerateNodeName(IModInfo modInfo, string uniqueName)
+	{
+		var name = $"#{modInfo.Code}_{uniqueName}${nodeCount.ToString()}";
+		nodeCount = nodeCount == uint.MaxValue ? 0 : nodeCount + 1;
+		return name; 
+	}
+	/// <summary>
+	/// There is a need to generate intentionally collidable node names to resolve inter-mod duplications of common objects like string event payloads during xml deserialization.
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	/// <param name="modInfo"></param>
+	/// <param name="uniqueName"></param>
+	/// <returns></returns>
+	public string GenerateCollidableNodeName(IModInfo modInfo, string uniqueName)
+	{
+		return $"#{uniqueName}";
+	}
 	public string GenerateNodeName(string uniqueName)
 	{
-		var name = $"#{uniqueName}${uniqueName.GetHashCode()}{nodeCount.ToString()}i";
+		var name = $"#{uniqueName}${nodeCount.ToString()}";
 		nodeCount = nodeCount == uint.MaxValue ? 0 : nodeCount + 1; 
 		return name;
 	}
-
+	public string GenerateNumericNodeName<T>(IModInfo modInfo, string uniqueName)
+	{
+		var hash = new HashCode();
+		hash.Add(typeof(T).Name);
+		hash.Add(modInfo.Name);
+		hash.Add(uniqueName);
+		return hash.ToHashCode().ToString(); 
+	}
 	public bool AddAnimationPath(PackFileCharacter characterPackFile, PackFileChangeSet changeSet, string animationPath)
 	{
 		changeSet.AddChange(new AppendElementChange(characterPackFile.AnimationNamesPath, TranslateToXml(animationPath)));
@@ -60,6 +84,12 @@ public class PatchNodeCreator
 	{
 		changeSet.AddChange(new AppendElementChange(graphPackFile.EventNamesPath, TranslateToXml(eventName)));
 		changeSet.AddChange(new AppendElementChange(graphPackFile.EventFlagsPath, TranslateToXml(TranslateToXml("flags", "0"))));
+		return true; 
+	}
+	public bool AddDefaultEvent(PackFileGraph graphPackFile, PackFileTargetCache targetCache, string eventName)
+	{
+		targetCache.AddChange(graphPackFile, new AppendElementChange(graphPackFile.EventNamesPath, TranslateToXml(eventName)));
+		targetCache.AddChange(graphPackFile, new AppendElementChange(graphPackFile.EventFlagsPath, TranslateToXml(TranslateToXml("flags", "0"))));
 		return true; 
 	}
 	public hkbBehaviorReferenceGenerator CreateBehaviorReferenceGenerator(string behaviorName, out string nodeName)

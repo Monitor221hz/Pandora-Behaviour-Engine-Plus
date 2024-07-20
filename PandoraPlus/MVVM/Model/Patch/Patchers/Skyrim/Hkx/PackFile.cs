@@ -50,6 +50,7 @@ public class PackFile : IPatchFile, IEquatable<PackFile>
 
 
 	protected ILookup<string, XElement>? classLookup = null;
+	public int NodeCount => classLookup == null ? Map.NavigateTo(PackFile.ROOT_CONTAINER_NAME).Elements().Count() : classLookup.Count;
 
 	private bool active = false;
 	private Project? parentProject;
@@ -97,6 +98,10 @@ public class PackFile : IPatchFile, IEquatable<PackFile>
 	}
 
 	protected bool CanActivate() => !active;
+
+	/// <summary>
+	/// This should only be called by the project manager.
+	/// </summary>
 	public virtual void Activate()
 	{
 		if (!CanActivate()) return;
@@ -112,6 +117,7 @@ public class PackFile : IPatchFile, IEquatable<PackFile>
 
 	[MemberNotNull(nameof(classLookup))]
 	public void TryBuildClassLookup() {  if (classLookup == null) {  BuildClassLookup(); } }
+	public HashSet<string> UsedNodeNames => Map.NavigateTo(PackFile.ROOT_CONTAINER_NAME).Elements().Select(e => e.Attribute("name")!.Value).ToHashSet();
 	public XElement GetFirstNodeOfClass(string className)
 	{
 		TryBuildClassLookup();
@@ -133,7 +139,6 @@ public class PackFile : IPatchFile, IEquatable<PackFile>
 		if (debugOuputHandle.Exists) { debugOuputHandle.Delete();  }
 #endif
 	}
-	
 	public void MapNode(string nodeName)
 	{	
 		lock(mappedNodeNames)
@@ -144,6 +149,17 @@ public class PackFile : IPatchFile, IEquatable<PackFile>
 		lock(Map)
 		{
 			Map.MapSlice(nodeName);
+		}
+	}
+	public void MapNode(IPackFileChange change)
+	{
+		MapNode(change.Path.AsSpan(0, change.Path.IndexOf('/')).ToString());
+	}
+	public void MapNodes(params string[] nodeNames)
+	{
+		foreach(string nodeName in nodeNames)
+		{
+			MapNode(nodeName);
 		}
 	}
 	public void FlagExportFailure()

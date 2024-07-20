@@ -68,7 +68,7 @@ namespace Pandora.Core.Patchers.Skyrim
 			builder.AppendLine();
 			foreach(var project in projects)
 			{
-				var animCount = project.CharacterFile.NewAnimationCount; 
+				var animCount = project.CharacterPackFile.NewAnimationCount; 
 				if (animCount == 0) { continue; }
 				totalAnimationCount+= animCount;	
 				builder.AppendLine($"{animCount} animations added to {project.Identifier}.");
@@ -117,11 +117,23 @@ namespace Pandora.Core.Patchers.Skyrim
 		}
 		public void LoadProjects(List<string> projectPaths)
 		{
+			Dictionary<string, Project> directoryProjectPaths = new(); 
 			foreach (var projectPath in projectPaths)
 			{
 				var project = LoadProject(projectPath);
 				if (project == null || !project.Valid) continue;
 				ExtractProject(project);
+				if (project.ProjectDirectory == null) continue; 
+				var projectFolderPath = project.ProjectDirectory.FullName;
+				if (directoryProjectPaths.TryGetValue(projectFolderPath, out var existingProject))
+				{
+					existingProject.Sibling = project;
+					project.Sibling = existingProject;
+				}
+				else
+				{
+					directoryProjectPaths.Add(projectFolderPath, project);
+				}
 			}
 		}
 		public void LoadProjectsParallel(List<string> projectPaths)
@@ -302,8 +314,9 @@ namespace Pandora.Core.Patchers.Skyrim
 				lock (packFile)
 				{
 					if (ActivePackFiles.Contains(packFile)) { return true; }
-					ActivePackFiles.Add(packFile);
 					packFile.Activate();
+					ActivePackFiles.Add(packFile);
+					
 				}
 			return true;
 		}
@@ -318,8 +331,8 @@ namespace Pandora.Core.Patchers.Skyrim
 				lock (packFile)
 				{
 					if (ActivePackFiles.Contains(packFile)) { return true; }
-					ActivePackFiles.Add(packFile);
 					packFile.Activate();
+					ActivePackFiles.Add(packFile);
 				}
 			return true;
 		}
@@ -331,8 +344,9 @@ namespace Pandora.Core.Patchers.Skyrim
 			lock(packFile)
 			{
 				if (ActivePackFiles.Contains(packFile)) return packFile;
-				ActivePackFiles.Add(packFile);
 				packFile.Activate();
+				ActivePackFiles.Add(packFile);
+				
 			}
 			return packFile;
 		}
@@ -342,8 +356,9 @@ namespace Pandora.Core.Patchers.Skyrim
 				lock (packFile)
 				{
 					if (ActivePackFiles.Contains(packFile)) return true;
-					ActivePackFiles.Add(packFile);
 					packFile.Activate();
+					ActivePackFiles.Add(packFile);
+					
 				}
 			return false;
 		}

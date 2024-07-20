@@ -4,13 +4,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Pandora.Core;
 
-public class FNISModInfo : IModInfo
+public partial class FNISModInfo : IModInfo
 {
-	public string Name { get; private set; }
+	private readonly static Regex whiteSpaceRegex = WhiteSpaceRegex();
+	public string Name { get; set; }
 
 	public string Description { get; private set; } = string.Empty;
 
@@ -31,7 +33,11 @@ public class FNISModInfo : IModInfo
 
 	public FNISModInfo(FileInfo file)
 	{
-		Name = file.Name;
+		Name = Path.GetFileNameWithoutExtension(file.Name);
 		Folder = file.Directory!;
+		Code = whiteSpaceRegex.Replace(Name, string.Empty);
 	}
+
+	[GeneratedRegex(@"\s+", RegexOptions.Compiled)]
+	private static partial Regex WhiteSpaceRegex();
 }

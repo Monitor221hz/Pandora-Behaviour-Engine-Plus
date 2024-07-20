@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace Pandora.Patch.Patchers.Skyrim.Hkx;
-public class PackFileCharacter : PackFile
+public class PackFileCharacter : PackFile, IEquatable<PackFileCharacter>
 {
 	public PackFileCharacter(FileInfo file) : base(file) { LoadAnimationNames(); }
 
@@ -46,6 +46,14 @@ public class PackFileCharacter : PackFile
 		InitialAnimationCount = (animationCountAttribute != null) ? uint.Parse(animationCountAttribute.Value) : NewAnimationCount;
 	}
 
+	public bool Equals(PackFileCharacter? other)
+	{
+		return base.Equals(other);
+	}
+	public override int GetHashCode()
+	{
+		return base.GetHashCode();
+	}
 
 	public List<XElement> AnimationNames => animationNamesContainer!.Elements().ToList();
 

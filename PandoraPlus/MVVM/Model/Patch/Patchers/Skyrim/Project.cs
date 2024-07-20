@@ -23,6 +23,11 @@ namespace Pandora.Core.Patchers.Skyrim
 
 		public PackFile ProjectFile {  get; private set; }
 
+		/// <summary>
+		/// Sibling projects can only be two way one to one at most - if this ever changes in a skyrim update this property must be changed.
+		/// </summary>
+		public Project? Sibling { get; set; } 
+
 		public DirectoryInfo? ProjectDirectory => ProjectFile?.InputHandle.Directory;
 
 		public DirectoryInfo? OutputDirectory => ProjectFile?.OutputHandle.Directory;
@@ -31,7 +36,7 @@ namespace Pandora.Core.Patchers.Skyrim
 
 		public DirectoryInfo? OutputAnimationDirectory => new DirectoryInfo(Path.Join(OutputDirectory?.FullName, "animations"));
 
-		public PackFileCharacter CharacterFile { get; private set; } 
+		public PackFileCharacter CharacterPackFile { get; private set; } 
 		public PackFile SkeletonFile { get; private set; }
 		public PackFileGraph BehaviorFile { get; private set; } 
 
@@ -50,7 +55,7 @@ namespace Pandora.Core.Patchers.Skyrim
 		public Project(PackFile projectfile, PackFileCharacter characterfile, PackFile skeletonfile, PackFileGraph behaviorfile)
 		{
 			ProjectFile = projectfile;
-			CharacterFile = characterfile;
+			CharacterPackFile = characterfile;
 			SkeletonFile = skeletonfile;
 			BehaviorFile = behaviorfile;
 
@@ -83,10 +88,10 @@ namespace Pandora.Core.Patchers.Skyrim
 				}
 
 				if (!filesByName.ContainsKey(SkeletonFile.Name)) filesByName.Add(SkeletonFile.Name, SkeletonFile);
-				if (!filesByName.ContainsKey(CharacterFile.Name)) filesByName.Add(CharacterFile.Name, CharacterFile);
+				if (!filesByName.ContainsKey(CharacterPackFile.Name)) filesByName.Add(CharacterPackFile.Name, CharacterPackFile);
 
 				filesByName.Add($"{Identifier}_skeleton", SkeletonFile);
-				filesByName.Add($"{Identifier}_character", CharacterFile);
+				filesByName.Add($"{Identifier}_character", CharacterPackFile);
 			
 
 
@@ -125,10 +130,10 @@ namespace Pandora.Core.Patchers.Skyrim
 			if (!ProjectFile.InputHandle.Exists) return false;
 
 			ProjectFile = ProjectFile;
-			CharacterFile = GetCharacterFile(ProjectFile, cache);
-			if (!CharacterFile.InputHandle.Exists) return false;
+			CharacterPackFile = GetCharacterFile(ProjectFile, cache);
+			if (!CharacterPackFile.InputHandle.Exists) return false;
 
-			var (skeleton, behavior) = GetSkeletonAndBehaviorFile(ProjectFile, CharacterFile, cache);
+			var (skeleton, behavior) = GetSkeletonAndBehaviorFile(ProjectFile, CharacterPackFile, cache);
 
 			SkeletonFile = skeleton;
 			if (!SkeletonFile.InputHandle.Exists) return false;
@@ -137,7 +142,7 @@ namespace Pandora.Core.Patchers.Skyrim
 			if (!BehaviorFile.InputHandle.Exists) return false;
 
 			ProjectFile.ParentProject = this;
-			CharacterFile.ParentProject = this;
+			CharacterPackFile.ParentProject = this;
 			SkeletonFile.ParentProject = this;
 			BehaviorFile.ParentProject = this;
 
