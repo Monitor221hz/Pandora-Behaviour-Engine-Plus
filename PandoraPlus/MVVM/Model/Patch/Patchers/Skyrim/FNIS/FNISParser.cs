@@ -86,7 +86,7 @@ public class FNISParser
 
 	private HashSet<string> parsedFolders = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-	public HashSet<FNISModInfo> ModInfos { get; private set; } = new HashSet<FNISModInfo>();
+	public HashSet<IModInfo> ModInfos { get; private set; } = new HashSet<IModInfo>();
 
     public FNISParser(ProjectManager manager)
     {
@@ -112,7 +112,14 @@ public class FNISParser
 
 		foreach (var modFile in modFiles)
 		{
-			InjectGraphReference(modFile, project.BehaviorFile);
+			try
+			{
+				InjectGraphReference(modFile, project.BehaviorFile);
+			}
+			catch 
+			{
+				logger.Warn($"FNIS Parser > Inject > Behavior > {modFile.Name} > FAILED");
+			}
 		}
 		if (!animationsFolder.Exists) { return; }
 		var modAnimationFolders = animationsFolder.GetDirectories();
@@ -178,10 +185,17 @@ public class FNISParser
 		List<FNISAnimationList> animLists = new(); 
 		foreach (var animlistFile in animlistFiles)
 		{
-			animLists.Add(FNISAnimationList.FromFile(animlistFile));
+			try
+			{
+				FNISAnimationList animList = FNISAnimationList.FromFile(animlistFile);
+				ModInfos.Add(animList.ModInfo);
+				animLists.Add(animList);
+			}
+			catch
+			{
+				logger.Warn($"FNIS Parser > Serialize > Animlist > {animlistFile.Name} > FAILED");
+			}
 		}
 		Parallel.ForEach(animLists, animlist => { animlist.BuildPatches(project, projectManager, patchNodeCreator); }); 
 	}
-
-
 }

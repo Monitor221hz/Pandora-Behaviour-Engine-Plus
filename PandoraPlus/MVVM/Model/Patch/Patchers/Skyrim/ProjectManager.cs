@@ -84,8 +84,8 @@ namespace Pandora.Core.Patchers.Skyrim
 			foreach(IModInfo modInfo in fnisParser.ModInfos)
 			{
 				fnisModCount++;
-				builder.AppendLine($"FNIS Mod {fnisModCount} : {modInfo.Name}");
-				Logger.Info($"FNIS Mod {fnisModCount} : {modInfo.Name}");
+				builder.AppendLine($"FNIS Mod {fnisModCount} : {modInfo.Code}");
+				Logger.Info($"FNIS Mod {fnisModCount} : {modInfo.Code}");
 			}
 		}
 
@@ -367,8 +367,6 @@ namespace Pandora.Core.Patchers.Skyrim
 		public bool ApplyPatches()
 		{
 			packFileCache.DeletePackFileOutput();
-
-			
 
 			Parallel.ForEach(ActivePackFiles, packFile =>
 			{
