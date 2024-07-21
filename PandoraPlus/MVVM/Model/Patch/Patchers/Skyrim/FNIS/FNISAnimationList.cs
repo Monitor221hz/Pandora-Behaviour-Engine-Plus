@@ -50,7 +50,7 @@ public class FNISAnimationListBuildContext
 
 public partial class FNISAnimationList
 {
-	[GeneratedRegex("([^('|\\s)]+)\\s*(?:-(\\S+)*)?\\s*(\\S+)\\s+(\\S+.hkx)(?:[^\\S\\r\\n]+(\\S+))*", RegexOptions.Compiled)]
+	[GeneratedRegex("^([^('|\\s)]+)\\s*(?:-(\\S+)*)?\\s*(\\S+)\\s+(\\S+.hkx)(?:[^\\S\\r\\n]+(\\S+))*", RegexOptions.Compiled | RegexOptions.Multiline)]
 	private static partial Regex FNISAnimLineRegex();
 
 	private static readonly Regex animLineRegex = FNISAnimLineRegex();
