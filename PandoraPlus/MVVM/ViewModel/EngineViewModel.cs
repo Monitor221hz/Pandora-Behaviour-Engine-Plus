@@ -369,7 +369,7 @@ namespace Pandora.MVVM.ViewModel
 			
             logText= string.Empty;
 
-			var configInfoMessage = $"Engine launched with configuration: {Engine.Configuration.Name}";
+			var configInfoMessage = $"Engine launched with configuration: {Engine.Configuration.Name}. Do not exit before the launch is finished.";
 			await WriteLogBoxLine(configInfoMessage);
 			await preloadTask;
 			
