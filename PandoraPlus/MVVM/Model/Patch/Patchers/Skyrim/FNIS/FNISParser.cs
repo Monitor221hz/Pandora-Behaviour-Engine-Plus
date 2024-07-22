@@ -5,8 +5,10 @@ using Pandora.Patch.Patchers.Skyrim.AnimData;
 using Pandora.Patch.Patchers.Skyrim.AnimSetData;
 using Pandora.Patch.Patchers.Skyrim.Hkx;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -125,14 +127,10 @@ public class FNISParser
 		var modAnimationFolders = animationsFolder.GetDirectories();
 
 		if (modAnimationFolders.Length == 0) { return; }
-
-		//Parallel.ForEach(modAnimationFolders, folder => { ParseAnimlistFolder(folder, project, projectManager); });
-
-		foreach (var modAnimationFolder in modAnimationFolders)
-		{
-			if (modAnimationFolder == null) { continue; }
-			ParseAnimlistFolder(modAnimationFolder, project, projectManager);
-		}
+		Stopwatch stopwatch = Stopwatch.StartNew();
+		Parallel.ForEach(modAnimationFolders, folder => { ParseAnimlistFolder(folder, project, projectManager); });
+		stopwatch.Stop();
+		Debug.WriteLine($"{project.Identifier} finished parsing folders in {stopwatch.ElapsedMilliseconds} ms");
 	}
 	private bool InjectGraphReference(FileInfo sourceFile, PackFileGraph destPackFile)
 	{
@@ -182,7 +180,7 @@ public class FNISParser
 
 		if (animlistFiles.Length == 0) { return; }
 
-		List<FNISAnimationList> animLists = new(); 
+		List<FNISAnimationList> animLists = new();
 		foreach (var animlistFile in animlistFiles)
 		{
 			try
@@ -196,6 +194,13 @@ public class FNISParser
 				logger.Warn($"FNIS Parser > Serialize > Animlist > {animlistFile.Name} > FAILED");
 			}
 		}
-		Parallel.ForEach(animLists, animlist => { animlist.BuildPatches(project, projectManager, patchNodeCreator); }); 
+		if (animLists.Count > 1)
+		{
+			Parallel.ForEach(animLists, animlist => { animlist.BuildPatches(project, projectManager, patchNodeCreator); });
+		}
+		else
+		{
+			animLists[0].BuildPatches(project, projectManager, patchNodeCreator);
+		}
 	}
 }
