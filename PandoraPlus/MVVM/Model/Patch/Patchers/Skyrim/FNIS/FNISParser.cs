@@ -127,10 +127,7 @@ public class FNISParser
 		var modAnimationFolders = animationsFolder.GetDirectories();
 
 		if (modAnimationFolders.Length == 0) { return; }
-		Stopwatch stopwatch = Stopwatch.StartNew();
 		Parallel.ForEach(modAnimationFolders, folder => { ParseAnimlistFolder(folder, project, projectManager); });
-		stopwatch.Stop();
-		Debug.WriteLine($"{project.Identifier} finished parsing folders in {stopwatch.ElapsedMilliseconds} ms");
 	}
 	private bool InjectGraphReference(FileInfo sourceFile, PackFileGraph destPackFile)
 	{

@@ -80,7 +80,6 @@ public partial class FNISAnimationList
 		FNISModInfo modInfo = new FNISModInfo(file);
 		var animlist = new FNISAnimationList(modInfo);
 		if (file.Directory== null || file.Directory.Parent == null) { return animlist; }
-		Stopwatch stopwatch = Stopwatch.StartNew();
 		string animRoot = Path.Combine(file.Directory.Parent.Name, file.Directory.Name);
 		using (var readStream  = File.OpenRead(file.FullName))
 		{
@@ -93,20 +92,11 @@ public partial class FNISAnimationList
 					{
 						continue; 
 					}
-					animlist.Animations.Add(FNISAnimationFactory.CreateFromLine(animRoot, expectedLine));
-					//animlist.Animations.Add(FNISAnimationFactory.CreateFromMatch(animLineRegex.Match(expectedLine))); 
+					animlist.Animations.Add(FNISAnimationFactory.CreateFromLine(animRoot, expectedLine)); 
 				}
 			}
 		}
-		stopwatch.Stop();
-#if DEBUG
-		//Debug.WriteLine($"{file.Name}:{stopwatch.ElapsedMilliseconds} ms");
-#endif
-		//var matches = animLineRegex.Matches(File.ReadAllText(file.FullName));
-		//foreach(Match match in matches)
-		//{
-		//	animlist.Animations.Add(FNISAnimationFactory.CreateFromMatch(match)); 
-		//}
+
 		return animlist; 
 	}
 
