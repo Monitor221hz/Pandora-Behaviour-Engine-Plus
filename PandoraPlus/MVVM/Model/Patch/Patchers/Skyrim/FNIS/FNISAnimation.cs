@@ -109,6 +109,20 @@ public partial class FNISAnimation : IFNISAnimation
 	{
 		
 	}
+
+	public FNISAnimation(AnimType templateType, AnimFlags flags, string graphEvent, string animationFilePath, FNISAnimation? nextAnimation, List<string> animationObjectNames)
+	{
+		TemplateType = templateType;
+		Flags = flags;
+		GraphEvent = graphEvent;
+		AnimationFilePath = animationFilePath;
+		NextAnimation = nextAnimation;
+		animObjectNames = animationObjectNames;
+	}
+	public FNISAnimation(AnimType templateType, AnimFlags flags, string graphEvent, string animationFilePath, List<string> animationObjectNames) : this(templateType, flags, graphEvent, animationFilePath, null, animationObjectNames)
+	{
+	}
+
 	protected void BuildFlags(hkbStateMachineStateInfo stateInfo, hkbClipGenerator clip,PackFileGraph graph, PackFileTargetCache targetCache, PatchNodeCreator patchNodeCreator)
 	{
 		var serializer = targetCache.GetSerializer(graph);
@@ -150,10 +164,10 @@ public partial class FNISAnimation : IFNISAnimation
 	{
 		var targetCache = buildContext.TargetCache;
 		var project = buildContext.TargetProject; 
-		string animationPath = Path.Combine(targetCache.Origin.Name,  AnimationFilePath);
-		targetCache.AddChange(project.CharacterPackFile, new AppendElementChange(project.CharacterPackFile.AnimationNamesPath, new XElement("hkcstring", animationPath)));
+
+		targetCache.AddChange(project.CharacterPackFile, new AppendElementChange(project.CharacterPackFile.AnimationNamesPath, new XElement("hkcstring", AnimationFilePath)));
 		if (project.Sibling == null) { return true;  }
-		targetCache.AddChange(project.Sibling.CharacterPackFile, new AppendElementChange(project.Sibling.CharacterPackFile.AnimationNamesPath, new XElement("hkcstring", animationPath)));
+		targetCache.AddChange(project.Sibling.CharacterPackFile, new AppendElementChange(project.Sibling.CharacterPackFile.AnimationNamesPath, new XElement("hkcstring", AnimationFilePath)));
 		return true; 
 	}
 }

@@ -18,6 +18,10 @@ public class OffsetArmAnimation : FNISAnimation
     {
         
     }
+	public OffsetArmAnimation(AnimType templateType, AnimFlags flags, string graphEvent, string animationFilePath, List<string> animationObjectNames) : base(templateType, flags, graphEvent, animationFilePath, animationObjectNames)
+	{
+
+	}
 	public override bool BuildPatch(FNISAnimationListBuildContext buildContext)
 	{
 		var project = buildContext.TargetProject;

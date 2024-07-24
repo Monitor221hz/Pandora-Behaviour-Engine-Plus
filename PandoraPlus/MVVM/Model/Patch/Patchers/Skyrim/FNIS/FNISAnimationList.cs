@@ -1,9 +1,11 @@
 ﻿using HKX2;
+using NLog;
 using Pandora.Core;
 using Pandora.Core.Patchers.Skyrim;
 using Pandora.Patch.Patchers.Skyrim.Hkx;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -15,7 +17,7 @@ namespace Pandora.Patch.Patchers.Skyrim.FNIS;
 public class FNISAnimationListBuildContext
 {
 	private Dictionary<string, hkbStringEventPayload> stringEventPayloadNameMap = new();
-
+	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 	public FNISAnimationListBuildContext(PatchNodeCreator helper, Project targetProject, ProjectManager projectManager, PackFileTargetCache targetCache)
 	{
 		Helper = helper;
@@ -50,7 +52,7 @@ public class FNISAnimationListBuildContext
 
 public partial class FNISAnimationList
 {
-	[GeneratedRegex("^([^('|\\s)]+)\\s*(?:-(\\S+)*)?\\s*(\\S+)\\s+(\\S+.hkx)(?:[^\\S\\r\\n]+(\\S+))*", RegexOptions.Compiled | RegexOptions.Multiline)]
+	[GeneratedRegex("^([^('|\\s)]+)\\s*(?:-(\\S+)*)?\\s*(\\S+)\\s+(\\S+.hkx)(?:[^\\S\\r\\n]+(\\S+))*", RegexOptions.Compiled)]
 	private static partial Regex FNISAnimLineRegex();
 
 	private static readonly Regex animLineRegex = FNISAnimLineRegex();
@@ -76,17 +78,25 @@ public partial class FNISAnimationList
 	public static FNISAnimationList FromFile(FileInfo file)
 	{
 		FNISModInfo modInfo = new FNISModInfo(file);
-		var parentFolder = modInfo.Folder.Parent; 
-		if (parentFolder != null)
-		{
-			modInfo.Name = Path.Combine(parentFolder.Name, modInfo.Folder.Name);
-		}
 		var animlist = new FNISAnimationList(modInfo);
-		var matches = animLineRegex.Matches(File.ReadAllText(file.FullName));
-		foreach(Match match in matches)
+		if (file.Directory== null || file.Directory.Parent == null) { return animlist; }
+		string animRoot = Path.Combine(file.Directory.Parent.Name, file.Directory.Name);
+		using (var readStream  = File.OpenRead(file.FullName))
 		{
-			animlist.Animations.Add(FNISAnimationFactory.CreateFromMatch(match)); 
+			using (var reader = new StreamReader(readStream))
+			{
+				string? expectedLine; 
+				while((expectedLine = reader.ReadLine()) != null)
+				{
+					if (string.IsNullOrWhiteSpace(expectedLine) || expectedLine[0] == '\'')
+					{
+						continue; 
+					}
+					animlist.Animations.Add(FNISAnimationFactory.CreateFromLine(animRoot, expectedLine)); 
+				}
+			}
 		}
+
 		return animlist; 
 	}
 
