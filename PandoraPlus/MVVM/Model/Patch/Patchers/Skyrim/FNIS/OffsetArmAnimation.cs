@@ -88,25 +88,6 @@ public class OffsetArmAnimation : FNISAnimation
 			}
 		}
 		BuildFlags(stateInfo, clipGenerator,graph);
-		//XElement stateInfoElement = serializer.WriteRegisteredNamedObject<hkbStateMachineStateInfo>(stateInfo, stateInfo.m_name);
-		//stateInfoElement.Elements().ElementAt(4).Value = "#5111";
-		//targetCache.AddChange(graph, new AppendTextChange("#5138/states", stateInfo.m_name));
-		//targetCache.AddChange(graph, new AppendTextChange("#5183/states", stateInfo.m_name));
-
-		//XElement transitionInfoElement = serializer.WriteDetachedObject(transitionInfo);
-		//var transitionInfoElements = transitionInfoElement.Elements().ToList();
-		//transitionInfoElements[4].Value = PatchNodeCreator.AsEventFormat(GraphEvent);
-		//transitionInfoElements[2].Value = "#0093";
-		//targetCache.AddChange(graph, new AppendElementChange("#4038/transitions", transitionInfoElement));
-		//targetCache.AddChange(graph, new AppendElementChange("#5141/transitions", new XElement(transitionInfoElement)));
-
-		//var clipGeneratorElement = serializer.WriteRegisteredNode<hkbClipGenerator>(clipGenerator);
-
-		////targetCache.AddElementAsChange(graph, clipGeneratorElement);
-		////targetCache.AddElementAsChange(graph, stateInfoElement);
-
-		//patchNodeCreator.AddDefaultEvent(graph, targetCache, GraphEvent);
-		//graph.PopNodes("#5138", "#5141", "#4038");
 		return true; 
 	}
 }

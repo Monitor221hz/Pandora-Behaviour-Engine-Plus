@@ -140,36 +140,6 @@ public class FNISParser
 		hkbStateMachineStateInfo stateInfo = new() {  name = "PN_StateInfo", enable = true, probability=1.0f, stateId = graphPath.GetHashCode() & 0xfffffff, generator=refGenerator };
 		
 		rootState.states.Add(stateInfo);
-
-
-		//destPackFile.PopNode(stateFolderName);asdfasdf
-
-		
-		//string refName = nameWithoutExtension.Replace(' ', '_');
-		//var stateInfoPath = string.Format("{0}/states", stateFolderName);
-		//var graphPath = $"{destPackFile.OutputHandle.Directory?.Name}\\{nameWithoutExtension}.hkx";
-		//var modInfo = new FNISModInfo(sourceFile);
-		//lock (ModInfos) ModInfos.Add(modInfo);
-		//var changeSet = new PackFileChangeSet(modInfo);
-
-		//PatchNodeCreator nodeMaker = new PatchNodeCreator(changeSet.Origin.Code);
-
-		//string behaviorRefName;
-		//var behaviorRef = patchNodeCreator.CreateBehaviorReferenceGenerator(refName, graphPath, out behaviorRefName);
-		//XElement behaviorRefElement = patchNodeCreator.Serializer.WriteRegisteredNode<hkbBehaviorReferenceGenerator>(behaviorRef);
-
-		//string stateInfoName;
-		//var stateInfo = patchNodeCreator.CreateSimpleStateInfo(behaviorRef, out stateInfoName);
-		//XElement stateInfoElement = patchNodeCreator.Serializer.WriteRegisteredNamedObject<hkbStateMachineStateInfo>(stateInfo, stateInfoName);
-
-		////changeSet.AddChange(new AppendElementChange(PackFile.ROOT_CONTAINER_NAME, behaviorRefElement));
-		////changeSet.AddChange(new AppendElementChange(PackFile.ROOT_CONTAINER_NAME, stateInfoElement));
-		////changeSet.AddChange(new AppendTextChange(stateInfoPath, stateInfoName));
-		//changeSet.AddElementAsChange(behaviorRefElement);
-		//changeSet.AddElementAsChange(stateInfoElement);
-		//changeSet.AddChange(new AppendTextChange(stateInfoPath, stateInfoName));
-
-		//destPackFile.Dispatcher.AddChangeSet(changeSet);
 		return true;
 	}
 
