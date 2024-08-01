@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HKX2E;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -7,9 +8,11 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
+using XmlCake.Linq;
 
 namespace Pandora.Patch.Patchers.Skyrim.Hkx
 {
+#pragma warning disable CA1416
 	public class PackFileValidator
 	{
 		private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
@@ -20,34 +23,38 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 		private Dictionary<string, int> eventIndices = new Dictionary<string, int>();
 		private Dictionary<string, int> variableIndices = new Dictionary<string, int>();
 
+		private List<XElement> registeredElements = new(); 
+
+		public void TrackElement(XElement element) => registeredElements.Add(element);
 
 		private int GetIndexFromMatch(Dictionary<string, int> map, Match match)
 		{
 			if (!match.Success) return -1;
 
 			int index;
-			if (!map.TryGetValue(match.Groups[1].Value, out index)) return -1;
+			if (!map.TryGetValue(match.Groups[1].Value, out index))
+			{
+				Logger.Warn($"Validator > Nemesis Event ID > {match.Groups[1].Value} > Index > NOT FOUND");
+				return -1;
+			}
 
-			return index;
+				return index;
 		}
 		public bool ValidateEventsAndVariables(PackFileGraph graph)
 		{
-			var eventNameElements = graph.EventNames;
-			var eventFlagElements = graph.EventFlags;
+			var initialEventNames = graph.StringData.eventNames.ToArray();
+			var initialEventInfos = graph.Data.eventInfos.ToArray();
 
-			var variableNameElements = graph.VariableNames;
-			var variableValueElements = graph.VariableValues;
-			var variableTypeElements = graph.VariableTypes;
+			var initialVariableNames = graph.StringData.variableNames.ToArray();
+			var initialVariableValues = graph.VariableValueSet.wordVariableValues.ToArray();
+			var initialVariableInfos = graph.Data.variableInfos.ToArray();
 
+			List<string> eventNames = new(); 
+			List<hkbEventInfo> eventInfos = new();
 
-			eventNameElements.Reverse();
-			eventFlagElements.Reverse();
-
-			variableNameElements.Reverse();
-			variableValueElements.Reverse();
-			variableTypeElements.Reverse();
-			 //reverse is necessary so that validator doesn't remove the original element if a duplicate is found
-
+			List<string> variableNames = new(); 
+			List<hkbVariableValue> variableValues = new();
+			List<hkbVariableInfo> variableInfos = new();
 
 			var uniqueEventNames = new HashSet<string>();
 			var uniqueVariableNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -55,60 +62,42 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			eventIndices.Clear();
 			variableIndices.Clear();
 
-			int eventLowerBound = eventNameElements.Count - (int)(graph.InitialEventCount) - 1;
-			int variableLowerBound = variableNameElements.Count - (int)(graph.InitialVariableCount) - 1;
+			int eventLowerBound = (int)(graph.InitialEventCount);
+			int variableLowerBound =(int)(graph.InitialVariableCount);
 
 			
-			for (int i = eventLowerBound; i >= 0; i--)
+			for(int i = eventLowerBound; i < initialEventNames.Length; i++)
 			{
-				var eventNameElement = eventNameElements[i];
-				var eventName = eventNameElement.Value.Trim();
+				var eventName = initialEventNames[i];
 				if (!uniqueEventNames.Add(eventName))
 				{
-					eventNameElement.Remove();
-					eventFlagElements[i].Remove();
-
-					eventNameElements.RemoveAt(i);
-					eventFlagElements.RemoveAt(i);
 					Logger.Warn($"Validator > {graph.ParentProject?.Identifier}~{graph.Name} > Duplicate Event > {eventName} > Index > {i} > REMOVED");
 					continue;
 				}
-//#if DEBUG
-//				Logger.Debug($"Validator > {graph.ParentProject?.Identifier}~{graph.Name} > Mapped Event > {eventName} > Index {i}");
-//#endif
+				eventNames.Add(eventName);
+				eventInfos.Add(initialEventInfos[i]);
 
 			}
 
-			for (int i = variableLowerBound; i >= 0; i--)
+			for (int i = variableLowerBound; i < initialVariableNames.Length; i++)
 			{
-				var variableNameElement = variableNameElements[i];	
-				var variableName = variableNameElement.Value.Trim();
+				var variableName = initialVariableNames[i];
 				if (!uniqueVariableNames.Add(variableName))
 				{
-					variableNameElement.Remove();
-					variableTypeElements[i].Remove();
-					variableValueElements[i].Remove();
-
-					variableNameElements.RemoveAt(i);
-					variableTypeElements.RemoveAt(i);
-					variableValueElements.RemoveAt(i);
 					Logger.Warn($"Validator > {graph.ParentProject?.Identifier}~{graph.Name} > Duplicate Variable > {variableName} > Index > {i} > REMOVED");
 					continue; 
 				}
-//#if DEBUG
-//				Logger.Debug($"Validator > {packFile.ParentProject?.Identifier}~{packFile.Name} > Mapped Variable > {variableName} > Index {i}");
-//#endif
-				
+				variableNames.Add(variableName);
+				variableValues.Add(initialVariableValues[i]); 
+				variableInfos.Add(initialVariableInfos[i]);
 			}
-			eventLowerBound -= 2;
-			variableLowerBound -= 2;
-			for (int i = 0; i < eventNameElements.Count; i++)
+			for (int i = 0; i < eventNames.Count; i++)
 			{
-				if (!eventIndices.ContainsKey(eventNameElements[i].Value)) eventIndices.Add(eventNameElements[i].Value, eventNameElements.Count - 1 - i);
+				eventIndices.TryAdd(eventNames[i], i + (int)graph.InitialEventCount);
 			}
-			for (int i = 0; i < variableNameElements.Count; i++)
+			for (int i = 0; i < variableNames.Count; i++)
 			{
-				if (!variableIndices.ContainsKey(variableNameElements[i].Value)) variableIndices.Add(variableNameElements[i].Value, variableNameElements.Count - 1 - i);
+				variableIndices.TryAdd(variableNames[i], i + (int)graph.InitialVariableCount);
 			}
 			return true; 
 		}
@@ -150,7 +139,13 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			}
 
 		}
-
+		public void ValidateTrackedElements()
+		{
+			foreach(XElement element in registeredElements)
+			{
+				ValidateElementContent(element, eventIndices, variableIndices);
+			}
+		}
 		public void TryValidateClipGenerator(string path, PackFile packFile)
 		{
 			XElement element;
@@ -167,16 +162,16 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			{
 				foreach(IPackFileChange change in changeList)
 				{
-					XElement element;
-					if (!packFile.Map.TryLookup(change.Path, out element))
+					XMapElement element;
+					if (!packFile.TryGetXMap(change.Target, out element))
 					{
 						continue;
 					}
-					//ValidateElementCount(element.Parent!); might not be needed with hkx2 library; testing needed.
 					ValidateElementContent(element, eventIndices, variableIndices);
 
 				}
 			}
 		}
 	}
+#pragma warning restore CA1416
 }

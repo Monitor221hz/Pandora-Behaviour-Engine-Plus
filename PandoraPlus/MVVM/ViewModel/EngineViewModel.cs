@@ -168,8 +168,8 @@ namespace Pandora.MVVM.ViewModel
 			CultureInfo.DefaultThreadCurrentCulture = culture;
 			CultureInfo.DefaultThreadCurrentUICulture = culture;
 			CultureInfo.CurrentCulture = culture;
-			ReadStartupArguments();
             SetupConfigurationOptions();
+			ReadStartupArguments();
 			preloadTask = Task.Run(Engine.PreloadAsync);
 
 			if (autoRun) { LaunchCommand.Execute(null); }
@@ -255,7 +255,8 @@ namespace Pandora.MVVM.ViewModel
         {
             if (startupArguments.Remove("-skyrimDebug64"))
             {
-				Engine = new BehaviourEngine(new SkyrimDebugConfiguration());
+                engineConfigurationFactory = new EngineConfigurationViewModel<SkyrimDebugConfiguration>("Debug", SetEngineConfigCommand);
+                Engine = new BehaviourEngine(engineConfigurationFactory.Config);
 			}
             if (startupArguments.Remove("-autoClose"))
             {
@@ -371,8 +372,10 @@ namespace Pandora.MVVM.ViewModel
 
 			var configInfoMessage = $"Engine launched with configuration: {Engine.Configuration.Name}. Do not exit before the launch is finished.";
 			await WriteLogBoxLine(configInfoMessage);
+			await WriteLogBoxLine("Waiting for preload to finish.");
+			Stopwatch timer = Stopwatch.StartNew();
 			await preloadTask;
-			
+            await WriteLogBoxLine("Preload finished.");
 			List<IModInfo> activeMods = GetActiveModsByPriority();
 
             IModInfo? baseModInfo = Mods.Where(m => m.Code == "pandora").FirstOrDefault();
@@ -385,9 +388,6 @@ namespace Pandora.MVVM.ViewModel
 			}
 			baseModInfo.Priority = uint.MaxValue;
 
-
-
-			Stopwatch timer = Stopwatch.StartNew();
             bool success = false;
 			await Task.Run(async() => { success = await Engine.LaunchAsync(activeMods); }); 
             

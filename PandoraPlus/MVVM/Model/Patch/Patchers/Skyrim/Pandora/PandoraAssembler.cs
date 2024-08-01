@@ -1,4 +1,4 @@
-﻿using HKX2;
+﻿using HKX2E;
 using Pandora.Core;
 using Pandora.Core.Patchers.Skyrim;
 using Pandora.Patch.Patchers.Skyrim.AnimData;
@@ -56,7 +56,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 			this.AnimSetDataManager = animSDManager;
 			this.AnimDataManager = animDManager;
 		}
-		public void AssembleEdit(ChangeType changeType, XElement element, PackFileChangeSet changeSet)
+		public void AssembleEdit(ChangeType changeType, XElement element, PackFile packFile,PackFileChangeSet changeSet)
 		{
 			XAttribute? pathAttribute = element.Attribute("path");
 			if (pathAttribute == null) { return; }
@@ -65,13 +65,13 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 
 			XAttribute? textAttribute = element.Attribute("text");
 			XAttribute? preTextAttribute = element.Attribute("preText");
-
+			string nodeName = pathAttribute.Value.Substring(0, pathAttribute.Value.IndexOf('/'));
 			switch (changeType)
 			{
 				case ChangeType.Remove:
 					if (textAttribute == null)
 					{
-						changeSet.AddChange(new RemoveElementChange(pathAttribute.Value));
+						changeSet.AddChange(new RemoveElementChange(nodeName,pathAttribute.Value));
 						break;
 					}
 					//assume text
@@ -79,10 +79,10 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 
 					if (preTextAttribute == null)
 					{
-						changeSet.AddChange(new RemoveTextChange(pathAttribute.Value, textAttribute.Value));
+						changeSet.AddChange(new RemoveTextChange(nodeName,pathAttribute.Value, textAttribute.Value));
 						break;
 					}
-					changeSet.AddChange(new ReplaceTextChange(pathAttribute.Value, preTextAttribute.Value, textAttribute.Value, string.Empty));
+					changeSet.AddChange(new ReplaceTextChange(nodeName,pathAttribute.Value, preTextAttribute.Value, textAttribute.Value, string.Empty));
 
 					break;
 
@@ -92,16 +92,25 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 					{
 						if (!isPathEmpty)
 						{
-							foreach (var childElement in element.Elements()) { changeSet.AddChange(new InsertElementChange(pathAttribute.Value, childElement)); }
+							foreach (var childElement in element.Elements()) { changeSet.AddChange(new InsertElementChange(nodeName, pathAttribute.Value, childElement)); }
 							break;
 						}
 
-						foreach (var childElement in element.Elements()) { changeSet.AddChange(new PushElementChange(PackFile.ROOT_CONTAINER_NAME, element)); }
+						foreach (var childElement in element.Elements())
+						{
+							var nameAttribute = childElement.Attribute("name");
+							if (nameAttribute == null) { continue; }
+							string childNodeName = nameAttribute.Value;
+							if (!packFile.PopObjectAsXml(childNodeName))
+							{
+								packFile.PartialDeserializer.DeserializeRuntimeObject(element);
+							}
+						}
 						break;
 					}
 					if (textAttribute == null || isPathEmpty) { break; }
 
-					changeSet.AddChange(new InsertTextChange(pathAttribute.Value, textAttribute.Value, element.Value));
+					changeSet.AddChange(new InsertTextChange(nodeName,pathAttribute.Value, textAttribute.Value, element.Value));
 
 					break;
 				case ChangeType.Append:
@@ -110,16 +119,25 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 					{
 						if (!isPathEmpty)
 						{
-							foreach (var childElement in element.Elements()) { changeSet.AddChange(new AppendElementChange(pathAttribute.Value, childElement));  }
+							foreach (var childElement in element.Elements()) { changeSet.AddChange(new AppendElementChange(nodeName,pathAttribute.Value, childElement));  }
 							break;
 						}
 
-						foreach (var childElement in element.Elements()) { changeSet.AddChange(new PushElementChange(PackFile.ROOT_CONTAINER_NAME, element)); }
+						foreach (var childElement in element.Elements()) 
+						{
+							var nameAttribute = childElement.Attribute("name");
+							if (nameAttribute == null ) { continue; }
+							string childNodeName = nameAttribute.Value;
+							if (!packFile.PopObjectAsXml(childNodeName))
+							{
+								packFile.PartialDeserializer.DeserializeRuntimeObject(element);
+							}
+						}
 						break;
 					}
 
 					if (isPathEmpty) { break; }
-					changeSet.AddChange(new AppendTextChange(pathAttribute.Value, element.Value));
+					changeSet.AddChange(new AppendTextChange(nodeName,pathAttribute.Value, element.Value));
 
 					break;
 
@@ -127,16 +145,16 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 					if (element.IsEmpty || isPathEmpty) { break; }
 					if (textAttribute == null && element.HasElements)
 					{
-						foreach(var childElement in element.Elements()) { changeSet.AddChange(new ReplaceElementChange(pathAttribute.Value, new XElement(childElement))); } 
+						foreach(var childElement in element.Elements()) { changeSet.AddChange(new ReplaceElementChange(nodeName,pathAttribute.Value, new XElement(childElement))); } 
 						break;
 					}
 					if (textAttribute == null) { break; }
 					if (preTextAttribute == null)
 					{
-						changeSet.AddChange(new ReplaceTextChange(pathAttribute.Value, string.Empty, textAttribute.Value, element.Value));
+						changeSet.AddChange(new ReplaceTextChange(nodeName,pathAttribute.Value, string.Empty, textAttribute.Value, element.Value));
 						break;
 					}
-					changeSet.AddChange(new ReplaceTextChange(pathAttribute.Value, preTextAttribute.Value, textAttribute.Value, element.Value));
+					changeSet.AddChange(new ReplaceTextChange(nodeName,pathAttribute.Value, preTextAttribute.Value, textAttribute.Value, element.Value));
 					break;
 
 				default:
@@ -146,15 +164,15 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 			}
 		}
 
-		public void AssembleTypedEdits(ChangeType changeType, XElement container, PackFileChangeSet changeSet)
+		public void AssembleTypedEdits(ChangeType changeType, XElement container, PackFile packFile,PackFileChangeSet changeSet)
 		{
 			foreach (var element in container.Elements())
 			{
-				AssembleEdit(changeType, element, changeSet);
+				AssembleEdit(changeType, element,packFile, changeSet);
 			}
 		}
 
-		public void AssembleEdits(XElement container, PackFileChangeSet changeSet)
+		public void AssembleEdits(XElement container,PackFile packFile, PackFileChangeSet changeSet)
 		{
 			if (!container.HasElements) { return; }	
 			foreach (var element in container.Elements())
@@ -164,13 +182,13 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 				{
 					if (element.HasAttributes) 
 					{
-						AssembleEdit(changeType, element, changeSet);
+						AssembleEdit(changeType, element,packFile, changeSet);
 						continue;
 					}
-					AssembleTypedEdits(changeType, element, changeSet);
+					AssembleTypedEdits(changeType, element,packFile, changeSet);
 					continue;
 				}
-				AssembleEdits(element, changeSet);
+				AssembleEdits(element, packFile, changeSet);
 				
 			}
 		}
@@ -179,7 +197,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 
 			var name = Path.GetFileNameWithoutExtension(file.Name);
 			PackFile targetPackFile; 
-			if (!ProjectManager.TryActivatePackFile(name, out targetPackFile!)) { return false; }
+			if (!ProjectManager.TryActivatePackFilePriority(name, out targetPackFile!)) { return false; }
 
 			var changeSet = new PackFileChangeSet(modInfo);
 
@@ -192,7 +210,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 
 			if (editContainer == null) { return false;  }
 
-			AssembleEdits(editContainer, changeSet);
+			AssembleEdits(editContainer,targetPackFile, changeSet);
 
 			targetPackFile.Dispatcher.AddChangeSet(changeSet);
 			return true;

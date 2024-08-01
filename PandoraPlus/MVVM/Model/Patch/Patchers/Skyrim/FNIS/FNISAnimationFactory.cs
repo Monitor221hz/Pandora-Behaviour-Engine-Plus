@@ -87,7 +87,7 @@ public class FNISAnimationFactory
 		AnimFlags flags = animPreset.Flags;
 		if (args[1].Length > 0 && args[1][0] == '-')
 		{
-			string[] flagValues = args[1].Split(',');
+			string[] flagValues = args[1].Substring(1).Split(',');
 			AnimFlags flag; 
 			foreach (string flagValue in flagValues)
 			{

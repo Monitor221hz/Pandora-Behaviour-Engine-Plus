@@ -1,5 +1,4 @@
-﻿using HKX2;
-using Pandora.Core.Patchers.Skyrim;
+﻿using Pandora.Core.Patchers.Skyrim;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,18 +7,40 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using XmlCake.Linq;
-
+using HKX2E;
 namespace Pandora.Patch.Patchers.Skyrim.Hkx;
 
-public class PackFile : IPatchFile, IEquatable<PackFile>
+public class PackFile : IEquatable<PackFile>
 {
+	public struct IntermediateNode<T> where T : IHavokObject
+	{
+		public string Name;
+		public T NewObject;
+
+		public IntermediateNode(string name, T newObject)
+		{
+			Name = name;
+			NewObject = newObject;
+		}
+
+		public void Build(PackFile packFile)
+		{
+			//packFile.Deserializer.UpdateObjectByName(Name, NewObject);
+			packFile.Deserializer.UpdatePropertyReferences(Name, NewObject);
+		}
+	}
+
 	public XMap Map { get; private set; }
+	public HavokReferenceXmlDeserializer Deserializer { get; private set; } = new();
+	public HavokXmlPartialDeserializer PartialDeserializer { get; private set; } = new(); 
+	public HavokXmlPartialSerializer PartialSerializer { get; private set; } = new();
+	public HavokXmlSerializer Serializer { get; private set; } = new(); 
+	public hkRootLevelContainer Container { get; private set; }
 
 	public static readonly string ROOT_CONTAINER_NAME = "__data__";
 
 	public static readonly string ROOT_CONTAINER_INSERT_PATH = "__data__/top";
 
-	private static HashSet<FileInfo> exportedFiles = new HashSet<FileInfo>();
 
 	public string Name { get; private set; }
 	public FileInfo InputHandle { get; private set; }
@@ -36,11 +57,13 @@ public class PackFile : IPatchFile, IEquatable<PackFile>
 
 	public bool ExportSuccess { get; private set; } = true;
 
+	private static HashSet<FileInfo> exportedFiles = new HashSet<FileInfo>();
+
+	protected readonly Dictionary<IHavokObject, XMapElement> objectElementMap = new(ReferenceEqualityComparer.Instance);
+
 	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-
 	public void ApplyChanges() => Dispatcher.ApplyChanges(this);
-
-	private HashSet<string> mappedNodeNames = new HashSet<string>();
+	public IEnumerable<XElement> IndexedElements => objectElementMap.Values;
 
 	public Project? ParentProject { get => parentProject; 
 		set { 
@@ -55,25 +78,8 @@ public class PackFile : IPatchFile, IEquatable<PackFile>
 	private bool active = false;
 	private Project? parentProject;
 
-	public PackFile(FileInfo file)
-	{
 
-		InputHandle = file;
-		OutputHandle = new FileInfo(file.FullName.Replace("Template", "meshes").Replace("\\Pandora_Engine\\Skyrim", ""));
-		using (var stream = file.OpenRead())
-		{
-			Map = XMap.Load(stream);
-		}
-
-		ContainerNode = Map.NavigateTo(ROOT_CONTAINER_NAME);
-		Name = Path.GetFileNameWithoutExtension(InputHandle.Name).ToLower();
-
-		UniqueName = Name;
-//#if DEBUG
-//		Debug.WriteLine($"- {UniqueName}");
-//#endif
-	}
-	public PackFile(FileInfo file, Project project)
+	public PackFile(FileInfo file, Project? project)
 	{
 		InputHandle = file;
 		OutputHandle = new FileInfo(file.FullName.Replace("Template", "meshes").Replace("\\Pandora_Engine\\Skyrim", ""));
@@ -81,20 +87,31 @@ public class PackFile : IPatchFile, IEquatable<PackFile>
 		{
 			Map = XMap.Load(stream);
 		}
+		using (var stream = file.OpenRead())
+		{
+			Container = (hkRootLevelContainer)Deserializer.Deserialize(stream, HKXHeader.SkyrimSE());
+		}
+		PartialSerializer.ShareContext(Deserializer.Context);
+		PartialDeserializer.ShareContext(Deserializer.Context);
+		Serializer.ShareContext(Deserializer.Context);
 		ParentProject = project;
 		ContainerNode = Map.NavigateTo(ROOT_CONTAINER_NAME);
 		Name = Path.GetFileNameWithoutExtension(InputHandle.Name).ToLower();
 
 		UniqueName = $"{ParentProject?.Identifier}~{Name}";
-//#if DEBUG
-//		Debug.WriteLine(UniqueName);
-//#endif
 	}
+	public PackFile(FileInfo file) : this(file, null)
+	{
 
+	}
+	public virtual void Load()
+	{ 
+
+	}
 	[MemberNotNull(nameof(classLookup))]
 	public void BuildClassLookup()
 	{
-		classLookup = Map.NavigateTo(PackFile.ROOT_CONTAINER_NAME).Elements().ToLookup(e => e.Attribute("class")!.Value);
+		//classLookup = Map.NavigateTo(PackFile.ROOT_CONTAINER_NAME).Elements().ToLookup(e => e.Attribute("class")!.Value);
 	}
 
 	protected bool CanActivate() => !active;
@@ -105,8 +122,11 @@ public class PackFile : IPatchFile, IEquatable<PackFile>
 	public virtual void Activate()
 	{
 		if (!CanActivate()) return;
-		Map.MapLayer(PackFile.ROOT_CONTAINER_NAME, true);
 		active = true; 
+	}
+	public virtual void PopPriorityXmlAsObjects()
+	{
+
 	}
 
 	
@@ -114,6 +134,28 @@ public class PackFile : IPatchFile, IEquatable<PackFile>
 
 	public string UniqueName { get; private set; }
 	public XElement SafeNavigateTo(string path) => Map.NavigateTo(path, ContainerNode);
+
+	public bool PathExists(string nodeName, string path)
+	{
+		if (Deserializer.TryGetObject(nodeName, out var keyObject) && objectElementMap.TryGetValue(keyObject, out var xmap) && xmap.PathExists(path))
+		{
+			return true;
+		}
+		return false; 
+	}
+	public bool TargetExists(string nodeName)
+	{
+		return Deserializer.TryGetObject(nodeName, out var keyObject) && objectElementMap.ContainsKey(keyObject);
+	}
+	public bool TryGetXMap(string nodeName, [NotNullWhen(true)] out XMapElement? xmap)
+	{
+		if (Deserializer.TryGetObject(nodeName, out var keyObject))
+		{
+			return objectElementMap.TryGetValue(keyObject, out xmap);
+		}
+		xmap = null;
+		return false;
+	}
 
 	[MemberNotNull(nameof(classLookup))]
 	public void TryBuildClassLookup() {  if (classLookup == null) {  BuildClassLookup(); } }
@@ -139,152 +181,74 @@ public class PackFile : IPatchFile, IEquatable<PackFile>
 		if (debugOuputHandle.Exists) { debugOuputHandle.Delete();  }
 #endif
 	}
-	public void MapNode(string nodeName)
-	{	
-		lock(mappedNodeNames)
-		{
-			if (mappedNodeNames.Contains(nodeName)) return;
-			mappedNodeNames.Add(nodeName);
-		}
-		lock(Map)
-		{
-			Map.MapSlice(nodeName);
-		}
-	}
-	public void MapNode(IPackFileChange change)
+	public bool PopObjectAsXml<T>(T node) where T : IHavokObject
 	{
-		MapNode(change.Path.AsSpan(0, change.Path.IndexOf('/')).ToString());
+		if (objectElementMap.ContainsKey(node))
+		{
+			return false; 
+		}
+		XMapElement mappedElement = new XMapElement(PartialSerializer.SerializeObject(node));
+		mappedElement.MapSlice(mappedElement);
+		objectElementMap.Add(node, mappedElement);
+		return true; 
 	}
-	public void MapNodes(params string[] nodeNames)
+	public bool PopObjectAsXml(string nodeName)
 	{
-		foreach(string nodeName in nodeNames)
+		if (Deserializer.TryGetObject(nodeName, out var havokObj))
 		{
-			MapNode(nodeName);
+			PopObjectAsXml(havokObj);
 		}
+		return false;
 	}
-	public void FlagExportFailure()
+	public bool PushXmlAsObject<T>(T targetObject) where T : IHavokObject
 	{
-		ExportSuccess = false;
-	}
-	public bool Export()
-	{
-
-
-			if (OutputHandle.Directory == null) return false;
-			if (!OutputHandle.Directory.Exists) { OutputHandle.Directory.Create(); }
-			if (OutputHandle.Exists) { OutputHandle.Delete(); }
-			HKXHeader header = HKXHeader.SkyrimSE();
-			IHavokObject rootObject;
-
-#if DEBUG
-		var debugOuputHandle = new FileInfo(OutputHandle.DirectoryName + "\\m_" + OutputHandle.Name + ".xml");
-
-		using (var writeStream = debugOuputHandle.Create())
+		if (objectElementMap.TryGetValue(targetObject, out var element) && Serializer.TryGetName(targetObject, out var name))
 		{
-			Map.Save(writeStream);
-		}
-		using (var memoryStream = new MemoryStream())
-		{
-			Map.Save(memoryStream);
-			memoryStream.Position = 0;
-			var deserializer = new XmlDeserializer();
-			rootObject = deserializer.Deserialize(memoryStream, header, false);
-		}
-		using (var writeStream = OutputHandle.Create())
-		{
-			var binaryWriter = new BinaryWriterEx(writeStream);
-			var serializer = new PackFileSerializer();
-			serializer.Serialize(rootObject, binaryWriter, header);
-		}
-
-		debugOuputHandle = new FileInfo(OutputHandle.FullName + ".xml");
-
-		using (var writeStream = debugOuputHandle.Create())
-		{
-
-			var xmlSerializer = new HKX2.XmlSerializer();
-			xmlSerializer.Serialize(rootObject, header, writeStream);
-		}
-
-
-#else
-		try
-		{
-		using (var memoryStream = new MemoryStream())
-		{
-			Map.Save(memoryStream);
-			memoryStream.Position = 0;
-			var deserializer = new XmlDeserializer();
-			rootObject = deserializer.Deserialize(memoryStream, header, false);
-		}
-		using (var writeStream = OutputHandle.Create())
-		{
-			var binaryWriter = new BinaryWriterEx(writeStream);
-			var serializer = new PackFileSerializer();
-			serializer.Serialize(rootObject, binaryWriter, header);
-		}
-		}
-		catch(Exception ex) 
-		{
-			Logger.Fatal($"Export > {ParentProject?.Identifier}~{Name} > FAILED > {ex.ToString()}");
-			using (var writeStream = OutputHandle.Create())
+			try
 			{
-				Map.Save(writeStream);
+				var obj = PartialDeserializer.DeserializeRuntimeObjectOverwrite(element);
+				Deserializer.UpdateDirectReference(targetObject, obj);
+				Deserializer.UpdatePropertyReferences(name, obj);
+				Deserializer.UpdateMapping(name, obj);	
+				objectElementMap.Remove(targetObject);
 			}
-			ExportSuccess = false;
+			catch (Exception ex)
+			{
+				Logger.Error($"Packfile > Active Nodes > Push > FAILED > {ex.ToString()}");
+			}
+			return true; 
 		}
-#endif
-
-		return ExportSuccess;
+		return false; 
 	}
-	public static void Unpack(FileInfo inputHandle)
+	public virtual void ApplyPriorityChanges(PackFileDispatcher dispatcher)
 	{
-		HKXHeader header = HKXHeader.SkyrimSE();
-		IHavokObject rootObject;
-		using (var readStream = inputHandle.OpenRead())
-		{
-			var deserializer = new XmlDeserializer();
-			rootObject = deserializer.Deserialize(readStream, header, false);
-		}
-		using (var writeStream = inputHandle.Create())
-		{
-			var binaryWriter = new BinaryWriterEx(writeStream);
-			var serializer = new PackFileSerializer();
-			serializer.Serialize(rootObject, binaryWriter, header);
-		}
-		var outputHandle = new FileInfo(Path.ChangeExtension(inputHandle.FullName, ".xml"));
-		if (outputHandle.Exists) { outputHandle.Delete(); }
-		using (var writeStream = outputHandle.Create())
-		{
 
-			var xmlSerializer = new HKX2.XmlSerializer();
-			xmlSerializer.Serialize(rootObject, header, writeStream);
-		}
 	}
-	public static FileInfo GetUnpackedHandle(FileInfo inputHandle)
+	public virtual void PushPriorityObjects()
 	{
-		HKXHeader header = HKXHeader.SkyrimSE();
-		IHavokObject rootObject;
-		using (var readStream = inputHandle.OpenRead())
-		{
-			var deserializer = new PackFileDeserializer();
-			var binaryReaderEx = new BinaryReaderEx(readStream);
-			rootObject = deserializer.Deserialize(binaryReaderEx);
-		}
 
-		var outputHandle = new FileInfo(Path.ChangeExtension(inputHandle.FullName, ".xml"));
-		if (outputHandle.Exists) { outputHandle.Delete(); }
-		using (var writeStream = outputHandle.Create())
-		{
-
-			var xmlSerializer = new HKX2.XmlSerializer();
-			xmlSerializer.Serialize(rootObject, header, writeStream);
-		}
-		
-
-		return outputHandle;
 	}
-
+	public virtual void PushXmlAsObjects()
+	{
+		foreach(var kvp in objectElementMap)
+		{
+			if (Serializer.TryGetName(kvp.Key, out var name))
+			{
+				try
+				{
+					var obj = PartialDeserializer.DeserializeRuntimeObjectOverwrite(kvp.Value);
+					Deserializer.UpdateDirectReference(kvp.Key, obj);
+					Deserializer.UpdatePropertyReferences(name, obj);
+					Deserializer.UpdateMapping(name, obj);
+				}
+				catch (Exception ex)
+				{
+					Logger.Error($"Packfile > Active Nodes > Push > FAILED > {ex.ToString()}");
+				}
+			}
+		}
+		objectElementMap.Clear(); 
+	}
 	public bool Equals(PackFile? other)
 	{
 		return other != null && other.OutputHandle.FullName.Equals(this.OutputHandle.FullName, StringComparison.OrdinalIgnoreCase);

@@ -1,4 +1,4 @@
-﻿using HKX2;
+﻿using HKX2E;
 using NLog;
 using Pandora.Core;
 using Pandora.Core.Patchers.Skyrim;
@@ -41,7 +41,7 @@ public class FNISAnimationListBuildContext
 				return payload;
 			}
 		}
-		payload = new hkbStringEventPayload() {  m_data = name };
+		payload = new hkbStringEventPayload() {  data = name };
 		lock (stringEventPayloadNameMap)
 		{
 			stringEventPayloadNameMap.Add(name, payload);

@@ -1,4 +1,5 @@
-﻿using Pandora.Patch.Patchers.Skyrim.AnimData;
+﻿using HKX2E;
+using Pandora.Patch.Patchers.Skyrim.AnimData;
 using Pandora.Patch.Patchers.Skyrim.Hkx;
 using System;
 using System.Collections.Generic;
@@ -156,26 +157,18 @@ namespace Pandora.Core.Patchers.Skyrim
 		private static PackFileCharacter GetCharacterFile(PackFile projectFile, PackFileCache cache)
 		{
 
-
-			XMap projectMap = projectFile.Map;
-			XElement projectData = projectFile.GetFirstNodeOfClass("hkbProjectStringData"); 
-			projectMap.MapSlice(projectData, true);
-
-			string characterFilePath = projectMap.Lookup("characterFilenames").Value.ToLower();
+			if (projectFile.Container.namedVariants.Count == 0) { throw new InvalidDataException($"{nameof(hkRootLevelContainer)} for project file has no named variants in file {projectFile.Name}");  }
+			var projectData = (hkbProjectData)projectFile.Container.namedVariants.First()!.variant!;
+			var projectStringData = projectData.stringData;
+			if (projectStringData == null) { throw new InvalidDataException($"{nameof(hkbProjectData)} is has null stringData property.");  }
+			string characterFilePath = projectStringData.characterFilenames.First();
 
 			return cache.LoadPackFileCharacter(new FileInfo(Path.Combine(projectFile.InputHandle.DirectoryName!, characterFilePath)));
 		}
 
 		private static (PackFile skeleton, PackFileGraph behavior) GetSkeletonAndBehaviorFile(PackFile projectFile, PackFileCharacter characterFile, PackFileCache cache)
 		{
-			XMap characterMap =  characterFile.Map;
-
-			string skeletonFilePath = characterMap.Lookup(characterFile.RigNamePath).Value;
-
-			string behaviorFilePath = characterMap.Lookup(characterFile.BehaviorFilenamePath).Value;
-
-			return (cache.LoadPackFile(new FileInfo(Path.Combine(projectFile.InputHandle.DirectoryName!, skeletonFilePath))), cache.LoadPackFileGraph(new FileInfo(Path.Combine(projectFile.InputHandle.DirectoryName!, behaviorFilePath))));
-
+			return (cache.LoadPackFile(new FileInfo(Path.Combine(projectFile.InputHandle.DirectoryName!, characterFile.SkeletonFileName))), cache.LoadPackFileGraph(new FileInfo(Path.Combine(projectFile.InputHandle.DirectoryName!, characterFile.BehaviorFileName))));
 		}
 
 	}

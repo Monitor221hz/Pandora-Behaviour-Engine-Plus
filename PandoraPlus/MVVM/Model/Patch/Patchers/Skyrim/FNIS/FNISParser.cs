@@ -1,4 +1,4 @@
-﻿using HKX2;
+﻿using HKX2E;
 using Pandora.Core;
 using Pandora.Core.Patchers.Skyrim;
 using Pandora.Patch.Patchers.Skyrim.AnimData;
@@ -110,7 +110,7 @@ public class FNISParser
 		}
 		var modFiles = behaviorFolder.GetFiles("FNIS*.hkx");
 
-		if (modFiles.Length > 0) { projectManager.ActivatePackFile(project.BehaviorFile); }
+		if (modFiles.Length > 0) { projectManager.TryActivatePackFile(project.BehaviorFile); }
 
 		foreach (var modFile in modFiles)
 		{
@@ -132,37 +132,44 @@ public class FNISParser
 	private bool InjectGraphReference(FileInfo sourceFile, PackFileGraph destPackFile)
 	{
 		string stateFolderName;
-
 		if (!stateMachineMap.TryGetValue(destPackFile.UniqueName, out stateFolderName!)) { return false; }
-
-		destPackFile.MapNode(stateFolderName);
-
 		string nameWithoutExtension = Path.GetFileNameWithoutExtension(sourceFile.Name);
-		string refName = nameWithoutExtension.Replace(' ', '_');
-		var stateInfoPath = string.Format("{0}/states", stateFolderName);
-		var graphPath = $"{destPackFile.OutputHandle.Directory?.Name}\\{nameWithoutExtension}.hkx";
-		var modInfo = new FNISModInfo(sourceFile);
-		lock (ModInfos) ModInfos.Add(modInfo);
-		var changeSet = new PackFileChangeSet(modInfo);
+		string graphPath = $"{destPackFile.OutputHandle.Directory?.Name}\\{nameWithoutExtension}.hkx";
+		hkbStateMachine rootState = destPackFile.Deserializer.GetObjectAs<hkbStateMachine>(stateFolderName);
+		hkbBehaviorReferenceGenerator refGenerator = new() { name = nameWithoutExtension, variableBindingSet = null, userData = 0, behaviorName = graphPath };
+		hkbStateMachineStateInfo stateInfo = new() {  name = "PN_StateInfo", enable = true, probability=1.0f, stateId = graphPath.GetHashCode() & 0xfffffff, generator=refGenerator };
+		
+		rootState.states.Add(stateInfo);
 
-		PatchNodeCreator nodeMaker = new PatchNodeCreator(changeSet.Origin.Code);
 
-		string behaviorRefName;
-		var behaviorRef = patchNodeCreator.CreateBehaviorReferenceGenerator(refName, graphPath, out behaviorRefName);
-		XElement behaviorRefElement = patchNodeCreator.Serializer.WriteRegisteredNode<hkbBehaviorReferenceGenerator>(behaviorRef);
+		//destPackFile.PopNode(stateFolderName);asdfasdf
 
-		string stateInfoName;
-		var stateInfo = patchNodeCreator.CreateSimpleStateInfo(behaviorRef, out stateInfoName);
-		XElement stateInfoElement = patchNodeCreator.Serializer.WriteRegisteredNamedObject<hkbStateMachineStateInfo>(stateInfo, stateInfoName);
+		
+		//string refName = nameWithoutExtension.Replace(' ', '_');
+		//var stateInfoPath = string.Format("{0}/states", stateFolderName);
+		//var graphPath = $"{destPackFile.OutputHandle.Directory?.Name}\\{nameWithoutExtension}.hkx";
+		//var modInfo = new FNISModInfo(sourceFile);
+		//lock (ModInfos) ModInfos.Add(modInfo);
+		//var changeSet = new PackFileChangeSet(modInfo);
 
-		//changeSet.AddChange(new AppendElementChange(PackFile.ROOT_CONTAINER_NAME, behaviorRefElement));
-		//changeSet.AddChange(new AppendElementChange(PackFile.ROOT_CONTAINER_NAME, stateInfoElement));
+		//PatchNodeCreator nodeMaker = new PatchNodeCreator(changeSet.Origin.Code);
+
+		//string behaviorRefName;
+		//var behaviorRef = patchNodeCreator.CreateBehaviorReferenceGenerator(refName, graphPath, out behaviorRefName);
+		//XElement behaviorRefElement = patchNodeCreator.Serializer.WriteRegisteredNode<hkbBehaviorReferenceGenerator>(behaviorRef);
+
+		//string stateInfoName;
+		//var stateInfo = patchNodeCreator.CreateSimpleStateInfo(behaviorRef, out stateInfoName);
+		//XElement stateInfoElement = patchNodeCreator.Serializer.WriteRegisteredNamedObject<hkbStateMachineStateInfo>(stateInfo, stateInfoName);
+
+		////changeSet.AddChange(new AppendElementChange(PackFile.ROOT_CONTAINER_NAME, behaviorRefElement));
+		////changeSet.AddChange(new AppendElementChange(PackFile.ROOT_CONTAINER_NAME, stateInfoElement));
+		////changeSet.AddChange(new AppendTextChange(stateInfoPath, stateInfoName));
+		//changeSet.AddElementAsChange(behaviorRefElement);
+		//changeSet.AddElementAsChange(stateInfoElement);
 		//changeSet.AddChange(new AppendTextChange(stateInfoPath, stateInfoName));
-		changeSet.AddElementAsChange(behaviorRefElement);
-		changeSet.AddElementAsChange(stateInfoElement);
-		changeSet.AddChange(new AppendTextChange(stateInfoPath, stateInfoName));
 
-		destPackFile.Dispatcher.AddChangeSet(changeSet);
+		//destPackFile.Dispatcher.AddChangeSet(changeSet);
 		return true;
 	}
 
@@ -180,22 +187,34 @@ public class FNISParser
 		List<FNISAnimationList> animLists = new();
 		foreach (var animlistFile in animlistFiles)
 		{
+#if DEBUG
+			FNISAnimationList animList = FNISAnimationList.FromFile(animlistFile);
+			lock (ModInfos)
+			{
+				ModInfos.Add(animList.ModInfo);
+			}
+			animLists.Add(animList);
+#else
 			try
 			{
 				FNISAnimationList animList = FNISAnimationList.FromFile(animlistFile);
-				ModInfos.Add(animList.ModInfo);
+				lock (ModInfos)
+				{
+					ModInfos.Add(animList.ModInfo);
+				}
 				animLists.Add(animList);
 			}
-			catch
+			catch (Exception ex)
 			{
-				logger.Warn($"FNIS Parser > Serialize > Animlist > {animlistFile.Name} > FAILED");
+				logger.Warn($"FNIS Parser > Serialize > Animlist > {animlistFile.Name} > FAILED > {ex.ToString()}");
 			}
+#endif
 		}
 		if (animLists.Count > 1)
 		{
 			Parallel.ForEach(animLists, animlist => { animlist.BuildPatches(project, projectManager, patchNodeCreator); });
 		}
-		else
+		else if (animLists.Count > 0)
 		{
 			animLists[0].BuildPatches(project, projectManager, patchNodeCreator);
 		}

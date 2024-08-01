@@ -1,4 +1,4 @@
-﻿using HKX2;
+﻿using HKX2E;
 using Pandora.Core.IOManagers;
 using Pandora.Patch.Patchers.Skyrim.Hkx;
 using System;
@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Automation;
 using XmlCake.Linq;
 
 namespace Pandora.Patch.IOManagers.Skyrim
@@ -26,33 +27,31 @@ namespace Pandora.Patch.IOManagers.Skyrim
 			if (!outputHandle.Directory.Exists) { outputHandle.Directory.Create(); }
 			if (outputHandle.Exists) { outputHandle.Delete(); }
 			HKXHeader header = HKXHeader.SkyrimSE();
-			IHavokObject rootObject;
-			var debugOuputHandle = new FileInfo(outputHandle.DirectoryName + "\\pre_" + outputHandle.Name + ".xml");
 
-			using (var writeStream = debugOuputHandle.Create())
+			foreach (var element in packFile.IndexedElements)
 			{
-				packFile.Map.Save(writeStream);
+				FileInfo debugFile = new FileInfo(Path.Combine(outputHandle.DirectoryName!, $"{packFile.Name}~{element.Attribute("name")!.Value}.xml"));
+				using (var writeStream = debugFile.Create())
+				{
+					element.Save(writeStream);
+				}
 			}
-			using (var memoryStream = new MemoryStream())
-			{
-				packFile.Map.Save(memoryStream);
-				memoryStream.Position = 0;
-				var deserializer = new XmlDeserializer();
-				rootObject = deserializer.Deserialize(memoryStream, header, false);
-			}
+			//var debugOuputHandle = new FileInfo(outputHandle.DirectoryName + "\\pre_" + outputHandle.Name + ".xml");
+			//using (var writeStream = debugOuputHandle.Create())
+			//{
+			//	packFile.Map.Save(writeStream);
+			//}
 			using (var writeStream = outputHandle.Create())
 			{
 				var binaryWriter = new BinaryWriterEx(writeStream);
 				var serializer = new PackFileSerializer();
-				serializer.Serialize(rootObject, binaryWriter, header);
+				serializer.Serialize(packFile.Container, binaryWriter, header);
 			}
-			debugOuputHandle = new FileInfo(outputHandle.FullName + ".xml");
+			var debugOuputHandle = new FileInfo(outputHandle.FullName + ".xml");
 
 			using (var writeStream = debugOuputHandle.Create())
 			{
-
-				var xmlSerializer = new HKX2.XmlSerializer();
-				xmlSerializer.Serialize(rootObject, header, writeStream);
+				packFile.Serializer.Serialize(packFile.Container, header, writeStream);
 			}
 
 			return true;

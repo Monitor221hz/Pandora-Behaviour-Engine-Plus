@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using XmlCake.Linq;
 
 namespace Pandora.Patch.Patchers.Skyrim.Hkx
 {
@@ -22,30 +23,30 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 		{
 			return whiteSpaceRegex.Replace(value.Trim(trimChars), " ");
 		}
-		public static XElement ReplaceElement(PackFile packFile, string path, XElement element) => packFile.Map.ReplaceElement(path, element);
+		public static XElement ReplaceElement(IXMap xmap, string path, XElement element) => xmap.ReplaceElement(path, element);
 
 
-		public static string InsertElement(PackFile packFile, string path, XElement element)
+		public static string InsertElement(IXMap xmap, string path, XElement element)
 		{
-			return packFile.Map.InsertElement(path, element, true);
+			return xmap.InsertElement(path, element, true);
 		}
 
-		public static string AppendElement(PackFile packFile, string path, XElement element)
+		public static string AppendElement(IXMap xmap, string path, XElement element)
 		{
-			return packFile.Map.AppendElement(path, element);
+			return xmap.AppendElement(path, element);
 		}
 
-		public static string PushElement(PackFile packFile, string path, XElement element)
+		public static string PushElement(IXMap xmap, string path, XElement element)
 		{
-			return packFile.Map.PushElement(path, element);
+			return xmap.PushElement(path, element);
 		}
 
-		public static XElement RemoveElement(PackFile packFile, string path) => packFile.Map.RemoveElement(path); 
+		public static XElement RemoveElement(IXMap xmap, string path) => xmap.RemoveElement(path); 
 
-		public static bool ReplaceText(PackFile packFile, string path, string preValue, string oldValue, string newValue)
+		public static bool ReplaceText(IXMap xmap, string path, string preValue, string oldValue, string newValue)
 		{
 			
-			XElement element = packFile.SafeNavigateTo(path);
+			XElement element = xmap.NavigateTo(path);
 			if (String.IsNullOrWhiteSpace(oldValue)) return false;
 
 			string source = NormalizeElementValue(element);
@@ -83,16 +84,15 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			return true; 
 
 		}
-		public static bool SetText(PackFile packFile, string path, string newValue)
+		public static bool SetText(IXMap xmap, string path, string newValue)
 		{
-			XElement element = packFile.SafeNavigateTo(path);
+			XElement element = xmap.NavigateTo(path);
 			element.SetValue(newValue);
 			return true;
 		}
-		public static bool InsertText(PackFile packFile, string path, string markerValue, string newValue)
+		public static bool InsertText(IXMap xmap, string path, string markerValue, string newValue)
 		{
-			
-			XElement element = packFile.SafeNavigateTo(path);
+			XElement element = xmap.NavigateTo(path);
 			string source = NormalizeElementValue(element);
 
 			markerValue = NormalizeStringValue(markerValue);
@@ -107,18 +107,18 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			return true; 
 		}
 
-		public static void AppendText(PackFile packFile, string path, string newValue)
+		public static void AppendText(IXMap xmap, string path, string newValue)
 		{
-			XElement element = packFile.SafeNavigateTo(path);
+			XElement element = xmap.NavigateTo(path);
 			string source = NormalizeElementValue(element);
 
 			newValue = NormalizeStringValue(newValue);
 			source = NormalizeStringValue(String.Concat(source, " ", newValue, " "));
 			element.SetValue(source);
 		}
-		public static void RemoveText(PackFile packFile, string path, string value)
+		public static void RemoveText(IXMap xmap, string path, string value)
 		{
-			XElement element = packFile.SafeNavigateTo(path);
+			XElement element = xmap.NavigateTo(path);
 			if (String.IsNullOrWhiteSpace(value)) return;
 			string source = element.Value;
 			source = NormalizeStringValue(source.Replace(value, string.Empty, true));

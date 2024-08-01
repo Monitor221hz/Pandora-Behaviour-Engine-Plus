@@ -56,7 +56,7 @@ public class SkyrimPatcher : IPatcher
 	public string GetPostRunMessages()
 	{
 		StringBuilder logBuilder;
-		logBuilder = new StringBuilder("Resources loaded successfully.\r\n\r\n");
+		logBuilder = new StringBuilder("\r\n");
 
 		for (int i = 0; i < activeMods.Count; i++)
 		{
