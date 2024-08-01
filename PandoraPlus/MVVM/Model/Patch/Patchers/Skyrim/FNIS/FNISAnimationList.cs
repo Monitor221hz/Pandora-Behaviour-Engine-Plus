@@ -50,6 +50,8 @@ public class FNISAnimationListBuildContext
 
 public partial class FNISAnimationList
 {
+	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
 	[GeneratedRegex("^([^('|\\s)]+)\\s*(?:-(\\S+)*)?\\s*(\\S+)\\s+(\\S+.hkx)(?:[^\\S\\r\\n]+(\\S+))*", RegexOptions.Compiled)]
 	private static partial Regex FNISAnimLineRegex();
 
@@ -90,7 +92,14 @@ public partial class FNISAnimationList
 					{
 						continue; 
 					}
-					animlist.Animations.Add(FNISAnimationFactory.CreateFromLine(animRoot, expectedLine)); 
+					if (FNISAnimationFactory.CreateFromLine(animRoot, expectedLine, out var animation))
+					{
+						animlist.Animations.Add(animation);
+					}
+					else
+					{
+						logger.Warn($"FNIS Animlist > New Animation > From Line > FAILED > Line > {expectedLine} > File > {file.Name}");
+					}
 				}
 			}
 		}

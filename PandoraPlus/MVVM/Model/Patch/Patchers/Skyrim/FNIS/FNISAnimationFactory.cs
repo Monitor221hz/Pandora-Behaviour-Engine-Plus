@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -75,13 +76,14 @@ public class FNISAnimationFactory
 
 		throw new NotImplementedException();
 	}
-	public static IFNISAnimation CreateFromLine(string animRoot, string line)
+	public static bool CreateFromLine(string animRoot, string line, [NotNullWhen(true)] out IFNISAnimation? animation)
 	{
 		string[] args = line.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 		FNISAnimPreset animPreset;
 		if (!animTypePrefixes.TryGetValue(args[0], out animPreset))
 		{
-			throw new ArgumentException("Line did not have animTypePrefix");
+			animation = null;
+			return false; 
 		}
 		int optionsOffset = 0;
 		AnimFlags flags = animPreset.Flags;
@@ -110,10 +112,13 @@ public class FNISAnimationFactory
 		switch (animPreset.AnimationType)
 		{
 			case AnimType.OffsetArm:
-				return new OffsetArmAnimation(animPreset.AnimationType, flags, args[1 + optionsOffset], animationPath, animObjectNames);
+				animation = new OffsetArmAnimation(animPreset.AnimationType, flags, args[1 + optionsOffset], animationPath, animObjectNames);
+				break;
 			default:
-				return new FNISAnimation(animPreset.AnimationType, flags, args[1 + optionsOffset], animationPath, animObjectNames); 
+				animation = new FNISAnimation(animPreset.AnimationType, flags, args[1 + optionsOffset], animationPath, animObjectNames);
+				break;
 		}
+		return true; 
 		
 	}
 }
