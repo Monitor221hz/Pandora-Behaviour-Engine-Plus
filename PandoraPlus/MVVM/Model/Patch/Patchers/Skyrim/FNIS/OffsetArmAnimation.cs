@@ -1,4 +1,4 @@
-﻿using HKX2;
+﻿using HKX2E;
 using Pandora.Core;
 using Pandora.Core.Patchers.Skyrim;
 using Pandora.Patch.Patchers.Skyrim.Hkx;
@@ -25,61 +25,69 @@ public class OffsetArmAnimation : FNISAnimation
 	public override bool BuildPatch(FNISAnimationListBuildContext buildContext)
 	{
 		var project = buildContext.TargetProject;
-		var targetCache = buildContext.TargetCache;
-		var patchNodeCreator = buildContext.Helper; 
+		var projectManager = buildContext.ProjectManager;
 		base.BuildPatch(buildContext);
-		
+
 		if (!project.TryLookupPackFile("mt_behavior", out var targetPackFile) || targetPackFile is not PackFileGraph graph) //only supports humanoids as FNIS does
 		{
-			return false; 
+			return false;
 		}
-		var serializer = targetCache.GetSerializer(graph); 
-		var clipGenerator = new hkbClipGenerator()
+		projectManager.TryActivatePackFile(targetPackFile);
+		var deserializer = graph.Deserializer;
+		hkbClipGenerator clipGenerator = new()
 		{
-			m_name = patchNodeCreator.GenerateNodeName(targetCache.Origin, GraphEvent),
-			m_animationName = AnimationFilePath,
-			m_triggers = null,
-			m_cropStartAmountLocalTime = 0.0f,
-			m_cropEndAmountLocalTime = 0.0f,
-			m_startTime = 0.0f,
-			m_playbackSpeed = 1.0f,
-			m_enforcedDuration = 0.0f,
-			m_userControlledTimeFraction = 0.0f,
-			m_animationBindingIndex = 0,
-			m_flags = 0,
-			m_userData = 0
+			name = GraphEvent,
+			animationName = AnimationFilePath,
+			triggers = null,
+			cropStartAmountLocalTime = 0.0f,
+			cropEndAmountLocalTime = 0.0f,
+			startTime = 0.0f,
+			playbackSpeed = 1.0f,
+			enforcedDuration = 0.0f,
+			userControlledTimeFraction = 0.0f,
+			animationBindingIndex = 0,
+			flags = 0,
+			userData = 0
 		};
-		var stateInfo = new hkbStateMachineStateInfo() { m_name = patchNodeCreator.GenerateNodeName(targetCache.Origin, GraphEvent), m_probability = 1.0f, m_generator = clipGenerator, m_stateId = (clipGenerator.m_name.GetHashCode() & 0xfffffff), m_enable = true };
-		BuildFlags(stateInfo, clipGenerator,graph, targetCache, patchNodeCreator);
-		XElement stateInfoElement = serializer.WriteRegisteredNamedObject<hkbStateMachineStateInfo>(stateInfo, stateInfo.m_name);
-		stateInfoElement.Elements().ElementAt(4).Value = "#5111";
-		targetCache.AddChange(graph, new AppendTextChange("#5138/states", stateInfo.m_name));
-		targetCache.AddChange(graph, new AppendTextChange("#5183/states", stateInfo.m_name));
-		var transitionInfo = new hkbStateMachineTransitionInfo()
+		hkbStateMachineStateInfo stateInfo = new hkbStateMachineStateInfo() 
+		{ 
+			name = GraphEvent, 
+			probability = 1.0f, 
+			generator = clipGenerator, 
+			stateId = (clipGenerator.name.GetHashCode() & 0xfffffff), 
+			enable = true, 
+			transitions = deserializer.GetObjectAs<hkbStateMachineTransitionInfoArray>("#5111")
+		};
+		hkbStateMachine rightArmState = deserializer.GetObjectAs<hkbStateMachine>("#5138");
+		hkbStateMachine leftArmState = deserializer.GetObjectAs<hkbStateMachine>("#5183");
+		lock (rightArmState){ rightArmState.states.Add(stateInfo); }
+		lock (leftArmState) { leftArmState.states.Add(stateInfo); }
+		hkbStateMachineTransitionInfo transitionInfo = new()
 		{
-			m_flags = (short)(TransitionFlags.FLAG_IS_LOCAL_WILDCARD | TransitionFlags.FLAG_IS_GLOBAL_WILDCARD | TransitionFlags.FLAG_DISABLE_CONDITION),
-			m_transition = null,
-			m_condition = null,
-			m_eventId = -1,
-			m_toStateId = stateInfo.m_stateId,
-			m_fromNestedStateId = 0,
-			m_toNestedStateId = 0,
-			m_priority = 0,
+			flags = (short)(TransitionFlags.FLAG_IS_LOCAL_WILDCARD | TransitionFlags.FLAG_IS_GLOBAL_WILDCARD | TransitionFlags.FLAG_DISABLE_CONDITION),
+			transition = deserializer.GetObjectAs<hkbBlendingTransitionEffect>("#0093"),
+			condition = null,
+			eventId = graph.AddDefaultEvent(GraphEvent),
+			toStateId = stateInfo.stateId,
+			fromNestedStateId = 0,
+			toNestedStateId = 0,
+			priority = 0,
 		};
-		XElement transitionInfoElement = serializer.WriteDetachedObject(transitionInfo);
-		var transitionInfoElements = transitionInfoElement.Elements().ToList();
-		transitionInfoElements[4].Value = PatchNodeCreator.AsEventFormat(GraphEvent);
-		transitionInfoElements[2].Value = "#0093";
-		targetCache.AddChange(graph, new AppendElementChange("#4038/transitions", transitionInfoElement));
-		targetCache.AddChange(graph, new AppendElementChange("#5141/transitions", new XElement(transitionInfoElement)));
-
-		var clipGeneratorElement = serializer.WriteRegisteredNode<hkbClipGenerator>(clipGenerator);
-
-		targetCache.AddElementAsChange(graph, clipGeneratorElement);
-		targetCache.AddElementAsChange(graph, stateInfoElement);
-
-		patchNodeCreator.AddDefaultEvent(graph, targetCache, GraphEvent);
-		graph.MapNodes("#5138", "#5141", "#4038");
+		if (rightArmState.wildcardTransitions != null)
+		{
+			lock (rightArmState.wildcardTransitions)
+			{
+				rightArmState.wildcardTransitions.transitions.Add(transitionInfo);
+			}
+		}
+		if (leftArmState.wildcardTransitions != null)
+		{
+			lock (leftArmState.wildcardTransitions)
+			{
+				leftArmState.wildcardTransitions.transitions.Add(transitionInfo); 
+			}
+		}
+		BuildFlags(stateInfo, clipGenerator,graph);
 		return true; 
 	}
 }

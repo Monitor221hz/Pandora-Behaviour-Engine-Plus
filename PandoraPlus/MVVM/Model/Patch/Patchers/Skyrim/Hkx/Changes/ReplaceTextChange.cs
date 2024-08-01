@@ -1,4 +1,5 @@
 ﻿using Pandora.Core;
+using System;
 using System.Xml;
 
 namespace Pandora.Patch.Patchers.Skyrim.Hkx;
@@ -9,19 +10,19 @@ public class ReplaceTextChange : IPackFileChange
 
 	public XmlNodeType AssociatedType { get; } = XmlNodeType.Text;
 
+	public string Target { get; }
 	public string Path { get; private set; }
-	private string oldValue { get; set; }
+
+	private string oldValue;
+
+	private string newValue;
+
+	private string preValue;
 
 
-
-	private string newValue { get; set; }
-
-	private string preValue; 
-
-
-
-	public ReplaceTextChange(string path, string preValue, string oldvalue, string newvalue)
-	{
+    public ReplaceTextChange(string target,string path, string preValue, string oldvalue, string newvalue)
+    {
+		Target = target;
 		Path = path;
 		oldValue = oldvalue;
 		newValue = newvalue;
@@ -29,8 +30,11 @@ public class ReplaceTextChange : IPackFileChange
 	}
 	public bool Apply(PackFile packFile)
 	{
-		return PackFileEditor.ReplaceText(packFile, Path, preValue, oldValue, newValue);
-		
+		if (!packFile.TryGetXMap(Target, out var xmap))
+		{
+			return false;
+		}
+		return PackFileEditor.ReplaceText(xmap!, Path, preValue, oldValue, newValue);
 	}
 
 	public bool Revert(PackFile packFile)

@@ -1,4 +1,6 @@
 ﻿using Pandora.Core;
+using System;
+using System.Reflection.Metadata.Ecma335;
 using System.Xml;
 
 namespace Pandora.Patch.Patchers.Skyrim.Hkx
@@ -8,21 +10,22 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 		public IPackFileChange.ChangeType Type { get; } = IPackFileChange.ChangeType.Remove;
 
 		public XmlNodeType AssociatedType { get; } = XmlNodeType.Text;
-
+		public string Target { get; }	
 		public string Path { get; private set; }
 		private string value { get; set; }
-
-
-		public RemoveTextChange(string path, string value)
+		public RemoveTextChange(string target,string path, string value)
 		{
-			Path = path;
+			Target = target;
+			Path = path; 
 			this.value = value;
-
 		}
-
 		public bool Apply(PackFile packFile)
 		{
-			PackFileEditor.RemoveText(packFile, Path, value);
+			if (!packFile.TryGetXMap(Target, out var xmap))
+			{
+				return false;
+			}
+			PackFileEditor.RemoveText(xmap!, Path, value);
 			return true;
 		}
 

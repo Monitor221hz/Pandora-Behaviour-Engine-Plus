@@ -1,10 +1,11 @@
-﻿using HKX2;
+﻿using HKX2E;
 using Pandora.Core;
 using Pandora.Core.Patchers.Skyrim;
 using Pandora.Patch.Patchers.Skyrim.Hkx;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection.Emit;
@@ -123,21 +124,19 @@ public partial class FNISAnimation : IFNISAnimation
 	{
 	}
 
-	protected void BuildFlags(hkbStateMachineStateInfo stateInfo, hkbClipGenerator clip,PackFileGraph graph, PackFileTargetCache targetCache, PatchNodeCreator patchNodeCreator)
+	protected void BuildFlags(hkbStateMachineStateInfo stateInfo, hkbClipGenerator clip,PackFileGraph graph)
 	{
-		var serializer = targetCache.GetSerializer(graph);
-		var modInfo = targetCache.Origin; 
 
 		if (HasModifier)
 		{
-			var modifierList = new hkbModifierList() { m_enable = true };
-			var modifierGenerator = new hkbModifierGenerator() { m_modifier = modifierList, m_generator = clip };
+			var modifierList = new hkbModifierList() { enable = true };
+			var modifierGenerator = new hkbModifierGenerator() { modifier = modifierList, generator = clip };
 			if (Flags.HasFlag(AnimFlags.MotionDriven))
 			{
 
 			}
 		}
-		clip.m_mode = (sbyte)(Flags.HasFlag(AnimFlags.Acyclic) ? PlaybackMode.MODE_SINGLE_PLAY : PlaybackMode.MODE_LOOPING);
+		clip.mode = (sbyte)(Flags.HasFlag(AnimFlags.Acyclic) ? PlaybackMode.MODE_SINGLE_PLAY : PlaybackMode.MODE_LOOPING);
 		if (Flags.HasFlag(AnimFlags.AnimObjects))
 		{
 			var enterEventList = new List<hkbEventProperty>();
@@ -145,29 +144,27 @@ public partial class FNISAnimation : IFNISAnimation
 			hkbStringEventPayload payload;
 			foreach (var animObjectName in animObjectNames)
 			{
-				payload = new hkbStringEventPayload() { m_data = animObjectName };
-				targetCache.AddNamedHkObjectAsChange(payload, graph, patchNodeCreator.GenerateCollidableNodeName(modInfo, animObjectName));
-				enterEventList.Add(new hkbEventProperty() { m_id = 393, m_payload = payload });
-				enterEventList.Add(new hkbEventProperty() { m_id = 394, m_payload = payload });
-				exitEventList.Add(new hkbEventProperty() { m_id = 165, m_payload = null });
+				payload = new hkbStringEventPayload() { data = animObjectName };
+				enterEventList.Add(new hkbEventProperty() { id = 393, payload = payload });
+				enterEventList.Add(new hkbEventProperty() { id = 394, payload = payload });
+				exitEventList.Add(new hkbEventProperty() { id = 165, payload = null });
 			}
-			stateInfo.m_enterNotifyEvents = new hkbStateMachineEventPropertyArray() { m_events = enterEventList };
-			targetCache.AddNamedHkObjectAsChange(stateInfo.m_enterNotifyEvents, graph, patchNodeCreator.GenerateNodeName(modInfo, nameof(stateInfo.m_enterNotifyEvents)));
+			stateInfo.enterNotifyEvents = new hkbStateMachineEventPropertyArray() { events = enterEventList };
 			if (!Flags.HasFlag(AnimFlags.Sticky))
 			{
-				stateInfo.m_exitNotifyEvents = new hkbStateMachineEventPropertyArray() { m_events = exitEventList };
-				targetCache.AddNamedHkObjectAsChange(stateInfo.m_exitNotifyEvents, graph, patchNodeCreator.GenerateNodeName(modInfo, nameof(stateInfo.m_exitNotifyEvents))); 
+				stateInfo.exitNotifyEvents = new hkbStateMachineEventPropertyArray() { events = exitEventList };
 			}
 		}
 	}
 	public virtual bool BuildPatch(FNISAnimationListBuildContext buildContext)
 	{
-		var targetCache = buildContext.TargetCache;
-		var project = buildContext.TargetProject; 
-
-		targetCache.AddChange(project.CharacterPackFile, new AppendElementChange(project.CharacterPackFile.AnimationNamesPath, new XElement("hkcstring", AnimationFilePath)));
-		if (project.Sibling == null) { return true;  }
-		targetCache.AddChange(project.Sibling.CharacterPackFile, new AppendElementChange(project.Sibling.CharacterPackFile.AnimationNamesPath, new XElement("hkcstring", AnimationFilePath)));
+		var project = buildContext.TargetProject;
+		var projectManager = buildContext.ProjectManager;
+		projectManager.TryActivatePackFile(project.CharacterPackFile);
+		project.CharacterPackFile.AddUniqueAnimation(AnimationFilePath); 
+		if (project.Sibling == null) { return true; }
+		projectManager.TryActivatePackFile(project.Sibling.CharacterPackFile);
+		project.Sibling.CharacterPackFile.AddUniqueAnimation(AnimationFilePath); 
 		return true; 
 	}
 }

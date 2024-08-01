@@ -1,4 +1,4 @@
-﻿using HKX2;
+﻿using HKX2E;
 using Pandora.Core;
 using Pandora.Core.Patchers.Skyrim;
 using System;
@@ -16,7 +16,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx;
 public class PackFileTargetCache
 {
 	private Dictionary<PackFile, PackFileTarget> packFileChangeSetMap = new();
-	private Dictionary<PackFile, XmlSerializer> packFileSerializerMap = new();
+	private Dictionary<PackFile, HavokXmlSerializer> packFileSerializerMap = new();
 
 	private ProjectManager projectManager;
 	public PackFileTargetCache(IModInfo origin, ProjectManager manager)
@@ -29,9 +29,9 @@ public class PackFileTargetCache
 
 	public IModInfo Origin { get; private set; }
 
-	public XmlSerializer GetSerializer(PackFile packFile)
+	public HavokXmlSerializer GetSerializer(PackFile packFile)
 	{
-		XmlSerializer? serializer = null; 
+		HavokXmlSerializer? serializer = null; 
 		lock (packFileSerializerMap)
 		{
 			if (packFileSerializerMap.TryGetValue(packFile, out serializer))
@@ -39,7 +39,7 @@ public class PackFileTargetCache
 				return serializer;
 			}
 		}
-		serializer = new XmlSerializer(packFile.NodeCount);
+		serializer = new HavokXmlSerializer();
 		lock (packFileSerializerMap)
 		{
 			packFileSerializerMap.Add(packFile, serializer);
@@ -75,7 +75,7 @@ public class PackFileTargetCache
 				packFileChangeSetMap.Add(packFile, new PackFileTarget(packFile, changeSet));
 			}
 		}
-		projectManager.ActivatePackFile(packFile);
+		projectManager.TryActivatePackFile(packFile);
 	}
 	public void AddChange(PackFile packFile, IPackFileChange change)
 	{
@@ -90,7 +90,7 @@ public class PackFileTargetCache
 				return;
 			}
 		}
-		projectManager.ActivatePackFile(packFile); 
+		projectManager.TryActivatePackFile(packFile); 
 		var changeSet = new PackFileChangeSet(Origin);
 		changeSet.AddChange(change); 
 		AddChangeSet(packFile, changeSet); 
@@ -104,12 +104,12 @@ public class PackFileTargetCache
 	/// <param name="name"></param>
 	public void AddNamedHkObjectAsChange<T>(T hkObject, PackFile packFile, string name) where T : IHavokObject
 	{
-		bool existingReference = false; 
-		XElement element = GetSerializer(packFile).WriteRegisteredNamedObject<T>(hkObject, name, out existingReference);
-		if (!existingReference)
-		{
-			AddElementAsChange(packFile, element);
-		}
+		//bool existingReference = false; 
+		//XElement element = GetSerializer(packFile).WriteRegisteredNamedObject<T>(hkObject, name, out existingReference);
+		//if (!existingReference)
+		//{
+		//	//AddElementAsChange(packFile, element);
+		//}
 	}
 	public void AddElementAsChange(PackFile packFile, XElement element)
 	{
@@ -125,7 +125,7 @@ public class PackFileTargetCache
 				return; 
 			}
 		}
-		projectManager.ActivatePackFile(packFile); 
+		projectManager.TryActivatePackFile(packFile); 
 		var changeSet = new PackFileChangeSet(Origin);
 		changeSet.AddElementAsChange(element);
 		AddChangeSet(packFile, changeSet);

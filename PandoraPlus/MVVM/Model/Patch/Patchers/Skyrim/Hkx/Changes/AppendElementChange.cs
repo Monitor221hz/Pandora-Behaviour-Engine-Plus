@@ -11,29 +11,22 @@ public class AppendElementChange : IPackFileChange
 
 	public XmlNodeType AssociatedType { get; } = XmlNodeType.Element;
 
+	public string Target { get; }	
 	public string Path { get; private set; }
 
 	private XElement element { get; set; }
-
-
-
-	public AppendElementChange(string path, XElement element)
-	{
-		Path = path;
+    public AppendElementChange(string target,string path, XElement element)
+    {
+		Target = target;
+		Path = path; 
 		this.element = element;
-	}
+    }
+
 	public bool Apply(PackFile packFile)
 	{
-		if (!packFile.Map.PathExists(Path)) return false;
-		string newPath = PackFileEditor.AppendElement(packFile, Path, element);
+		if (!packFile.TryGetXMap(Target, out var xmap)) { return false; }
+		string newPath = PackFileEditor.AppendElement(xmap!, Path, element);
 		Path = String.IsNullOrEmpty(newPath) ? Path : newPath;
-		return packFile.Map.PathExists(Path);
-	}
-
-	public bool Revert(PackFile packFile)
-	{
-		if (!packFile.Map.PathExists(Path)) return false;
-		PackFileEditor.RemoveElement(packFile, Path);
-		return true;
+		return xmap!.PathExists(Path);
 	}
 }

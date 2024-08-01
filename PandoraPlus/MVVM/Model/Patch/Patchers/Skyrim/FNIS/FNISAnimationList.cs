@@ -1,4 +1,4 @@
-﻿using HKX2;
+﻿using HKX2E;
 using NLog;
 using Pandora.Core;
 using Pandora.Core.Patchers.Skyrim;
@@ -18,18 +18,16 @@ public class FNISAnimationListBuildContext
 {
 	private Dictionary<string, hkbStringEventPayload> stringEventPayloadNameMap = new();
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-	public FNISAnimationListBuildContext(PatchNodeCreator helper, Project targetProject, ProjectManager projectManager, PackFileTargetCache targetCache)
+	public FNISAnimationListBuildContext(PatchNodeCreator helper, Project targetProject, ProjectManager projectManager)
 	{
 		Helper = helper;
 		TargetProject = targetProject;
 		ProjectManager = projectManager;
-		TargetCache = targetCache;
 	}
 
 	public PatchNodeCreator Helper { get; private set; }
 	public Project TargetProject { get; private set; }
 	public ProjectManager ProjectManager { get; private set; }
-	public PackFileTargetCache TargetCache { get; private set; }
 
 	public hkbStringEventPayload BuildCommonStringEventPayload(string name)
 	{
@@ -41,7 +39,7 @@ public class FNISAnimationListBuildContext
 				return payload;
 			}
 		}
-		payload = new hkbStringEventPayload() {  m_data = name };
+		payload = new hkbStringEventPayload() {  data = name };
 		lock (stringEventPayloadNameMap)
 		{
 			stringEventPayloadNameMap.Add(name, payload);
@@ -102,16 +100,10 @@ public partial class FNISAnimationList
 
 	public void BuildPatches(Project project, ProjectManager projectManager, PatchNodeCreator patchNodeCreator)
 	{
-		PackFileTargetCache targetCache = new(ModInfo, projectManager); 
-		FNISAnimationListBuildContext buildContext = new FNISAnimationListBuildContext(patchNodeCreator, project, projectManager, targetCache); 
+		FNISAnimationListBuildContext buildContext = new FNISAnimationListBuildContext(patchNodeCreator, project, projectManager); 
 		foreach (FNISAnimation animation in Animations)
 		{
 			animation.BuildPatch(buildContext);
-		}
-		IEnumerable<PackFileTarget> targets = targetCache.Targets;
-		foreach(PackFileTarget target in targets)
-		{
-			target.Build();
 		}
 	}
 }

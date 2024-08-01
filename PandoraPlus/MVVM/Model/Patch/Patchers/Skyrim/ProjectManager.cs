@@ -1,4 +1,4 @@
-﻿using HKX2;
+﻿using HKX2E;
 using NLog;
 using Pandora.Patch.Patchers.Skyrim.AnimData;
 using Pandora.Patch.Patchers.Skyrim.AnimSetData;
@@ -47,8 +47,6 @@ namespace Pandora.Core.Patchers.Skyrim
             this.templateFolder = templateFolder;
 			this.outputFolder = outputFolder;
 			fnisParser = new FNISParser(this);
-
-
         }
 		public void GetExportInfo(StringBuilder builder)
 		{
@@ -303,7 +301,7 @@ namespace Pandora.Core.Patchers.Skyrim
 		{
 			return folderProjectMap.TryGetValue(name, out project);
 		}
-		public bool TryActivatePackFile(string name, Project project, out PackFile? packFile)
+		public bool TryActivatePackFilePriority(string name, Project project, out PackFile? packFile)
 		{
 			packFile = null;
 			if (!project.TryLookupPackFile(name, out packFile))
@@ -315,12 +313,13 @@ namespace Pandora.Core.Patchers.Skyrim
 				{
 					if (ActivePackFiles.Contains(packFile)) { return true; }
 					packFile.Activate();
+					packFile.PopPriorityXmlAsObjects();
 					ActivePackFiles.Add(packFile);
 					
 				}
 			return true;
 		}
-		public bool TryActivatePackFile(string name, out PackFile? packFile)
+		public bool TryActivatePackFilePriority(string name, out PackFile? packFile)
 		{
 			packFile = null; 
 			if (!TryLookupPackFile(name, out packFile!))
@@ -332,25 +331,12 @@ namespace Pandora.Core.Patchers.Skyrim
 				{
 					if (ActivePackFiles.Contains(packFile)) { return true; }
 					packFile.Activate();
+					packFile.PopPriorityXmlAsObjects(); 
 					ActivePackFiles.Add(packFile);
 				}
 			return true;
 		}
-		public PackFile ActivatePackFile(string name)
-		{
-			
-			PackFile packFile = LookupPackFile(name);
-			lock(ActivePackFiles) 
-			lock(packFile)
-			{
-				if (ActivePackFiles.Contains(packFile)) return packFile;
-				packFile.Activate();
-				ActivePackFiles.Add(packFile);
-				
-			}
-			return packFile;
-		}
-		public bool ActivatePackFile(PackFile packFile)
+		public bool TryActivatePackFile(PackFile packFile)
 		{
 			lock (ActivePackFiles)
 				lock (packFile)
@@ -386,23 +372,25 @@ namespace Pandora.Core.Patchers.Skyrim
 		public async Task<bool> ApplyPatchesParallel()
 		{
 			Task deleteOutputTask = Task.Run(packFileCache.DeletePackFileOutput);
-			try
-			{
-				Parallel.ForEach(projectMap.Values, project => { fnisParser.ScanProjectAnimlist(project); });
-			} 
-			catch (Exception ex)
-			{
-				Logger.Error($"FNIS Parser > Scan > Failed > {ex.Message}");
-			}
-			
 
 			Parallel.ForEach(ActivePackFiles, packFile =>
 			{
 				packFile.ApplyChanges();
 			});
-
+			try
+			{
+				Parallel.ForEach(projectMap.Values, project => { fnisParser.ScanProjectAnimlist(project); });
+			}
+			catch (Exception ex)
+			{
+				Logger.Error($"FNIS Parser > Scan > Failed > {ex.Message}");
+			}
 			await deleteOutputTask;
-
+			//to-fix: repushing priority nodes is broken because the new nodes are not registered in the serializer.
+			Parallel.ForEach(ActivePackFiles, packFile =>
+			{
+				packFile.PushXmlAsObjects();
+			});
 
 			return true;
 

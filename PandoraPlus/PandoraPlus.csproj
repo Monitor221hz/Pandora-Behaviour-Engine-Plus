@@ -70,7 +70,7 @@
     <PackageReference Include="NLog" Version="5.2.5" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\third_party\HKX2-Library\HKX2 WPF\HKX2.csproj" />
+    <ProjectReference Include="..\third_party\HKX2-Enhanced-Library\HKX2\HKX2E.csproj" />
     <ProjectReference Include="..\third_party\XML-Cake\XML Cake\XML Cake.csproj" />
   </ItemGroup>
   <ItemGroup>
@@ -866,9 +866,6 @@
     <None Update="Pandora_Engine\Skyrim\Template\actors\frostbitespider\behaviors\frostbitespiderbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Skyrim\Template\actors\frostbitespider\behaviors\frostbitespiderbehavior_lod.hkx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="Pandora_Engine\Skyrim\Template\actors\frostbitespider\character assets\skeleton.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -896,13 +893,7 @@
     <None Update="Pandora_Engine\Skyrim\Template\actors\goat\behaviors\goatbehavior.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Pandora_Engine\Skyrim\Template\actors\goat\behaviors\goatbehavior_lod.hkx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="Pandora_Engine\Skyrim\Template\actors\goat\behaviors\noncombatidle.hkx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Pandora_Engine\Skyrim\Template\actors\goat\behaviors\noncombatidle_lod.hkx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Pandora_Engine\Skyrim\Template\actors\goat\behaviors\quadrupedbehavior.hkx">

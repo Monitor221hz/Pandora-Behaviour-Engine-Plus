@@ -1,4 +1,4 @@
-﻿using HKX2;
+﻿using HKX2E;
 using Pandora.Core;
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ using System.Xml.Linq;
 namespace Pandora.Patch.Patchers.Skyrim.Hkx;
 public class PatchNodeCreator
 {
-	public XmlSerializer Serializer { get; } = new XmlSerializer();
+	public HavokXmlSerializer Serializer { get; } = new HavokXmlSerializer();
 
 	private readonly string newNodePrefix;
 
@@ -75,50 +75,33 @@ public class PatchNodeCreator
 		hash.Add(uniqueName);
 		return hash.ToHashCode().ToString(); 
 	}
-	public bool AddAnimationPath(PackFileCharacter characterPackFile, PackFileChangeSet changeSet, string animationPath)
-	{
-		changeSet.AddChange(new AppendElementChange(characterPackFile.AnimationNamesPath, TranslateToXml(animationPath)));
-		return true; 
-	}
-	public bool AddDefaultEvent(PackFileGraph graphPackFile, PackFileChangeSet changeSet, string eventName)
-	{
-		changeSet.AddChange(new AppendElementChange(graphPackFile.EventNamesPath, TranslateToXml(eventName)));
-		changeSet.AddChange(new AppendElementChange(graphPackFile.EventFlagsPath, TranslateToXml(TranslateToXml("flags", "0"))));
-		return true; 
-	}
-	public bool AddDefaultEvent(PackFileGraph graphPackFile, PackFileTargetCache targetCache, string eventName)
-	{
-		targetCache.AddChange(graphPackFile, new AppendElementChange(graphPackFile.EventNamesPath, TranslateToXml(eventName)));
-		targetCache.AddChange(graphPackFile, new AppendElementChange(graphPackFile.EventFlagsPath, TranslateToXml(TranslateToXml("flags", "0"))));
-		return true; 
-	}
 	public hkbBehaviorReferenceGenerator CreateBehaviorReferenceGenerator(string behaviorName, out string nodeName)
 	{
 		nodeName = GenerateNodeName(behaviorName);
-		var behaviorRefNode = new hkbBehaviorReferenceGenerator() { m_name = $"{behaviorName}ReferenceGenerator", m_behaviorName = behaviorName, m_variableBindingSet = null, m_userData = 0 };
+		var behaviorRefNode = new hkbBehaviorReferenceGenerator() { name = $"{behaviorName}ReferenceGenerator", behaviorName = behaviorName, variableBindingSet = null, userData = 0 };
 
 		return behaviorRefNode;
 	}
 	public hkbBehaviorReferenceGenerator CreateBehaviorReferenceGenerator(string generatorName, string behaviorName, out string nodeName)
 	{
 		nodeName = GenerateNodeName(generatorName);
-		var behaviorRefNode = new hkbBehaviorReferenceGenerator() { m_name = $"{generatorName}_RG", m_behaviorName = behaviorName, m_variableBindingSet = null, m_userData = 0 };
+		var behaviorRefNode = new hkbBehaviorReferenceGenerator() { name = $"{generatorName}_RG", behaviorName = behaviorName, variableBindingSet = null, userData = 0 };
 
 		return behaviorRefNode;
 	}
 
 	public hkbStateMachineStateInfo CreateSimpleStateInfo(hkbGenerator generator)
 	{
-		var nodeName = GenerateNodeName(generator.m_name);
-		var simpleStateInfo = new hkbStateMachineStateInfo() { m_name = "PN_SimpleStateInfo", m_probability = 1.0f, m_generator = generator, m_stateId = (nodeName.GetHashCode() & 0xfffffff), m_enable = true};
+		var nodeName = GenerateNodeName(generator.name);
+		var simpleStateInfo = new hkbStateMachineStateInfo() { name = "PN_SimpleStateInfo", probability = 1.0f, generator = generator, stateId = (nodeName.GetHashCode() & 0xfffffff), enable = true};
 
 		return simpleStateInfo;
 	}
 
 	public hkbStateMachineStateInfo CreateSimpleStateInfo(hkbGenerator generator, out string nodeName)
 	{
-		nodeName = GenerateNodeName(generator.m_name);
-		var simpleStateInfo = new hkbStateMachineStateInfo() { m_name = "PN_SimpleStateInfo", m_probability = 1.0f, m_generator = generator, m_stateId = (nodeName.GetHashCode() & 0xfffffff), m_enable = true };//not working for some reason; out of range? state id collision?
+		nodeName = GenerateNodeName(generator.name);
+		var simpleStateInfo = new hkbStateMachineStateInfo() { name = "PN_SimpleStateInfo", probability = 1.0f, generator = generator, stateId = (nodeName.GetHashCode() & 0xfffffff), enable = true };//not working for some reason; out of range? state id collision?
 
 		return simpleStateInfo;
 	}

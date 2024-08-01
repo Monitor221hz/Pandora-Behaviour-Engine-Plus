@@ -1,4 +1,4 @@
-﻿using HKX2;
+﻿using HKX2E;
 using NLog;
 using Pandora.Patch.Patchers.Skyrim.Hkx;
 using System;
@@ -36,18 +36,11 @@ public class PackFileExporter : Exporter<PackFile>
 
 		try
 		{
-			using (var memoryStream = new MemoryStream())
-			{
-				packFile.Map.Save(memoryStream);
-				memoryStream.Position = 0;
-				var deserializer = new XmlDeserializer();
-				rootObject = deserializer.Deserialize(memoryStream, header, false);
-			}
 			using (var writeStream = outputHandle.Create())
 			{
 				var binaryWriter = new BinaryWriterEx(writeStream);
 				var serializer = new PackFileSerializer();
-				serializer.Serialize(rootObject, binaryWriter, header);
+				serializer.Serialize(packFile.Container, binaryWriter, header);
 			}
 		}
 		catch (Exception ex)
