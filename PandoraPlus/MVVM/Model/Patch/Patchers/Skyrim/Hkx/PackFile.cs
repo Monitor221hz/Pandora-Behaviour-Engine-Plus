@@ -203,12 +203,12 @@ public class PackFile : IEquatable<PackFile>
 	public bool PushXmlAsObject<T>(T targetObject) where T : IHavokObject
 	{
 		XMapElement? element;
-		string? name; 
+		string? name;
 		lock (objectElementMap)
 		{
 			if (!objectElementMap.TryGetValue(targetObject, out element) || !Serializer.TryGetName(targetObject, out name))
 			{
-				return false; 
+				return false;
 			}
 		}
 		try
@@ -227,6 +227,42 @@ public class PackFile : IEquatable<PackFile>
 			Logger.Error($"Packfile > Active Nodes > Push > FAILED > {ex.ToString()}");
 		}
 		return true;
+	}
+	public T GetPushXmlAsObject<T>(T targetObject) where T : class, IHavokObject
+	{
+		XMapElement? element;
+		string? name;
+		lock (objectElementMap)
+		{
+			if (!objectElementMap.TryGetValue(targetObject, out element) || !Serializer.TryGetName(targetObject, out name))
+			{
+				return targetObject;
+			}
+		}
+		try
+		{
+			var obj = PartialDeserializer.DeserializeRuntimeObjectOverwrite(element);
+			Deserializer.UpdateDirectReference(targetObject, obj);
+			Deserializer.UpdatePropertyReferences(name, obj);
+			Deserializer.UpdateMapping(name, obj);
+			lock (objectElementMap)
+			{
+				objectElementMap.Remove(targetObject);
+			}
+		}
+		catch (Exception ex)
+		{
+			Logger.Error($"Packfile > Active Nodes > Push > FAILED > {ex.ToString()}");
+		}
+		if (!Deserializer.TryGetObjectAs<T>(name, out var newObj))
+		{
+			return targetObject; 
+		}
+		return newObj; 
+	}
+	public T GetPushedObjectAs<T>(string name) where T : class, IHavokObject
+	{
+		return GetPushXmlAsObject<T>(Deserializer.GetObjectAs<T>(name));
 	}
 	public virtual void ApplyPriorityChanges(PackFileDispatcher dispatcher)
 	{
