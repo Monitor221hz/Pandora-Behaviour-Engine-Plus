@@ -21,7 +21,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 		private static Regex VarFormat = new Regex(@"[$]{1}variableID{1}[\[]{1}(.+)[\]]{1}[$]{1}");
 
 		private Dictionary<string, int> eventIndices = new Dictionary<string, int>();
-		private Dictionary<string, int> variableIndices = new Dictionary<string, int>();
+		private Dictionary<string, int> variableIndices = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
 
 		private List<XElement> registeredElements = new(); 
 
@@ -49,56 +49,51 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx
 			var initialVariableValues = graph.VariableValueSet.wordVariableValues.ToArray();
 			var initialVariableInfos = graph.Data.variableInfos.ToArray();
 
-			List<string> eventNames = new(); 
-			List<hkbEventInfo> eventInfos = new();
+			int eventLowerBound = (int)(graph.InitialEventCount);
+			int variableLowerBound = (int)(graph.InitialVariableCount);
 
-			List<string> variableNames = new(); 
+			List<string> eventNames = new();
+			List<hkbEventInfo> eventInfos = new(); 
+
+			List<string> variableNames = new();
 			List<hkbVariableValue> variableValues = new();
-			List<hkbVariableInfo> variableInfos = new();
-
-			var uniqueEventNames = new HashSet<string>();
-			var uniqueVariableNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+			List<hkbVariableInfo> variableInfos = new(); 
 
 			eventIndices.Clear();
 			variableIndices.Clear();
 
-			int eventLowerBound = (int)(graph.InitialEventCount);
-			int variableLowerBound =(int)(graph.InitialVariableCount);
-
-			
-			for(int i = eventLowerBound; i < initialEventNames.Length; i++)
+			int duplicateVariableCount = 0;
+			int duplicateEventCount = 0; 
+			for(int i = 0; i < initialEventNames.Length; i++)
 			{
 				var eventName = initialEventNames[i];
-				if (!uniqueEventNames.Add(eventName))
+				if (!eventIndices.TryAdd(eventName, i - duplicateEventCount) && i >= eventLowerBound)
 				{
-					Logger.Warn($"Validator > {graph.ParentProject?.Identifier}~{graph.Name} > Duplicate Event > {eventName} > Index > {i} > REMOVED");
+					Logger.Warn($"Validator > {graph.ParentProject?.Identifier}~{graph.Name} > Duplicate Event > {eventName} > Index > {i} > SKIPPED");
+					duplicateEventCount++; 
 					continue;
 				}
 				eventNames.Add(eventName);
 				eventInfos.Add(initialEventInfos[i]);
-
 			}
-
-			for (int i = variableLowerBound; i < initialVariableNames.Length; i++)
+			for (int i = 0; i < initialVariableNames.Length; i++)
 			{
 				var variableName = initialVariableNames[i];
-				if (!uniqueVariableNames.Add(variableName))
+				if (!variableIndices.TryAdd(variableName, i - duplicateVariableCount) && i >= variableLowerBound)
 				{
-					Logger.Warn($"Validator > {graph.ParentProject?.Identifier}~{graph.Name} > Duplicate Variable > {variableName} > Index > {i} > REMOVED");
+					Logger.Warn($"Validator > {graph.ParentProject?.Identifier}~{graph.Name} > Duplicate Variable > {variableName} > Index > {i} > SKIPPED");
+					duplicateVariableCount++;
 					continue; 
 				}
 				variableNames.Add(variableName);
 				variableValues.Add(initialVariableValues[i]); 
 				variableInfos.Add(initialVariableInfos[i]);
 			}
-			for (int i = 0; i < eventNames.Count; i++)
-			{
-				eventIndices.TryAdd(eventNames[i], i + (int)graph.InitialEventCount);
-			}
-			for (int i = 0; i < variableNames.Count; i++)
-			{
-				variableIndices.TryAdd(variableNames[i], i + (int)graph.InitialVariableCount);
-			}
+			graph.StringData.eventNames = eventNames; 
+			graph.Data.eventInfos = eventInfos;
+			graph.StringData.variableNames = variableNames; 
+			graph.Data.variableInfos = variableInfos;
+			graph.VariableValueSet.wordVariableValues = variableValues;
 			return true; 
 		}
 		private void ValidateElementText(XElement element, Dictionary<string, int> eventIndices, Dictionary<string, int> variableIndices)
