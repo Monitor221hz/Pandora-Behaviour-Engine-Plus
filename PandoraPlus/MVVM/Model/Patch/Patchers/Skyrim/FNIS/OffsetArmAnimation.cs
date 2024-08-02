@@ -33,7 +33,6 @@ public class OffsetArmAnimation : FNISAnimation
 			return false;
 		}
 		projectManager.TryActivatePackFile(targetPackFile);
-		var deserializer = graph.Deserializer;
 		hkbClipGenerator clipGenerator = new()
 		{
 			name = GraphEvent,
@@ -56,16 +55,16 @@ public class OffsetArmAnimation : FNISAnimation
 			generator = clipGenerator, 
 			stateId = (clipGenerator.name.GetHashCode() & 0xfffffff), 
 			enable = true, 
-			transitions = deserializer.GetObjectAs<hkbStateMachineTransitionInfoArray>("#5111")
+			transitions = graph.GetPushedObjectAs<hkbStateMachineTransitionInfoArray>("#5111")
 		};
-		hkbStateMachine rightArmState = deserializer.GetObjectAs<hkbStateMachine>("#5138");
-		hkbStateMachine leftArmState = deserializer.GetObjectAs<hkbStateMachine>("#5183");
+		hkbStateMachine rightArmState = graph.GetPushedObjectAs<hkbStateMachine>("#5138");
+		hkbStateMachine leftArmState = graph.GetPushedObjectAs<hkbStateMachine>("#5183");
 		lock (rightArmState){ rightArmState.states.Add(stateInfo); }
 		lock (leftArmState) { leftArmState.states.Add(stateInfo); }
 		hkbStateMachineTransitionInfo transitionInfo = new()
 		{
 			flags = (short)(TransitionFlags.FLAG_IS_LOCAL_WILDCARD | TransitionFlags.FLAG_IS_GLOBAL_WILDCARD | TransitionFlags.FLAG_DISABLE_CONDITION),
-			transition = deserializer.GetObjectAs<hkbBlendingTransitionEffect>("#0093"),
+			transition = graph.GetPushedObjectAs<hkbBlendingTransitionEffect>("#0093"),
 			condition = null,
 			eventId = graph.AddDefaultEvent(GraphEvent),
 			toStateId = stateInfo.stateId,

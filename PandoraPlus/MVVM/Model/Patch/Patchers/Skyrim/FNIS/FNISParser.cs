@@ -133,13 +133,16 @@ public class FNISParser
 	{
 		string stateFolderName;
 		if (!stateMachineMap.TryGetValue(destPackFile.UniqueName, out stateFolderName!)) { return false; }
+		projectManager.TryActivatePackFile(destPackFile); 
 		string nameWithoutExtension = Path.GetFileNameWithoutExtension(sourceFile.Name);
 		string graphPath = $"{destPackFile.OutputHandle.Directory?.Name}\\{nameWithoutExtension}.hkx";
-		hkbStateMachine rootState = destPackFile.Deserializer.GetObjectAs<hkbStateMachine>(stateFolderName);
+		hkbStateMachine rootState = destPackFile.GetPushedObjectAs<hkbStateMachine>(stateFolderName);
 		hkbBehaviorReferenceGenerator refGenerator = new() { name = nameWithoutExtension, variableBindingSet = null, userData = 0, behaviorName = graphPath };
 		hkbStateMachineStateInfo stateInfo = new() {  name = "PN_StateInfo", enable = true, probability=1.0f, stateId = graphPath.GetHashCode() & 0xfffffff, generator=refGenerator };
-		
-		rootState.states.Add(stateInfo);
+		lock (rootState.states)
+		{
+			rootState.states.Add(stateInfo);
+		}
 		return true;
 	}
 
