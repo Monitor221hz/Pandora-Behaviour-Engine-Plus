@@ -15,13 +15,15 @@ namespace Pandora.Patch.IOManagers.Skyrim
 	public class DebugPackFileExporter : Exporter<PackFile>
 	{
 		public DirectoryInfo ExportDirectory { get; set; }
-        public DebugPackFileExporter()
-        {
-			ExportDirectory = new DirectoryInfo(Path.Join(Directory.GetCurrentDirectory()));
-        }
-        public bool Export(PackFile packFile)
+		public DebugPackFileExporter()
 		{
-			var outputHandle = new FileInfo(Path.Join(ExportDirectory.FullName, Path.GetRelativePath(Directory.GetCurrentDirectory(), packFile.InputHandle.FullName.Replace("Pandora_Engine\\Skyrim\\Template", "meshes", StringComparison.OrdinalIgnoreCase))));
+			ExportDirectory = new DirectoryInfo(Path.Join(Directory.GetCurrentDirectory()));
+		}
+		public bool Export(PackFile packFile)
+		{
+			var launchDirectory = new FileInfo(System.Reflection.Assembly.GetEntryAssembly()!.Location).Directory!.FullName;
+
+			var outputHandle = new FileInfo(Path.Join(ExportDirectory.FullName, Path.GetRelativePath(launchDirectory, packFile.InputHandle.FullName.Replace("Pandora_Engine\\Skyrim\\Template", "meshes", StringComparison.OrdinalIgnoreCase))));
 
 			if (outputHandle.Directory == null) return false;
 			if (!outputHandle.Directory.Exists) { outputHandle.Directory.Create(); }

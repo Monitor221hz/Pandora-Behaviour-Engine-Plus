@@ -34,12 +34,19 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimData
 
 		private int LastID { get; set; } = 32767;
 
-        public AnimDataManager(DirectoryInfo templateFolder, DirectoryInfo currentFolder)
-        {
+		public AnimDataManager(DirectoryInfo templateFolder, DirectoryInfo outputPath)
+		{
 			this.templateFolder = templateFolder;
-			this.outputFolder = new DirectoryInfo(Path.Join(currentFolder.FullName, "meshes"));
-            templateAnimDataSingleFile = new FileInfo($"{templateFolder.FullName}\\{ANIMDATA_FILENAME}");
-			outputAnimDataSingleFile = new FileInfo($"{outputFolder.FullName}\\{ANIMDATA_FILENAME}");
+			templateAnimDataSingleFile = new FileInfo($"{templateFolder.FullName}\\{ANIMDATA_FILENAME}");
+
+			this.outputFolder = new DirectoryInfo(Path.Join(outputPath.FullName, "meshes"));
+			outputAnimDataSingleFile = new FileInfo($"{this.outputFolder.FullName}\\{ANIMDATA_FILENAME}");
+		}
+
+		public void SetOutputPath(DirectoryInfo outputPath)
+		{
+			this.outputFolder = new DirectoryInfo(Path.Join(outputPath.FullName, "meshes"));
+			outputAnimDataSingleFile = new FileInfo($"{this.outputFolder.FullName}\\{ANIMDATA_FILENAME}");
 		}
 
 		private void MapProjectAnimData(ProjectAnimData animData)

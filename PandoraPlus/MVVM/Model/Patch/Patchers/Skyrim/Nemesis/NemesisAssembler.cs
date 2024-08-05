@@ -40,7 +40,7 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 
 	private static readonly DirectoryInfo engineFolder = new DirectoryInfo(Directory.GetCurrentDirectory() + "\\Pandora_Engine");
 
-	private static readonly DirectoryInfo templateFolder = new DirectoryInfo(Directory.GetCurrentDirectory() + "\\Pandora_Engine\\Skyrim\\Template");
+	private static readonly DirectoryInfo templateFolder = new DirectoryInfo(new FileInfo(System.Reflection.Assembly.GetEntryAssembly()!.Location).Directory!.FullName + "\\Pandora_Engine\\Skyrim\\Template");
 
 	private static readonly DirectoryInfo outputFolder = new DirectoryInfo($"{Directory.GetCurrentDirectory()}\\meshes");
 	public ProjectManager ProjectManager { get; private set; }
@@ -80,7 +80,13 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 		pandoraConverter = new PandoraConverter(ProjectManager, AnimSetDataManager, AnimDataManager);
 	}
 
-    public void LoadResources()
+	public void SetOutputPath(DirectoryInfo outputPath)
+	{
+		AnimDataManager.SetOutputPath(outputPath);
+		AnimSetDataManager.SetOutputPath(outputPath);
+	}
+
+	public void LoadResources()
 	{
 		throw new NotImplementedException();
 
