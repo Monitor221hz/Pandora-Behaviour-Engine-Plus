@@ -30,5 +30,7 @@ namespace Pandora.Patch.Patchers
 
 		public List<(FileInfo inFile, FileInfo outFile)> GetExportFiles(); 
 
+		public void SetOutputPath(DirectoryInfo outputPath);
+
 	}
 }

@@ -154,5 +154,7 @@ public class SkyrimPatcher : IPatcher
 	public void SetOutputPath(DirectoryInfo directoryInfo)
 	{
 		exporter.ExportDirectory = directoryInfo;
+		nemesisAssembler.SetOutputPath(directoryInfo);
+		pandoraAssembler.SetOutputPath(directoryInfo);
 	}
 }

@@ -56,6 +56,13 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 			this.AnimSetDataManager = animSDManager;
 			this.AnimDataManager = animDManager;
 		}
+
+		public void SetOutputPath(DirectoryInfo outputPath)
+		{
+			AnimDataManager.SetOutputPath(outputPath);
+			AnimSetDataManager.SetOutputPath(outputPath);
+		}
+
 		public void AssembleEdit(ChangeType changeType, XElement element, PackFile packFile,PackFileChangeSet changeSet)
 		{
 			XAttribute? pathAttribute = element.Attribute("path");

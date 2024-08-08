@@ -26,7 +26,9 @@ public class PackFileExporter : Exporter<PackFile>
 
 	public bool Export(PackFile packFile)
 	{
-		var outputHandle = new FileInfo(Path.Join(ExportDirectory.FullName, Path.GetRelativePath(Directory.GetCurrentDirectory(), packFile.InputHandle.FullName.Replace("Pandora_Engine\\Skyrim\\Template", "meshes", StringComparison.OrdinalIgnoreCase))));
+		var launchDirectory = new FileInfo(System.Reflection.Assembly.GetEntryAssembly()!.Location).Directory!.FullName;
+
+		var outputHandle = new FileInfo(Path.Join(ExportDirectory.FullName, Path.GetRelativePath(launchDirectory, packFile.InputHandle.FullName.Replace("Pandora_Engine\\Skyrim\\Template", "meshes", StringComparison.OrdinalIgnoreCase))));
 
 		if (outputHandle.Directory == null) return false;
 		if (!outputHandle.Directory.Exists) { outputHandle.Directory.Create(); }

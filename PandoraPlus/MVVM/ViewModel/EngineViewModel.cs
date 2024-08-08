@@ -203,13 +203,15 @@ namespace Pandora.MVVM.ViewModel
 		}
         public async Task LoadAsync()
         {
-			
+            var launchDirectory = new FileInfo(System.Reflection.Assembly.GetEntryAssembly()!.Location).Directory!.FullName;
 
-			List<IModInfo> modInfos = new List<IModInfo>();
 
-			modInfos.AddRange(await nemesisModInfoProvider?.GetInstalledMods(currentDirectory + "\\Nemesis_Engine\\mod")!);
+            List<IModInfo> modInfos = new List<IModInfo>();
+
+            modInfos.AddRange(await nemesisModInfoProvider?.GetInstalledMods(launchDirectory + "\\Nemesis_Engine\\mod")!);
+            modInfos.AddRange(await pandoraModInfoProvider?.GetInstalledMods(launchDirectory + "\\Pandora_Engine\\mod")!);
+            modInfos.AddRange(await nemesisModInfoProvider?.GetInstalledMods(currentDirectory + "\\Nemesis_Engine\\mod")!);
 			modInfos.AddRange(await pandoraModInfoProvider?.GetInstalledMods(currentDirectory + "\\Pandora_Engine\\mod")!);
-
 
 			for (int i = 0; i < modInfos.Count; i++)
             {
@@ -227,7 +229,7 @@ namespace Pandora.MVVM.ViewModel
 
             modInfoCache = LoadActiveMods(modInfos);
 
-            modInfos = modInfos.OrderBy(m => m.Priority == 0).ThenBy(m => m.Priority).ToList();
+            modInfos = modInfos.OrderBy(m => m.Code == "pandora").OrderBy(m => m.Priority == 0).ThenBy(m => m.Priority).ThenBy(m => m.Name).ToList();
 
             foreach(var modInfo in modInfos) { Mods.Add(modInfo);  }
             await WriteLogBoxLine("Mods loaded.");
