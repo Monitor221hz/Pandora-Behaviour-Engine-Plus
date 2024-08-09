@@ -38,16 +38,14 @@ body:
       label: Provide Relevant Files
       description: |
         At the bare minimum, the Engine.log file should be submitted so that the author can look through the log messages for more information, as well as see the patch list of mods available.
-
         Ideally, the entire output of the engine should be zipped up and attached to provide the most information possible.
-
         Keep in mind that users are not in a position to decide which files will contribute to debugging the problem, unless they are familiar with the source code and behavior. When in doubt, include as many relevant files as possible.
       placeholder: |
-        Pandora_Output.zip (Highly recommended)
-
-        or
-
-        Engine.log
+        Pandora_Output.zip (required) 
+        
+        including Engine.log
+        
+        and modlist.txt (if possible)
     validations:
       required: true
 
