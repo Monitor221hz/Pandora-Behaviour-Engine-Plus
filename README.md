@@ -246,6 +246,14 @@ Each file of the project folder should have paths with the animation relative to
 ..\testmod\animationsetdatasinglefile\DefaultMale\H2HDual.txt
 ```
 
+or 
+
+```
+..\testmod\animationsetdatasinglefile\DefaultMale.txt
+```
+
+The second example adds the animation to all the sets automatically under that project, it's intended to save time for mod authors that want to register animations for the entire project easily without a lot of copy pasting.
+
 <br/>
 There would be something like:
 <br/>
