@@ -19,7 +19,7 @@ using System.Xml.Linq;
 namespace Pandora.Patch.Patchers.Skyrim.Pandora
 {
 	using ChangeType = IPackFileChange.ChangeType;
-	public class PandoraAssembler
+	public class PandoraFragmentAssembler
 	{
 		private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 		public ProjectManager ProjectManager { get; private set; }	
@@ -30,7 +30,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 
 		private DirectoryInfo templateFolder = new DirectoryInfo(Directory.GetCurrentDirectory() + "\\Pandora_Engine\\Skyrim\\Template");
 
-		private DirectoryInfo outputFolder = new DirectoryInfo($"{Directory.GetCurrentDirectory()}\\meshes");
+		private DirectoryInfo defaultOutputMeshFolder = new DirectoryInfo($"{Directory.GetCurrentDirectory()}\\meshes");
 
 		private Dictionary<string, FileInfo> cachedFiles = new Dictionary<string, FileInfo>();
 
@@ -38,29 +38,31 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 
 		private static readonly Dictionary<string, ChangeType> changeTypeNameMap =  Enum.GetValues(typeof(ChangeType)).Cast<ChangeType>().ToDictionary(c => c.ToString(), v => v, StringComparer.OrdinalIgnoreCase);
 
-		public PandoraAssembler()
+		public PandoraFragmentAssembler()
 		{
-			ProjectManager = new ProjectManager(templateFolder, outputFolder);
-			AnimSetDataManager = new AnimSetDataManager(templateFolder, outputFolder);
-			AnimDataManager = new AnimDataManager(templateFolder, outputFolder);
+			ProjectManager = new ProjectManager(templateFolder, defaultOutputMeshFolder);
+			AnimSetDataManager = new AnimSetDataManager(templateFolder, defaultOutputMeshFolder);
+			AnimDataManager = new AnimDataManager(templateFolder, defaultOutputMeshFolder);
 		}
-		public PandoraAssembler(NemesisAssembler nemesisAssembler)
+		public PandoraFragmentAssembler(NemesisAssembler nemesisAssembler)
 		{
 			ProjectManager = nemesisAssembler.ProjectManager;
 			AnimSetDataManager = nemesisAssembler.AnimSetDataManager;
 			AnimDataManager = nemesisAssembler.AnimDataManager;
 		}
-		public PandoraAssembler(ProjectManager projManager, AnimSetDataManager animSDManager, AnimDataManager animDManager)
+		public PandoraFragmentAssembler(ProjectManager projManager, AnimSetDataManager animSDManager, AnimDataManager animDManager)
 		{
 			this.ProjectManager = projManager;
 			this.AnimSetDataManager = animSDManager;
 			this.AnimDataManager = animDManager;
 		}
 
-		public void SetOutputPath(DirectoryInfo outputPath)
+		public void SetOutputPath(DirectoryInfo baseOutputDirectory)
 		{
-			AnimDataManager.SetOutputPath(outputPath);
-			AnimSetDataManager.SetOutputPath(outputPath);
+			var outputMeshDirectory = new DirectoryInfo(Path.Join(baseOutputDirectory.FullName, "meshes"));
+			ProjectManager.SetOutputPath(baseOutputDirectory);
+			AnimDataManager.SetOutputPath(outputMeshDirectory);
+			AnimSetDataManager.SetOutputPath(outputMeshDirectory);
 		}
 
 		public void AssembleEdit(ChangeType changeType, XElement element, PackFile packFile,PackFileChangeSet changeSet)

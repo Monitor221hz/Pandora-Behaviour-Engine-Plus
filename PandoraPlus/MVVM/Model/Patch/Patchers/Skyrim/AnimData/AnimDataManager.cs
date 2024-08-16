@@ -25,7 +25,7 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimData
 		private List<MotionData> motionDataList { get; set; } = new List<MotionData>();
 
 		private DirectoryInfo templateFolder;
-		private DirectoryInfo outputFolder; 
+		private DirectoryInfo outputMeshDirectory; 
 
 		private FileInfo templateAnimDataSingleFile { get; set; }
 
@@ -34,19 +34,18 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimData
 
 		private int LastID { get; set; } = 32767;
 
-		public AnimDataManager(DirectoryInfo templateFolder, DirectoryInfo outputPath)
+		public AnimDataManager(DirectoryInfo templateFolder, DirectoryInfo meshDirectory)
 		{
 			this.templateFolder = templateFolder;
+			this.outputMeshDirectory = meshDirectory;
 			templateAnimDataSingleFile = new FileInfo($"{templateFolder.FullName}\\{ANIMDATA_FILENAME}");
-
-			this.outputFolder = new DirectoryInfo(Path.Join(outputPath.FullName, "meshes"));
-			outputAnimDataSingleFile = new FileInfo($"{this.outputFolder.FullName}\\{ANIMDATA_FILENAME}");
+			outputAnimDataSingleFile = new FileInfo($"{meshDirectory.FullName}\\{ANIMDATA_FILENAME}");
 		}
 
-		public void SetOutputPath(DirectoryInfo outputPath)
+		public void SetOutputPath(DirectoryInfo meshDirectory)
 		{
-			this.outputFolder = new DirectoryInfo(Path.Join(outputPath.FullName, "meshes"));
-			outputAnimDataSingleFile = new FileInfo($"{this.outputFolder.FullName}\\{ANIMDATA_FILENAME}");
+			this.outputMeshDirectory = meshDirectory;
+			outputAnimDataSingleFile = new FileInfo($"{this.outputMeshDirectory.FullName}\\{ANIMDATA_FILENAME}");
 		}
 
 		private void MapProjectAnimData(ProjectAnimData animData)

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Pandora.Patch.IOManagers;
-public interface Exporter<T>
+public interface IDataExporter<T>
 {
 	public DirectoryInfo ExportDirectory { get; set; }
 	public bool Export(T obj);
@@ -19,3 +19,9 @@ public interface Exporter<T>
 		return success;
 	}
 }
+public interface IMetaDataExporter<T> : IDataExporter<T>
+{
+	public void LoadMetaData();
+	public void SaveMetaData(IEnumerable<T> collection);
+}
+

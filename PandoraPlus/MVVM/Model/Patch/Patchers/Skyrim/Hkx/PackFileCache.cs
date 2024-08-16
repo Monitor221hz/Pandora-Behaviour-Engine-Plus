@@ -1,4 +1,5 @@
-﻿using Pandora.Core.Patchers.Skyrim;
+﻿using Pandora.Core;
+using Pandora.Core.Patchers.Skyrim;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -11,10 +12,10 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx;
 public class PackFileCache
 {
 	private Dictionary<string, PackFile> pathMap = new Dictionary<string, PackFile>(StringComparer.OrdinalIgnoreCase);
-	private static readonly FileInfo PreviousOutputFile = new FileInfo(Directory.GetCurrentDirectory() + "\\Pandora_Engine\\PreviousOutput.txt");
+	private static readonly FileInfo PreviousOutputFile = new FileInfo(Path.Combine(BehaviourEngine.AssemblyDirectory.FullName,"Pandora_Engine\\PreviousOutput.txt"));
 
-	private Dictionary<PackFile, List<Project>> sharedPackFileProjectMap = new(); 
-
+	private Dictionary<PackFile, List<Project>> sharedPackFileProjectMap = new();
+	public PackFileCache() { }
 	public PackFile LoadPackFile(FileInfo file)
 	{
 
@@ -95,40 +96,5 @@ public class PackFileCache
 	public bool TryLookupSharedProjects(PackFile packFile, [NotNullWhen(true)] out List<Project>? projects)
 	{
 		return sharedPackFileProjectMap.TryGetValue(packFile, out projects); 
-	}
-	public void DeletePackFileOutput()
-	{
-		if (!PreviousOutputFile.Exists) { return;  }
-
-		using (FileStream readStream = PreviousOutputFile.OpenRead())
-		{
-			using (StreamReader reader = new StreamReader(readStream))
-			{
-				string? expectedLine; 
-				while((expectedLine = reader.ReadLine()) != null)
-				{
-					FileInfo file = new FileInfo(expectedLine);
-					if (!file.Exists) { continue; }
-
-					file.Delete();
-				}
-			}
-		}
-	}
-
-	public void SavePackFileOutput(IEnumerable<PackFile> packFiles)
-	{
-		using (FileStream readStream = PreviousOutputFile.OpenWrite())
-		{
-			using (StreamWriter writer = new StreamWriter(readStream))
-			{
-				foreach(PackFile packFile in packFiles)
-				{
-					if (!packFile.ExportSuccess || !packFile.OutputHandle.Exists) { continue; }
-
-					writer.WriteLine(packFile.OutputHandle.FullName);
-				}
-			}
-		}
 	}
 }

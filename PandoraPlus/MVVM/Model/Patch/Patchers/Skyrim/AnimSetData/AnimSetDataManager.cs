@@ -14,7 +14,7 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimSetData
 		private static readonly string ANIMSETDATA_FILENAME = "animationsetdatasinglefile.txt";
 
 		private DirectoryInfo templateFolder { get; set; }
-		private DirectoryInfo outputFolder { get; set; }
+		private DirectoryInfo outputMeshDirectory { get; set; }
 		private FileInfo templateAnimSetDataSingleFile { get; set; }
 		private FileInfo outputAnimSetDataSingleFile { get; set; }
 
@@ -28,20 +28,20 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimSetData
 
 		public Dictionary<string, ProjectAnimSetData> AnimSetDataMap { get; private set; } = new Dictionary<string, ProjectAnimSetData>();
 
-		public AnimSetDataManager(DirectoryInfo templateFolder, DirectoryInfo outputPath)
+		public AnimSetDataManager(DirectoryInfo templateFolder, DirectoryInfo meshDirectory)
 		{
 			this.templateFolder = templateFolder;
 			templateAnimSetDataSingleFile = new FileInfo($"{templateFolder.FullName}\\{ANIMSETDATA_FILENAME}");
 			vanillaHkxFiles = new FileInfo($"{templateFolder.FullName}\\vanilla_hkxpaths.txt");
 
-			this.outputFolder = new DirectoryInfo(Path.Join(outputPath.FullName, "meshes"));
-			outputAnimSetDataSingleFile = new FileInfo($"{outputFolder.FullName}\\{ANIMSETDATA_FILENAME}");
+			this.outputMeshDirectory = meshDirectory; 
+			outputAnimSetDataSingleFile = new FileInfo($"{meshDirectory.FullName}\\{ANIMSETDATA_FILENAME}");
 		}
 
-		public void SetOutputPath(DirectoryInfo outputPath)
+		public void SetOutputPath(DirectoryInfo meshDirectory)
 		{
-			this.outputFolder = new DirectoryInfo(Path.Join(outputPath.FullName, "meshes"));
-			outputAnimSetDataSingleFile = new FileInfo($"{outputFolder.FullName}\\{ANIMSETDATA_FILENAME}");
+			this.outputMeshDirectory = meshDirectory;
+			outputAnimSetDataSingleFile = new FileInfo($"{outputMeshDirectory.FullName}\\{ANIMSETDATA_FILENAME}");
 		}
 
         public void SplitAnimSetDataSingleFile()

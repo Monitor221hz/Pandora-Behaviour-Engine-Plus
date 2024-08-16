@@ -29,12 +29,12 @@ namespace Pandora.Core.Patchers.Skyrim
 
 		private Dictionary<string, List<Project>> linkedProjectMap { get; set; } = new Dictionary<string, List<Project>>();
 
-		private DirectoryInfo templateFolder { get; set; }
+		private readonly DirectoryInfo templateFolder;
 
-		private DirectoryInfo outputFolder { get; set; }
+		private DirectoryInfo baseOutputDirectory; 
 
 
-		private PackFileCache packFileCache { get; set; } = new PackFileCache();
+		private PackFileCache packFileCache { get; set; } = new(); 
 		public  HashSet<PackFile> ActivePackFiles { get; private set;  } =  new HashSet<PackFile>();
 
 		private FNISParser fnisParser;
@@ -42,11 +42,11 @@ namespace Pandora.Core.Patchers.Skyrim
 		private bool CompleteExportSuccess = true;
 
 
-		public ProjectManager(DirectoryInfo templateFolder, DirectoryInfo outputFolder)
+		public ProjectManager(DirectoryInfo templateFolder, DirectoryInfo outputDirectory)
         {
-            this.templateFolder = templateFolder;
-			this.outputFolder = outputFolder;
-			fnisParser = new FNISParser(this);
+			this.templateFolder = templateFolder;
+			this.baseOutputDirectory = outputDirectory;
+			fnisParser = new FNISParser(this, baseOutputDirectory);
         }
 		public void GetExportInfo(StringBuilder builder)
 		{
@@ -352,7 +352,6 @@ namespace Pandora.Core.Patchers.Skyrim
 
 		public bool ApplyPatches()
 		{
-			packFileCache.DeletePackFileOutput();
 
 			Parallel.ForEach(ActivePackFiles, packFile =>
 			{
@@ -371,7 +370,7 @@ namespace Pandora.Core.Patchers.Skyrim
 
 		public async Task<bool> ApplyPatchesParallel()
 		{
-			Task deleteOutputTask = Task.Run(packFileCache.DeletePackFileOutput);
+
 
 			Parallel.ForEach(ActivePackFiles, packFile =>
 			{
@@ -385,8 +384,6 @@ namespace Pandora.Core.Patchers.Skyrim
 			{
 				Logger.Error($"FNIS Parser > Scan > Failed > {ex.Message}");
 			}
-			await deleteOutputTask;
-			//to-fix: repushing priority nodes is broken because the new nodes are not registered in the serializer.
 			Parallel.ForEach(ActivePackFiles, packFile =>
 			{
 				packFile.PushXmlAsObjects();
@@ -395,9 +392,12 @@ namespace Pandora.Core.Patchers.Skyrim
 			return true;
 
 		}
-		public void SaveCache()
+
+
+		public void SetOutputPath(DirectoryInfo baseDirectory)
 		{
-			packFileCache.SavePackFileOutput(ActivePackFiles);
+			this.baseOutputDirectory = baseDirectory;
+			fnisParser.SetOutputPath(baseDirectory);
 		}
 	}
 }
