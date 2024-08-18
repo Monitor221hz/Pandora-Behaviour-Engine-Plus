@@ -84,10 +84,9 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimSetData
 
 		public void MergeAnimSetDataSingleFile()
 		{
-			if (outputAnimSetDataSingleFile.Exists) { outputAnimSetDataSingleFile.Delete(); }
 			if (outputAnimSetDataSingleFile.Directory != null && !outputAnimSetDataSingleFile.Directory.Exists) { outputAnimSetDataSingleFile.Directory.Create();  }
 
-			using (var writeStream = outputAnimSetDataSingleFile.OpenWrite())
+			using (var writeStream = outputAnimSetDataSingleFile.Create())
 			{
 				using (var writer = new StreamWriter(writeStream))
 				{

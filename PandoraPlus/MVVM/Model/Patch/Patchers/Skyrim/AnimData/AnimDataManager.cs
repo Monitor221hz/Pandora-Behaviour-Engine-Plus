@@ -170,10 +170,7 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimData
 
 		public void MergeAnimDataSingleFile()
 		{
-			if (outputAnimDataSingleFile.Exists) { outputAnimDataSingleFile.Delete(); }
-
-
-			using (var writeStream = outputAnimDataSingleFile.OpenWrite())
+			using (var writeStream = outputAnimDataSingleFile.Create())
 			{
 				using (var streamWriter =  new StreamWriter(writeStream))
 				{
