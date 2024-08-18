@@ -212,7 +212,7 @@ namespace Pandora.MVVM.ViewModel
             modInfos.AddRange(await pandoraModInfoProvider?.GetInstalledMods(launchDirectory + "\\Pandora_Engine\\mod")!);
             modInfos.AddRange(await nemesisModInfoProvider?.GetInstalledMods(currentDirectory + "\\Nemesis_Engine\\mod")!);
 			modInfos.AddRange(await pandoraModInfoProvider?.GetInstalledMods(currentDirectory + "\\Pandora_Engine\\mod")!);
-
+            modInfos = modInfos.Distinct().ToList();
 			for (int i = 0; i < modInfos.Count; i++)
             {
 				IModInfo? modInfo = modInfos[i];
