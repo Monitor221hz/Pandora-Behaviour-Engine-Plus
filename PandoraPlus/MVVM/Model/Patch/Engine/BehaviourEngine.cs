@@ -1,6 +1,7 @@
 ﻿using Pandora.Core.Engine.Configs;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ namespace Pandora.Core
 {
 	public class BehaviourEngine
 	{
+		public static readonly DirectoryInfo AssemblyDirectory = new FileInfo(System.Reflection.Assembly.GetEntryAssembly()!.Location).Directory!; 
 		public IEngineConfiguration Configuration { get; private set; } = new SkyrimConfiguration();
 
         public BehaviourEngine()

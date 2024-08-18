@@ -40,50 +40,50 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 
 	private static readonly DirectoryInfo engineFolder = new DirectoryInfo(Directory.GetCurrentDirectory() + "\\Pandora_Engine");
 
-	private static readonly DirectoryInfo templateFolder = new DirectoryInfo(new FileInfo(System.Reflection.Assembly.GetEntryAssembly()!.Location).Directory!.FullName + "\\Pandora_Engine\\Skyrim\\Template");
+	private static readonly DirectoryInfo templateFolder = new DirectoryInfo(Path.Combine(BehaviourEngine.AssemblyDirectory.FullName, "Pandora_Engine\\Skyrim\\Template"));
 
-	private static readonly DirectoryInfo outputFolder = new DirectoryInfo($"{Directory.GetCurrentDirectory()}\\meshes");
+	private static readonly DirectoryInfo defaultOutputMeshFolder = new DirectoryInfo(Path.Join(Directory.GetCurrentDirectory(), "meshes"));
+
+	private static readonly DirectoryInfo currentDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
 	public ProjectManager ProjectManager { get; private set; }
 	public AnimDataManager AnimDataManager { get; private set; }
 	public AnimSetDataManager AnimSetDataManager { get; private set; }
 
 	private PandoraConverter pandoraConverter;
 
-	private Exporter<PackFile> exporter = new PackFileExporter();
+	private IMetaDataExporter<PackFile> exporter = new PackFileExporter();
 	public NemesisAssembler()
     {
-
-
-
-		ProjectManager = new ProjectManager(templateFolder, outputFolder);
-		AnimSetDataManager = new AnimSetDataManager(templateFolder, exporter.ExportDirectory);
-		AnimDataManager = new AnimDataManager(templateFolder, exporter.ExportDirectory);
+		ProjectManager = new ProjectManager(templateFolder, currentDirectory);
+		AnimSetDataManager = new AnimSetDataManager(templateFolder, defaultOutputMeshFolder);
+		AnimDataManager = new AnimDataManager(templateFolder, defaultOutputMeshFolder);
 
 		pandoraConverter = new PandoraConverter(ProjectManager, AnimSetDataManager, AnimDataManager);
     }
-	public NemesisAssembler(Exporter<PackFile> ioManager)
+	public NemesisAssembler(IMetaDataExporter<PackFile> ioManager)
 	{
 		this.exporter = ioManager;
-		ProjectManager = new ProjectManager(templateFolder, outputFolder);
-		AnimSetDataManager = new AnimSetDataManager(templateFolder, exporter.ExportDirectory);
-		AnimDataManager = new AnimDataManager(templateFolder, exporter.ExportDirectory);
+		ProjectManager = new ProjectManager(templateFolder, currentDirectory);
+		AnimSetDataManager = new AnimSetDataManager(templateFolder, defaultOutputMeshFolder);
+		AnimDataManager = new AnimDataManager(templateFolder, defaultOutputMeshFolder);
 
 		pandoraConverter = new PandoraConverter(ProjectManager, AnimSetDataManager, AnimDataManager);
 	}
-	public NemesisAssembler(Exporter<PackFile> ioManager, ProjectManager projManager, AnimSetDataManager animSDManager, AnimDataManager animDManager)
+	public NemesisAssembler(IMetaDataExporter<PackFile> ioManager, ProjectManager projManager, AnimSetDataManager animSDManager, AnimDataManager animDManager)
 	{
 		this.exporter = ioManager;
 		this.ProjectManager = projManager;
 		this.AnimSetDataManager = animSDManager;
 		this.AnimDataManager = animDManager;
-
 		pandoraConverter = new PandoraConverter(ProjectManager, AnimSetDataManager, AnimDataManager);
 	}
 
-	public void SetOutputPath(DirectoryInfo outputPath)
+	public void SetOutputPath(DirectoryInfo baseOutputDirectory)
 	{
-		AnimDataManager.SetOutputPath(outputPath);
-		AnimSetDataManager.SetOutputPath(outputPath);
+		var outputMeshDirectory = new DirectoryInfo(Path.Join(baseOutputDirectory.FullName, "meshes")); 
+		ProjectManager.SetOutputPath(baseOutputDirectory);
+		AnimDataManager.SetOutputPath(outputMeshDirectory);
+		AnimSetDataManager.SetOutputPath(outputMeshDirectory);
 	}
 
 	public void LoadResources()
@@ -138,26 +138,22 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 
 	public async Task<bool> ApplyPatchesAsync()
 	{
-		
+		var loadMetaDataTask = Task.Run(() => { exporter.LoadMetaData(); });
 		var animSetDataTask = Task.Run(() => { AnimSetDataManager.MergeAnimSetDataSingleFile(); });
-
-		
 
 		var animDataTask = Task.Run(() => { AnimDataManager.MergeAnimDataSingleFile(); });
 		
 		var mainTask = await ProjectManager.ApplyPatchesParallel();
+		await loadMetaDataTask;
 		bool exportSuccess = exporter.ExportParallel(ProjectManager.ActivePackFiles);
-
+		var saveMetaDataTask = Task.Run(() => { exporter.SaveMetaData(ProjectManager.ActivePackFiles); });
 		await animDataTask;
 		await animSetDataTask;
-
+		await saveMetaDataTask;
 		return mainTask && exportSuccess;
 
 	}
 
-	//to-fix: certain excerpts being misclassified as single replace edit when it is actually a replace and insert edit
-
-	//
     public void ForwardReplaceEdit(PackFile packFile, string nodeName,XMatch match, PackFileChangeSet changeSet, XPathLookup lookup)
     {
         List<XNode> newNodes = new List<XNode>();
@@ -165,7 +161,6 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 
 		XNode? previousNode = match[0].PreviousNode;
 		
-		//foreach(var node in match) { node.Remove();  }
 		for (int i = 1; i < separatorIndex; i++)
         {
 

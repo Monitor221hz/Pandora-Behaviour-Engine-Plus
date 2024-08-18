@@ -160,7 +160,6 @@ namespace Pandora.MVVM.ViewModel
             LaunchCommand = new RelayCommand(LaunchEngine, CanLaunchEngine);
             ExitCommand = new RelayCommand(Exit);
             SetEngineConfigCommand = new RelayCommand(SetEngineConfiguration, CanLaunchEngine);
-			activeModConfig = new FileInfo($"{currentDirectory}\\Pandora_Engine\\ActiveMods.txt");
 			CultureInfo culture;
 
 			culture = CultureInfo.CreateSpecificCulture("en-US");
@@ -170,6 +169,7 @@ namespace Pandora.MVVM.ViewModel
 			CultureInfo.CurrentCulture = culture;
             SetupConfigurationOptions();
 			ReadStartupArguments();
+			activeModConfig = new FileInfo($"{currentDirectory}\\Pandora_Engine\\ActiveMods.txt");
 			preloadTask = Task.Run(Engine.PreloadAsync);
 
 			if (autoRun) { LaunchCommand.Execute(null); }
@@ -203,10 +203,10 @@ namespace Pandora.MVVM.ViewModel
 		}
         public async Task LoadAsync()
         {
-            var launchDirectory = new FileInfo(System.Reflection.Assembly.GetEntryAssembly()!.Location).Directory!.FullName;
+            var launchDirectory = BehaviourEngine.AssemblyDirectory.FullName;
+            Mods.Clear();
 
-
-            List<IModInfo> modInfos = new List<IModInfo>();
+            List<IModInfo> modInfos = new();
 
             modInfos.AddRange(await nemesisModInfoProvider?.GetInstalledMods(launchDirectory + "\\Nemesis_Engine\\mod")!);
             modInfos.AddRange(await pandoraModInfoProvider?.GetInstalledMods(launchDirectory + "\\Pandora_Engine\\mod")!);
@@ -270,7 +270,9 @@ namespace Pandora.MVVM.ViewModel
                 {
                     var argArr = arg.AsSpan();
                     var pathArr = argArr.Slice(3);
-                    Engine.Configuration.Patcher.SetOutputPath(pathArr.Trim().ToString());
+                    var path = pathArr.Trim().ToString();
+                    currentDirectory = new DirectoryInfo(path); 
+                    Engine.Configuration.Patcher.SetOutputPath(path);
                     continue;
                 }
     //            if (arg.Equals("-sseDebug", StringComparison.OrdinalIgnoreCase))

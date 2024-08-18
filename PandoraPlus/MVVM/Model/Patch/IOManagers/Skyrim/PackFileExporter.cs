@@ -1,5 +1,6 @@
 ﻿using HKX2E;
 using NLog;
+using Pandora.Core;
 using Pandora.Patch.Patchers.Skyrim.Hkx;
 using System;
 using System.Collections.Generic;
@@ -12,8 +13,9 @@ using System.Xml.Linq;
 using XmlCake.Linq;
 
 namespace Pandora.Patch.IOManagers.Skyrim;
-public class PackFileExporter : Exporter<PackFile>
+public class PackFileExporter : IMetaDataExporter<PackFile>
 {
+	private static readonly FileInfo PreviousOutputFile = new FileInfo(Path.Combine(BehaviourEngine.AssemblyDirectory.FullName, "Pandora_Engine\\PreviousOutput.txt"));
 	public DirectoryInfo ExportDirectory { get; set; }
 
 
@@ -26,10 +28,9 @@ public class PackFileExporter : Exporter<PackFile>
 
 	public bool Export(PackFile packFile)
 	{
-		var launchDirectory = new FileInfo(System.Reflection.Assembly.GetEntryAssembly()!.Location).Directory!.FullName;
+		var launchDirectory = BehaviourEngine.AssemblyDirectory.FullName;
 
-		var outputHandle = new FileInfo(Path.Join(ExportDirectory.FullName, Path.GetRelativePath(launchDirectory, packFile.InputHandle.FullName.Replace("Pandora_Engine\\Skyrim\\Template", "meshes", StringComparison.OrdinalIgnoreCase))));
-
+		var outputHandle = packFile.RebaseOutput(ExportDirectory);
 		if (outputHandle.Directory == null) return false;
 		if (!outputHandle.Directory.Exists) { outputHandle.Directory.Create(); }
 		if (outputHandle.Exists) { outputHandle.Delete(); }
@@ -60,5 +61,40 @@ public class PackFileExporter : Exporter<PackFile>
 	public PackFile Import(FileInfo file)
 	{
 		throw new NotImplementedException();
+	}
+	public void LoadMetaData()
+	{
+		if (!PreviousOutputFile.Exists) { return; }
+
+		using (FileStream readStream = PreviousOutputFile.OpenRead())
+		{
+			using (StreamReader reader = new StreamReader(readStream))
+			{
+				string? expectedLine;
+				while ((expectedLine = reader.ReadLine()) != null)
+				{
+					FileInfo file = new FileInfo(expectedLine);
+					if (!file.Exists) { continue; }
+
+					file.Delete();
+				}
+			}
+		}
+	}
+
+	public void SaveMetaData(IEnumerable<PackFile> packFiles)
+	{
+		using (FileStream readStream = PreviousOutputFile.Create())
+		{
+			using (StreamWriter writer = new StreamWriter(readStream))
+			{
+				foreach (PackFile packFile in packFiles)
+				{
+					if (!packFile.ExportSuccess) { continue; }
+
+					writer.WriteLine(packFile.OutputHandle.FullName);
+				}
+			}
+		}
 	}
 }

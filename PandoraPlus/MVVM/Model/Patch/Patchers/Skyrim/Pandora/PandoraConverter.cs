@@ -14,9 +14,9 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 	public class PandoraConverter
 	{
 
-		public PandoraAssembler Assembler { get; private set; }
+		public PandoraFragmentAssembler Assembler { get; private set; }
 
-		public PandoraConverter(ProjectManager projManager, AnimSetDataManager animSDManager, AnimDataManager animDManager) => Assembler = new PandoraAssembler(projManager, animSDManager, animDManager);
+		public PandoraConverter(ProjectManager projManager, AnimSetDataManager animSDManager, AnimDataManager animDManager) => Assembler = new PandoraFragmentAssembler(projManager, animSDManager, animDManager);
 
 		public void TryGraphInjection(DirectoryInfo folder, PackFile packFile, PackFileChangeSet changeSet)
 		{
@@ -41,7 +41,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 			{
 				using (var writer =  new StreamWriter(writeStream))
 				{
-					var files = folder.GetFiles();
+					var files = folder.GetFiles("*.txt");
 					foreach (var file in files)
 					{
 						var clipName = file.Name.Split('~')[0];
