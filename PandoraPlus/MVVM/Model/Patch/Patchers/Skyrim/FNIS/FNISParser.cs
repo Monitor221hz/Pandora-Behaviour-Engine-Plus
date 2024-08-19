@@ -50,8 +50,8 @@ public class FNISParser
 		{"deerproject~deerbehavior", "#0145" },
 		{"dragonproject~dragonbehavior", "#1610" },
 		{"dragon_priest~dragon_priest", "#0758" },
-		{"draugrproject~draugrbehavior", "#1998" },
-		{"draugrskeletonproject~draugrbehavior", "#1998" },
+		{"draugrproject~draugrbehavior", "#2026" },
+		{"draugrskeletonproject~draugrbehavior", "#2026" },
 		{"hagravenproject~havgravenbehavior", "#0634" },
 		{"horkerproject~horkerbehavior", "#0161" },
 		{"horseproject~horsebehavior", "#0493" },
@@ -87,19 +87,22 @@ public class FNISParser
 	};
 
 	private HashSet<string> parsedFolders = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
+	private DirectoryInfo outputDirectory; 
 	public HashSet<IModInfo> ModInfos { get; private set; } = new HashSet<IModInfo>();
 
-    public FNISParser(ProjectManager manager)
+    public FNISParser(ProjectManager manager, DirectoryInfo outputPath)
     {
+		outputDirectory = outputPath;
 		projectManager = manager;
     }
 	private ProjectManager projectManager;
 	private PatchNodeCreator patchNodeCreator = new("fnis");
     public void ScanProjectAnimlist(Project project)
 	{
-		var animationsFolder = project.OutputAnimationDirectory;
-		var behaviorFolder = project.OutputBehaviorDirectory;
+		var absoluteOutputPath = Path.Join(outputDirectory.FullName, project.ProjectFile.RelativeOutputDirectoryPath);
+ 
+		var animationsFolder = new DirectoryInfo(Path.Join(absoluteOutputPath, "animations"));
+		var behaviorFolder = new DirectoryInfo(Path.Join(absoluteOutputPath, project.BehaviorFile.InputHandle.Directory!.Name));
 		if (animationsFolder == null || behaviorFolder == null || !behaviorFolder.Exists) { return; }
 		lock (parsedFolders)
 		{
@@ -135,7 +138,7 @@ public class FNISParser
 		if (!stateMachineMap.TryGetValue(destPackFile.UniqueName, out stateFolderName!)) { return false; }
 		projectManager.TryActivatePackFile(destPackFile); 
 		string nameWithoutExtension = Path.GetFileNameWithoutExtension(sourceFile.Name);
-		string graphPath = $"{destPackFile.OutputHandle.Directory?.Name}\\{nameWithoutExtension}.hkx";
+		string graphPath = $"{destPackFile.InputHandle.Directory?.Name}\\{nameWithoutExtension}.hkx";
 		hkbStateMachine rootState = destPackFile.GetPushedObjectAs<hkbStateMachine>(stateFolderName);
 		hkbBehaviorReferenceGenerator refGenerator = new() { name = nameWithoutExtension, variableBindingSet = null, userData = 0, behaviorName = graphPath };
 		hkbStateMachineStateInfo stateInfo = new() {  name = "PN_StateInfo", enable = true, probability=1.0f, stateId = graphPath.GetHashCode() & 0xfffffff, generator=refGenerator };
@@ -191,5 +194,9 @@ public class FNISParser
 		{
 			animLists[0].BuildPatches(project, projectManager, patchNodeCreator);
 		}
+	}
+	public void SetOutputPath(DirectoryInfo outputPath)
+	{
+		outputDirectory = outputPath;
 	}
 }

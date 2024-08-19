@@ -160,7 +160,6 @@ namespace Pandora.MVVM.ViewModel
             LaunchCommand = new RelayCommand(LaunchEngine, CanLaunchEngine);
             ExitCommand = new RelayCommand(Exit);
             SetEngineConfigCommand = new RelayCommand(SetEngineConfiguration, CanLaunchEngine);
-			activeModConfig = new FileInfo($"{currentDirectory}\\Pandora_Engine\\ActiveMods.txt");
 			CultureInfo culture;
 
 			culture = CultureInfo.CreateSpecificCulture("en-US");
@@ -170,6 +169,7 @@ namespace Pandora.MVVM.ViewModel
 			CultureInfo.CurrentCulture = culture;
             SetupConfigurationOptions();
 			ReadStartupArguments();
+			activeModConfig = new FileInfo($"{currentDirectory}\\Pandora_Engine\\ActiveMods.txt");
 			preloadTask = Task.Run(Engine.PreloadAsync);
 
 			if (autoRun) { LaunchCommand.Execute(null); }
@@ -203,16 +203,16 @@ namespace Pandora.MVVM.ViewModel
 		}
         public async Task LoadAsync()
         {
-            var launchDirectory = new FileInfo(System.Reflection.Assembly.GetEntryAssembly()!.Location).Directory!.FullName;
+            var launchDirectory = BehaviourEngine.AssemblyDirectory.FullName;
+            Mods.Clear();
 
-
-            List<IModInfo> modInfos = new List<IModInfo>();
+            List<IModInfo> modInfos = new();
 
             modInfos.AddRange(await nemesisModInfoProvider?.GetInstalledMods(launchDirectory + "\\Nemesis_Engine\\mod")!);
             modInfos.AddRange(await pandoraModInfoProvider?.GetInstalledMods(launchDirectory + "\\Pandora_Engine\\mod")!);
             modInfos.AddRange(await nemesisModInfoProvider?.GetInstalledMods(currentDirectory + "\\Nemesis_Engine\\mod")!);
 			modInfos.AddRange(await pandoraModInfoProvider?.GetInstalledMods(currentDirectory + "\\Pandora_Engine\\mod")!);
-
+            modInfos = modInfos.Distinct().ToList();
 			for (int i = 0; i < modInfos.Count; i++)
             {
 				IModInfo? modInfo = modInfos[i];

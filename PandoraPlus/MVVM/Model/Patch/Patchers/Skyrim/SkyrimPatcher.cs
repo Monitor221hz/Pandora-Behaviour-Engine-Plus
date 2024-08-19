@@ -28,15 +28,15 @@ public class SkyrimPatcher : IPatcher
 	private List<IModInfo> activeMods { get; set; } = new List<IModInfo>();
 
 	public void SetTarget(List<IModInfo> mods) => activeMods = mods;
-	private Exporter<PackFile> exporter = new PackFileExporter();
+	private IDataExporter<PackFile> exporter = new PackFileExporter();
 
 	private NemesisAssembler nemesisAssembler { get; set; }
 
-	private PandoraAssembler pandoraAssembler { get; set; }
+	private PandoraFragmentAssembler pandoraAssembler { get; set; }
 
 	public IPatcher.PatcherFlags Flags { get; private set; } = IPatcher.PatcherFlags.None;
 
-	private static readonly Version currentVersion = new Version(2, 0, 4);
+	private static readonly Version currentVersion = new Version(2, 1, 4);
 
 	private static readonly string versionLabel = "alpha";
 	public string GetVersionString() => $"{currentVersion.ToString()}-{versionLabel}";
@@ -45,13 +45,13 @@ public class SkyrimPatcher : IPatcher
 	public SkyrimPatcher()
 	{
 		nemesisAssembler = new NemesisAssembler();
-		pandoraAssembler = new PandoraAssembler(nemesisAssembler);
+		pandoraAssembler = new PandoraFragmentAssembler(nemesisAssembler);
 	}
-	public SkyrimPatcher(Exporter<PackFile> manager)
+	public SkyrimPatcher(IMetaDataExporter<PackFile> manager)
 	{
 		exporter = manager;
 		nemesisAssembler = new NemesisAssembler(manager);
-		pandoraAssembler = new PandoraAssembler(nemesisAssembler);
+		pandoraAssembler = new PandoraFragmentAssembler(nemesisAssembler);
 	}
 	public string GetPostRunMessages()
 	{

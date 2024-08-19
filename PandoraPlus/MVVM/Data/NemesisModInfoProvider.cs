@@ -8,13 +8,6 @@ using Pandora.Core;
 
 namespace Pandora.MVVM.Data;
 
-
-
-public interface IModInfoProvider
-{
-    public Task<List<IModInfo>> GetInstalledMods(string folderPath);
-}
-
 public class NemesisModInfoProvider : IModInfoProvider
 {
     public async Task<List<IModInfo>> GetInstalledMods(string folderPath) => await Task.Run(() => GetInstalledMods(new DirectoryInfo(folderPath)));

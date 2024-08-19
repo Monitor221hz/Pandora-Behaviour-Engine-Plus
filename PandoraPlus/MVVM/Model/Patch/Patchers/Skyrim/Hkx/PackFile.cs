@@ -8,6 +8,7 @@ using System.Linq;
 using System.Xml.Linq;
 using XmlCake.Linq;
 using HKX2E;
+using Pandora.Core;
 namespace Pandora.Patch.Patchers.Skyrim.Hkx;
 
 public class PackFile : IEquatable<PackFile>
@@ -47,6 +48,15 @@ public class PackFile : IEquatable<PackFile>
 
 	public FileInfo OutputHandle { get; private set; }
 
+	private readonly string relativeOutputFilePath;
+	public string RelativeOutputDirectoryPath { get; }
+
+	public FileInfo RebaseOutput(DirectoryInfo exportDirectory)
+	{
+		OutputHandle = new FileInfo(Path.Join(exportDirectory.FullName, relativeOutputFilePath)); 
+		return OutputHandle;
+	}
+
 	public static bool DebugFiles { get; set; } = false;
 
 	public PackFileEditor Editor { get; private set; } = new PackFileEditor();
@@ -82,7 +92,9 @@ public class PackFile : IEquatable<PackFile>
 	public PackFile(FileInfo file, Project? project)
 	{
 		InputHandle = file;
-		OutputHandle = new FileInfo(file.FullName.Replace("Template", "meshes").Replace("\\Pandora_Engine\\Skyrim", ""));
+		OutputHandle = file;
+		relativeOutputFilePath = Path.GetRelativePath(BehaviourEngine.AssemblyDirectory.FullName, file.FullName.Replace("Pandora_Engine\\Skyrim\\Template", "meshes", StringComparison.OrdinalIgnoreCase));
+		RelativeOutputDirectoryPath = Path.GetDirectoryName(relativeOutputFilePath)!;
 		using (var stream = file.OpenRead())
 		{
 			Map = XMap.Load(stream);
@@ -167,20 +179,6 @@ public class PackFile : IEquatable<PackFile>
 		return classLookup[className].First();
 	}
 
-	public void DeleteExistingOutput()
-	{
-		if (OutputHandle.Exists)
-		{
-			OutputHandle.Delete();
-		}
-#if DEBUG
-		var debugOuputHandle = new FileInfo(OutputHandle.FullName + ".xml");
-		if (debugOuputHandle.Exists) { debugOuputHandle.Delete(); }
-
-		debugOuputHandle = new FileInfo(debugOuputHandle.DirectoryName + "\\m_" + debugOuputHandle.Name);
-		if (debugOuputHandle.Exists) { debugOuputHandle.Delete();  }
-#endif
-	}
 	public bool PopObjectAsXml<T>(T node) where T : IHavokObject
 	{
 		if (objectElementMap.ContainsKey(node))
@@ -295,11 +293,11 @@ public class PackFile : IEquatable<PackFile>
 	}
 	public bool Equals(PackFile? other)
 	{
-		return other != null && other.OutputHandle.FullName.Equals(this.OutputHandle.FullName, StringComparison.OrdinalIgnoreCase);
+		return other != null && other.InputHandle.FullName.Equals(this.InputHandle.FullName, StringComparison.OrdinalIgnoreCase);
 	}
 	public override int GetHashCode()
 	{
-		return OutputHandle.FullName.GetHashCode(StringComparison.OrdinalIgnoreCase);
+		return InputHandle.FullName.GetHashCode(StringComparison.OrdinalIgnoreCase);
 	}
 
 	public override bool Equals(object? obj)

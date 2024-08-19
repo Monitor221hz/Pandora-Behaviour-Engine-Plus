@@ -31,12 +31,6 @@ namespace Pandora.Core.Patchers.Skyrim
 
 		public DirectoryInfo? ProjectDirectory => ProjectFile?.InputHandle.Directory;
 
-		public DirectoryInfo? OutputDirectory => ProjectFile?.OutputHandle.Directory;
-
-		public DirectoryInfo? OutputBehaviorDirectory => BehaviorFile?.OutputHandle.Directory;
-
-		public DirectoryInfo? OutputAnimationDirectory => new DirectoryInfo(Path.Join(OutputDirectory?.FullName, "animations"));
-
 		public PackFileCharacter CharacterPackFile { get; private set; } 
 		public PackFile SkeletonFile { get; private set; }
 		public PackFileGraph BehaviorFile { get; private set; } 
