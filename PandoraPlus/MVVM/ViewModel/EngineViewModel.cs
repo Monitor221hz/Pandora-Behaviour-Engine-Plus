@@ -15,7 +15,7 @@ using System.Threading.Channels;
 using System.Windows.Media.Animation;
 using System.IO;
 using System.Collections.Generic;
-using System.Globalization;
+using System.Globalization; 
 using System.Threading;
 using Pandora.Core.Engine.Configs;
 using System.Security.Policy;
@@ -270,7 +270,8 @@ namespace Pandora.MVVM.ViewModel
                 {
                     var argArr = arg.AsSpan();
                     var pathArr = argArr.Slice(3);
-                    Engine.Configuration.Patcher.SetOutputPath(pathArr.Trim().ToString());
+                    var path = pathArr.Trim().ToString();
+                    Engine.Configuration.Patcher.SetOutputPath(path);
                     continue;
                 }
     //            if (arg.Equals("-sseDebug", StringComparison.OrdinalIgnoreCase))
@@ -322,16 +323,12 @@ namespace Pandora.MVVM.ViewModel
 		}
         private void SaveActiveMods(List<IModInfo> activeMods)
         {
-
-
-            if (activeModConfig.Exists) { activeModConfig.Delete(); }
-			
-            
-            using (var writeStream = activeModConfig.OpenWrite())
+            if (activeModConfig.Directory?.Exists == false) activeModConfig.Directory.Create();
+            using (var writeStream = activeModConfig.Create())
             {
-                using (StreamWriter streamWriter = new StreamWriter(writeStream)) 
-                { 
-                    foreach(var modInfo in activeMods)
+                using (StreamWriter streamWriter = new StreamWriter(writeStream))
+                {
+                    foreach (var modInfo in activeMods)
                     {
                         streamWriter.WriteLine(modInfo.Code);
                     }
@@ -339,7 +336,7 @@ namespace Pandora.MVVM.ViewModel
             }
 
 
-		}
+        }
         private List<IModInfo> AssignModPriorities(List<IModInfo> mods)
         {
             uint priority = 0;
