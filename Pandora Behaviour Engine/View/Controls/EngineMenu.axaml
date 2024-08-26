@@ -1,0 +1,40 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="using:Pandora.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Pandora.Views.EngineMenu"
+			 x:DataType="vm:EngineViewModel">
+	<Grid ColumnDefinitions="*">
+		<Menu Background="{StaticResource ControlColorSolid}"
+	  Foreground="{StaticResource HeaderTextGradient}"
+	  BorderThickness="0" Height="20" FontSize="12" FontFamily="Bahnschrift">
+			<MenuItem 
+				Classes="SubItems"
+                Background="{StaticResource ControlColor}"
+                Header="Configuration"
+                BorderThickness="0"
+                ItemsSource="{Binding EngineConfigurationViewModels}"
+                FontFamily="Bahnschrift"
+				Height="20"
+				FontSize="12">
+				<MenuItem.ItemTemplate>
+					<TreeDataTemplate ItemsSource="{Binding NestedViewModels}">
+						<TextBlock Text="{Binding Name}"></TextBlock>
+					</TreeDataTemplate>
+				</MenuItem.ItemTemplate>
+				<MenuItem.Styles>
+					<Style Selector="MenuItem.SubItems MenuItem" x:DataType="vm:IEngineConfigurationViewModel">
+						<Setter Property="FontFamily" Value="Bahnschrift"></Setter>
+						<Setter Property="BorderThickness" Value="0"></Setter>
+						<Setter Property="Background" Value="{StaticResource ControlColor}"></Setter>
+						<Setter Property="Foreground" Value="{StaticResource ParagraphTextGradient}"></Setter>
+						<Setter Property="Command" Value="{Binding SetCommand}"></Setter>
+						<Setter Property="CommandParameter" Value="{Binding}"></Setter>						
+					</Style>
+				</MenuItem.Styles>
+			</MenuItem>
+		</Menu>
+	</Grid>
+</UserControl>

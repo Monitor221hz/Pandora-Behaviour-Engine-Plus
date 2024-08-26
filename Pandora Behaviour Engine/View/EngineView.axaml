@@ -1,0 +1,13 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Pandora.ViewModels"
+			 xmlns:vws ="using:Pandora.Views"
+             x:Class="Pandora.Views.EngineView"
+             x:DataType="vm:EngineViewModel">
+	<Grid RowDefinitions="Auto * Auto *">
+		<vws:EngineMenu Grid.Row="0"></vws:EngineMenu>
+		<vws:PatchBox Grid.Row="1" Margin="10 10 10 0"></vws:PatchBox>
+		<vws:LaunchElement Grid.Row="2" Margin="10"></vws:LaunchElement>
+		<vws:LogBox Grid.Row="3" Margin="10 0 10 10"></vws:LogBox>
+	</Grid>
+</UserControl>

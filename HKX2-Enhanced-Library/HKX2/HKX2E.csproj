@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Autogen\Xml\**" />
+    <EmbeddedResource Remove="Autogen\Xml\**" />
+    <None Remove="Autogen\Xml\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FastMember.Signed" Version="1.5.0" />
+  </ItemGroup>
+</Project>

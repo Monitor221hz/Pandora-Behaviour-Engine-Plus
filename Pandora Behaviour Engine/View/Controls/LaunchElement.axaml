@@ -1,0 +1,45 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Pandora.ViewModels"
+			 xmlns:li="using:LoadingIndicators.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="256" d:DesignHeight="64"
+             x:Class="Pandora.Views.LaunchElement"
+			 x:DataType="vm:EngineViewModel">
+	<Grid>
+		<Button Background="{DynamicResource ControlColor}" 
+				Foreground="{DynamicResource HeaderTextGradient}"
+				Command="{Binding LaunchCommand}"
+				HorizontalAlignment="Stretch"
+				VerticalAlignment="Center"
+				VerticalContentAlignment="Center"
+				HorizontalContentAlignment="Center"
+				CornerRadius="10"
+				IsEnabled="{Binding !EngineRunning}"
+				Height="75"
+				>
+			<Button.Content>
+				<Grid>
+					<li:LoadingIndicator Mode="ThreeDots"
+					 SpeedRatio="1.2"
+					 Width="200"
+					 IsHitTestVisible="False"
+					 Foreground="{DynamicResource HighlightGradient}"
+					 Background="Transparent"
+					 IsActive="{Binding EngineRunning}"
+										 IsVisible="{Binding EngineRunning}">
+					</li:LoadingIndicator>
+					<Image Source="/Assets/play-symbol.png"
+						   VerticalAlignment="Center"
+						   RenderOptions.BitmapInterpolationMode="HighQuality"
+						   Height="60"
+						   Width="60"
+						   IsVisible="{Binding !EngineRunning}">
+					</Image>
+				</Grid>
+			</Button.Content>
+		</Button>
+
+	</Grid>
+</UserControl>
