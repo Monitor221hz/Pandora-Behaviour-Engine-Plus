@@ -35,22 +35,22 @@ jobs:
           # - Specify the same as `NUGET_PACKAGES`
           path: |
             ${{ github.workspace }}/.nuget/packages
-            ${{ github.workspace }}/PandoraPlus/bin
-            ${{ github.workspace }}/PandoraPlus/obj
-            ${{ github.workspace }}/third_party/HKX2-Library/HKX2 WPF/bin
-            ${{ github.workspace }}/third_party/HKX2-Library/HKX2 WPF/obj
-            ${{ github.workspace }}/third_party/XML-Cake/XML Cake/bin
-            ${{ github.workspace }}/third_party/XML-Cake/XML Cake/obj
+            ${{ github.workspace }}/Pandora Behaviour Engine/bin
+            ${{ github.workspace }}/Pandora Behaviour Engine/obj
+            ${{ github.workspace }}/HKX2-Enhanced-Library/HKX2/bin
+            ${{ github.workspace }}/HKX2-Enhanced-Library/HKX2/obj
+            ${{ github.workspace }}/XML.Cake.NET/XML Cake/bin
+            ${{ github.workspace }}/XML.Cake.NET/XML Cake/obj
           key: nuget-${{ runner.os }}-${{ matrix.dotnet-version }}
           restore-keys: |
             nuget-${{ runner.os }}-
 
       - name: Build
-        run: dotnet build "./PandoraPlus.sln" --configuration ${{ env.build-mode }}
-
+        run: dotnet build "./Pandora+.sln" --configuration ${{ env.build-mode }}
+      
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Pandora.Behaviour.Engine
           path: |
-            ./PandoraPlus/bin/${{ env.build-mode }}/net8.0-windows
+            ./Pandora Behaviour Engine/bin/${{ env.build-mode }}/net8.0
