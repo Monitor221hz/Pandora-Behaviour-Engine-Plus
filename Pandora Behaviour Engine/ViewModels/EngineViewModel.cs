@@ -341,23 +341,17 @@ namespace Pandora.ViewModels
 		}
         private void SaveActiveMods(List<IModInfo> activeMods)
         {
-
-
-            if (activeModConfig.Exists) { activeModConfig.Delete(); }
-			
-            
-            using (var writeStream = activeModConfig.OpenWrite())
+			activeModConfig.Directory?.Create();
+			using (var writeStream = activeModConfig.Create())
             {
                 using (StreamWriter streamWriter = new StreamWriter(writeStream)) 
                 { 
-                    foreach(var modInfo in activeMods)
+                    foreach (var modInfo in activeMods)
                     {
                         streamWriter.WriteLine(modInfo.Code);
                     }
                 }
             }
-
-
 		}
         public void AssignModPrioritiesFromViewModels(IEnumerable<ModInfoViewModel> modViewModels)
         {
@@ -388,6 +382,7 @@ namespace Pandora.ViewModels
             await preloadTask;
             var newConfig = engineConfigurationFactory.Config;
 			Engine = newConfig != null ? new BehaviourEngine(newConfig) : Engine;
+            Engine.Configuration.Patcher.SetOutputPath(currentDirectory);
             preloadTask = Engine.PreloadAsync();
 		}
         private async void ToggleSelectAll(object? isChecked)

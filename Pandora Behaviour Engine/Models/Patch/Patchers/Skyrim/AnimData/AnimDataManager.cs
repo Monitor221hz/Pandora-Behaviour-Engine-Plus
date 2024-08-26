@@ -111,21 +111,8 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimData
 							if (sectionIndex % 2 != 0)
 							{
 
-								//using (StreamWriter writer = new StreamWriter(OutputFolder + "\\" + ProjectOrder[i]))
-								//{
-
 								animData = ProjectAnimData.ReadProject(reader, numLines, this);
-#if DEBUG
-								//var outputFile = new FileInfo(AnimDataProjectOutputFolder.FullName + $"\\{ProjectNames[projectIndex]}");
-								//if (outputFile.Exists) outputFile.Delete();
-								//using (var outputWriteStream = outputFile.OpenWrite())
-								//{
-								//	using (var writer = new StreamWriter(outputWriteStream))
-								//	{
-								//		writer.Write(animData.ToString());
-								//	}
-								//}
-#endif
+
 								if (animData.Header.HasMotionData == 0)
 								{
 									projectIndex++;
@@ -136,9 +123,6 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimData
 								{
 									activeProject.AnimData = animData;
 								}
-
-								//writer.Write(project.ToString());
-								//}
 							}
 							else
 							{
@@ -148,17 +132,6 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimData
 
 
 								motionDataList.Add(motionData);
-#if DEBUG
-								//var outputFile = new FileInfo(MotionDataProjectOutputFolder.FullName + $"\\{ProjectNames[projectIndex]}");
-								//if (outputFile.Exists) outputFile.Delete();
-								//using (var outputWriteStream = outputFile.OpenWrite())
-								//{
-								//	using (var writer = new StreamWriter(outputWriteStream))
-								//	{
-								//		writer.Write(motionData.ToString());
-								//	}
-								//}
-#endif
 								projectIndex++;
 							}
 						}
@@ -170,6 +143,7 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimData
 
 		public void MergeAnimDataSingleFile()
 		{
+			outputAnimDataSingleFile.Directory?.Create();
 			using (var writeStream = outputAnimDataSingleFile.Create())
 			{
 				using (var streamWriter =  new StreamWriter(writeStream))
