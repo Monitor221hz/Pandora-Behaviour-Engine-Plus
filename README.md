@@ -13,8 +13,7 @@
 
 A modular and lightweight behavior engine for TES Skyrim SE, for creatures and humanoids.  
 
-Built with backwards compatibility in mind for [Nemesis Unlimited Behavior Engine](https://github.com/ShikyoKira/Project-New-Reign---Nemesis-Main) and FNIS, Pandora is an alternative engine streamlines both the author and user experience through a simplified UI, robust logging, intuitive formats, and fast patching times.
-
+Built with backwards compatibility in mind for [Nemesis Unlimited Behavior Engine](https://github.com/ShikyoKira/Project-New-Reign---Nemesis-Main) and FNIS, Pandora is an alternative engine streamlines both the author and user experience through a simplified UI, robust logging, intuitive formats, and fast patching times. Pandora runs on Windows, Linux, and MacOS.
 
 <br/>
 <br/>
@@ -119,10 +118,10 @@ Run the engine as administrator or move the engine install out of a protected lo
 ## Startup Arguments
 Pandora has a variety of startup arguments to support customizability. 
 
-`-autorun`: runs the engine using the same active mods as cached from the last successful run.
-`-autoclose`: closes the engine automatically upon finishing a single launch.
-`-skyrimdebug64`: produces debug `.xml` files alongside normal `.hkx` output. Only for authors that know what they're doing.
-`-o:{output path}`: sets a custom output path.
+- `-autorun`: runs the engine using the same active mods as cached from the last successful run.
+- `-autoclose`: closes the engine automatically upon finishing a single launch.
+- `-skyrimDebug64`: produces debug `.xml` files alongside normal `.hkx` output. Only for authors that know what they're doing.
+- `-o:{output path}`: sets a custom output path.
 
 ## For Mod Authors
 This section exists to inform current behavior authors of the key differences and features of Pandora, it's not a guide for making behavior mods.
