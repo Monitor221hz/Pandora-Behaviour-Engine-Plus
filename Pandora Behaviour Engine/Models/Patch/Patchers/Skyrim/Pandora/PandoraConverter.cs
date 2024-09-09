@@ -37,7 +37,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 			FileInfo patchFile = new FileInfo($"{parentFolder.FullName}\\{folder.Name.Split('~')[0]}.txt");
 			if (patchFile.Exists) return;
 
-			using (var writeStream = patchFile.OpenWrite())
+			using (var writeStream = patchFile.Create())
 			{
 				using (var writer =  new StreamWriter(writeStream))
 				{
