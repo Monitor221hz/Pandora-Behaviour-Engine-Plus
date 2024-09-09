@@ -47,6 +47,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="FNIS.esp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="guiconfig.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
