@@ -50,7 +50,9 @@ namespace Pandora.Core
                 ClearFolder(OutputPath);
             }
 
-            //File.Copy(Path.Combine(AssemblyDirectory.FullName, "FNIS.esp"), Path.Combine(OutputPath.FullName, "FNIS.esp"), true);
+			var fnisESP = new FileInfo(Path.Combine(AssemblyDirectory.FullName, "FNIS.esp"));
+			if (fnisESP.Exists)
+				fnisESP.CopyTo(Path.Combine(OutputPath.FullName, "FNIS.esp"), true);
 
             if (!await Configuration.Patcher.UpdateAsync()) { return false; }
 
