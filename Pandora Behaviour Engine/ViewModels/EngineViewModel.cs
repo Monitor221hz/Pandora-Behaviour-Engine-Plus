@@ -12,7 +12,7 @@ using System.Runtime.CompilerServices;
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
-using System.Globalization;
+using System.Globalization; 
 using System.Threading;
 using Pandora.Core.Engine.Configs;
 using System.Security.Policy;
@@ -86,6 +86,7 @@ namespace Pandora.ViewModels
         private Dictionary<string, IModInfo> modsByCode = new Dictionary<string, IModInfo>();
 
         private bool modInfoCache = false;
+        private static DirectoryInfo WorkingDirectory { get; } = new DirectoryInfo(Directory.GetCurrentDirectory());
 
         private static DirectoryInfo currentDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
 
@@ -230,38 +231,47 @@ namespace Pandora.ViewModels
             ModViewModels.Clear(); 
             Mods.Clear();
 
-            List<IModInfo> modInfos = new();
-
-            modInfos.AddRange(await nemesisModInfoProvider?.GetInstalledMods(launchDirectory + "\\Nemesis_Engine\\mod")!);
-            modInfos.AddRange(await pandoraModInfoProvider?.GetInstalledMods(launchDirectory + "\\Pandora_Engine\\mod")!);
-            modInfos.AddRange(await nemesisModInfoProvider?.GetInstalledMods(currentDirectory + "\\Nemesis_Engine\\mod")!);
-            modInfos.AddRange(await pandoraModInfoProvider?.GetInstalledMods(currentDirectory + "\\Pandora_Engine\\mod")!);
-            modInfos = modInfos.Distinct().ToList();
-            for (int i = 0; i < modInfos.Count; i++)
+            List<IModInfo> modInfoList;
             {
-                IModInfo? modInfo = modInfos[i];
-                //Mods.Add(modInfo);
-                IModInfo? existingModInfo;
-                if (modsByCode.TryGetValue(modInfo.Code, out existingModInfo))
-                {
-                    logger.Warn($"Engine > Folder {modInfo.Folder.Parent?.Name} > Parse Info > {modInfo.Code} Already Exists > SKIPPED");
-                    modInfos.RemoveAt(i);
-                    continue;
-                }
-                modsByCode.Add(modInfo.Code, modInfo);
+                HashSet<IModInfo> modInfos = new();
+
+                //Program folder
+                LoadModFolder(modInfos, await nemesisModInfoProvider?.GetInstalledMods(launchDirectory + "\\Nemesis_Engine\\mod")!);
+                LoadModFolder(modInfos, await pandoraModInfoProvider?.GetInstalledMods(launchDirectory + "\\Pandora_Engine\\mod")!);
+                //Working folder, or Skyrim\Data folder
+                LoadModFolder(modInfos, await nemesisModInfoProvider?.GetInstalledMods(WorkingDirectory + "\\Nemesis_Engine\\mod")!);
+                LoadModFolder(modInfos, await pandoraModInfoProvider?.GetInstalledMods(WorkingDirectory + "\\Pandora_Engine\\mod")!);
+                //Current (defaults to Working folder) or Output (set via -o) folder
+                LoadModFolder(modInfos, await nemesisModInfoProvider?.GetInstalledMods(currentDirectory + "\\Nemesis_Engine\\mod")!);
+                LoadModFolder(modInfos, await pandoraModInfoProvider?.GetInstalledMods(currentDirectory + "\\Pandora_Engine\\mod")!);
+
+                modInfoList = [.. modInfos];
             }
+            modInfoList.ForEach(a => modsByCode.Add(a.Code, a));
 
-            modInfoCache = LoadActiveMods(modInfos);
+            modInfoCache = LoadActiveMods(modInfoList);
 
-            modInfos = modInfos.OrderBy(m => m.Code == "pandora").ThenBy(m => m.Priority == 0).ThenBy(m => m.Priority).ThenBy(m => m.Name).ToList();
+            modInfoList = modInfoList.OrderBy(m => m.Code == "pandora").ThenBy(m => m.Priority == 0).ThenBy(m => m.Priority).ThenBy(m => m.Name).ToList();
 
-            foreach (var modInfo in modInfos)
+            foreach (var modInfo in modInfoList)
             {
                 Mods.Add(modInfo);
                 ModViewModels.Add(new(modInfo)); 
             }
 			await WriteLogBoxLine("Mods loaded.");
 		}
+
+        private static void LoadModFolder(HashSet<IModInfo> modInfos, IList<IModInfo> mods) {
+            if (mods == null) { return; }
+
+            foreach (var mod in mods)
+            {
+                if (!modInfos.Add(mod))
+                {
+                    logger.Warn($"Engine > Folder {mod.Folder.Parent?.Name} > Parse Info > {mod.Code} Already Exists > SKIPPED");
+                }
+            }
+        }
 
         public void Exit(object? p)
         {
@@ -299,8 +309,8 @@ namespace Pandora.ViewModels
                     var argArr = arg.AsSpan();
                     var pathArr = argArr.Slice(3);
                     var path = pathArr.Trim().ToString();
-                    currentDirectory = new DirectoryInfo(path); 
-                    Engine.Configuration.Patcher.SetOutputPath(path);
+                    currentDirectory = new DirectoryInfo(path);
+                    Engine.SetOutputPath(currentDirectory);
                     continue;
                 }
             }
@@ -382,7 +392,7 @@ namespace Pandora.ViewModels
             await preloadTask;
             var newConfig = engineConfigurationFactory.Config;
 			Engine = newConfig != null ? new BehaviourEngine(newConfig) : Engine;
-            Engine.Configuration.Patcher.SetOutputPath(currentDirectory);
+            Engine.SetOutputPath(currentDirectory);
             preloadTask = Engine.PreloadAsync();
 		}
         private async void ToggleSelectAll(object? isChecked)
@@ -434,7 +444,7 @@ namespace Pandora.ViewModels
             bool success = false;
 			await Task.Run(async() => { success = await Engine.LaunchAsync(activeMods); }); 
             
-            
+
             timer.Stop();
 
             logger.Info(configInfoMessage);

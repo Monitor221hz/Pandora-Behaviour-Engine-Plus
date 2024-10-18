@@ -28,6 +28,7 @@ struct FNISAnimPreset
 
 public class FNISAnimationFactory
 {
+	private static readonly char[] lineWhitespace = new[] { ' ', '\t' };
 	private static readonly Dictionary<string, FNISAnimPreset> animTypePrefixes = new(StringComparer.OrdinalIgnoreCase)
 	{
 		{ "b", new(AnimType.Basic) },
@@ -62,7 +63,7 @@ public class FNISAnimationFactory
 
 	public bool CreateFromLine(string animRoot, string line, [NotNullWhen(true)] out FNISAnimation? animation)
 	{
-		string[] args = line.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+		string[] args = line.Split(lineWhitespace, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 		FNISAnimPreset animPreset;
 		if (!animTypePrefixes.TryGetValue(args[0], out animPreset))
 		{
