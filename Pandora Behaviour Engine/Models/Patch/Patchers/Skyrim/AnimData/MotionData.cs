@@ -31,7 +31,6 @@ public class MotionData
 
 			whiteSpace = reader.ReadLine();
 			i++;
-
 		}
 		return project;
 	}
