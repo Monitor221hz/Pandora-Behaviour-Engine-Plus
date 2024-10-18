@@ -154,6 +154,17 @@ public class SkyrimPatcher : IPatcher
 	public void SetOutputPath(DirectoryInfo directoryInfo)
 	{
 		exporter.ExportDirectory = directoryInfo;
+		if (!String.Equals(directoryInfo.FullName, BehaviourEngine.AssemblyDirectory.FullName, StringComparison.OrdinalIgnoreCase))
+		{
+			var FNISPlugin = new FileInfo(Path.Combine(BehaviourEngine.AssemblyDirectory.FullName, "FNIS.esp"));
+			var outputFNISPlugin = new FileInfo(Path.Combine(directoryInfo.FullName, "FNIS.esp"));
+
+			if (!outputFNISPlugin.Exists)
+			{
+				FNISPlugin.CopyTo(outputFNISPlugin.FullName);
+			}
+		}
+
 		nemesisAssembler.SetOutputPath(directoryInfo);
 		pandoraAssembler.SetOutputPath(directoryInfo);
 	}
