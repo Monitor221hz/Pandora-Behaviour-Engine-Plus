@@ -170,7 +170,7 @@ namespace Pandora.ViewModels
 
         public void SortMods()
 		{
-            Mods = Mods.OrderBy(m => m.Code == "pandora").OrderBy(m => m.Priority == 0).ThenBy(m => m.Priority).ToList(); 
+            Mods = Mods.OrderBy(m => m.Code == "pandora").ThenBy(m => m.Priority == 0).ThenBy(m => m.Priority).ToList(); 
 		}
 		private IEnumerable<ModInfoViewModel> SearchModViewModels(string searchText, IEnumerable<ModInfoViewModel> modViewModels)
         {
@@ -251,7 +251,7 @@ namespace Pandora.ViewModels
 
             modInfoCache = LoadActiveMods(modInfoList);
 
-            modInfoList = modInfoList.OrderBy(m => m.Code == "pandora").OrderBy(m => m.Priority == 0).ThenBy(m => m.Priority).ThenBy(m => m.Name).ToList();
+            modInfoList = modInfoList.OrderBy(m => m.Code == "pandora").ThenBy(m => m.Priority == 0).ThenBy(m => m.Priority).ThenBy(m => m.Name).ToList();
 
             foreach (var modInfo in modInfoList)
             {
@@ -384,7 +384,7 @@ namespace Pandora.ViewModels
             return mods; 
         }
 
-        private List<IModInfo> GetActiveModsByPriority() => Mods.Where(m => m.Active).OrderBy(m => m.Code == "pandora").OrderBy(m => m.Priority == 0).ThenBy(m => m.Priority).ToList();
+        private List<IModInfo> GetActiveModsByPriority() => Mods.Where(m => m.Active).OrderBy(m => m.Code == "pandora").ThenBy(m => m.Priority == 0).ThenBy(m => m.Priority).ToList();
 		private async void SetEngineConfiguration(object? config)
 		{
 			if (config == null) { return; }
