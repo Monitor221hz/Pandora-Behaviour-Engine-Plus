@@ -27,14 +27,14 @@ public class NemesisModInfo : IModInfo
 
 	public Dictionary<string, string> StringProperties { get; private set; } = new Dictionary<string, string>();
 
-	public string Name { get; private set; } = "Default";
+	public string Name { get; private set; }
 
-	public string Author { get; private set; } = "Default";
-	public string URL { get; private set; } = "Default";
+	public string Author { get; private set; } 
+	public string URL { get; private set; }
 
-	public string Code { get; private set; } = "Default";
+	public string Code { get; private set; }
 
-	public Version Version { get; } = new Version(1, 0, 0);
+	public Version Version { get; } 
 
 	public IModInfo.ModFormat Format { get; } = IModInfo.ModFormat.Nemesis;
 
@@ -51,12 +51,13 @@ public class NemesisModInfo : IModInfo
 		Valid = false;
 		Folder = new DirectoryInfo(Directory.GetCurrentDirectory());
 	}
-	public NemesisModInfo(DirectoryInfo folder, string name, string author, string url, bool active, Dictionary<string, string> properties)
+	public NemesisModInfo(DirectoryInfo folder, string name, string author, string url, Version version, bool active,  Dictionary<string, string> properties)
 	{
 		Folder = folder;
 		Name = name;
 		Author = author;
 		URL = url;
+		Version = version;
 		StringProperties = properties;
 		Code = Folder.Name;
 		Valid = true;
@@ -88,16 +89,20 @@ public class NemesisModInfo : IModInfo
 		string? author;
 		string? url;
 		string? hidden;
+		string? versionString;
 		properties.TryGetValue("name", out name);
 		properties.TryGetValue("author", out author);
 		properties.TryGetValue("site", out url);
 		properties.TryGetValue("hidden", out hidden);
+		properties.TryGetValue("version", out versionString);
+
+		Version version = Version.TryParse(versionString, out var value) ? value : new(1,0,0);
 
 		bool active;
 		bool.TryParse(hidden, out active);
 
 
-		return (name != null && author != null && url != null) ? new NemesisModInfo(file.Directory!, name, author, url, active, properties) : new NemesisModInfo();
+		return (name != null && author != null && url != null) ? new NemesisModInfo(file.Directory!, name, author, url,version, active, properties) : new NemesisModInfo();
 		//add metadata later
 	}
 }

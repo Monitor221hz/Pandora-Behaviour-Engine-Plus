@@ -114,7 +114,7 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 		{
 			if (AssemblePackFilePatch(subFolder, modInfo)) continue;
 			if (subFolder.Name == "animationsetdatasinglefile") AssembleAnimSetDataPatch(subFolder);
-			if (subFolder.Name == "animationdatasinglefile") AssembleAnimDataPatch(subFolder);
+			if (subFolder.Name == "animationdatasinglefile") AssembleAnimDataPatch(modInfo, subFolder);
 			if (subFolder.Name == "animdata") subFolder.Delete(true);
 
 		}
@@ -126,7 +126,7 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 		{
 			if (AssemblePackFilePatch(subFolder, modInfo)) continue;
 			if (subFolder.Name == "animationsetdatasinglefile") AssembleAnimSetDataPatch(subFolder);
-			if (subFolder.Name == "animationdatasinglefile") AssembleAnimDataPatch(subFolder);
+			if (subFolder.Name == "animationdatasinglefile") AssembleAnimDataPatch(modInfo, subFolder);
 			if (subFolder.Name == "animdata") subFolder.Delete(true);
 
 		}
@@ -379,11 +379,11 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 	}
 	
 
-	public void AssembleAnimDataPatch(DirectoryInfo folder)
+	public void AssembleAnimDataPatch(IModInfo modInfo, DirectoryInfo folder)
 	{
 		foreach(var subFolder in folder.GetDirectories())
 		{
-			pandoraConverter.TryGenerateAnimDataPatchFile(subFolder);
+			pandoraConverter.TryGenerateAnimDataPatchFile(modInfo, subFolder);
 		}
 		pandoraConverter.Assembler.AssembleAnimDataPatch(folder);
 	}

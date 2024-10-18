@@ -244,6 +244,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 				{
 					using (var reader = new StreamReader(readStream))
 					{
+						reader.ReadLine(); //skip version header
 						string? expectedLine;
 						while ((expectedLine = reader.ReadLine()) != null)
 						{
