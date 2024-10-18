@@ -12,14 +12,13 @@ namespace Pandora.Core
 	{
 		public static readonly DirectoryInfo AssemblyDirectory = new FileInfo(System.Reflection.Assembly.GetEntryAssembly()!.Location).Directory!;
 		public IEngineConfiguration Configuration { get; private set; } = new SkyrimConfiguration();
-
-		private bool ClearOutputPath = false;
+		public bool IsExternalOutput = false; 
         private DirectoryInfo CurrentPath { get; } = new DirectoryInfo(Directory.GetCurrentDirectory());
         public DirectoryInfo OutputPath { get; private set; } = new DirectoryInfo(Directory.GetCurrentDirectory());
         public void SetOutputPath(DirectoryInfo outputPath)
 		{
-			ClearOutputPath = (outputPath != CurrentPath);
 			OutputPath = outputPath!;
+			IsExternalOutput = CurrentPath != OutputPath;
 			Configuration.Patcher.SetOutputPath(outputPath);
 		}
 
@@ -45,37 +44,11 @@ namespace Pandora.Core
 
 			if (!OutputPath.Exists) OutputPath.Create();
 
-			if (ClearOutputPath)
-            {
-                ClearFolder(OutputPath);
-            }
-
-			var fnisESP = new FileInfo(Path.Combine(AssemblyDirectory.FullName, "FNIS.esp"));
-			if (fnisESP.Exists)
-				fnisESP.CopyTo(Path.Combine(OutputPath.FullName, "FNIS.esp"), true);
 
             if (!await Configuration.Patcher.UpdateAsync()) { return false; }
 
 			return await Configuration.Patcher.RunAsync();
 		}
-
-        private void ClearFolder(DirectoryInfo dir)
-        {
-            foreach (var item in dir.GetFiles())
-            {
-                if (item.Name.Equals("ActiveMods.txt", StringComparison.InvariantCultureIgnoreCase))
-					continue;
-				else
-                    item.Delete();
-            }
-            foreach (var item in dir.GetDirectories())
-            {
-				if (item.Name.Equals("Pandora_Engine", StringComparison.InvariantCultureIgnoreCase))
-					ClearFolder(item);
-				else
-					item.Delete(true);
-            }
-        }
 
         public async Task PreloadAsync()
 		{
