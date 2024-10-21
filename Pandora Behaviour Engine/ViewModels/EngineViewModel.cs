@@ -86,9 +86,9 @@ namespace Pandora.ViewModels
         private Dictionary<string, IModInfo> modsByCode = new Dictionary<string, IModInfo>();
 
         private bool modInfoCache = false;
-        private static DirectoryInfo WorkingDirectory { get; } = new DirectoryInfo(Directory.GetCurrentDirectory());
+        private static readonly DirectoryInfo workingDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
 
-        private static DirectoryInfo currentDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
+        private DirectoryInfo currentDirectory = BehaviourEngine.GameDirectory ?? workingDirectory;
 
         private Task preloadTask;
 
@@ -239,8 +239,8 @@ namespace Pandora.ViewModels
                 LoadModFolder(modInfos, await nemesisModInfoProvider?.GetInstalledMods(launchDirectory + "\\Nemesis_Engine\\mod")!);
                 LoadModFolder(modInfos, await pandoraModInfoProvider?.GetInstalledMods(launchDirectory + "\\Pandora_Engine\\mod")!);
                 //Working folder, or Skyrim\Data folder
-                LoadModFolder(modInfos, await nemesisModInfoProvider?.GetInstalledMods(WorkingDirectory + "\\Nemesis_Engine\\mod")!);
-                LoadModFolder(modInfos, await pandoraModInfoProvider?.GetInstalledMods(WorkingDirectory + "\\Pandora_Engine\\mod")!);
+                LoadModFolder(modInfos, await nemesisModInfoProvider?.GetInstalledMods(workingDirectory + "\\Nemesis_Engine\\mod")!);
+                LoadModFolder(modInfos, await pandoraModInfoProvider?.GetInstalledMods(workingDirectory + "\\Pandora_Engine\\mod")!);
                 //Current (defaults to Working folder) or Output (set via -o) folder
                 LoadModFolder(modInfos, await nemesisModInfoProvider?.GetInstalledMods(currentDirectory + "\\Nemesis_Engine\\mod")!);
                 LoadModFolder(modInfos, await pandoraModInfoProvider?.GetInstalledMods(currentDirectory + "\\Pandora_Engine\\mod")!);
