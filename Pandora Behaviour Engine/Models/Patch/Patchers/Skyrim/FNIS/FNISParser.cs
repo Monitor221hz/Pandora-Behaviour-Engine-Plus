@@ -1,20 +1,12 @@
 ﻿using HKX2E;
 using Pandora.Core;
 using Pandora.Core.Patchers.Skyrim;
-using Pandora.Patch.Patchers.Skyrim.AnimData;
-using Pandora.Patch.Patchers.Skyrim.AnimSetData;
 using Pandora.Patch.Patchers.Skyrim.Hkx;
-using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Threading.Tasks.Sources;
-using System.Xml.Linq;
 
 namespace Pandora.Patch.Patchers.Skyrim.FNIS;
 public class FNISParser
@@ -86,8 +78,8 @@ public class FNISParser
 		{"wolfproject", "dog" }
 	};
 	private readonly HashSet<PackFile> parsedBehaviorFiles = new(); 
-	private readonly HashSet<Project> skipAnimlistProjects = new(); 
-	private DirectoryInfo outputDirectory; 
+	private readonly HashSet<Project> skipAnimlistProjects = new();
+	private DirectoryInfo outputDirectory;
 	public HashSet<IModInfo> ModInfos { get; private set; } = new HashSet<IModInfo>();
 
     public FNISParser(ProjectManager manager, DirectoryInfo outputPath)
@@ -150,29 +142,10 @@ public class FNISParser
 	}
     public void ScanProjectAnimlist(Project project)
 	{
-		var absoluteOutputDirectory = new DirectoryInfo(Path.Join(outputDirectory.FullName, project.ProjectFile.RelativeOutputDirectoryPath));
-		ScanProjectBehaviors(project, absoluteOutputDirectory);
-		//var modFiles = behaviorFolder.GetFiles("FNIS*.hkx");
+		var currentDirectory = new DirectoryInfo(Path.Join(BehaviourEngine.AssemblyDirectory.FullName, project.ProjectFile.RelativeOutputDirectoryPath));
 
-		//if (modFiles.Length > 0) { projectManager.TryActivatePackFile(project.BehaviorFile); }
-
-		//foreach (var modFile in modFiles)
-		//{
-		//	try
-		//	{
-		//		InjectGraphReference(modFile, project.BehaviorFile);
-		//	}
-		//	catch 
-		//	{
-		//		logger.Warn($"FNIS Parser > Inject > Behavior > {modFile.Name} > FAILED");
-		//	}
-		//}
-		ScanProjectAnimations(project, absoluteOutputDirectory);
-		//if (!animationsFolder.Exists) { return; }
-		//var modAnimationFolders = animationsFolder.GetDirectories();
-
-		//if (modAnimationFolders.Length == 0) { return; }
-		//Parallel.ForEach(modAnimationFolders, folder => { ParseAnimlistFolder(folder, project, projectManager); });
+		ScanProjectBehaviors(project, currentDirectory);
+		ScanProjectAnimations(project, currentDirectory);
 	}
 	private bool InjectGraphReference(FileInfo sourceFile, PackFileGraph destPackFile)
 	{
