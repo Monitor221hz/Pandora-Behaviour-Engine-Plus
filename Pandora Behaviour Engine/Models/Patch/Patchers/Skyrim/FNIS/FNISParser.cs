@@ -2,6 +2,7 @@
 using Pandora.Core;
 using Pandora.Core.Patchers.Skyrim;
 using Pandora.Patch.Patchers.Skyrim.Hkx;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -142,7 +143,7 @@ public class FNISParser
 	}
     public void ScanProjectAnimlist(Project project)
 	{
-		var currentDirectory = new DirectoryInfo(Path.Join(BehaviourEngine.AssemblyDirectory.FullName, project.ProjectFile.RelativeOutputDirectoryPath));
+		var currentDirectory = new DirectoryInfo(Path.Join((BehaviourEngine.GameDirectory ?? BehaviourEngine.AssemblyDirectory).FullName, project.ProjectFile.RelativeOutputDirectoryPath));
 
 		ScanProjectBehaviors(project, currentDirectory);
 		ScanProjectAnimations(project, currentDirectory);

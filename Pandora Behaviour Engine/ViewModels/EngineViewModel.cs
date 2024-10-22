@@ -195,7 +195,7 @@ namespace Pandora.ViewModels
 			ReadStartupArguments();
 			activeModConfig = new FileInfo($"{currentDirectory}\\Pandora_Engine\\ActiveMods.txt");
 			preloadTask = Task.Run(Engine.PreloadAsync);
-
+			Engine.SetOutputPath(currentDirectory);
 			if (autoRun) { LaunchCommand.Execute(null); }
 
 
@@ -467,7 +467,8 @@ namespace Pandora.ViewModels
             await WriteLogBoxLine(string.Empty);
 			var newConfig = engineConfigurationFactory.Config;
             Engine = newConfig != null ? new BehaviourEngine(newConfig) : new BehaviourEngine();
-            Engine.Configuration.Patcher.SetOutputPath(currentDirectory);
+
+			Engine.SetOutputPath(currentDirectory);
 			preloadTask = Task.Run(Engine.PreloadAsync);
 
 			lock (LaunchCommand)
