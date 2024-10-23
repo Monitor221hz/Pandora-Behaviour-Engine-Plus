@@ -272,22 +272,23 @@ public class PackFile : IEquatable<PackFile>
 	}
 	public virtual void PushXmlAsObjects()
 	{
-		foreach(var kvp in objectElementMap)
+		foreach(var kvp in objectElementMap.OrderBy(kvp => Deserializer.GetOrder(Serializer.GetName(kvp.Key))))
 		{
-			if (Serializer.TryGetName(kvp.Key, out var name))
+			IHavokObject? obj = null;
+			try
 			{
-				try
-				{
-					var obj = PartialDeserializer.DeserializeRuntimeObjectOverwrite(kvp.Value);
-					Deserializer.UpdateDirectReference(kvp.Key, obj);
-					Deserializer.UpdatePropertyReferences(name, obj);
-					Deserializer.UpdateMapping(name, obj);
-				}
-				catch (Exception ex)
-				{
-					Logger.Error($"Packfile > Active Nodes > Push > FAILED > {ex.ToString()}");
-				}
+				obj = PartialDeserializer.DeserializeRuntimeObjectOverwrite(kvp.Value);
 			}
+			catch (Exception ex)
+			{
+				Logger.Error($"Packfile > Active Nodes > Push > FAILED > {ex.ToString()}");
+				continue; 
+			}
+			string name = Serializer.GetName(kvp.Key);
+			Deserializer.UpdateDirectReference(kvp.Key, obj);
+			Deserializer.UpdatePropertyReferences(name, obj);
+			Deserializer.UpdateMapping(name, obj);
+
 		}
 		objectElementMap.Clear(); 
 	}
