@@ -194,7 +194,7 @@ public class PackFile : IEquatable<PackFile>
 	{
 		if (Deserializer.TryGetObject(nodeName, out var havokObj))
 		{
-			PopObjectAsXml(havokObj);
+			return PopObjectAsXml(havokObj);
 		}
 		return false;
 	}
