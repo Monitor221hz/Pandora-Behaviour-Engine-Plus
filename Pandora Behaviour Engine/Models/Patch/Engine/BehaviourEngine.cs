@@ -14,7 +14,7 @@ namespace Pandora.Core
 	{
 		public static readonly DirectoryInfo AssemblyDirectory = new FileInfo(System.Reflection.Assembly.GetEntryAssembly()!.Location).Directory!;
 
-		public readonly static DirectoryInfo? GameDirectory; 
+		public readonly static DirectoryInfo? SkyrimGameDirectory; 
 
 		static BehaviourEngine()
 		{
@@ -26,10 +26,20 @@ namespace Pandora.Core
 					string? defaultPath = key?.GetValue("Installed Path") as string;
 					if (defaultPath != null)
 					{
-						GameDirectory = new DirectoryInfo(Path.Join(defaultPath, "Data"));
+						SkyrimGameDirectory = new DirectoryInfo(Path.Join(defaultPath, "Data"));
 					}
 				}
-				
+			}
+			var args = Environment.GetCommandLineArgs(); 
+			var inputArg = args.Where(s => s.StartsWith("-tesv:", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+
+			if (inputArg != null)
+			{
+				var argArr = inputArg.AsSpan();
+				var pathArr = argArr.Slice(6);
+				var path = pathArr.Trim().ToString();
+
+				SkyrimGameDirectory = new DirectoryInfo(Path.Join(path, "Data")); 
 			}
 		}
 
