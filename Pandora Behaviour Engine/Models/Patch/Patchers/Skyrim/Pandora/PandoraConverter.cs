@@ -41,7 +41,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 			{
 				using (var writer =  new StreamWriter(writeStream))
 				{
-					var files = folder.GetFiles("*.txt");
+					var files = folder.GetFiles("*~*.txt");
 					foreach (var file in files)
 					{
 						var clipName = file.Name.Split('~')[0];
