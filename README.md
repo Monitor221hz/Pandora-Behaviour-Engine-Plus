@@ -120,6 +120,10 @@ Run the engine as administrator or move the engine install out of a protected lo
 
 Warnings are not a major issue unless they noticeably interfere with the in-game behavior in some shape or form. Please don't report warnings coming from other mods as a bug.
 
+**Pandora doesn't read FNIS mods!***
+
+Use the `-tesv:` argument if your game path is different from the registry path, or if you have multiple installs. Otherwise, ensure your registry path is correct. Read the [startup arguments](#startup-arguments) section for more information.
+
 <br/>
 <br/>
 
