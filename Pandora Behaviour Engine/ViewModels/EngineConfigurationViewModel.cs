@@ -13,24 +13,25 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Pandora.ViewModels;
-
-public class EngineConfigurationViewModel<T> : IEngineConfigurationFactory,IEngineConfigurationViewModel where T : class, IEngineConfiguration, new()
+public class EngineConfigurationViewModel : IEngineConfigurationFactory, IEngineConfigurationViewModel
 {
+	private IEngineConfigurationFactory engineConfigurationFactory; 
+
     public event PropertyChangedEventHandler? PropertyChanged;
 	private void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
 	{
 		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 	}
-	public string Name { get; private set; }
-	public IEngineConfiguration? Config => new T();
+	public string Name => engineConfigurationFactory.Name;
+	public IEngineConfiguration? Config => engineConfigurationFactory.Config;
 
 	public ObservableCollection<IEngineConfigurationViewModel> NestedViewModels { get; private set; } = new ObservableCollection<IEngineConfigurationViewModel>();
 
 	public RelayCommand? SetCommand { get; } = null;
 
-	public EngineConfigurationViewModel(string name, RelayCommand setCommand) 
+	public EngineConfigurationViewModel(IEngineConfigurationFactory factory,RelayCommand setCommand) 
 	{
-		Name = name;
+		engineConfigurationFactory = factory;
 		SetCommand = setCommand;
 	}
 }

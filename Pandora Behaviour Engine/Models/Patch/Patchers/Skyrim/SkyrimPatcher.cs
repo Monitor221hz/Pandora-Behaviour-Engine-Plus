@@ -170,4 +170,9 @@ public class SkyrimPatcher : IPatcher
 		nemesisAssembler.SetOutputPath(directoryInfo);
 		pandoraAssembler.SetOutputPath(directoryInfo);
 	}
+
+	public string GetPostUpdateMessages()
+	{
+		return string.Empty;
+	}
 }

@@ -22,5 +22,10 @@ public class EngineConfigurationViewModelContainer : IEngineConfigurationViewMod
 		Name = name;
 		foreach (var viewModel in viewModels) { NestedViewModels.Add(viewModel); }
 	}
+	public EngineConfigurationViewModelContainer(string name)
+	{
+		Name = name;
+		NestedViewModels = new(); 
+	}
 }
 

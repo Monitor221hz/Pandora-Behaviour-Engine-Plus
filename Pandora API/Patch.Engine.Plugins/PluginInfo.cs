@@ -9,6 +9,5 @@ public class PluginInfo : IPluginInfo
 {
 	public string Name { get; set; }
 	public string Author { get; set; }
-	public Version Version { get; set; }
-	public string RelativePath { get; set; } 
+	public string Path { get; set; } 
 }

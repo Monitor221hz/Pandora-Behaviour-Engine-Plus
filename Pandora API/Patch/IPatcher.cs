@@ -20,11 +20,9 @@ public interface IPatcher
 
     public void Update();
 
-    public string GetPostUpdateMessages() => string.Empty;
-
     public void Run();
 
-    public string GetPostRunMessages() => string.Empty;
+    public string GetPostRunMessages();
 
     public string GetFailureMessages();
 

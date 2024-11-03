@@ -5,13 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Pandora.API.Patch.Engine.Config;
-public interface IEngineConfigurationInjection
+public interface IEngineConfigurationPlugin
 {
 	public enum OptionFlags
 	{
 		None = 0, 
 		HidePatches = 1,
 	}
-	public string MenuPath { get; set; }
-	public IEngineConfigurationFactory Factory { get; set; }
+	public string MenuPath { get; }
+	public IEngineConfigurationFactory Factory { get; }
 }

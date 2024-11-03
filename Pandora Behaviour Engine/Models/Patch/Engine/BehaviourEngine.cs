@@ -12,22 +12,25 @@ using System.Threading.Tasks;
 using System.Reflection;
 using Pandora.Models.Patch.Engine;
 using Pandora.Models.Patch.Engine.Plugins;
+using System.Diagnostics;
 namespace Pandora.Core
 {
 	public class BehaviourEngine
 	{
+		private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 		public static readonly DirectoryInfo AssemblyDirectory = new FileInfo(System.Reflection.Assembly.GetEntryAssembly()!.Location).Directory!;
 
-		public static readonly List<IEngineConfigurationInjection> EngineConfigurations = new List<IEngineConfigurationInjection>();
+		public static readonly List<IEngineConfigurationPlugin> EngineConfigurations = new List<IEngineConfigurationPlugin>();
 
 		public readonly static DirectoryInfo? SkyrimGameDirectory; 
-		private static IEnumerable<IEngineConfigurationInjection> CreateConfigurations(Assembly assembly)
+		private static IEnumerable<IEngineConfigurationPlugin> CreateConfigurations(Assembly assembly)
 		{
 			foreach(Type type in assembly.GetTypes())
 			{
-				if (typeof(IEngineConfigurationInjection).IsAssignableFrom(type))
+				Debug.WriteLine(type.Module.FullyQualifiedName);
+				if (typeof(IEngineConfigurationPlugin).IsAssignableFrom(type))
 				{
-					IEngineConfigurationInjection? result = Activator.CreateInstance(type) as IEngineConfigurationInjection;
+					IEngineConfigurationPlugin? result = Activator.CreateInstance(type) as IEngineConfigurationPlugin;
 					if (result != null)
 					{
 						yield return result;
@@ -112,7 +115,8 @@ namespace Pandora.Core
         }
         public void Launch(List<IModInfo> mods)
 		{
-
+			logger.Info($"Launching with configuration {Configuration.Name}");
+			logger.Info($"Launching with patcher {Configuration.Patcher.GetVersionString()}");
 			Configuration.Patcher.SetTarget(mods); 
 			Configuration.Patcher.Update(); 
 			Configuration.Patcher.Run();
@@ -120,6 +124,8 @@ namespace Pandora.Core
 
 		public async Task<bool> LaunchAsync(List<IModInfo> mods)
 		{
+			logger.Info($"Launching with configuration {Configuration.Name}");
+			logger.Info($"Launching with patcher version {Configuration.Patcher.GetVersionString()}");
 			Configuration.Patcher.SetTarget(mods);
 
 			if (!OutputPath.Exists) OutputPath.Create();

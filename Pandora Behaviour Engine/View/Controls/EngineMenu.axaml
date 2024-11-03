@@ -9,7 +9,7 @@
 	<Grid ColumnDefinitions="*">
 		<Menu Background="{StaticResource ControlColorSolid}"
 	  Foreground="{StaticResource HeaderTextGradient}"
-	  BorderThickness="0" Height="20" FontSize="12" FontFamily="Bahnschrift">
+	  BorderThickness="0" Height="20" FontSize="12" FontFamily="Bahnschrift" IsVisible="{Binding MenuEnabled}">
 			<MenuItem 
 				Classes="SubItems"
                 Background="{StaticResource ControlColor}"
