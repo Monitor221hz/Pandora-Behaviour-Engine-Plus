@@ -1,4 +1,6 @@
-﻿using Pandora.Core.Patchers;
+﻿using Pandora.API.Patch;
+using Pandora.API.Patch.Engine.Config;
+using Pandora.Core.Patchers;
 using Pandora.Patch.IOManagers.Skyrim;
 using Pandora.Patch.Patchers.Skyrim;
 using System;

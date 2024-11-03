@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Pandora.Patch.IOManagers;
+namespace Pandora.API.Patch.IOManagers;
 public interface IDataExporter<T>
 {
 	public DirectoryInfo ExportDirectory { get; set; }
@@ -18,10 +18,5 @@ public interface IDataExporter<T>
 		Parallel.ForEach(objs, obj => { if (!Export(obj)) { success = false; } });
 		return success;
 	}
-}
-public interface IMetaDataExporter<T> : IDataExporter<T>
-{
-	public void LoadMetaData();
-	public void SaveMetaData(IEnumerable<T> collection);
 }
 

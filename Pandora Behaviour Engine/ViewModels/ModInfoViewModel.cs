@@ -1,4 +1,5 @@
 ﻿
+using Pandora.API.Patch;
 using Pandora.Core;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using static Pandora.Core.IModInfo;
+
 
 namespace Pandora.ViewModels;
 public class ModInfoViewModel : INotifyPropertyChanged, IEquatable<ModInfoViewModel>
@@ -47,7 +48,7 @@ public class ModInfoViewModel : INotifyPropertyChanged, IEquatable<ModInfoViewMo
 
 	public DirectoryInfo Folder => ModInfo.Folder;
 
-	public ModFormat Format => ModInfo.Format;
+	public IModInfo.ModFormat Format => ModInfo.Format;
 
 	public bool Active
 	{

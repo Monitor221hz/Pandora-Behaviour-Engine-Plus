@@ -13,29 +13,12 @@ namespace Pandora.Patch.Patchers.Skyrim.Hkx;
 
 public class PackFile : IEquatable<PackFile>
 {
-	public struct IntermediateNode<T> where T : IHavokObject
-	{
-		public string Name;
-		public T NewObject;
-
-		public IntermediateNode(string name, T newObject)
-		{
-			Name = name;
-			NewObject = newObject;
-		}
-
-		public void Build(PackFile packFile)
-		{
-			//packFile.Deserializer.UpdateObjectByName(Name, NewObject);
-			packFile.Deserializer.UpdatePropertyReferences(Name, NewObject);
-		}
-	}
 
 	public XMap Map { get; private set; }
 	public HavokReferenceXmlDeserializer Deserializer { get; private set; } = new();
-	public HavokXmlPartialDeserializer PartialDeserializer { get; private set; } = new(); 
+	public HavokXmlPartialDeserializer PartialDeserializer { get; private set; } = new();
 	public HavokXmlPartialSerializer PartialSerializer { get; private set; } = new();
-	public HavokXmlSerializer Serializer { get; private set; } = new(); 
+	public HavokXmlSerializer Serializer { get; private set; } = new();
 	public hkRootLevelContainer Container { get; private set; }
 
 	public static readonly string ROOT_CONTAINER_NAME = "__data__";
@@ -53,7 +36,7 @@ public class PackFile : IEquatable<PackFile>
 
 	public FileInfo RebaseOutput(DirectoryInfo exportDirectory)
 	{
-		OutputHandle = new FileInfo(Path.Join(exportDirectory.FullName, relativeOutputFilePath)); 
+		OutputHandle = new FileInfo(Path.Join(exportDirectory.FullName, relativeOutputFilePath));
 		return OutputHandle;
 	}
 
@@ -75,11 +58,15 @@ public class PackFile : IEquatable<PackFile>
 	public void ApplyChanges() => Dispatcher.ApplyChanges(this);
 	public IEnumerable<XElement> IndexedElements => objectElementMap.Values;
 
-	public Project? ParentProject { get => parentProject; 
-		set { 
+	public Project? ParentProject
+	{
+		get => parentProject;
+		set
+		{
 			parentProject = value;
 			UniqueName = $"{ParentProject?.Identifier}~{Name}";
-		} }
+		}
+	}
 
 
 	protected ILookup<string, XElement>? classLookup = null;
@@ -117,7 +104,7 @@ public class PackFile : IEquatable<PackFile>
 
 	}
 	public virtual void Load()
-	{ 
+	{
 
 	}
 	[MemberNotNull(nameof(classLookup))]
@@ -134,14 +121,14 @@ public class PackFile : IEquatable<PackFile>
 	public virtual void Activate()
 	{
 		if (!CanActivate()) return;
-		active = true; 
+		active = true;
 	}
 	public virtual void PopPriorityXmlAsObjects()
 	{
 
 	}
 
-	
+
 	public PackFile(string filePath) : this(new FileInfo(filePath)) { }
 
 	public string UniqueName { get; private set; }
@@ -153,7 +140,7 @@ public class PackFile : IEquatable<PackFile>
 		{
 			return true;
 		}
-		return false; 
+		return false;
 	}
 	public bool TargetExists(string nodeName)
 	{
@@ -170,7 +157,7 @@ public class PackFile : IEquatable<PackFile>
 	}
 
 	[MemberNotNull(nameof(classLookup))]
-	public void TryBuildClassLookup() {  if (classLookup == null) {  BuildClassLookup(); } }
+	public void TryBuildClassLookup() { if (classLookup == null) { BuildClassLookup(); } }
 	public HashSet<string> UsedNodeNames => Map.NavigateTo(PackFile.ROOT_CONTAINER_NAME).Elements().Select(e => e.Attribute("name")!.Value).ToHashSet();
 	public XElement GetFirstNodeOfClass(string className)
 	{
@@ -183,12 +170,12 @@ public class PackFile : IEquatable<PackFile>
 	{
 		if (objectElementMap.ContainsKey(node))
 		{
-			return false; 
+			return false;
 		}
 		XMapElement mappedElement = new XMapElement(PartialSerializer.SerializeObject(node));
 		mappedElement.MapSlice(mappedElement);
 		objectElementMap.Add(node, mappedElement);
-		return true; 
+		return true;
 	}
 	public bool PopObjectAsXml(string nodeName)
 	{
@@ -254,9 +241,9 @@ public class PackFile : IEquatable<PackFile>
 		}
 		if (!Deserializer.TryGetObjectAs<T>(name, out var newObj))
 		{
-			return targetObject; 
+			return targetObject;
 		}
-		return newObj; 
+		return newObj;
 	}
 	public T GetPushedObjectAs<T>(string name) where T : class, IHavokObject
 	{
@@ -272,7 +259,7 @@ public class PackFile : IEquatable<PackFile>
 	}
 	public virtual void PushXmlAsObjects()
 	{
-		foreach(var kvp in objectElementMap.OrderBy(kvp => Deserializer.GetOrder(Serializer.GetName(kvp.Key))))
+		foreach (var kvp in objectElementMap.OrderBy(kvp => Deserializer.GetOrder(Serializer.GetName(kvp.Key))))
 		{
 			IHavokObject? obj = null;
 			try
@@ -282,7 +269,7 @@ public class PackFile : IEquatable<PackFile>
 			catch (Exception ex)
 			{
 				Logger.Error($"Packfile > Active Nodes > Push > FAILED > {ex.ToString()}");
-				continue; 
+				continue;
 			}
 			string name = Serializer.GetName(kvp.Key);
 			Deserializer.UpdateDirectReference(kvp.Key, obj);
@@ -290,7 +277,7 @@ public class PackFile : IEquatable<PackFile>
 			Deserializer.UpdateMapping(name, obj);
 
 		}
-		objectElementMap.Clear(); 
+		objectElementMap.Clear();
 	}
 	public bool Equals(PackFile? other)
 	{
@@ -303,7 +290,7 @@ public class PackFile : IEquatable<PackFile>
 
 	public override bool Equals(object? obj)
 	{
-		if (obj == null || ! (obj is PackFile)) return false;
+		if (obj == null || !(obj is PackFile)) return false;
 
 		return Equals((PackFile)obj);
 	}

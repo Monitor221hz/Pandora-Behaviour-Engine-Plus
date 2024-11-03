@@ -1,4 +1,5 @@
 ﻿using HKX2E;
+using Pandora.API.Patch;
 using Pandora.Core;
 using Pandora.Core.Patchers.Skyrim;
 using Pandora.Patch.Patchers.Skyrim.Hkx;

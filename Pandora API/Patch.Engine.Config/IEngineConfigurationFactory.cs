@@ -1,8 +1,10 @@
-﻿using Pandora.Core;
-using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Pandora.Core.Engine.Configs;
-
+namespace Pandora.API.Patch.Engine.Config;
 public interface IEngineConfigurationFactory
 {
     public string Name { get; }

@@ -1,5 +1,6 @@
 ﻿using HKX2E;
 using NLog;
+using Pandora.API.Patch;
 using Pandora.Patch.Patchers.Skyrim.AnimData;
 using Pandora.Patch.Patchers.Skyrim.AnimSetData;
 using Pandora.Patch.Patchers.Skyrim.FNIS;

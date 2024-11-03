@@ -18,6 +18,8 @@ using Pandora.Core.Engine.Configs;
 using System.Security.Policy;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia;
+using Pandora.API.Patch;
+using Pandora.API.Patch.Engine.Config;
 
 
 namespace Pandora.ViewModels

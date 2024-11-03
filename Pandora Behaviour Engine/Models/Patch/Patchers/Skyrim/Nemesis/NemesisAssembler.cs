@@ -1,8 +1,8 @@
 ﻿using NLog;
+using Pandora.API.Patch;
+using Pandora.API.Patch.IOManagers;
 using Pandora.Core;
-using Pandora.Core.IOManagers;
 using Pandora.Core.Patchers.Skyrim;
-using Pandora.Patch.IOManagers;
 using Pandora.Patch.IOManagers.Skyrim;
 using Pandora.Patch.Patchers.Skyrim.AnimData;
 using Pandora.Patch.Patchers.Skyrim.AnimSetData;

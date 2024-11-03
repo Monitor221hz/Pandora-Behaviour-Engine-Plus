@@ -1,4 +1,6 @@
 ﻿using Microsoft.Win32;
+using Pandora.API.Patch;
+using Pandora.API.Patch.Engine.Config;
 using Pandora.Core.Engine.Configs;
 using System;
 using System.Collections.Generic;

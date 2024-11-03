@@ -14,6 +14,7 @@
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
     <Content Include="Assets\pandora.ico" />
+    <Folder Include="Models\Patch\Engine\Interface\" />
     <Folder Include="Themes\" />
   </ItemGroup>
 
@@ -34,7 +35,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HKX2 Enhanced Library\HKX2\HKX2E.csproj" /> 
+    <ProjectReference Include="..\HKX2 Enhanced Library\HKX2\HKX2E.csproj" />
+    <ProjectReference Include="..\Pandora API\Pandora API.csproj" /> 
     <ProjectReference Include="..\XML.Cake.NET\XML Cake\XML Cake.csproj" />
   </ItemGroup>
 

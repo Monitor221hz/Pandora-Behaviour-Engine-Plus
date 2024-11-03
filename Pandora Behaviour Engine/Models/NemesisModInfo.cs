@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
+using Pandora.API.Patch;
 using Pandora.Core;
 
 namespace Pandora.Core;
