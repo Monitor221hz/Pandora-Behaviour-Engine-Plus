@@ -193,7 +193,7 @@ namespace Pandora.ViewModels
 			CultureInfo.CurrentCulture = culture;
             SetupConfigurationOptions();
 			ReadStartupArguments();
-			activeModConfig = new FileInfo($"{currentDirectory}\\Pandora_Engine\\ActiveMods.txt");
+			activeModConfig = new FileInfo(Path.Combine(currentDirectory.FullName, "Pandora_Engine", "ActiveMods.txt"));
 			preloadTask = Task.Run(Engine.PreloadAsync);
 			Engine.SetOutputPath(currentDirectory);
 			if (autoRun) { LaunchCommand.Execute(null); }
@@ -236,14 +236,14 @@ namespace Pandora.ViewModels
                 HashSet<IModInfo> modInfos = new();
 
                 //Program folder
-                LoadModFolder(modInfos, await nemesisModInfoProvider?.GetInstalledMods(launchDirectory + "\\Nemesis_Engine\\mod")!);
-                LoadModFolder(modInfos, await pandoraModInfoProvider?.GetInstalledMods(launchDirectory + "\\Pandora_Engine\\mod")!);
+                LoadModFolder(modInfos, await nemesisModInfoProvider?.GetInstalledMods(Path.Combine(launchDirectory, "Nemesis_Engine", "mod"))!);
+                LoadModFolder(modInfos, await pandoraModInfoProvider?.GetInstalledMods(Path.Combine(launchDirectory, "Pandora_Engine", "mod"))!);
                 //Working folder, or Skyrim\Data folder
-                LoadModFolder(modInfos, await nemesisModInfoProvider?.GetInstalledMods(workingDirectory + "\\Nemesis_Engine\\mod")!);
-                LoadModFolder(modInfos, await pandoraModInfoProvider?.GetInstalledMods(workingDirectory + "\\Pandora_Engine\\mod")!);
+                LoadModFolder(modInfos, await nemesisModInfoProvider?.GetInstalledMods(Path.Combine(workingDirectory.FullName, "Nemesis_Engine", "mod"))!);
+                LoadModFolder(modInfos, await pandoraModInfoProvider?.GetInstalledMods(Path.Combine(workingDirectory.FullName, "Pandora_Engine", "mod"))!);
                 //Current (defaults to Working folder) or Output (set via -o) folder
-                LoadModFolder(modInfos, await nemesisModInfoProvider?.GetInstalledMods(currentDirectory + "\\Nemesis_Engine\\mod")!);
-                LoadModFolder(modInfos, await pandoraModInfoProvider?.GetInstalledMods(currentDirectory + "\\Pandora_Engine\\mod")!);
+                LoadModFolder(modInfos, await nemesisModInfoProvider?.GetInstalledMods(Path.Combine(currentDirectory.FullName, "Nemesis_Engine", "mod"))!);
+                LoadModFolder(modInfos, await pandoraModInfoProvider?.GetInstalledMods(Path.Combine(currentDirectory.FullName, "Pandora_Engine", "mod"))!);
 
                 modInfoList = [.. modInfos];
             }
