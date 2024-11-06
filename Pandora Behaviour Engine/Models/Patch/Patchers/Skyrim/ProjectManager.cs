@@ -1,42 +1,35 @@
-﻿using HKX2E;
-using NLog;
+﻿using NLog;
 using Pandora.API.Patch;
-using Pandora.Patch.Patchers.Skyrim.AnimData;
-using Pandora.Patch.Patchers.Skyrim.AnimSetData;
+using Pandora.API.Patch.Engine.Skyrim64;
 using Pandora.Patch.Patchers.Skyrim.FNIS;
 using Pandora.Patch.Patchers.Skyrim.Hkx;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Reflection.PortableExecutable;
-using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Pandora.Core.Patchers.Skyrim
 {
-	public class ProjectManager
+	public class ProjectManager : IProjectManager
 	{
 		private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 		private Dictionary<string, Project> projectMap { get; set; } = new Dictionary<string, Project>();
-		private Dictionary<string, Project> fileProjectMap { get; set; } = new Dictionary<string, Project>(); 
+		private Dictionary<string, Project> fileProjectMap { get; set; } = new Dictionary<string, Project>();
 
-		private Dictionary<string, Project> folderProjectMap { get; set;} = new Dictionary<string, Project>();
+		private Dictionary<string, Project> folderProjectMap { get; set; } = new Dictionary<string, Project>();
 
 		private Dictionary<string, List<Project>> linkedProjectMap { get; set; } = new Dictionary<string, List<Project>>();
 
 		private readonly DirectoryInfo templateFolder;
 
-		private DirectoryInfo baseOutputDirectory; 
+		private DirectoryInfo baseOutputDirectory;
 
 
-		private PackFileCache packFileCache { get; set; } = new(); 
-		public  HashSet<PackFile> ActivePackFiles { get; private set;  } =  new HashSet<PackFile>();
+		private PackFileCache packFileCache { get; set; } = new();
+		public HashSet<PackFile> ActivePackFiles { get; private set; } = new HashSet<PackFile>();
 
 		private FNISParser fnisParser;
 
@@ -44,17 +37,17 @@ namespace Pandora.Core.Patchers.Skyrim
 
 
 		public ProjectManager(DirectoryInfo templateFolder, DirectoryInfo outputDirectory)
-        {
+		{
 			this.templateFolder = templateFolder;
 			this.baseOutputDirectory = outputDirectory;
 			fnisParser = new FNISParser(this, baseOutputDirectory);
-        }
+		}
 		public void GetExportInfo(StringBuilder builder)
 		{
 			if (CompleteExportSuccess) { return; }
 			builder.AppendLine();
 
-			foreach(var failedPackFile in ActivePackFiles.Where(pf => !pf.ExportSuccess))
+			foreach (var failedPackFile in ActivePackFiles.Where(pf => !pf.ExportSuccess))
 			{
 				builder.AppendLine($"FATAL ERROR: Could not export {failedPackFile.UniqueName}. Check Engine.log for more information.");
 			}
@@ -65,11 +58,11 @@ namespace Pandora.Core.Patchers.Skyrim
 			uint totalAnimationCount = 0;
 
 			builder.AppendLine();
-			foreach(var project in projects)
+			foreach (var project in projects)
 			{
-				var animCount = project.CharacterPackFile.NewAnimationCount; 
+				var animCount = project.CharacterPackFile.NewAnimationCount;
 				if (animCount == 0) { continue; }
-				totalAnimationCount+= animCount;	
+				totalAnimationCount += animCount;
 				builder.AppendLine($"{animCount} animations added to {project.Identifier}.");
 			}
 			builder.AppendLine();
@@ -80,7 +73,7 @@ namespace Pandora.Core.Patchers.Skyrim
 		{
 			uint fnisModCount = 0;
 			builder.AppendLine();
-			foreach(IModInfo modInfo in fnisParser.ModInfos)
+			foreach (IModInfo modInfo in fnisParser.ModInfos)
 			{
 				fnisModCount++;
 				builder.AppendLine($"FNIS Mod {fnisModCount} : {modInfo.Code}");
@@ -88,14 +81,16 @@ namespace Pandora.Core.Patchers.Skyrim
 			}
 		}
 
-		public bool TryGetProject(string name, out Project? project) => projectMap.TryGetValue(name, out project);
+		public bool TryGetProject(string name, [NotNullWhen(true)] out Project? project) => projectMap.TryGetValue(name, out project);
+
+		public bool TryGetProjectEx(string name, [NotNullWhen(true)] out IProject? project)
+		{
+			project = TryGetProject(name, out var exProject) ? exProject as IProject : null;
+			return project != null; 
+		}
 		public bool ProjectExists(string name) => projectMap.ContainsKey(name);
 
-
-
-		
-
-		public void LoadTrackedProjects()
+		internal void LoadTrackedProjects()
 		{
 			FileInfo projectList = new FileInfo($"{templateFolder.FullName}\\vanilla_projectpaths.txt");
 			string? expectedLine = null;
@@ -116,13 +111,13 @@ namespace Pandora.Core.Patchers.Skyrim
 		}
 		public void LoadProjects(List<string> projectPaths)
 		{
-			Dictionary<string, Project> directoryProjectPaths = new(); 
+			Dictionary<string, Project> directoryProjectPaths = new();
 			foreach (var projectPath in projectPaths)
 			{
 				var project = LoadProject(projectPath);
 				if (project == null || !project.Valid) continue;
 				ExtractProject(project);
-				if (project.ProjectDirectory == null) continue; 
+				if (project.ProjectDirectory == null) continue;
 				var projectFolderPath = project.ProjectDirectory.FullName;
 				if (directoryProjectPaths.TryGetValue(projectFolderPath, out var existingProject))
 				{
@@ -135,64 +130,40 @@ namespace Pandora.Core.Patchers.Skyrim
 				}
 			}
 		}
-		public void LoadProjectsParallel(List<string> projectPaths)
+		internal void LoadProjectsParallel(List<string> projectPaths)
 		{
 			List<Project> projects = new List<Project>();
 			List<List<Project>> projectChunks = new List<List<Project>>();
-			foreach(var projectPath in projectPaths)
+			foreach (var projectPath in projectPaths)
 			{
 				var project = LoadProjectHeader(projectPath);
 				if (project == null) continue;
 				projects.Add(project);
 			}
 			List<Project> buffer = new List<Project>();
-			for(int i = 0; i < projects.Count; i++)
+			for (int i = 0; i < projects.Count; i++)
 			{
 				buffer.Add(projects[i]);
-				if ((i % 10 == 0 && i > 0) || i == projects.Count-1)
+				if ((i % 10 == 0 && i > 0) || i == projects.Count - 1)
 				{
 					var chunk = new List<Project>();
-					foreach(var project in buffer) {  chunk.Add(project); }
+					foreach (var project in buffer) { chunk.Add(project); }
 					projectChunks.Add(chunk);
 					buffer.Clear();
-				} 
+				}
 			}
-			foreach(var chunk in projectChunks)
+			foreach (var chunk in projectChunks)
 			{
 				Parallel.ForEach(chunk, project =>
 				{
 					project.Load(packFileCache);
 				});
 			}
-			//Partitioner<Project> partitioner = Partitioner.Create(projects);
-
-			//Parallel.ForEach(partitioner, (project, loopstate) =>
-			//{
-			//	project.Load(packFileCache);
-			//});
 
 			foreach (var project in projects)
 			{
 				ExtractProject(project);
 			}
-		}
-		public void ExtractProjects()
-		{
-			Parallel.ForEach(projectMap.Values, project => { ExtractProject(project); });
-		}
-		public async Task LoadProjectAsync(string projectFilePath)
-		{
-			if (String.IsNullOrWhiteSpace(projectFilePath)) return;
-
-
-				var project = Project.Load(new FileInfo(Path.Join(templateFolder.FullName, projectFilePath)), packFileCache);
-
-				lock (projectMap) projectMap.Add(project.Identifier, project);
-
-
-				await Task.Run(() => { ExtractProject(project); });
-				//ExtractProject(project);
-
 		}
 		public Project? LoadProject(string projectFilePath)
 		{
@@ -210,6 +181,7 @@ namespace Pandora.Core.Patchers.Skyrim
 			}
 
 		}
+		public IProject? LoadProjectEx(string projectFilePath) => LoadProject(projectFilePath) as IProject;
 		public Project? LoadProjectHeader(string projectFilePath)
 		{
 			if (String.IsNullOrEmpty(projectFilePath)) return null;
@@ -223,6 +195,8 @@ namespace Pandora.Core.Patchers.Skyrim
 			}
 		}
 
+		public IProject? LoadProjectHeaderEx(string projectFilePath) => LoadProjectHeader(projectFilePath) as IProject;
+
 		private void ExtractProject(Project project)
 		{
 			lock (fileProjectMap)
@@ -233,7 +207,7 @@ namespace Pandora.Core.Patchers.Skyrim
 					if (!fileProjectMap.ContainsKey(file)) fileProjectMap.Add(file, project);
 				}
 			}
-			lock(folderProjectMap)
+			lock (folderProjectMap)
 			{
 				if (!folderProjectMap.ContainsKey(project.ProjectDirectory!.Name))
 				{
@@ -245,19 +219,20 @@ namespace Pandora.Core.Patchers.Skyrim
 		{
 			packFile = null;
 			string[] sections = name.Split('~');
-			Project project; 
+			Project project;
 			if (!projectMap.TryGetValue(sections[0], out project!))
 			{
-				return false; 
+				return false;
 			}
 			return project.TryLookupPackFile(name, out packFile);
 		}
+
 		private PackFile LookupNestedPackFile(string name)
 		{
-			string[] sections = name.Split('~'); 
+			string[] sections = name.Split('~');
 
 			var targetProject = projectMap[sections[0]];
-			return targetProject.LookupPackFile(sections[1]); 
+			return targetProject.LookupPackFile(sections[1]);
 		}
 
 		private bool ContainsNestedPackFile(string name)
@@ -266,14 +241,29 @@ namespace Pandora.Core.Patchers.Skyrim
 
 			Project targetProject;
 
-			if (!projectMap.TryGetValue(sections[0], out targetProject!)) return false; 
+			if (!projectMap.TryGetValue(sections[0], out targetProject!)) return false;
 
 			return targetProject.ContainsPackFile(sections[1]);
 		}
 
+
 		public bool ProjectLoaded(string name) => projectMap.ContainsKey(name);
 		public Project LookupProject(string name) => projectMap[name];
-
+		public bool TryLookupPackFile(string projectName, string packFileName, out PackFile? packFile)
+		{
+			packFile = null;
+			Project project;
+			if (!projectMap.TryGetValue(projectName, out project!))
+			{
+				return false;
+			}
+			return project.TryLookupPackFile(packFileName, out packFile);
+		}
+		public bool TryLookupPackFileEx(string name, string packFileName, out IPackFile? packFile)
+		{
+			packFile = TryLookupPackFile(name, packFileName, out var exPackFile) ? exPackFile as IPackFile : null;
+			return packFile != null;
+		}
 		public bool TryLookupPackFile(string name, out PackFile? packFile)
 		{
 			name = name.ToLower();
@@ -282,27 +272,28 @@ namespace Pandora.Core.Patchers.Skyrim
 			{
 				return TryLookupNestedPackFile(name, out packFile);
 			}
-			Project project; 
+			Project project;
 			if (!fileProjectMap.TryGetValue(name, out project!)) { return false; }
 
 			return project.TryLookupPackFile(name, out packFile);
 
 		}
-		public PackFile LookupPackFile(string name)
-		{
-			name = name.ToLower();
-			return name.Contains('~') ? LookupNestedPackFile(name) : fileProjectMap[name].LookupPackFile(name);	
-		}
 
-		public bool ContainsPackFile(string name)
+		public bool TryLookupPackFileEx(string name, out IPackFile? packFile)
 		{
-			return name.Contains('~') ? ContainsNestedPackFile(name) : fileProjectMap.ContainsKey(name) && fileProjectMap[name].ContainsPackFile(name);
+			packFile = TryLookupPackFile(name, out var exPackFile) ? exPackFile as IPackFile : null;
+			return packFile != null;
 		}
-		public bool TryLookupProjectFolder(string name, out Project? project)
+		public bool TryLookupProjectFolder(string folderName, out Project? project)
 		{
-			return folderProjectMap.TryGetValue(name, out project);
+			return folderProjectMap.TryGetValue(folderName, out project);
 		}
-		public bool TryActivatePackFilePriority(string name, Project project, out PackFile? packFile)
+		public bool TryLookupProjectFolderEx(string folderName, out IProject? project)
+		{
+			project = TryLookupProjectFolder(folderName, out var exProject) ? exProject as IProject : null;
+			return project != null;
+		}
+		internal bool TryActivatePackFilePriority(string name, Project project, out PackFile? packFile)
 		{
 			packFile = null;
 			if (!project.TryLookupPackFile(name, out packFile))
@@ -316,23 +307,23 @@ namespace Pandora.Core.Patchers.Skyrim
 					packFile.Activate();
 					packFile.PopPriorityXmlAsObjects();
 					ActivePackFiles.Add(packFile);
-					
+
 				}
 			return true;
 		}
-		public bool TryActivatePackFilePriority(string name, out PackFile? packFile)
+		internal bool TryActivatePackFilePriority(string name, out PackFile? packFile)
 		{
-			packFile = null; 
+			packFile = null;
 			if (!TryLookupPackFile(name, out packFile!))
 			{
-				return false; 
+				return false;
 			}
 			lock (ActivePackFiles)
 				lock (packFile)
 				{
 					if (ActivePackFiles.Contains(packFile)) { return true; }
 					packFile.Activate();
-					packFile.PopPriorityXmlAsObjects(); 
+					packFile.PopPriorityXmlAsObjects();
 					ActivePackFiles.Add(packFile);
 				}
 			return true;
@@ -345,11 +336,12 @@ namespace Pandora.Core.Patchers.Skyrim
 					if (ActivePackFiles.Contains(packFile)) return true;
 					packFile.Activate();
 					ActivePackFiles.Add(packFile);
-					
+
 				}
 			return false;
 		}
-		
+
+		public bool TryActivatePackFileEx(IPackFile packFile) => TryActivatePackFile((PackFile)packFile); 
 
 		public bool ApplyPatches()
 		{
@@ -369,7 +361,7 @@ namespace Pandora.Core.Patchers.Skyrim
 			return true;
 		}
 
-		public async Task<bool> ApplyPatchesParallel()
+		internal bool ApplyPatchesParallel()
 		{
 
 
@@ -395,7 +387,7 @@ namespace Pandora.Core.Patchers.Skyrim
 		}
 
 
-		public void SetOutputPath(DirectoryInfo baseDirectory)
+		internal void SetOutputPath(DirectoryInfo baseDirectory)
 		{
 			this.baseOutputDirectory = baseDirectory;
 			fnisParser.SetOutputPath(baseDirectory);

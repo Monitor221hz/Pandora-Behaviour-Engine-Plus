@@ -1,5 +1,6 @@
 ﻿using HKX2E;
 using NLog;
+using Pandora.API.Patch.Engine.Skyrim64;
 using Pandora.Core.Patchers.Skyrim;
 using System;
 using System.Collections.Generic;
@@ -11,20 +12,20 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace Pandora.Patch.Patchers.Skyrim.Hkx;
-public class PackFileSkeleton : PackFile
+public class PackFileSkeleton : PackFile, IPackFileSkeleton
 {
 	public PackFileSkeleton(FileInfo file, Project? project) : base(file, project) { LoadSkeletonData(); }
 	public PackFileSkeleton(FileInfo file) : this(file, null) { }
 	public hkaAnimationContainer MergedAnimationContainer { get; private set; }
 	public hkMemoryResourceContainer ResourceData { get; private set; }
 	public hkpPhysicsData PhysicsData { get; private set; }
-	public hkaRagdollInstance RagdollInstance { get; private set; }	
+	public hkaRagdollInstance RagdollInstance { get; private set; }
 	public List<hkaSkeletonMapper> SkeletonMappers { get; private set; }
 
 	[MemberNotNull(nameof(MergedAnimationContainer), nameof(PhysicsData), nameof(RagdollInstance), nameof(SkeletonMappers), nameof(ResourceData))]
 	private void LoadSkeletonData()
 	{
-		if (Container.namedVariants.Count < 4) 
+		if (Container.namedVariants.Count < 4)
 		{
 			throw new InvalidDataException($"{nameof(PackFileSkeleton)} had too little named variants");
 		}
@@ -32,7 +33,7 @@ public class PackFileSkeleton : PackFile
 		ResourceData = (hkMemoryResourceContainer)Container.namedVariants[1]!.variant!;
 		PhysicsData = (hkpPhysicsData)Container.namedVariants[2]!.variant!;
 		RagdollInstance = (hkaRagdollInstance)Container.namedVariants[3]!.variant!;
-		SkeletonMappers = new(); 
+		SkeletonMappers = new();
 		for (int i = 4; i < Container.namedVariants.Count; i++)
 		{
 			var namedVariant = Container.namedVariants[i];
@@ -46,7 +47,7 @@ public class PackFileSkeleton : PackFile
 		PopObjectAsXml(ResourceData);
 		PopObjectAsXml(PhysicsData);
 		PopObjectAsXml(RagdollInstance);
-		foreach(hkaSkeletonMapper skeletonMapper in SkeletonMappers)
+		foreach (hkaSkeletonMapper skeletonMapper in SkeletonMappers)
 		{
 			PopObjectAsXml(skeletonMapper);
 		}

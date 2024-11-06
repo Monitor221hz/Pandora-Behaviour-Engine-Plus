@@ -10,7 +10,11 @@ using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Pandora.Models.Patch.Engine.Plugins;
-public class JsonPluginLoader : IPluginLoader
+
+/// <summary>
+/// Retired for safety reasons. DO NOT USE UNLESS DEBUGGING.
+/// </summary>
+public class JsonPluginLoader : IMetaPluginLoader
 {
 	private static  JsonSerializerOptions jsonOptions = new()
 	{ 
@@ -29,13 +33,13 @@ public class JsonPluginLoader : IPluginLoader
 		}
 		return pluginInfo != null;
 	}
+
 	public Assembly LoadPlugin(DirectoryInfo directory, IPluginInfo pluginInfo)
 	{
-		string pluginPath = Path.Join(directory.FullName, pluginInfo.Path);
+		string pluginPath = Path.IsPathRooted(pluginInfo.Path) ? pluginInfo.Path : Path.Join(directory.FullName, pluginInfo.Path);
 
 		PluginLoadContext loadContext = new(pluginPath);
 
 		return loadContext.LoadFromAssemblyName(AssemblyName.GetAssemblyName(pluginPath));
 	}
-
 }

@@ -9,9 +9,11 @@ using System.Xml.Linq;
 using XmlCake.Linq;
 using HKX2E;
 using Pandora.Core;
+using Pandora.API.Patch.Engine.Skyrim64; 
+
 namespace Pandora.Patch.Patchers.Skyrim.Hkx;
 
-public class PackFile : IEquatable<PackFile>
+public class PackFile : IEquatable<PackFile>, IPackFile
 {
 
 	public XMap Map { get; private set; }
@@ -67,7 +69,7 @@ public class PackFile : IEquatable<PackFile>
 			UniqueName = $"{ParentProject?.Identifier}~{Name}";
 		}
 	}
-
+	public IProject GetProject() => ParentProject as IProject; 
 
 	protected ILookup<string, XElement>? classLookup = null;
 	public int NodeCount => classLookup == null ? Map.NavigateTo(PackFile.ROOT_CONTAINER_NAME).Elements().Count() : classLookup.Count;

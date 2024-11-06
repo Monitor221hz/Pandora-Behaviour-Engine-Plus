@@ -2,6 +2,7 @@
 using Pandora.API.Patch;
 using Pandora.Core;
 using Pandora.Core.Patchers.Skyrim;
+using Pandora.Models.Patch.Engine.Plugins;
 using Pandora.Patch.Patchers.Skyrim.AnimData;
 using Pandora.Patch.Patchers.Skyrim.AnimSetData;
 using Pandora.Patch.Patchers.Skyrim.Hkx;
@@ -10,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -22,22 +24,23 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 	using ChangeType = IPackFileChange.ChangeType;
 	public class PandoraFragmentAssembler
 	{
-		private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-		public ProjectManager ProjectManager { get; private set; }	
-		public AnimDataManager AnimDataManager { get; private set; }	
-		public AnimSetDataManager AnimSetDataManager { get; private set; }
+		private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-		private DirectoryInfo engineFolder = new DirectoryInfo(Directory.GetCurrentDirectory() + "\\Pandora_Engine");
+		private static readonly PluginLoader pluginLoader = new PluginLoader(); 
 
-		private DirectoryInfo templateFolder = new DirectoryInfo(Directory.GetCurrentDirectory() + "\\Pandora_Engine\\Skyrim\\Template");
+		private readonly DirectoryInfo engineFolder = new DirectoryInfo(Directory.GetCurrentDirectory() + "\\Pandora_Engine");
 
-		private DirectoryInfo defaultOutputMeshFolder = new DirectoryInfo($"{Directory.GetCurrentDirectory()}\\meshes");
+		private readonly DirectoryInfo templateFolder = new DirectoryInfo(Directory.GetCurrentDirectory() + "\\Pandora_Engine\\Skyrim\\Template");
 
-		private Dictionary<string, FileInfo> cachedFiles = new Dictionary<string, FileInfo>();
+		private readonly DirectoryInfo defaultOutputMeshFolder = new DirectoryInfo($"{Directory.GetCurrentDirectory()}\\meshes");
 
 		private static readonly string stateMachineChildrenFormatPath = "{0}/states";
 
 		private static readonly Dictionary<string, ChangeType> changeTypeNameMap =  Enum.GetValues(typeof(ChangeType)).Cast<ChangeType>().ToDictionary(c => c.ToString(), v => v, StringComparer.OrdinalIgnoreCase);
+		public ProjectManager ProjectManager { get; private set; }	
+		public AnimDataManager AnimDataManager { get; private set; }	
+		public AnimSetDataManager AnimSetDataManager { get; private set; }
+
 
 		public PandoraFragmentAssembler()
 		{
@@ -231,6 +234,18 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 			foreach( var file in patchFolder.GetFiles("*.xml"))
 			{
 				AssemblePackFilePatch(file, modInfo);
+			}
+		}
+		public void AssembleCodePatch(DirectoryInfo directoryInfo)
+		{
+			Assembly assembly; 
+			try
+			{
+				assembly = pluginLoader.LoadPlugin(directoryInfo);
+			}
+			catch (Exception e)
+			{
+				logger.Error($"Nemesis Assembler > Code Patch {directoryInfo.FullName}{Path.PathSeparator}{directoryInfo.Name}.dll > Load > FAILED > {e.Message}"); 
 			}
 		}
 		public void AssembleAnimDataPatch(DirectoryInfo folder)

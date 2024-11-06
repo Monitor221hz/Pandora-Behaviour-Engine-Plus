@@ -1,6 +1,8 @@
 ﻿
 namespace Pandora.API.Patch.Engine.Plugins;
-
+/// <summary>
+/// UNSAFE - DO NOT USE
+/// </summary>
 public interface IPluginInfo
 {
 	public const string FILE_HEADER = "plugin";

@@ -18,11 +18,14 @@ namespace Pandora.Core
 	public class BehaviourEngine
 	{
 		private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+		private static readonly PluginLoader pluginLoader = new PluginLoader();
+
 		public static readonly DirectoryInfo AssemblyDirectory = new FileInfo(System.Reflection.Assembly.GetEntryAssembly()!.Location).Directory!;
 
 		public static readonly List<IEngineConfigurationPlugin> EngineConfigurations = new List<IEngineConfigurationPlugin>();
 
 		public readonly static DirectoryInfo? SkyrimGameDirectory; 
+
 		private static IEnumerable<IEngineConfigurationPlugin> CreateConfigurations(Assembly assembly)
 		{
 			foreach(Type type in assembly.GetTypes())
@@ -41,25 +44,24 @@ namespace Pandora.Core
 		}
 		private static void LoadPlugins()
 		{
-			var pluginLoader = new JsonPluginLoader(); 
+			
 			var pluginsDirectory = AssemblyDirectory.CreateSubdirectory("Plugins");
 			Assembly assembly;
 			foreach (DirectoryInfo pluginDirectory in pluginsDirectory.EnumerateDirectories())
 			{
-				if (!pluginLoader.TryLoadMetadata(pluginDirectory, out var pluginInfo))
+#if DEBUG
+				// only for debug. DO NOT introduce json field plugin loading to release builds 
+				IMetaPluginLoader metaPluginLoader = new JsonPluginLoader();
+
+				if (!metaPluginLoader.TryLoadMetadata(pluginDirectory, out var pluginInfo))
 				{
 					continue; 
 				}
-				
-				try
-				{
-					assembly = pluginLoader.LoadPlugin(pluginDirectory, pluginInfo);
-					EngineConfigurations.AddRange(CreateConfigurations(assembly));
-				}
-				catch
-				{
-
-				}
+				assembly = metaPluginLoader.LoadPlugin(pluginDirectory, pluginInfo);
+#else
+				assembly = pluginLoader.LoadPlugin(pluginDirectory);
+#endif
+				EngineConfigurations.AddRange(CreateConfigurations(assembly));
 			}
 		}
 		private void ReadSkyrimPath()

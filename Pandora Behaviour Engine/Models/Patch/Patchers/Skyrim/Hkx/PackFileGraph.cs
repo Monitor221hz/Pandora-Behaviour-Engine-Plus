@@ -1,4 +1,5 @@
 ﻿using HKX2E;
+using Pandora.API.Patch.Engine.Skyrim64;
 using Pandora.Core.Patchers.Skyrim;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace Pandora.Patch.Patchers.Skyrim.Hkx;
-public class PackFileGraph : PackFile, IEquatable<PackFileGraph>
+public class PackFileGraph : PackFile, IPackFileGraph, IEquatable<PackFileGraph>
 {
 
 	public uint InitialEventCount { get; private set; } = 0;

@@ -8,11 +8,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using HKX2E;
+using Pandora.API.Patch.Engine.Skyrim64;
 namespace Pandora.Patch.Patchers.Skyrim.Hkx;
-public class PackFileCharacter : PackFile, IEquatable<PackFileCharacter>
+
+
+
+public class PackFileCharacter : PackFile, IEquatable<PackFileCharacter>, IPackFileCharacter
 {
-	public PackFileCharacter(FileInfo file, Project? project) : base(file, project) 
-	{ 
+	public PackFileCharacter(FileInfo file, Project? project) : base(file, project)
+	{
 		Load();
 		InitialAnimationCount = (uint)StringData.animationNames.Count;
 	}
@@ -27,7 +31,7 @@ public class PackFileCharacter : PackFile, IEquatable<PackFileCharacter>
 
 	private HashSet<string> uniqueAnimations = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-	private object uniqueAnimationLock = new(); 
+	private object uniqueAnimationLock = new();
 
 	[MemberNotNull(nameof(StringData), nameof(Data))]
 	public override void Load()
@@ -48,13 +52,13 @@ public class PackFileCharacter : PackFile, IEquatable<PackFileCharacter>
 	public override void ApplyPriorityChanges(PackFileDispatcher dispatcher)
 	{
 		base.ApplyPriorityChanges(dispatcher);
-		dispatcher.ApplyChangesForNode(Data, this); 
+		dispatcher.ApplyChangesForNode(Data, this);
 		dispatcher.ApplyChangesForNode(StringData, this);
 	}
 	public override void PushPriorityObjects()
 	{
 		base.PushPriorityObjects();
-		PushXmlAsObject(Data);	
+		PushXmlAsObject(Data);
 		PushXmlAsObject(StringData);
 	}
 	public bool Equals(PackFileCharacter? other)

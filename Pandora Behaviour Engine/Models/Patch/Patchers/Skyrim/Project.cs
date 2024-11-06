@@ -13,6 +13,7 @@ using XmlCake.Linq;
 
 namespace Pandora.Core.Patchers.Skyrim
 {
+
 	public class Project : IEquatable<Project>
 	{
 		public bool Equals(Project? other)

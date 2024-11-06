@@ -11,12 +11,12 @@ using System.Threading.Tasks;
 
 namespace Pandora.Patch.Patchers.Skyrim.Pandora
 {
-	public class PandoraConverter
+	public class PandoraFragmentConverter
 	{
 
-		public PandoraFragmentAssembler Assembler { get; private set; }
+		private PandoraFragmentAssembler assembler; 
 
-		public PandoraConverter(ProjectManager projManager, AnimSetDataManager animSDManager, AnimDataManager animDManager) => Assembler = new PandoraFragmentAssembler(projManager, animSDManager, animDManager);
+		public PandoraFragmentConverter(ProjectManager projManager, AnimSetDataManager animSDManager, AnimDataManager animDManager) => assembler = new PandoraFragmentAssembler(projManager, animSDManager, animDManager);
 
 		public void TryGraphInjection(DirectoryInfo folder, PackFile packFile, PackFileChangeSet changeSet)
 		{
@@ -26,8 +26,9 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 
 			//Assembler.AssembleGraphInjection(injectFolder, packFile, changeSet);
 		}
-
-		
+		public void AssembleAnimDataPatch(DirectoryInfo folder) => assembler.AssembleAnimDataPatch(folder);
+		public void AssembleAnimSetDataPatch(DirectoryInfo directoryInfo) => assembler.AssembleAnimSetDataPatch(directoryInfo);
+		public void AssembleCodePatch(DirectoryInfo folder) => throw new NotImplementedException();
 		public void TryGenerateAnimDataPatchFile(DirectoryInfo folder)
 		{
 			var parentFolder = folder.Parent;
