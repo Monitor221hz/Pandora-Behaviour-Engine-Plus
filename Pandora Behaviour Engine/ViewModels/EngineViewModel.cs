@@ -88,7 +88,7 @@ namespace Pandora.ViewModels
         private bool modInfoCache = false;
         private static readonly DirectoryInfo workingDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
 
-        private DirectoryInfo currentDirectory = BehaviourEngine.GameDirectory ?? workingDirectory;
+        private DirectoryInfo currentDirectory = BehaviourEngine.SkyrimGameDirectory ?? workingDirectory;
 
         private Task preloadTask;
 
@@ -429,8 +429,9 @@ namespace Pandora.ViewModels
 			Stopwatch timer = Stopwatch.StartNew();
 			await preloadTask;
             await WriteLogBoxLine("Preload finished.");
+            AssignModPrioritiesFromViewModels(ModViewModels); 
 			List<IModInfo> activeMods = GetActiveModsByPriority();
-
+            
             IModInfo? baseModInfo = Mods.Where(m => m.Code == "pandora").FirstOrDefault();
 
             if (baseModInfo == null) { await WriteLogBoxLine("FATAL ERROR: Pandora Base does not exist. Ensure the engine was installed properly and data is not corrupted."); return; }

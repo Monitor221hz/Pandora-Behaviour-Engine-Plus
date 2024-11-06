@@ -33,7 +33,6 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
             var parentFolder = folder.Parent;
             if (parentFolder == null) return;
 
-
             FileInfo patchFile = new FileInfo(Path.Combine(parentFolder.FullName, $"{folder.Name.Split('~')[0]}.txt"));
             if (patchFile.Exists) return;
 
@@ -41,7 +40,7 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
             {
                 using (var writer = new StreamWriter(writeStream))
                 {
-                    var files = folder.GetFiles("*.txt");
+                    var files = folder.GetFiles("*~*.txt");
                     foreach (var file in files)
                     {
                         var clipName = file.Name.Split('~')[0];
