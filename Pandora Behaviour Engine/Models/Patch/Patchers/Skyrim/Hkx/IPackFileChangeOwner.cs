@@ -1,4 +1,5 @@
-﻿using Pandora.Core;
+﻿using Pandora.API.Patch;
+using Pandora.Core;
 using System.Xml.Linq;
 
 namespace Pandora.Patch.Patchers.Skyrim.Hkx;

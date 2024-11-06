@@ -1,4 +1,5 @@
 ﻿using NLog.Filters;
+using Pandora.API.Patch.Engine.Config;
 using Pandora.Command;
 using Pandora.Core;
 using Pandora.Core.Engine.Configs;
@@ -12,49 +13,26 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Pandora.ViewModels;
-public interface IEngineConfigurationViewModel : INotifyPropertyChanged
+public class EngineConfigurationViewModel : IEngineConfigurationFactory, IEngineConfigurationViewModel
 {
-	public string Name { get; }
-	public RelayCommand? SetCommand { get; }
-	public ObservableCollection<IEngineConfigurationViewModel> NestedViewModels { get; }
-}
-public class EngineConfigurationViewModel<T> : IEngineConfigurationFactory,IEngineConfigurationViewModel where T : class, IEngineConfiguration, new()
-{
+	private IEngineConfigurationFactory engineConfigurationFactory; 
+
     public event PropertyChangedEventHandler? PropertyChanged;
 	private void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
 	{
 		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 	}
-	public string Name { get; private set; }
-	public IEngineConfiguration? Config => new T();
+	public string Name => engineConfigurationFactory.Name;
+	public IEngineConfiguration? Config => engineConfigurationFactory.Config;
 
 	public ObservableCollection<IEngineConfigurationViewModel> NestedViewModels { get; private set; } = new ObservableCollection<IEngineConfigurationViewModel>();
 
 	public RelayCommand? SetCommand { get; } = null;
 
-	public EngineConfigurationViewModel(string name, RelayCommand setCommand) 
+	public EngineConfigurationViewModel(IEngineConfigurationFactory factory,RelayCommand setCommand) 
 	{
-		Name = name;
+		engineConfigurationFactory = factory;
 		SetCommand = setCommand;
-	}
-}
-
-public class EngineConfigurationViewModelContainer : IEngineConfigurationViewModel
-{
-	public event PropertyChangedEventHandler? PropertyChanged;
-	private void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
-	{
-		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-	}
-	public string Name { get; private set; }
-
-	public RelayCommand? SetCommand { get; } = null;
-
-	public ObservableCollection<IEngineConfigurationViewModel> NestedViewModels { get; private set; } = new ObservableCollection<IEngineConfigurationViewModel>();
-	public EngineConfigurationViewModelContainer(string name, params IEngineConfigurationViewModel[] viewModels)
-	{
-		Name = name;
-		foreach (var viewModel in viewModels) { NestedViewModels.Add(viewModel); }
 	}
 }
 

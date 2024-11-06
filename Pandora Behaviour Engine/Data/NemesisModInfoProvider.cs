@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Pandora.Core;
-
+using Pandora.API.Patch;
 namespace Pandora.MVVM.Data;
 
 public class NemesisModInfoProvider : IModInfoProvider

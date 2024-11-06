@@ -18,6 +18,8 @@ using Pandora.Core.IOManagers;
 using Pandora.Patch.Patchers.Skyrim.Hkx;
 using Pandora.Patch.IOManagers;
 using Pandora.Patch.IOManagers.Skyrim;
+using Pandora.API.Patch;
+using Pandora.API.Patch.IOManagers;
 
 namespace Pandora.Patch.Patchers.Skyrim;
 using PatcherFlags = IPatcher.PatcherFlags;
@@ -167,5 +169,10 @@ public class SkyrimPatcher : IPatcher
 
 		nemesisAssembler.SetOutputPath(directoryInfo);
 		pandoraAssembler.SetOutputPath(directoryInfo);
+	}
+
+	public string GetPostUpdateMessages()
+	{
+		return string.Empty;
 	}
 }
