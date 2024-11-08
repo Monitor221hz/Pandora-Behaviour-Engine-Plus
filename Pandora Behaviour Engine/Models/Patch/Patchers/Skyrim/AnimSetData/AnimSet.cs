@@ -24,8 +24,12 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimSetData
 
 		public List<SetAttackEntry> AttackEntries { get; private set; } = new List<SetAttackEntry>();
 
+
+		public List<SetCachedAnimInfo> DualWieldAnimInfos { get; private set; } = new List<SetCachedAnimInfo>();
 		public List<SetCachedAnimInfo> AnimInfos { get; private set; } = new List<SetCachedAnimInfo>();
 
+
+		public void AddDualWieldAnimInfo(SetCachedAnimInfo animInfo) => DualWieldAnimInfos.Add(animInfo);
 		public void AddAnimInfo(SetCachedAnimInfo animInfo) => AnimInfos.Add(animInfo);
 
 		public static AnimSet Read(StreamReader reader)
@@ -37,6 +41,7 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimSetData
 			int numTriggers;
 			int numConditions;
 			int numAttacks;
+			int numDualWieldAnimationInfos;
 			int numAnimationInfos;
 
 			if (!int.TryParse(reader.ReadLineSafe(), out numTriggers)) return animSet;
@@ -49,6 +54,9 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimSetData
 			for (int i = 0; i < numAttacks; i++) { animSet.AttackEntries.Add(SetAttackEntry.ReadEntry(reader)); }
 
 			if (!int.TryParse(reader.ReadLineSafe(), out numAnimationInfos)) return animSet;
+
+			if (!int.TryParse(reader.ReadLineSafe(), out numDualWieldAnimationInfos)) return animSet;
+			for (int i = 0; i < numDualWieldAnimationInfos; i++) { animSet.DualWieldAnimInfos.Add(SetCachedAnimInfo.Read(reader)); }
 			for (int i = 0; i < numAnimationInfos; i++) { animSet.AnimInfos.Add(SetCachedAnimInfo.Read(reader)); }
 
 			animSet.SyncCounts();
@@ -60,6 +68,7 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimSetData
 			NumTriggers = Triggers.Count;
 			NumConditions = Conditions.Count;
 			NumAttackEntries = AttackEntries.Count;
+			NumDualWieldAnimationInfos = DualWieldAnimInfos.Count;
 			NumAnimationInfos = AnimInfos.Count;
 		}
 		public override string ToString()
@@ -82,6 +91,9 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimSetData
 			
 
 			sb.AppendLine(NumAnimationInfos.ToString());
+
+			sb.AppendLine(NumDualWieldAnimationInfos.ToString());
+			if (NumDualWieldAnimationInfos > 0) { sb.AppendJoin("", DualWieldAnimInfos); }
 			if (NumAnimationInfos > 0) { sb.AppendJoin("", AnimInfos); }
 
 			return sb.ToString();
