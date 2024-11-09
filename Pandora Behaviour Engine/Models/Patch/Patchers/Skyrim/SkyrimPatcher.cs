@@ -20,6 +20,7 @@ using Pandora.Patch.IOManagers;
 using Pandora.Patch.IOManagers.Skyrim;
 using Pandora.API.Patch;
 using Pandora.API.Patch.IOManagers;
+using Pandora.Patch.Patchers.Skyrim.AnimSetData;
 
 namespace Pandora.Patch.Patchers.Skyrim;
 using PatcherFlags = IPatcher.PatcherFlags;
@@ -30,11 +31,11 @@ public class SkyrimPatcher : IPatcher
 	private List<IModInfo> activeMods { get; set; } = new List<IModInfo>();
 
 	public void SetTarget(List<IModInfo> mods) => activeMods = mods;
-	private IDataExporter<PackFile> exporter = new PackFileExporter();
+	private IMetaDataExporter<PackFile> exporter = new PackFileExporter();
 
 	private NemesisAssembler nemesisAssembler { get; set; }
 
-	private PandoraFragmentAssembler pandoraAssembler { get; set; }
+	private PandoraAssembler pandoraAssembler { get; set; }
 
 	public IPatcher.PatcherFlags Flags { get; private set; } = IPatcher.PatcherFlags.None;
 
@@ -47,13 +48,13 @@ public class SkyrimPatcher : IPatcher
 	public SkyrimPatcher()
 	{
 		nemesisAssembler = new NemesisAssembler();
-		pandoraAssembler = new PandoraFragmentAssembler(nemesisAssembler);
+		pandoraAssembler = new PandoraAssembler(nemesisAssembler);
 	}
 	public SkyrimPatcher(IMetaDataExporter<PackFile> manager)
 	{
 		exporter = manager;
 		nemesisAssembler = new NemesisAssembler(manager);
-		pandoraAssembler = new PandoraFragmentAssembler(nemesisAssembler);
+		pandoraAssembler = new PandoraAssembler(nemesisAssembler);
 	}
 	public string GetPostRunMessages()
 	{
@@ -92,7 +93,22 @@ public class SkyrimPatcher : IPatcher
 	}
 	public async Task<bool> RunAsync()
 	{
-		return await nemesisAssembler.ApplyPatchesAsync();
+		var loadMetaDataTask = Task.Run(() => { exporter.LoadMetaData(); });
+
+		var projectManager = nemesisAssembler.ProjectManager;
+		var mainTask = await Task.Run<bool>(() => { return projectManager.ApplyPatchesParallel(); });
+		await Task.Run(() => { pandoraAssembler.ApplyNativePatches(); });
+		var animSetDataTask = Task.Run(() => { nemesisAssembler.AnimSetDataManager.MergeAnimSetDataSingleFile(); });
+		var animDataTask = Task.Run(() => { nemesisAssembler.AnimDataManager.MergeAnimDataSingleFile(); });
+		await loadMetaDataTask;
+
+		bool exportSuccess = exporter.ExportParallel(projectManager.ActivePackFiles);
+		var saveMetaDataTask = Task.Run(() => { exporter.SaveMetaData(projectManager.ActivePackFiles); });
+		await animDataTask;
+		await animSetDataTask;
+		await saveMetaDataTask;
+		return mainTask && exportSuccess;
+		//return await nemesisAssembler.ApplyPatchesAsync();
 	}
 
 	public async Task<bool> UpdateAsync()

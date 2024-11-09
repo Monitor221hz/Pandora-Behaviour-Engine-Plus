@@ -1,8 +1,10 @@
 ﻿using HKX2E;
+using Pandora.API.Patch.Engine.Skyrim64;
 using Pandora.Patch.Patchers.Skyrim.AnimData;
 using Pandora.Patch.Patchers.Skyrim.Hkx;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -13,7 +15,8 @@ using XmlCake.Linq;
 
 namespace Pandora.Core.Patchers.Skyrim
 {
-	public class Project : IEquatable<Project>
+
+	public class Project : IProject, IEquatable<Project>
 	{
 		public bool Equals(Project? other)
 		{
@@ -31,16 +34,27 @@ namespace Pandora.Core.Patchers.Skyrim
 
 		public PackFile ProjectFile {  get; private set; }
 
+		public IPackFile GetProjectPackFile() => ProjectFile; 
+
 		/// <summary>
 		/// Sibling projects can only be two way one to one at most - if this ever changes in a skyrim update this property must be changed.
 		/// </summary>
-		public Project? Sibling { get; set; } 
+		public Project? Sibling { get; set; }
+
+		public IProject? GetSibling() => Sibling as IProject; 
 
 		public DirectoryInfo? ProjectDirectory => ProjectFile?.InputHandle.Directory;
 
 		public PackFileCharacter CharacterPackFile { get; private set; } 
-		public PackFile SkeletonFile { get; private set; }
-		public PackFileGraph BehaviorFile { get; private set; } 
+
+		public IPackFileCharacter GetCharacterPackFile() => CharacterPackFile;
+
+		public PackFileSkeleton SkeletonFile { get; private set; }
+
+		public IPackFileSkeleton GetSkeletonPackFile() => SkeletonFile; 
+		public PackFileGraph BehaviorFile { get; private set; }
+
+		public IPackFileGraph GetBehaviorPackFile() => BehaviorFile;
 
 		public ProjectAnimData? AnimData { get; set; }
 
@@ -54,7 +68,7 @@ namespace Pandora.Core.Patchers.Skyrim
 			ProjectFile = projectFile;
 			Identifier = Path.GetFileNameWithoutExtension(ProjectFile.InputHandle.Name);
 		}
-		public Project(PackFile projectfile, PackFileCharacter characterfile, PackFile skeletonfile, PackFileGraph behaviorfile)
+		public Project(PackFile projectfile, PackFileCharacter characterfile, PackFileSkeleton skeletonfile, PackFileGraph behaviorfile)
 		{
 			ProjectFile = projectfile;
 			CharacterPackFile = characterfile;
@@ -67,7 +81,13 @@ namespace Pandora.Core.Patchers.Skyrim
 		
 		public PackFile LookupPackFile(string name) => filesByName[name];
 
-		public bool TryLookupPackFile(string name, out PackFile? packFile) => filesByName.TryGetValue(name, out packFile);
+		public bool TryLookupPackFile(string name,[NotNullWhen(true)] out PackFile? packFile) => filesByName.TryGetValue(name, out packFile);
+
+		public bool TryLookupPackFileEx(string name,[NotNullWhen(true)] out IPackFile? packFile)
+		{
+			packFile = TryLookupPackFile(name, out var exPackFile) ? exPackFile : null;
+			return packFile != null;
+		}
 
 		public bool ContainsPackFile(string name) => filesByName.ContainsKey(name);
 
@@ -110,12 +130,12 @@ namespace Pandora.Core.Patchers.Skyrim
 			PackFileCharacter characterFile = GetCharacterFile(projectFile, cache); 
 			if (!characterFile.InputHandle.Exists) return new Project();
 
-			var rigBehaviorPair = GetSkeletonAndBehaviorFile(projectFile, characterFile, cache);
+			var (skeleton, behavior) = GetSkeletonAndBehaviorFile(projectFile, characterFile, cache);
 
-			PackFile skeletonFile = rigBehaviorPair.skeleton; 
+			PackFileSkeleton skeletonFile = skeleton; 
 			if (!skeletonFile.InputHandle.Exists) return new Project();
 
-			PackFileGraph behaviorFile = rigBehaviorPair.behavior; 
+			PackFileGraph behaviorFile = behavior; 
 			if (!behaviorFile.InputHandle.Exists) return new Project();
 
 			var project = new Project(projectFile, characterFile, skeletonFile, behaviorFile);
@@ -167,9 +187,9 @@ namespace Pandora.Core.Patchers.Skyrim
 			return cache.LoadPackFileCharacter(new FileInfo(Path.Combine(projectFile.InputHandle.DirectoryName!, characterFilePath)));
 		}
 
-		private static (PackFile skeleton, PackFileGraph behavior) GetSkeletonAndBehaviorFile(PackFile projectFile, PackFileCharacter characterFile, PackFileCache cache)
+		private static (PackFileSkeleton skeleton, PackFileGraph behavior) GetSkeletonAndBehaviorFile(PackFile projectFile, PackFileCharacter characterFile, PackFileCache cache)
 		{
-			return (cache.LoadPackFile(new FileInfo(Path.Combine(projectFile.InputHandle.DirectoryName!, characterFile.SkeletonFileName))), cache.LoadPackFileGraph(new FileInfo(Path.Combine(projectFile.InputHandle.DirectoryName!, characterFile.BehaviorFileName))));
+			return (cache.LoadPackFileSkeleton(new FileInfo(Path.Combine(projectFile.InputHandle.DirectoryName!, characterFile.SkeletonFileName))), cache.LoadPackFileGraph(new FileInfo(Path.Combine(projectFile.InputHandle.DirectoryName!, characterFile.BehaviorFileName))));
 		}
 
 

@@ -47,7 +47,7 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 	public AnimDataManager AnimDataManager { get; private set; }
 	public AnimSetDataManager AnimSetDataManager { get; private set; }
 
-	private PandoraConverter pandoraConverter;
+	private PandoraFragmentInterpreter pandoraConverter;
 
 	private IMetaDataExporter<PackFile> exporter = new PackFileExporter();
 	public NemesisAssembler()
@@ -56,7 +56,7 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 		AnimSetDataManager = new AnimSetDataManager(templateFolder, defaultOutputMeshFolder);
 		AnimDataManager = new AnimDataManager(templateFolder, defaultOutputMeshFolder);
 
-		pandoraConverter = new PandoraConverter(ProjectManager, AnimSetDataManager, AnimDataManager);
+		pandoraConverter = new PandoraFragmentInterpreter(ProjectManager, AnimSetDataManager, AnimDataManager);
     }
 	public NemesisAssembler(IMetaDataExporter<PackFile> ioManager)
 	{
@@ -65,7 +65,7 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 		AnimSetDataManager = new AnimSetDataManager(templateFolder, defaultOutputMeshFolder);
 		AnimDataManager = new AnimDataManager(templateFolder, defaultOutputMeshFolder);
 
-		pandoraConverter = new PandoraConverter(ProjectManager, AnimSetDataManager, AnimDataManager);
+		pandoraConverter = new PandoraFragmentInterpreter(ProjectManager, AnimSetDataManager, AnimDataManager);
 	}
 	public NemesisAssembler(IMetaDataExporter<PackFile> ioManager, ProjectManager projManager, AnimSetDataManager animSDManager, AnimDataManager animDManager)
 	{
@@ -73,7 +73,7 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 		this.ProjectManager = projManager;
 		this.AnimSetDataManager = animSDManager;
 		this.AnimDataManager = animDManager;
-		pandoraConverter = new PandoraConverter(ProjectManager, AnimSetDataManager, AnimDataManager);
+		pandoraConverter = new PandoraFragmentInterpreter(ProjectManager, AnimSetDataManager, AnimDataManager);
 	}
 
 	public void SetOutputPath(DirectoryInfo baseOutputDirectory)
@@ -113,9 +113,20 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 		foreach (DirectoryInfo subFolder in subFolders)
 		{
 			if (AssemblePackFilePatch(subFolder, modInfo)) continue;
-			if (subFolder.Name == "animationsetdatasinglefile") AssembleAnimSetDataPatch(subFolder);
-			if (subFolder.Name == "animationdatasinglefile") AssembleAnimDataPatch(subFolder);
-			if (subFolder.Name == "animdata") subFolder.Delete(true);
+			if (subFolder.Name.StartsWith("animationsetdata"))
+			{
+				AssembleAnimSetDataPatch(subFolder);
+				continue; 
+			} 
+			if (subFolder.Name.StartsWith("animationdata"))
+			{
+				AssembleAnimDataPatch(subFolder);
+				continue;
+			}
+			if (subFolder.Name.StartsWith("plugin"))
+			{
+				
+			}
 
 		}
 	}
@@ -125,9 +136,8 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 		foreach (DirectoryInfo subFolder in subFolders)
 		{
 			if (AssemblePackFilePatch(subFolder, modInfo)) continue;
-			if (subFolder.Name == "animationsetdatasinglefile") AssembleAnimSetDataPatch(subFolder);
-			if (subFolder.Name == "animationdatasinglefile") AssembleAnimDataPatch(subFolder);
-			if (subFolder.Name == "animdata") subFolder.Delete(true);
+			if (subFolder.Name.StartsWith("animationsetdata")) AssembleAnimSetDataPatch(subFolder);
+			if (subFolder.Name.StartsWith("animationdata")) AssembleAnimDataPatch(subFolder);
 
 		}
 	}
@@ -137,19 +147,20 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 	public async Task<bool> ApplyPatchesAsync()
 	{
 		var loadMetaDataTask = Task.Run(() => { exporter.LoadMetaData(); });
-		var animSetDataTask = Task.Run(() => { AnimSetDataManager.MergeAnimSetDataSingleFile(); });
 
-		var animDataTask = Task.Run(() => { AnimDataManager.MergeAnimDataSingleFile(); });
 		
-		var mainTask = await ProjectManager.ApplyPatchesParallel();
+		var mainTask = await Task.Run<bool>(() => { return ProjectManager.ApplyPatchesParallel(); });
+		await Task.Run(() => { pandoraConverter.ApplyNativePatches(); });
+		var animSetDataTask = Task.Run(() => { AnimSetDataManager.MergeAnimSetDataSingleFile(); });
+		var animDataTask = Task.Run(() => { AnimDataManager.MergeAnimDataSingleFile(); });
 		await loadMetaDataTask;
+		
 		bool exportSuccess = exporter.ExportParallel(ProjectManager.ActivePackFiles);
 		var saveMetaDataTask = Task.Run(() => { exporter.SaveMetaData(ProjectManager.ActivePackFiles); });
 		await animDataTask;
 		await animSetDataTask;
 		await saveMetaDataTask;
 		return mainTask && exportSuccess;
-
 	}
 
     public void ForwardReplaceEdit(PackFile packFile, string nodeName,XMatch match, PackFileChangeSet changeSet, XPathLookup lookup)
@@ -385,11 +396,11 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 		{
 			pandoraConverter.TryGenerateAnimDataPatchFile(subFolder);
 		}
-		pandoraConverter.Assembler.AssembleAnimDataPatch(folder);
+		pandoraConverter.AssembleAnimDataPatch(folder);
 	}
 	public void AssembleAnimSetDataPatch(DirectoryInfo directoryInfo)
 	{
-		pandoraConverter.Assembler.AssembleAnimSetDataPatch(directoryInfo);
+		pandoraConverter.AssembleAnimSetDataPatch(directoryInfo);
 	}
 	private PackFileChangeSet AssemblePackFileChanges(PackFile packFile, IModInfo modInfo, DirectoryInfo folder)
 	{

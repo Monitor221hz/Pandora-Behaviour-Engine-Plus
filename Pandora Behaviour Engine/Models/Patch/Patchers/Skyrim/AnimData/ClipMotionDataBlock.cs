@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pandora.API.Patch.Engine.Skyrim64.AnimData;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,7 +9,9 @@ using System.Threading.Tasks;
 
 namespace Pandora.Patch.Patchers.Skyrim.AnimData
 {
-	public class ClipMotionDataBlock
+
+
+	public class ClipMotionDataBlock : IClipMotionDataBlock
 	{
 		public string ClipID { get; private set; } = string.Empty;
 		public float Duration { get; private set; } = 1.33f;
@@ -19,19 +22,19 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimData
 		public List<string> Rotations { get; private set; } = new List<string>() { "1 0 0 0 1" };
 
 
-        public ClipMotionDataBlock(string id)
-        {
-            ClipID = id;
-        }
+		public ClipMotionDataBlock(string id)
+		{
+			ClipID = id;
+		}
 
-        public static ClipMotionDataBlock ReadBlock(StreamReader reader)
+		public static ClipMotionDataBlock ReadBlock(StreamReader reader)
 		{
 
 			ClipMotionDataBlock block = new ClipMotionDataBlock("");
 			try
 			{
 				block.Rotations = new List<string>();
-				block.Translations = new List<string>();	
+				block.Translations = new List<string>();
 
 				block.ClipID = reader.ReadLine();
 

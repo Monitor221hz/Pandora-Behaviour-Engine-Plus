@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pandora.API.Patch.Engine.Skyrim64.AnimData;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,42 +8,45 @@ using System.Threading.Tasks;
 
 namespace Pandora.Patch.Patchers.Skyrim.AnimData
 {
-    public class ProjectAnimData
+
+
+	public class ProjectAnimData : IProjectAnimData
 	{
 		public ProjectAnimDataHeader Header { get; private set; } = new ProjectAnimDataHeader();
+		public IProjectAnimDataHeader GetHeader() => Header;
 		public List<ClipDataBlock> Blocks { get; set; } = new List<ClipDataBlock>();
-
+		public List<IClipDataBlock> GetBlocks() => Blocks.Cast<IClipDataBlock>().ToList();
 		public MotionData? BoundMotionDataProject { get; set; }
-
+		public IMotionData? GetBoundMotionData() => BoundMotionDataProject; 
 		private AnimDataManager manager { get; set; }
 
 		private HashSet<string> dummyClipNames { get; set; } = new HashSet<string>();
-        public ProjectAnimData(AnimDataManager manager)
-        {
-            this.manager = manager;
-        }
+		public ProjectAnimData(AnimDataManager manager)
+		{
+			this.manager = manager;
+		}
 
 		public void AddDummyClipData(string clipName)
 		{
-			lock(dummyClipNames)
+			lock (dummyClipNames)
 			{
 				if (dummyClipNames.Contains(clipName)) return;
 			}
-			
+
 
 
 			var id = manager.GetNextValidID().ToString();
-			Blocks.Add(new ClipDataBlock(clipName,id));
+			Blocks.Add(new ClipDataBlock(clipName, id));
 
 			BoundMotionDataProject?.AddDummyClipMotionData(id);
-			lock(dummyClipNames)
+			lock (dummyClipNames)
 			{
 				dummyClipNames.Add(clipName);
 			}
-			
+
 		}
-		
-        public static ProjectAnimData ReadProject(StreamReader reader, int lineLimit, AnimDataManager manager)
+
+		public static ProjectAnimData ReadProject(StreamReader reader, int lineLimit, AnimDataManager manager)
 		{
 			ProjectAnimData project = new ProjectAnimData(manager);
 
