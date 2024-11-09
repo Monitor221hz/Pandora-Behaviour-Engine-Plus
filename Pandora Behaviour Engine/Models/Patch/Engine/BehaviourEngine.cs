@@ -13,6 +13,7 @@ using System.Reflection;
 using Pandora.Models.Patch.Engine;
 using Pandora.Models.Patch.Engine.Plugins;
 using System.Diagnostics;
+using System.Runtime.Versioning;
 namespace Pandora.Core
 {
 	public class BehaviourEngine
@@ -24,7 +25,7 @@ namespace Pandora.Core
 
 		public static readonly List<IEngineConfigurationPlugin> EngineConfigurations = new List<IEngineConfigurationPlugin>();
 
-		public readonly static DirectoryInfo? SkyrimGameDirectory; 
+		public readonly static DirectoryInfo? SkyrimGameDataDirectory; 
 
 		private static void AddConfigurations(Assembly assembly)
 		{
@@ -66,20 +67,30 @@ namespace Pandora.Core
 		{
 
 		}
+		[SupportedOSPlatform("windows")]
+		private static string? GetInstalledPath(string keyPath)
+		{
+			using (var key = Registry.LocalMachine.OpenSubKey(keyPath, false))
+			{
+				if (key == null) { return null; }
+				return key.GetValue("Installed Path") as string;
+			}
+
+		}
 		static BehaviourEngine()
 		{
 			LoadPlugins(); 
 			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
 			{
 				var subKey = "SOFTWARE\\Wow6432Node\\Bethesda Softworks\\Skyrim Special Edition";
-				using (var key = Registry.LocalMachine.OpenSubKey(subKey, false))
+				string? defaultPath = GetInstalledPath(subKey);
+				defaultPath ??= GetInstalledPath("SOFTWARE\\Wow6432Node\\Bethesda Softworks\\Skyrim VR");
+
+				if (defaultPath != null)
 				{
-					string? defaultPath = key?.GetValue("Installed Path") as string;
-					if (defaultPath != null)
-					{
-						SkyrimGameDirectory = new DirectoryInfo(Path.Join(defaultPath, "Data"));
-					}
+					SkyrimGameDataDirectory = new DirectoryInfo(Path.Join(defaultPath, "Data")); 
 				}
+
 			}
 			var args = Environment.GetCommandLineArgs(); 
 			var inputArg = args.Where(s => s.StartsWith("-tesv:", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
@@ -90,7 +101,7 @@ namespace Pandora.Core
 				var pathArr = argArr.Slice(6);
 				var path = pathArr.Trim().ToString();
 
-				SkyrimGameDirectory = new DirectoryInfo(Path.Join(path, "Data")); 
+				SkyrimGameDataDirectory = new DirectoryInfo(Path.Join(path, "Data")); 
 			}
 		}
 
