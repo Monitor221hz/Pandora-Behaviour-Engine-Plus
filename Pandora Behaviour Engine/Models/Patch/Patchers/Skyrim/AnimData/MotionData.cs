@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Pandora.API.Patch.Engine.Skyrim64.AnimData;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -7,11 +9,19 @@ using System.Threading.Tasks;
 
 namespace Pandora.Patch.Patchers.Skyrim.AnimData;
 
-public class MotionData
+
+
+public class MotionData : IMotionData
 {
 	public List<ClipMotionDataBlock> Blocks { get; private set; } = new List<ClipMotionDataBlock>();
 	public Dictionary<int, ClipMotionDataBlock> BlocksByID { get; private set; } = new Dictionary<int, ClipMotionDataBlock>();
 
+	public bool TryGetBlock(int id, [NotNullWhen(true)] out IClipMotionDataBlock? block)
+	{
+		block = BlocksByID.TryGetValue(id, out var exBlock) ? exBlock as IClipMotionDataBlock: null;
+		return block != null;
+	}
+	public List<IClipMotionDataBlock> GetBlocks() => Blocks.Cast<IClipMotionDataBlock>().ToList();
 	public void AddDummyClipMotionData(string id)
 	{
 		lock (Blocks) { Blocks.Add(new ClipMotionDataBlock(id)); }

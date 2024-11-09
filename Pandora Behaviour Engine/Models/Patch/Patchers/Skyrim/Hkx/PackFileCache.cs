@@ -93,6 +93,37 @@ public class PackFileCache
 
 		return (PackFileCharacter)packFile;
 	}
+
+	public PackFileSkeleton LoadPackFileSkeleton(FileInfo file)
+	{
+		PackFile? packFile = null;
+		lock (pathMap)
+		{
+			if (!pathMap.TryGetValue(file.FullName, out packFile))
+			{
+				packFile = new PackFileSkeleton(file);
+				pathMap.Add(file.FullName, packFile);
+			}
+		}
+
+		return (PackFileSkeleton)packFile;
+	}
+
+	public PackFileSkeleton LoadPackFileSkeleton(FileInfo file, Project project)
+	{
+		PackFile? packFile = null;
+		lock (pathMap)
+		{
+			if (!pathMap.TryGetValue(file.FullName, out packFile))
+			{
+				packFile = new PackFileSkeleton(file, project);
+				pathMap.Add(file.FullName, packFile);
+			}
+		}
+
+		return (PackFileSkeleton)packFile;
+	}
+
 	public bool TryLookupSharedProjects(PackFile packFile, [NotNullWhen(true)] out List<Project>? projects)
 	{
 		return sharedPackFileProjectMap.TryGetValue(packFile, out projects); 

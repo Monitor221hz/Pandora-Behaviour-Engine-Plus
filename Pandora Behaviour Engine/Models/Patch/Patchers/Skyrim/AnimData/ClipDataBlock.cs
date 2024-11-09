@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pandora.API.Patch.Engine.Skyrim64.AnimData;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,7 +8,9 @@ using System.Threading.Tasks;
 
 namespace Pandora.Patch.Patchers.Skyrim.AnimData
 {
-	public class ClipDataBlock
+
+
+	public class ClipDataBlock : IClipDataBlock
 	{
 		public string Name { get; private set; } = string.Empty;
 
@@ -28,12 +31,12 @@ namespace Pandora.Patch.Patchers.Skyrim.AnimData
 
 		public ClipDataBlock(string name, string id)
 		{
-			Name = name; 
+			Name = name;
 			ClipID = id;
 		}
 		private static string ReadLineSafe(StreamReader reader)
 		{
-			string? expectedLine = reader.ReadLine(); 
+			string? expectedLine = reader.ReadLine();
 			return expectedLine == null ? string.Empty : expectedLine;
 		}
 		public static ClipDataBlock ReadBlock(StreamReader reader)

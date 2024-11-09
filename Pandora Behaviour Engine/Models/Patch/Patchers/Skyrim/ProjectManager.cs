@@ -29,12 +29,12 @@ namespace Pandora.Core.Patchers.Skyrim
 
 
 		private PackFileCache packFileCache { get; set; } = new();
-		public HashSet<PackFile> ActivePackFiles { get; private set; } = new HashSet<PackFile>();
+
 
 		private FNISParser fnisParser;
 
 		private bool CompleteExportSuccess = true;
-
+		public HashSet<PackFile> ActivePackFiles { get; private set; } = new HashSet<PackFile>();
 
 		public ProjectManager(DirectoryInfo templateFolder, DirectoryInfo outputDirectory)
 		{
@@ -196,7 +196,28 @@ namespace Pandora.Core.Patchers.Skyrim
 		}
 
 		public IProject? LoadProjectHeaderEx(string projectFilePath) => LoadProjectHeader(projectFilePath) as IProject;
-
+		public bool TryLoadOutputPackFile<T>(IPackFile packFile,[NotNullWhen(true)] out T? outPackFile) where T : class, IPackFile
+		{
+			var fileInfo = BehaviourEngine.SkyrimGameDirectory != null ? packFile.GetRebasedOutput(BehaviourEngine.SkyrimGameDirectory) : packFile.OutputHandle; 
+			if (!fileInfo.Exists)
+			{
+				outPackFile = default;
+				return false;
+			}
+			outPackFile = (packFileCache.LoadPackFile(fileInfo) as T)!;
+			return true; 
+		}
+		public bool TryLoadOutputPackFile<T>(IPackFile packFile, string extension, [NotNullWhen(true)] out T? outPackFile) where T : class, IPackFile
+		{
+			var fileInfo = new FileInfo(Path.ChangeExtension((BehaviourEngine.SkyrimGameDirectory != null ? packFile.GetRebasedOutput(BehaviourEngine.SkyrimGameDirectory) : packFile.OutputHandle).FullName, extension));
+			if (!fileInfo.Exists)
+			{
+				outPackFile = default;
+				return false;
+			}
+			outPackFile = (packFileCache.LoadPackFile(fileInfo) as T)!;
+			return true;
+		}
 		private void ExtractProject(Project project)
 		{
 			lock (fileProjectMap)

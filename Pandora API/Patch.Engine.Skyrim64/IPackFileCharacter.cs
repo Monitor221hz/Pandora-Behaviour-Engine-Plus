@@ -14,5 +14,5 @@ public interface IPackFileCharacter
 	uint NewAnimationCount { get; }
 	string SkeletonFileName { get; }
 	hkbCharacterStringData StringData { get; set; }
-	void AddUniqueAnimation(string name);
+	public void AddUniqueAnimation(string name);
 }

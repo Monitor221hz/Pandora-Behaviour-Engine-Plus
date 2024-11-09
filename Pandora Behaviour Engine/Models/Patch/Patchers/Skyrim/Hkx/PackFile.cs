@@ -41,6 +41,10 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 		OutputHandle = new FileInfo(Path.Join(exportDirectory.FullName, relativeOutputFilePath));
 		return OutputHandle;
 	}
+	public FileInfo GetRebasedOutput(DirectoryInfo exportDirectory)
+	{
+		return new FileInfo(Path.Join(exportDirectory.FullName, relativeOutputFilePath));
+	}
 
 	public static bool DebugFiles { get; set; } = false;
 

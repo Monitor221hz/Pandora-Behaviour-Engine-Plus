@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pandora.API.Patch.Engine.Skyrim64.AnimData;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace Pandora.Patch.Patchers.Skyrim.AnimData
 {
-	public class ProjectAnimDataHeader
+
+	public class ProjectAnimDataHeader : IProjectAnimDataHeader
 	{
 		public int LeadInt { get; set; }
 

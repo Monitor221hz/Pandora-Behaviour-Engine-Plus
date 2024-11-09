@@ -26,21 +26,19 @@ namespace Pandora.Core
 
 		public readonly static DirectoryInfo? SkyrimGameDirectory; 
 
-		private static IEnumerable<IEngineConfigurationPlugin> CreateConfigurations(Assembly assembly)
+		private static void AddConfigurations(Assembly assembly)
 		{
 			foreach(Type type in assembly.GetTypes())
 			{
-				Debug.WriteLine(type.Module.FullyQualifiedName);
 				if (typeof(IEngineConfigurationPlugin).IsAssignableFrom(type))
 				{
 					IEngineConfigurationPlugin? result = Activator.CreateInstance(type) as IEngineConfigurationPlugin;
 					if (result != null)
 					{
-						yield return result;
+						EngineConfigurations.Add(result);
 					}
 				}
 			}
-			yield break;
 		}
 		private static void LoadPlugins()
 		{
@@ -61,7 +59,7 @@ namespace Pandora.Core
 #else
 				assembly = pluginLoader.LoadPlugin(pluginDirectory);
 #endif
-				EngineConfigurations.AddRange(CreateConfigurations(assembly));
+				AddConfigurations(assembly);
 			}
 		}
 		private void ReadSkyrimPath()
