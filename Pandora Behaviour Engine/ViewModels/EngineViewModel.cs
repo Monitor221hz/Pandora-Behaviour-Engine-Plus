@@ -99,7 +99,7 @@ namespace Pandora.ViewModels
         private bool modInfoCache = false;
         private static readonly DirectoryInfo workingDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
 
-        private DirectoryInfo currentDirectory = BehaviourEngine.SkyrimGameDirectory ?? workingDirectory;
+        private DirectoryInfo currentDirectory = BehaviourEngine.SkyrimGameDataDirectory ?? workingDirectory;
 
         private Task preloadTask;
 

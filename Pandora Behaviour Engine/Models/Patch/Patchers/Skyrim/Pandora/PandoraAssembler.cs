@@ -36,11 +36,14 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 
 		private static readonly Dictionary<string, ChangeType> changeTypeNameMap =  Enum.GetValues(typeof(ChangeType)).Cast<ChangeType>().ToDictionary(c => c.ToString(), v => v, StringComparer.OrdinalIgnoreCase);
 		
+		private DirectoryInfo outputDirectory = BehaviourEngine.SkyrimGameDataDirectory ?? BehaviourEngine.AssemblyDirectory;
+
 		private List<ISkyrim64Patch> nativePatches = new List<ISkyrim64Patch>() { };
 		public ProjectManager ProjectManager { get; private set; }	
 		public AnimDataManager AnimDataManager { get; private set; }	
 		public AnimSetDataManager AnimSetDataManager { get; private set; }
 
+		
 
 		public PandoraAssembler()
 		{
@@ -244,12 +247,12 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 			{
 				foreach (var folder in pluginFolder.GetDirectories())
 				{
-					AssembleNativePatch(folder); 
+					AssembleNativePatch(modInfo, folder); 
 				}
 			}
 
 		}
-		public void AddNativePatches(Assembly assembly)
+		public void AddNativePatches(IModInfo modInfo, Assembly assembly)
 		{
 			foreach (System.Type type in assembly.GetTypes())
 			{
@@ -258,18 +261,19 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 					ISkyrim64Patch? result = Activator.CreateInstance(type) as ISkyrim64Patch;
 					if (result != null)
 					{
+						result.SetOrigin(modInfo);  
 						nativePatches.Add(result);
 					}
 				}
 			}
 		}
-		public void AssembleNativePatch(DirectoryInfo directoryInfo)
+		public void AssembleNativePatch(IModInfo modInfo, DirectoryInfo directoryInfo)
 		{
 			Assembly assembly; 
 			try
 			{
 				assembly = pluginLoader.LoadPlugin(directoryInfo);
-				AddNativePatches(assembly);
+				AddNativePatches(modInfo, assembly);
 			}
 			catch (Exception e)
 			{
@@ -278,13 +282,13 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 		}
 		public void ApplyNativePatchesParallel()
 		{
-			Parallel.ForEach(nativePatches, patch => { patch.Run(ProjectManager); });
+			Parallel.ForEach(nativePatches, patch => { patch.Run(BehaviourEngine.SkyrimGameDataDirectory ?? BehaviourEngine.AssemblyDirectory, ProjectManager); });
 		}
 		public void ApplyNativePatches()
 		{
 			foreach(var patch in nativePatches)
 			{
-				patch.Run(ProjectManager);	
+				patch.Run(BehaviourEngine.SkyrimGameDataDirectory ?? BehaviourEngine.AssemblyDirectory, ProjectManager);	
 			}
 		}
 		public void AssembleAnimDataPatch(DirectoryInfo folder)
