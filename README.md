@@ -86,7 +86,7 @@ Install [.NET 8 Desktop Runtime](https://dotnet.microsoft.com/en-us/download/dot
 <br/>
 
 ### Patch Order
-Pandora has a drag and drop priority system. Higher priority mods will overwrite conflicting changes from lower priority mods. Direct behaviour conflicts are rare, so manual resolving is almost never needed, but the option is there just in case. 
+Pandora has a drag and drop priority system. Higher priority mods will overwrite conflicting changes from lower priority mods. As patches go further down the list, priority increases. Direct behaviour conflicts are rare, so manual resolving is almost never needed, but the option is there just in case. 
 
 
 ### Mod Cache
