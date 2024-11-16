@@ -48,11 +48,6 @@ namespace Pandora.ViewModels
         public RelayCommand ExitCommand { get; }
 
         public RelayCommand ToggleAllCommand { get; }
-        public RelayCommand CheckUpdateCommand { get; }
-        public RelayCommand ShowAboutCommand {  get; }
-
-        public Func<TaskDialog?>? GetTaskDialogAbout { get; set; }
-        public Func<ContentDialog?>? GetDialogUpdateAvaliable { get; set; }
 
         private List<IModInfo> mods = new();
 		public List<IModInfo> Mods { 
@@ -203,8 +198,6 @@ namespace Pandora.ViewModels
             ExitCommand = new RelayCommand(Exit);
             SetEngineConfigCommand = new RelayCommand(SetEngineConfiguration, CanLaunchEngine);
             ToggleAllCommand = new RelayCommand(ToggleSelectAll);
-            CheckUpdateCommand = new RelayCommand(ShowUpdateDialog);
-            ShowAboutCommand = new RelayCommand(ShowAboutDialog);
 
             CultureInfo culture;
 
@@ -550,24 +543,6 @@ as EngineConfigurationViewModelContainer;
 
             return !EngineRunning;
             
-        }
-
-        private async void ShowAboutDialog(object? parameter)
-        {
-            var taskDialog = GetTaskDialogAbout?.Invoke();
-            if (taskDialog != null)
-            {
-                await taskDialog.ShowAsync(true);
-            }
-        }
-
-        private async void ShowUpdateDialog(object? parameter)
-        {
-            var contentDialog = GetDialogUpdateAvaliable?.Invoke();
-            if (contentDialog != null)
-            {
-                await contentDialog.ShowAsync();
-            }
         }
     }
 }
