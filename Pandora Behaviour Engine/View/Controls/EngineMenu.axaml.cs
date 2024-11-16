@@ -13,14 +13,6 @@ public partial class EngineMenu : UserControl
     public EngineMenu()
     {
         InitializeComponent();
-
-        var viewModel = new EngineViewModel
-        {
-            GetTaskDialogAbout = () => this.FindControl<TaskDialog>("TaskDialogAbout"),
-            GetDialogUpdateAvaliable = () => this.FindControl<ContentDialog>("DialogUpdateAvaliable")
-        };
-
-        DataContext = viewModel;
     }
     protected override void OnLoaded(RoutedEventArgs e)
     {
