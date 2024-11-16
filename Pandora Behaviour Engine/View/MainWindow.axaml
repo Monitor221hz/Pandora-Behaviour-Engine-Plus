@@ -3,21 +3,15 @@
         xmlns:vm="using:Pandora.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:vws ="using:Pandora.Views"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+		    xmlns:vws ="using:Pandora.Views"
+        xmlns:ui="using:FluentAvalonia.UI.Controls"
+        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="500"
         x:Class="Pandora.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Icon="/Assets/pandora.ico"
-		Title="Pandora Behavior Engine" Height="700" Width="780"
-	    RequestedThemeVariant="Dark">
-    <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainWindowViewModel/>
-    </Design.DataContext>
-	<Border Background="{DynamicResource BackgroundHorizontalGradient}">
-		<Grid RowDefinitions="Auto *">
-			<vws:EngineView Grid.Row="1"></vws:EngineView>
-		</Grid>
-	</Border>
+        Background="{DynamicResource BackgroundVerticalGradient}"
+        MinWidth="400"
+        MinHeight="400">
+  <Grid>
+    <vws:EngineView />
+  </Grid>
 </Window>

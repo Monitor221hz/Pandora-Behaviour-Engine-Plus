@@ -22,6 +22,9 @@ using Pandora.API.Patch;
 using Pandora.API.Patch.Engine.Config;
 using System.Reflection;
 using System.Xml.Linq;
+using FluentAvalonia.UI.Controls;
+using Pandora.Views;
+using Avalonia.Controls;
 
 
 namespace Pandora.ViewModels
@@ -45,10 +48,13 @@ namespace Pandora.ViewModels
         public RelayCommand ExitCommand { get; }
 
         public RelayCommand ToggleAllCommand { get; }
+        public RelayCommand CheckUpdateCommand { get; }
+        public RelayCommand ShowAboutCommand {  get; }
 
+        public Func<TaskDialog?>? GetTaskDialogAbout { get; set; }
+        public Func<ContentDialog?>? GetDialogUpdateAvaliable { get; set; }
 
-
-		private List<IModInfo> mods = new();
+        private List<IModInfo> mods = new();
 		public List<IModInfo> Mods { 
             get => mods; 
             set
@@ -196,8 +202,11 @@ namespace Pandora.ViewModels
             LaunchCommand = new RelayCommand(LaunchEngine, CanLaunchEngine);
             ExitCommand = new RelayCommand(Exit);
             SetEngineConfigCommand = new RelayCommand(SetEngineConfiguration, CanLaunchEngine);
-            ToggleAllCommand = new RelayCommand(ToggleSelectAll); 
-			CultureInfo culture;
+            ToggleAllCommand = new RelayCommand(ToggleSelectAll);
+            CheckUpdateCommand = new RelayCommand(ShowUpdateDialog);
+            ShowAboutCommand = new RelayCommand(ShowAboutDialog);
+
+            CultureInfo culture;
 
 			culture = CultureInfo.CreateSpecificCulture("en-US");
 
@@ -541,6 +550,24 @@ as EngineConfigurationViewModelContainer;
 
             return !EngineRunning;
             
+        }
+
+        private async void ShowAboutDialog(object? parameter)
+        {
+            var taskDialog = GetTaskDialogAbout?.Invoke();
+            if (taskDialog != null)
+            {
+                await taskDialog.ShowAsync(true);
+            }
+        }
+
+        private async void ShowUpdateDialog(object? parameter)
+        {
+            var contentDialog = GetDialogUpdateAvaliable?.Invoke();
+            if (contentDialog != null)
+            {
+                await contentDialog.ShowAsync();
+            }
         }
     }
 }

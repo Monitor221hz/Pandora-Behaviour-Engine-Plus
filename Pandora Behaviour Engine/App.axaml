@@ -2,94 +2,40 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="Pandora.App"
              xmlns:local="using:Pandora"
+             xmlns:sty="using:FluentAvalonia.Styling"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
              RequestedThemeVariant="Default">
-             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+  <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
-    <Application.DataTemplates>
-    </Application.DataTemplates>
-  
-    <Application.Styles>
-		<FluentTheme></FluentTheme>
-		<StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
-	</Application.Styles>
-	<Application.Resources>
-		<ResourceDictionary>
-			<ResourceDictionary.MergedDictionaries>
-				<ResourceInclude Source="avares://LoadingIndicators.Avalonia/LoadingIndicators.axaml" />
-			</ResourceDictionary.MergedDictionaries>
-		</ResourceDictionary>
-		<LinearGradientBrush x:Key="HighlightGradient" StartPoint="0%,0%" EndPoint="0%,100%">
-			<GradientStop Color="White" Offset="0.0" />
-			<GradientStop Color="Pink" Offset="1" />
-		</LinearGradientBrush>
+  <Application.Styles>
+    <sty:FluentAvaloniaTheme PreferUserAccentColor="False" />
+    <StyleInclude Source="/Assets/CutsomStyles.axaml" />
+  </Application.Styles>
+  <Application.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="/Assets/Icons.axaml" />
+        <ResourceInclude Source="/Assets/CustomStyleControls.axaml" />
+      </ResourceDictionary.MergedDictionaries>
 
-		<SolidColorBrush x:Key ="HighlightColor" Color="MediumPurple"></SolidColorBrush>
+      <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key='Light'>
+          <LinearGradientBrush x:Key="BackgroundVerticalGradient" StartPoint="0%,0%" EndPoint="0%,100%">
+            <GradientStop Color="#FFEBE0FE" Offset="0.0" />
+            <GradientStop Color="#FFC299FF" Offset="1.0" />
+          </LinearGradientBrush>
+          <SolidColorBrush x:Key="ControlContent" Color="#FFFFFFFF" Opacity="0.35" />
+        </ResourceDictionary>
+        <ResourceDictionary x:Key='Dark'>
+          <LinearGradientBrush x:Key="BackgroundVerticalGradient" StartPoint="0%,0%" EndPoint="0%,100%">
+            <GradientStop Color="#FF120C1C" Offset="0.0" />
+            <GradientStop Color="#FF35244F" Offset="1.0" />
+          </LinearGradientBrush>
+          <SolidColorBrush x:Key="DataGridDisabledVisualElementBackground" Color="#8C000000" />
+          <SolidColorBrush x:Key="ControlContent" Color="#FF000000" Opacity="0.35" />
+        </ResourceDictionary>
+      </ResourceDictionary.ThemeDictionaries>
 
-		<SolidColorBrush x:Key ="ControlColor" Color="#212121"  Opacity=".5"></SolidColorBrush>
-		
-		<SolidColorBrush x:Key="ControlColorSolid" Color="#212121"></SolidColorBrush>
-		<SolidColorBrush x:Key="DarkControlColorSolid" Color="#101010"></SolidColorBrush>
-		<LinearGradientBrush x:Key ="BackgroundVerticalGradient" StartPoint="0%,0%" EndPoint="0%,100%">
-			<GradientStop Color="#292537" Offset="0.0" />
-			<GradientStop Color="#FF800080" Offset="4" />
-		</LinearGradientBrush>
-
-		<LinearGradientBrush x:Key="BackgroundHorizontalGradient" StartPoint="100%,0%" EndPoint="0%,0%">
-			<GradientStop Color="#292537" Offset="0.0" />
-			<GradientStop Color="#3e1c48" Offset="4" />
-		</LinearGradientBrush>
-
-		<LinearGradientBrush x:Key="LightBackgroundHorizontalGradient" StartPoint="100%,0%" EndPoint="0%,0%">
-			<GradientStop Color="#292537" Offset="0.0" />
-			<GradientStop Color="#42033F" Offset="4" />
-		</LinearGradientBrush>
-		<LinearGradientBrush x:Key ="HeaderTextGradient" StartPoint="0%,0%" EndPoint="0%,100%">
-			<GradientStop Color="White" Offset="0.0" />
-
-			<GradientStop Color="#FF9370DB" Offset="3" />
-		</LinearGradientBrush>
-
-		<LinearGradientBrush x:Key ="ParagraphTextGradient" StartPoint="0%,0%" EndPoint="0%,100%">
-			<GradientStop Offset="0.0" Color="White" />
-			<GradientStop Offset="1.0" Color="Silver" />
-		</LinearGradientBrush>
-		
-		<LinearGradientBrush x:Key ="OpaqueParagraphTextGradient" StartPoint="0%,0%" EndPoint="0%,100%" Opacity="0.5">
-			<GradientStop Offset="0.0" Color="White"/>
-			<GradientStop Offset="1.0" Color="Silver" />
-		</LinearGradientBrush>
-		
-		<LinearGradientBrush x:Key ="TransparentParagraphTextGradient" StartPoint="0%,0%" EndPoint="0%,100%" Opacity="0.25">
-			<GradientStop Offset="0.0" Color="White"/>
-			<GradientStop Offset="1.0" Color="Silver" />
-		</LinearGradientBrush>
-		<!-- IconGrabber, MIT License, author: Primer, taken from: https://www.svgrepo.com/svg/347759/grabber -->
-		<PathGeometry x:Key="IconGrabberGeometry">M15 18a1 1 0 100-2 1 1 0 000 2zm1-6a1 1 0 11-2 0 1 1 0 012 0zm-7 6a1 1 0 100-2 1 1 0 000 2zm0-5a1 1 0 100-2 1 1 0 000 2zm7-6a1 1 0 11-2 0 1 1 0 012 0zM9 8a1 1 0 100-2 1 1 0 000 2z</PathGeometry>
-		<GeometryDrawing x:Key="IconGrabber" Brush="{StaticResource ParagraphTextGradient}" Geometry="{StaticResource IconGrabberGeometry}" />
-		
-		<ControlTheme x:Key="ListBoxItemStyle" TargetType="ListBoxItem">
-			<Setter Property="Focusable" Value="False"></Setter>
-			<Style Selector="^:selected">
-				<Setter Property="IsSelected" Value="True"></Setter>
-				<Setter Property="Background"
-			Value="{x:Null}" />
-				<Setter Property="BorderBrush"
-                            Value="{x:Null}" />
-			</Style>
-			<Style Selector="^:pointerover">
-				<Setter Property="Background" Value="{StaticResource HighlightColor}"></Setter>
-				<Setter Property="BorderBrush" Value="{x:Null}"></Setter>
-				<Setter Property="FontFamily" Value="Bahnschrift"></Setter>
-			</Style>
-		</ControlTheme>
-		<ControlTheme x:Key="PrimaryButton" TargetType="Button">
-			<ControlTheme.Setters>
-				<Setter Property="Background" Value="{StaticResource ControlColor}"/>
-				<Setter Property="Foreground" Value="{StaticResource HeaderTextGradient}"/>
-				<Setter Property="FontFamily" Value="Bahnschrift"/>
-				<Setter Property="FontSize" Value="24"/>
-				<Setter Property="BorderThickness" Value="0"/>
-			</ControlTheme.Setters>
-		</ControlTheme>
-	</Application.Resources>
+    </ResourceDictionary>
+  </Application.Resources>
 </Application>

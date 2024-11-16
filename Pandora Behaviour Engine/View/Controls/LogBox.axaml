@@ -2,20 +2,26 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:vm="using:Pandora.ViewModels"
+			       xmlns:vm="using:Pandora.ViewModels"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Pandora.Views.LogBox"
-			 x:DataType="vm:EngineViewModel">
-	<Border CornerRadius="10" Background="{StaticResource ControlColor}">
-		<TextBox Background="Transparent"
-                 Foreground="{StaticResource ParagraphTextGradient}"
-                 Margin ="5 5 5 5"
-                 BorderThickness="0"
-                 FontFamily="Bahnschrift"
-                 FontSize="13"
-                 Name="LogTextBox"
-				 IsReadOnly="True"
-                 Text="{Binding LogText,UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" TextChanged="TextBox_TextChanged">
-		</TextBox>
-	</Border>
+			       x:DataType="vm:EngineViewModel">
+  <Grid>
+    <TextBox x:Name="LogTextBox"
+             IsReadOnly="True"
+             FontFamily="Consolas"
+             FontSize="13"
+             Text="{Binding LogText,UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+             TextChanged="TextBox_TextChanged"
+             TextWrapping="WrapWithOverflow" />
+    <Button Name="CopyCodeButton"
+            IsVisible="False"
+            Padding="4"
+            HorizontalAlignment="Right" VerticalAlignment="Bottom"
+            AutomationProperties.Name="Copy sample code"
+            ToolTip.Tip="Copy sample code">
+      <ui:SymbolIcon Symbol="ClipboardCode" FontSize="20" />
+    </Button>
+  </Grid>
 </UserControl>
