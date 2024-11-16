@@ -2,11 +2,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-						 xmlns:vm="using:Pandora.ViewModels"
+	     xmlns:vm="using:Pandora.ViewModels"
              mc:Ignorable="d" d:DesignWidth="500"
              x:Class="Pandora.Views.EngineMenu"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
-						 x:DataType="vm:EngineViewModel">
+	     x:DataType="vm:EngineViewModel">
 
   <Grid Name="TitleBarHost"
         ColumnDefinitions="Auto,Auto,*,Auto"
@@ -54,21 +54,16 @@
         <ui:TaskDialogCommand Text="Check Update"
                               Description="Check for a new version"
                               IsEnabled="True"
-                              Command="{Binding CheckUpdateCommand}"
-                              CommandParameter="{Binding}"
                               ClosesOnInvoked="False"
-                              DialogResult="CommandResult"
                               IconSource="Refresh" />
         <ui:TaskDialogCommand Text="Github"
                               Description="Visit GitHub page"
                               IsEnabled="True"
                               ClosesOnInvoked="False"
-                              DialogResult="CommandResult"
                               IconSource="{StaticResource IconGithub}" />
         <ui:TaskDialogCommand Text="Discord"
                               Description="Join the Discord group"
                               IsEnabled="True"
-                              Command=""
                               ClosesOnInvoked="False"
                               IconSource="{StaticResource IconDiscord}" />
       </ui:TaskDialog.Commands>
