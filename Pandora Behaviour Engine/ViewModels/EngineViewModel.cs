@@ -22,6 +22,9 @@ using Pandora.API.Patch;
 using Pandora.API.Patch.Engine.Config;
 using System.Reflection;
 using System.Xml.Linq;
+using FluentAvalonia.UI.Controls;
+using Pandora.Views;
+using Avalonia.Controls;
 
 
 namespace Pandora.ViewModels
@@ -46,9 +49,7 @@ namespace Pandora.ViewModels
 
         public RelayCommand ToggleAllCommand { get; }
 
-
-
-		private List<IModInfo> mods = new();
+        private List<IModInfo> mods = new();
 		public List<IModInfo> Mods { 
             get => mods; 
             set
@@ -196,8 +197,9 @@ namespace Pandora.ViewModels
             LaunchCommand = new RelayCommand(LaunchEngine, CanLaunchEngine);
             ExitCommand = new RelayCommand(Exit);
             SetEngineConfigCommand = new RelayCommand(SetEngineConfiguration, CanLaunchEngine);
-            ToggleAllCommand = new RelayCommand(ToggleSelectAll); 
-			CultureInfo culture;
+            ToggleAllCommand = new RelayCommand(ToggleSelectAll);
+
+            CultureInfo culture;
 
 			culture = CultureInfo.CreateSpecificCulture("en-US");
 

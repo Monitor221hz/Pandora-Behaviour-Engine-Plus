@@ -1,0 +1,149 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+			  xmlns:idd="clr-namespace:Avalonia.Xaml.Interactions.DragAndDrop;assembly=Avalonia.Xaml.Interactions.DragAndDrop"
+        xmlns:b="using:Pandora.Behaviors"
+        xmlns:ui="using:FluentAvalonia.UI.Controls">
+  <Design.PreviewWith>
+    <Border Padding="20">
+      <!-- Add Controls for Previewer Here -->
+    </Border>
+  </Design.PreviewWith>
+
+  <Styles.Resources>
+    <b:ModsDataGridDropHandler x:Key="ModsDataGridDropHandler" />
+  </Styles.Resources>
+
+  <!-- Add Styles Here -->
+  <Style Selector="DataGrid.DragAndDrop">
+    <Setter Property="RowHeaderWidth" Value="28" />
+    <Setter Property="(i:Interaction.Behaviors)">
+      <i:BehaviorCollectionTemplate>
+        <i:BehaviorCollection>
+          <idd:ContextDropBehavior Handler="{StaticResource ModsDataGridDropHandler}" />
+        </i:BehaviorCollection>
+      </i:BehaviorCollectionTemplate>
+    </Setter>
+  </Style>
+
+  <Style Selector="DataGrid.DragAndDrop DataGridRow.DraggingUp">
+    <Setter Property="AdornerLayer.Adorner">
+      <Template>
+        <Border BorderThickness="0 2 0 0" BorderBrush="Purple"/>
+      </Template>
+    </Setter>
+  </Style>
+
+  <Style Selector="DataGrid.DragAndDrop DataGridRow.DraggingDown">
+    <Setter Property="AdornerLayer.Adorner">
+      <Template>
+        <Border BorderThickness="0 0 0 2" BorderBrush="Purple"/>
+      </Template>
+    </Setter>
+  </Style>
+  <Style Selector="DataGrid.DragAndDrop DataGridRowHeader">
+    <Setter Property="(i:Interaction.Behaviors)">
+      <i:BehaviorCollectionTemplate>
+        <i:BehaviorCollection>
+          <b:ContextDragWithDirectionBehavior HorizontalDragThreshold="3" VerticalDragThreshold="3" />
+        </i:BehaviorCollection>
+      </i:BehaviorCollectionTemplate>
+    </Setter>
+    <Setter Property="Content">
+      <Template>
+        <PathIcon Width="12" Height="12"
+                  Foreground="{DynamicResource DataGridColumnHeaderForegroundBrush}"
+                  Data="{StaticResource IconGrabber}" />
+      </Template>
+    </Setter>
+  </Style>
+
+  <Style Selector="DataGrid.ItemsDragAndDrop">
+    <Setter Property="(i:Interaction.Behaviors)">
+      <i:BehaviorCollectionTemplate>
+        <i:BehaviorCollection>
+          <idd:ContextDropBehavior Handler="{StaticResource ModsDataGridDropHandler}" />
+        </i:BehaviorCollection>
+      </i:BehaviorCollectionTemplate>
+    </Setter>
+  </Style>
+
+  <Style Selector="DataGridCell">
+    <Setter Property="FontSize" Value="13" />
+  </Style>
+  <Style Selector="DataGridColumnHeader">
+    <Setter Property="FontSize" Value="13" />
+    <Style Selector="^ /template/ ui|FontIcon">
+      <Setter Property="Height" Value="16" />
+      <Setter Property="RenderTransform">
+        <ScaleTransform ScaleX="0.8" ScaleY="0.8" />
+      </Setter>
+    </Style>
+    <Style Selector="^:nth-child(1)">
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="Margin" Value="0" />
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border Name="HeaderBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" Margin="{TemplateBinding Margin}" Padding="{TemplateBinding Padding}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}">
+            <Grid Name="PART_ColumnHeaderRoot" ColumnDefinitions="*,Auto">
+              <Grid Margin="{TemplateBinding Margin}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
+              </Grid>
+              <Rectangle Name="VerticalSeparator" Grid.Column="1" Width="1" VerticalAlignment="Stretch" Fill="{TemplateBinding SeparatorBrush}" IsVisible="{TemplateBinding AreSeparatorsVisible}" />
+              <Grid Name="FocusVisual" IsHitTestVisible="False" IsVisible="False">
+                <Rectangle Name="FocusVisualPrimary" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Fill="Transparent" IsHitTestVisible="False" Stroke="{DynamicResource DataGridCellFocusVisualPrimaryBrush}" StrokeThickness="2" />
+                <Rectangle Name="FocusVisualSecondary" Margin="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Fill="Transparent" IsHitTestVisible="False" Stroke="{DynamicResource DataGridCellFocusVisualSecondaryBrush}" StrokeThickness="1" />
+              </Grid>
+            </Grid>
+          </Border>
+        </ControlTemplate>
+      </Setter>
+    </Style>
+    <Style Selector="^:nth-child(1) /template/ Grid#IconsOptionSort">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+    <Style Selector="^:nth-last-child(1)">
+      <Setter Property="CornerRadius" Value="0 4 0 0" />
+    </Style>
+  </Style>
+  
+  
+
+  <Style Selector="GridSplitter.innerStyle">
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                CornerRadius="{TemplateBinding CornerRadius}"
+                Background="{TemplateBinding Background}">
+          <Border Width="24" Height="3" CornerRadius="4" Background="{DynamicResource SystemFillColorAttentionBrush}" />
+        </Border>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+
+
+
+  <Style Selector="AutoCompleteBox.SampleApp /template/ TextBox#PART_TextBox">
+    <Setter Property="InnerRightContent">
+      <Template>
+        <StackPanel Orientation="Horizontal">
+          <Button Content="&#xE8BB;"
+                     FontFamily="{StaticResource SymbolThemeFontFamily}"
+                     Theme="{StaticResource TransparentButton}"
+                     Command="{Binding $parent[TextBox].Clear}"
+                     IsVisible="{Binding Text, RelativeSource={RelativeSource FindAncestor, AncestorType=TextBox}, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+          <Button Content="&#xE721;"
+                     FontFamily="{StaticResource SymbolThemeFontFamily}"
+                     Theme="{StaticResource TransparentButton}"
+                     Command="{Binding $parent[TextBox].Clear}"
+                     IsHitTestVisible="False"/>
+        </StackPanel>
+      </Template>
+    </Setter>
+  </Style>
+  
+</Styles>

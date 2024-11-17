@@ -3,43 +3,25 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Pandora.ViewModels"
-			 xmlns:li="using:LoadingIndicators.Avalonia"
-             mc:Ignorable="d" d:DesignWidth="256" d:DesignHeight="64"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             mc:Ignorable="d" d:DesignWidth="256" d:DesignHeight="60"
              x:Class="Pandora.Views.LaunchElement"
-			 x:DataType="vm:EngineViewModel">
-	<Grid>
-		<Button Background="{DynamicResource ControlColor}" 
-				Foreground="{DynamicResource HeaderTextGradient}"
-				Command="{Binding LaunchCommand}"
-				HorizontalAlignment="Stretch"
-				VerticalAlignment="Center"
-				VerticalContentAlignment="Center"
-				HorizontalContentAlignment="Center"
-				CornerRadius="10"
-				IsEnabled="{Binding !EngineRunning}"
-				Height="75"
-				>
-			<Button.Content>
-				<Grid>
-					<li:LoadingIndicator Mode="ThreeDots"
-					 SpeedRatio="1.2"
-					 Width="200"
-					 IsHitTestVisible="False"
-					 Foreground="{DynamicResource HighlightGradient}"
-					 Background="Transparent"
-					 IsActive="{Binding EngineRunning}"
-										 IsVisible="{Binding EngineRunning}">
-					</li:LoadingIndicator>
-					<Image Source="/Assets/play-symbol.png"
-						   VerticalAlignment="Center"
-						   RenderOptions.BitmapInterpolationMode="HighQuality"
-						   Height="60"
-						   Width="60"
-						   IsVisible="{Binding !EngineRunning}">
-					</Image>
-				</Grid>
-			</Button.Content>
-		</Button>
-
-	</Grid>
+						 x:DataType="vm:EngineViewModel">
+  <Button Command="{Binding LaunchCommand}"
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Center"
+          Classes="accent"
+          VerticalContentAlignment="Center"
+          HorizontalContentAlignment="Center"
+          IsEnabled="{Binding !EngineRunning}"
+          Height="54">
+    <Button.Content>
+      <Viewbox>
+        <Grid>
+          <ui:ProgressRing IsActive="{Binding EngineRunning}" IsVisible="{Binding EngineRunning}" />
+          <PathIcon Data="{StaticResource IconPlay}" Margin="0 2" Foreground="{DynamicResource SolidBackgroundFillColorQuarternary}" IsVisible="{Binding !EngineRunning}" />
+        </Grid>
+      </Viewbox>
+    </Button.Content>
+  </Button>
 </UserControl>

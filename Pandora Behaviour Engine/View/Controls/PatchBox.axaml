@@ -2,236 +2,75 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
-			 xmlns:idd="clr-namespace:Avalonia.Xaml.Interactions.DragAndDrop;assembly=Avalonia.Xaml.Interactions.DragAndDrop"
-			 xmlns:b="using:Pandora.Behaviors"
-			 xmlns:vm="using:Pandora.ViewModels"
-			 xmlns:cr="using:Pandora.Core"
+			       xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+			       xmlns:idd="clr-namespace:Avalonia.Xaml.Interactions.DragAndDrop;assembly=Avalonia.Xaml.Interactions.DragAndDrop"
+			       xmlns:b="using:Pandora.Behaviors"
+			       xmlns:vm="using:Pandora.ViewModels"
+			       xmlns:cr="using:Pandora.Core"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Pandora.Views.PatchBox"
-			 x:DataType="vm:EngineViewModel">
-	<UserControl.Styles>
-		<Style Selector="DataGrid.DragAndDrop">
-			<Style.Resources>
-				<b:ModsDataGridDropHandler x:Key="ModsDataGridDropHandler" />
-			</Style.Resources>
-			<Setter
-			  Property="RowHeaderWidth"
-			  Value="24" />
-			<Setter Property="(i:Interaction.Behaviors)">
-				<i:BehaviorCollectionTemplate>
-					<i:BehaviorCollection>
-						<idd:ContextDropBehavior Handler="{StaticResource ModsDataGridDropHandler}" />
-					</i:BehaviorCollection>
-				</i:BehaviorCollectionTemplate>
-			</Setter>
-		</Style>
+			       x:DataType="vm:EngineViewModel">
 
-		<Style Selector="DataGrid.DragAndDrop DataGridRow.DraggingUp">
-			<Setter Property="AdornerLayer.Adorner">
-				<Template>
-					<Border BorderThickness="0 2 0 0" BorderBrush="Purple"/>
-				</Template>
-			</Setter>
-		</Style>
-
-		<Style Selector="DataGrid.DragAndDrop DataGridRow.DraggingDown">
-			<Setter Property="AdornerLayer.Adorner">
-				<Template>
-					<Border BorderThickness="0 0 0 2" BorderBrush="Purple"/>
-				</Template>
-			</Setter>
-		</Style>
-		<Style Selector="DataGrid.DragAndDrop DataGridRowHeader">
-			<Setter Property="(i:Interaction.Behaviors)">
-				<i:BehaviorCollectionTemplate>
-					<i:BehaviorCollection>
-						<b:ContextDragWithDirectionBehavior HorizontalDragThreshold="3" VerticalDragThreshold="3" />
-					</i:BehaviorCollection>
-				</i:BehaviorCollectionTemplate>
-			</Setter>
-			<Setter Property="Content">
-				<Template>
-					<Image
-					  Margin="12,0,12,0"
-					  Width="12"
-					  Height="12"
-					  VerticalAlignment="Center"
-					  HorizontalAlignment="Center">
-						<Image.Source>
-							<DrawingImage Drawing="{StaticResource IconGrabber}" />
-						</Image.Source>
-					</Image>
-				</Template>
-			</Setter>
-		</Style>
-
-		<Style Selector="DataGrid.ItemsDragAndDrop">
-			<Style.Resources>
-				<b:ModsDataGridDropHandler x:Key="ModsDataGridDropHandler" />
-			</Style.Resources>
-			<Setter Property="(i:Interaction.Behaviors)">
-				<i:BehaviorCollectionTemplate>
-					<i:BehaviorCollection>
-						<idd:ContextDropBehavior Handler="{StaticResource ModsDataGridDropHandler}" />
-					</i:BehaviorCollection>
-				</i:BehaviorCollectionTemplate>
-			</Setter>
-		</Style>
-	</UserControl.Styles>
-	<Border Background="{StaticResource ControlColor}" CornerRadius="5" Margin="5 3 5 3">
-		<Grid RowDefinitions="Auto Auto *">
-			<Grid Margin="0">
-				<TextBox Foreground="{StaticResource HeaderTextGradient}"
-						 Background="{StaticResource DarkControlColorSolid}"
-						 BorderThickness="0"
-						 Margin="0 2 0 2"
-						 Padding="2"
-						 FontFamily="Bahnschrift"
-						 FontSize="12"
-						 TextWrapping="Wrap"
-						 TextAlignment="Center"
-						 VerticalAlignment="Top"
-						 Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-				</TextBox>
-				<TextBlock Margin="0 2 2 2"
-						   Padding="2"
-						   Foreground="{StaticResource TransparentParagraphTextGradient}"
-						   Background="Transparent"
-						   FontFamily="Bahnschrift"
-						   FontSize="12"
-						   IsHitTestVisible="False"
-						   Text="{Binding SearchBGText, Mode=OneWay}"
-						   TextWrapping="Wrap"
-						   TextAlignment="Center"
-						   VerticalAlignment="Top">
-				</TextBlock>
-			</Grid>
-			<DataGrid Background="Transparent" 
-					  Name="ModInfoDataGrid"
-					  Grid.Row="2" 
-					  ItemsSource="{Binding ModViewModels, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-					  CanUserResizeColumns="True" 
-					  IsReadOnly="True"
-					  Margin="5"
-					  GridLinesVisibility="None" 
-					  HeadersVisibility="All"
-					  CanUserReorderColumns="True"
-					  CanUserSortColumns="True"
-					  RowHeight="19"
-					  IsEnabled="{Binding !EngineRunning}"
-					  Classes="DragAndDrop ItemsDragAndDrop"
-					  ColumnHeaderHeight="20">
-				<DataGrid.ColumnHeaderTheme>
-					<ControlTheme TargetType="DataGrid">
-						<Setter Property="Background" Value="{StaticResource BackgroundHorizontalGradient}"></Setter>
-					</ControlTheme>
-				</DataGrid.ColumnHeaderTheme>
-				<DataGrid.Columns>
-					<DataGridTemplateColumn Header="{Binding}">
-						<DataGridTemplateColumn.HeaderTemplate>
-							<DataTemplate x:DataType="vm:EngineViewModel">
-								<Border Grid.Column="1"
-										Margin="0 2 0 2"
-										CornerRadius="2"
-										BorderThickness="0"
-										Background="{StaticResource BackgroundHorizontalGradient}">
-									<CheckBox Command="{Binding ToggleAllCommand}"
-											  CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}">
-										<CheckBox.RenderTransform>
-											<ScaleTransform ScaleX="0.7" ScaleY="0.7"></ScaleTransform>
-										</CheckBox.RenderTransform>
-									</CheckBox>
-									</Border>
-							</DataTemplate>
-						</DataGridTemplateColumn.HeaderTemplate>
-						<DataGridTemplateColumn.CellTemplate>
-							<DataTemplate x:DataType="vm:ModInfoViewModel">
-								<CheckBox IsChecked="{Binding Active}">
-									<CheckBox.RenderTransform>
-										<ScaleTransform ScaleX="0.7" ScaleY="0.7"></ScaleTransform>
-									</CheckBox.RenderTransform>
-								</CheckBox>							
-							</DataTemplate>
-						</DataGridTemplateColumn.CellTemplate>
-					</DataGridTemplateColumn>
-					<DataGridTextColumn Header="{Binding}"
-										x:DataType="vm:ModInfoViewModel" 
-										Binding="{Binding Name}" 
-										FontSize="12"
-										FontFamily="Bahnschrift">
-						<DataGridTextColumn.HeaderTemplate>
-							<DataTemplate>
-								<Border Grid.Column="1" 
-										Margin="0 2 0 2" 
-										CornerRadius="2" 
-										BorderThickness="0" 
-										Background="{StaticResource BackgroundHorizontalGradient}">
-									<TextBlock Foreground="{StaticResource HighlightGradient}" 
-											   Padding="13 0 2 0"
-											   Text="Name" 
-											   VerticalAlignment="Center"
-											   FontSize="12"
-											   FontWeight="SemiBold"
-											   FontFamily="Bahnschrift">
-									</TextBlock>
-								</Border>
-							</DataTemplate>
-						</DataGridTextColumn.HeaderTemplate>
-					</DataGridTextColumn>
-					<DataGridTextColumn Header="{Binding}"
-						x:DataType="vm:ModInfoViewModel"
-						Binding="{Binding Author}"
-						FontSize="12"
-						FontFamily="Bahnschrift">
-						<DataGridTextColumn.HeaderTemplate>
-							<DataTemplate>
-								<Border Grid.Column="1"
-										Margin="0 2 0 2"
-										CornerRadius="2"
-										BorderThickness="0"
-										Background="{StaticResource BackgroundHorizontalGradient}">
-									<TextBlock Foreground="{StaticResource HighlightGradient}"
-											   Padding="13 0 2 0"
-											   Text="Author"
-											   VerticalAlignment="Center"
-											   FontSize="12"
-											   FontWeight="SemiBold"
-											   FontFamily="Bahnschrift">
-									</TextBlock>
-								</Border>
-							</DataTemplate>
-						</DataGridTextColumn.HeaderTemplate>
-					</DataGridTextColumn>
-					<DataGridTextColumn Header="{Binding}"
-										x:DataType="vm:ModInfoViewModel"
-										Binding="{Binding Version}"
-										FontSize="12"
-										FontFamily="Bahnschrift">
-						<DataGridTextColumn.HeaderTemplate>
-							<DataTemplate>
-								<Border Grid.Column="1"
-										Margin="0 2 0 2"
-										CornerRadius="2"
-										BorderThickness="0"
-										Background="{StaticResource BackgroundHorizontalGradient}">
-									<TextBlock Foreground="{StaticResource HighlightGradient}"
-											   Padding="13 0 2 0"
-											   Text="Version"
-											   VerticalAlignment="Center"
-											   FontSize="12"
-											   FontWeight="SemiBold"
-											   FontFamily="Bahnschrift">
-									</TextBlock>
-								</Border>
-							</DataTemplate>
-						</DataGridTextColumn.HeaderTemplate>
-					</DataGridTextColumn>
-				</DataGrid.Columns>
-			</DataGrid>
-
-
-		</Grid>		
-	</Border>
+  <DataGrid x:Name="ModInfoDataGrid"
+            Grid.Row="1"
+            ItemsSource="{Binding ModViewModels, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            RowHeight="20"
+            GridLinesVisibility="None"
+            HeadersVisibility="All"
+            CanUserSortColumns="True"
+            CanUserResizeColumns="True"
+            CanUserReorderColumns="True"
+            CornerRadius="4"
+            ClipToBounds="True"
+            IsReadOnly="True"
+            IsEnabled="{Binding !EngineRunning}"
+            Background="{DynamicResource ControlContent}"
+            Classes="DragAndDrop ItemsDragAndDrop">
+    <DataGrid.Columns>
+      <DataGridTemplateColumn Header="{Binding}"
+                              CanUserResize="False"
+                              CanUserReorder="False"
+                              CanUserSort="False"
+                              MinWidth="30"
+                              MaxWidth="30"
+                              Width="*">
+        <DataGridTemplateColumn.HeaderTemplate>
+          <DataTemplate x:DataType="vm:EngineViewModel">
+            <CheckBox Command="{Binding ToggleAllCommand}" Padding="0" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"
+                      CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}">
+              <CheckBox.RenderTransform>
+                <ScaleTransform ScaleX="0.75" ScaleY="0.75"  />
+              </CheckBox.RenderTransform>
+            </CheckBox>
+          </DataTemplate>
+        </DataGridTemplateColumn.HeaderTemplate>
+        <DataGridTemplateColumn.CellTemplate>
+          <DataTemplate x:DataType="vm:ModInfoViewModel">
+            <CheckBox IsChecked="{Binding Active}" Padding="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+              <CheckBox.RenderTransform>
+                <ScaleTransform ScaleX="0.75" ScaleY="0.75" />
+              </CheckBox.RenderTransform>
+            </CheckBox>
+          </DataTemplate>
+        </DataGridTemplateColumn.CellTemplate>
+      </DataGridTemplateColumn>
+      <DataGridTextColumn Header="Name"
+                          Binding="{Binding Name}"
+                          x:DataType="vm:ModInfoViewModel"
+                          MinWidth="100"
+                          Width="*" />
+      <DataGridTextColumn Header="Author"
+                          Binding="{Binding Author}"
+                          x:DataType="vm:ModInfoViewModel"
+                          MinWidth="84"
+                          Width="*" />
+      <DataGridTextColumn Header="Version"
+                          Binding="{Binding Version}"
+                          x:DataType="vm:ModInfoViewModel"
+                          MinWidth="64"
+                          Width="*" />
+    </DataGrid.Columns>
+  </DataGrid>
 
 </UserControl>
