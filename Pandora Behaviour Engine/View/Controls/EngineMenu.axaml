@@ -29,7 +29,7 @@
           </Style>
         </MenuItem.Styles>
       </MenuItem>
-      <MenuItem Header="About" Command="{Binding ShowAboutCommand}" CommandParameter="{Binding}" />
+      <MenuItem Header="About" />
     </Menu>
     <Border Padding="10 6" Grid.Column="2">
       <AutoCompleteBox x:Name="searchTextBox"
