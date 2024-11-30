@@ -287,6 +287,7 @@ as EngineConfigurationViewModelContainer;
             var launchDirectory = BehaviourEngine.AssemblyDirectory.FullName;
             ModViewModels.Clear(); 
             Mods.Clear();
+            modsByCode.Clear();
             var pluginsTask = SetupConfigurationOptions();
             List<IModInfo> modInfoList;
             {
