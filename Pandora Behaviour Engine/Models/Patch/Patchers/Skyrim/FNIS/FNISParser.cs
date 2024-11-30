@@ -1,4 +1,5 @@
-﻿using HKX2E;
+﻿using Avalonia.Skia;
+using HKX2E;
 using Pandora.API.Patch;
 using Pandora.Core;
 using Pandora.Core.Patchers.Skyrim;
@@ -91,37 +92,6 @@ public class FNISParser
     }
 	private ProjectManager projectManager;
 	private PatchNodeCreator patchNodeCreator = new("fnis");
-	public void ScanProjectBehaviors(Project project, DirectoryInfo absoluteOutputDirectory)
-	{
-		lock (parsedBehaviorFiles)
-		{
-			if (!parsedBehaviorFiles.Add(project.BehaviorFile))
-			{
-				return;
-			}
-		}
-
-		var behaviorFolder = new DirectoryInfo(Path.Join(absoluteOutputDirectory.FullName, project.BehaviorFile.InputHandle.Directory!.Name));
-		if (!behaviorFolder.Exists)
-		{
-			return;
-		}
-		var modFiles = behaviorFolder.GetFiles("FNIS*.hkx");
-
-		if (modFiles.Length > 0) { projectManager.TryActivatePackFile(project.BehaviorFile); }
-
-		foreach (var modFile in modFiles)
-		{
-			try
-			{
-				InjectGraphReference(modFile, project.BehaviorFile);
-			}
-			catch
-			{
-				logger.Warn($"FNIS Parser > Inject > Behavior > {modFile.Name} > FAILED");
-			}
-		}
-	}
 	public void ScanProjectAnimations(Project project, DirectoryInfo absoluteOutputDirectory)
 	{
 		lock (skipAnimlistProjects)
@@ -139,19 +109,32 @@ public class FNISParser
 		if (!animationsFolder.Exists) { return; }
 		var modAnimationFolders = animationsFolder.GetDirectories();
 
+		var behaviorFolder = new DirectoryInfo(Path.Join(absoluteOutputDirectory.FullName, project.BehaviorFile.InputHandle.Directory!.Name));
+		if (!behaviorFolder.Exists)
+		{
+			return;
+		}
 		if (modAnimationFolders.Length == 0) { return; }
-		Parallel.ForEach(modAnimationFolders, folder => { ParseAnimlistFolder(folder, project, projectManager); });
+		Parallel.ForEach(modAnimationFolders, folder => { ParseAnimlistFolder(folder, behaviorFolder, project, projectManager); });
 	}
     public void ScanProjectAnimlist(Project project)
 	{
 		var currentDirectory = new DirectoryInfo(Path.Join((BehaviourEngine.SkyrimGameDirectory ?? BehaviourEngine.AssemblyDirectory).FullName, project.ProjectFile.RelativeOutputDirectoryPath));
 
-		ScanProjectBehaviors(project, currentDirectory);
 		ScanProjectAnimations(project, currentDirectory);
 	}
-	private bool InjectGraphReference(FileInfo sourceFile, PackFileGraph destPackFile)
+	private bool InjectGraphReference(DirectoryInfo folder, DirectoryInfo behaviorFolder, PackFileGraph destPackFile)
 	{
 		string stateFolderName;
+		FileInfo sourceFile = new(Path.Join(behaviorFolder.FullName, $"FNIS_{folder.Name}_Behavior.hkx")); 
+		if (!sourceFile.Exists) 
+		{ 
+			sourceFile = new(Path.Join(behaviorFolder.FullName, $"FNIS_{folder.Name}_{behaviorFolder.Parent!.Name}_Behavior.hkx"));
+			if (!sourceFile.Exists) 
+			{ 
+				return false; 
+			}
+		}	
 		if (!stateMachineMap.TryGetValue(destPackFile.UniqueName, out stateFolderName!)) { return false; }
 		projectManager.TryActivatePackFile(destPackFile); 
 		string nameWithoutExtension = Path.GetFileNameWithoutExtension(sourceFile.Name);
@@ -166,50 +149,42 @@ public class FNISParser
 		return true;
 	}
 
-	private void ParseAnimlistFolder(DirectoryInfo folder, Project project, ProjectManager projectManager)
+	private void ParseAnimlistFolder(DirectoryInfo folder, DirectoryInfo behaviorFolder, Project project, ProjectManager projectManager)
 	{
-		var animlistFiles = folder.GetFiles("*list.txt");
-
-		if (animListExcludeMap.TryGetValue(project.Identifier, out var excludeName))
+		FileInfo animListFile = new FileInfo(Path.Join(folder.FullName, $"FNIS_{folder.Name}_List.txt"));
+		if (!animListFile.Exists) 
 		{
-			animlistFiles = animlistFiles.Where(f => !f.Name.EndsWith(excludeName)).ToArray();
+			animListFile = new FileInfo(Path.Join(folder.FullName, $"FNIS_{folder.Name}_{behaviorFolder.Parent!.Name}_List.txt")); 
+			if (!animListFile.Exists) { return; }
 		}
-
-		if (animlistFiles.Length == 0) { return; }
-
-		List<FNISAnimationList> animLists = new();
-		foreach (var animlistFile in animlistFiles)
-		{
+		FNISAnimationList animList; 
 #if DEBUG
-			FNISAnimationList animList = FNISAnimationList.FromFile(animlistFile);
-			lock (ModInfos)
-			{
-				ModInfos.Add(animList.ModInfo);
-			}
-			animLists.Add(animList);
+		animList = FNISAnimationList.FromFile(animListFile);
 #else
 			try
 			{
-				FNISAnimationList animList = FNISAnimationList.FromFile(animlistFile);
+				animList = FNISAnimationList.FromFile(animListFile);
+			}
+			catch (Exception ex)
+			{
+				logger.Warn($"FNIS Parser > Serialize > Animlist > {animListFile.Name} > FAILED > {ex.ToString()}");
+				return;
+			}
+#endif
+
+		if (animList.BuildPatches(project, projectManager, patchNodeCreator))
+		{
+			if (InjectGraphReference(folder, behaviorFolder, project.BehaviorFile))
+			{
 				lock (ModInfos)
 				{
 					ModInfos.Add(animList.ModInfo);
 				}
-				animLists.Add(animList);
 			}
-			catch (Exception ex)
+			else
 			{
-				logger.Warn($"FNIS Parser > Serialize > Animlist > {animlistFile.Name} > FAILED > {ex.ToString()}");
+				logger.Warn($"FNIS Parser > Inject Graph > {animListFile.Name} > FAILED");
 			}
-#endif
-		}
-		if (animLists.Count > 1)
-		{
-			Parallel.ForEach(animLists, animlist => { animlist.BuildPatches(project, projectManager, patchNodeCreator); });
-		}
-		else if (animLists.Count > 0)
-		{
-			animLists[0].BuildPatches(project, projectManager, patchNodeCreator);
 		}
 	}
 	public void SetOutputPath(DirectoryInfo outputPath)

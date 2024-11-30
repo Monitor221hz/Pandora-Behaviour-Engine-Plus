@@ -168,7 +168,6 @@ public partial class FNISAnimation : IFNISAnimation
 		var projectManager = buildContext.ProjectManager;
 		if (project.Sibling != null) { projectManager.TryActivatePackFile(project.Sibling.CharacterPackFile); }
 		projectManager.TryActivatePackFile(project.CharacterPackFile);
-		project.CharacterPackFile.AddUniqueAnimation(AnimationFilePath);
-		return true;
+		return (project.CharacterPackFile.AddUniqueAnimation(AnimationFilePath));
 	}
 }

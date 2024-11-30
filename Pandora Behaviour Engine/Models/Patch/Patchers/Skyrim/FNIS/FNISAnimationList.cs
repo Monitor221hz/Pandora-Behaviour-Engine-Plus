@@ -109,12 +109,13 @@ public partial class FNISAnimationList
 		return animlist; 
 	}
 
-	public void BuildPatches(Project project, ProjectManager projectManager, PatchNodeCreator patchNodeCreator)
+	public bool BuildPatches(Project project, ProjectManager projectManager, PatchNodeCreator patchNodeCreator)
 	{
 		FNISAnimationListBuildContext buildContext = new FNISAnimationListBuildContext(patchNodeCreator, project, projectManager); 
 		foreach (FNISAnimation animation in Animations)
 		{
 			animation.BuildPatch(buildContext);
 		}
+		return true;
 	}
 }
