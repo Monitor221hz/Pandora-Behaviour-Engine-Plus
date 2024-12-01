@@ -24,7 +24,7 @@ namespace Pandora.Core
 
 		public static readonly List<IEngineConfigurationPlugin> EngineConfigurations = new List<IEngineConfigurationPlugin>();
 
-		public readonly static DirectoryInfo? SkyrimGameDirectory; 
+		public readonly static DirectoryInfo? SkyrimGameDataDirectory; 
 
 		private static void AddConfigurations(Assembly assembly)
 		{
@@ -77,7 +77,7 @@ namespace Pandora.Core
 					string? defaultPath = key?.GetValue("Installed Path") as string;
 					if (defaultPath != null)
 					{
-						SkyrimGameDirectory = new DirectoryInfo(Path.Join(defaultPath, "Data"));
+						SkyrimGameDataDirectory = new DirectoryInfo(Path.Join(defaultPath, "Data"));
 					}
 				}
 			}
@@ -90,7 +90,7 @@ namespace Pandora.Core
 				var pathArr = argArr.Slice(6);
 				var path = pathArr.Trim().ToString();
 
-				SkyrimGameDirectory = new DirectoryInfo(Path.Join(path, "Data")); 
+				SkyrimGameDataDirectory = new DirectoryInfo(Path.Join(path, "Data")); 
 			}
 		}
 
