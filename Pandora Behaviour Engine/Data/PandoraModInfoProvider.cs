@@ -16,26 +16,19 @@ public class PandoraModInfoProvider : IModInfoProvider
 	public async Task<List<IModInfo>> GetInstalledMods(string folderPath) => await Task.Run(() => GetInstalledMods(new DirectoryInfo(folderPath)));
 
 	private static readonly XmlSerializer xmlSerializer = new XmlSerializer(typeof(PandoraModInfo));
-	public List<IModInfo> GetInstalledMods(DirectoryInfo folder)
+	private static List<IModInfo> GetInstalledMods(DirectoryInfo folder)
 	{
 		List<IModInfo> infoList = new List<IModInfo>();
 		if (!folder.Exists) { return infoList; }
 
-		List<FileInfo> infoFiles = new List<FileInfo>();
 		var modFolders = folder.GetDirectories();
 
 		foreach (var modFolder in modFolders)
 		{
 			//var files = modFolder.GetFiles("info.xml");
 			var infoFile = new FileInfo(Path.Join(modFolder.FullName, "info.xml"));
-			if (!infoFile.Exists) { continue;  }
-			infoFiles.Add(infoFile);
-		}
-
-		foreach (var file in infoFiles)
-		{
-			if (file.Directory == null) continue;
-			using (var readStream = file.OpenRead())
+			if (!infoFile.Exists || infoFile.Directory is null) { continue; }
+			using (var readStream = infoFile.OpenRead())
 			{
 				using (var xmlReader = XmlReader.Create(readStream))
 				{
@@ -43,12 +36,10 @@ public class PandoraModInfoProvider : IModInfoProvider
 					if (modInfoObj == null) { continue; }
 
 					var modInfo = (PandoraModInfo)modInfoObj;
-					modInfo.FillData(file.Directory);
+					modInfo.FillData(infoFile.Directory);
 					infoList.Add(modInfo);
 				}
-
 			}
-			
 		}
 		return infoList;
 	}
