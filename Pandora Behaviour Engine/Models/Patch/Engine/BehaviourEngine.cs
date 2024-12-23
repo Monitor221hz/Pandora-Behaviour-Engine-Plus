@@ -77,7 +77,8 @@ namespace Pandora.Core
 					string? defaultPath = key?.GetValue("Installed Path") as string;
 					if (defaultPath != null)
 					{
-						SkyrimGameDirectory = new DirectoryInfo(Path.Join(defaultPath, "Data"));
+						var dataPathBethesda = Path.Join(defaultPathBethesda, "Data");
+                    				SkyrimGameDirectory = ResolveSymbolicLink(new DirectoryInfo(dataPathBethesda));
 						return;
 					}
 				}
@@ -88,25 +89,101 @@ namespace Pandora.Core
 					 string? defaultPath = key?.GetValue("Installed Path") as string;
 					if (defaultPath != null)
 					{
-						SkyrimGameDirectory = new DirectoryInfo(Path.Join(defaultPath, "Data"));
+						var dataPathGOG = Path.Join(defaultPath, "Data");
+				                SkyrimGameDirectory = ResolveSymbolicLink(new DirectoryInfo(dataPath));
 						return;
 					}
 				}
 			}
-			
+			else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        		{
+				var userHomePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            			var possibleLinuxPaths = new[]
+            			{
+                			Path.Combine(userHomePath, "/home/{0}/.local/share/Skyrim Special Edition/Data",
+                			"/usr/local/share/skyrimse/Data",
+                			"/opt/SkyrimSpecialEdition/Data"
+            			};
+
+            			foreach (var pathTemplate in possibleLinuxPaths)
+            			{
+                			var path = string.Format(pathTemplate, Environment.UserName);
+                			var dataDir = new DirectoryInfo(path);
+                			if (dataDir.Exists)
+                			{
+                    				SkyrimGameDirectory = ResolveSymbolicLink(dataDir);
+                    				return;
+                			}
+            			}
+			}
+	
 			var args = Environment.GetCommandLineArgs(); 
 			var inputArg = args.Where(s => s.StartsWith("-tesv:", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
 
-			if (inputArg != null)
-			{
-				var argArr = inputArg.AsSpan();
-				var pathArr = argArr.Slice(6);
-				var path = pathArr.Trim().ToString();
-
-				SkyrimGameDirectory = new DirectoryInfo(Path.Join(path, "Data")); 
-			}
+			if (!string.IsNullOrEmpty(inputArg))
+        		{
+            			var path = inputArg.Substring(6).Trim();
+            			if (!string.IsNullOrEmpty(path))
+            			{
+                			var dataPathCmd = Path.Join(path, "Data");
+                			SkyrimGameDirectory = ResolveSymbolicLink(new DirectoryInfo(dataPathCmd));
+            			}
+        		}
 		}
+		
+    		var args = Environment.GetCommandLineArgs();
+    		var inputArg = args.Where(s => s.StartsWith("-tesv:", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+    		if (inputArg != null)
+    		{
+        		var argArr = inputArg.AsSpan();
+        		var pathArr = argArr.Slice(6);
+        		var path = pathArr.Trim().ToString();
 
+        		SkyrimGameDirectory = ResolveSymbolicLink(new DirectoryInfo(Path.Join(path, "Data")));
+    		}
+	}
+
+	private static DirectoryInfo ResolveSymbolicLink(DirectoryInfo directory)
+	{
+    		if (directory.Exists)
+    		{
+        		if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        		{
+            			var attributes = directory.Attributes;
+            			if (attributes.HasFlag(FileAttributes.ReparsePoint))
+            			{
+                			string resolvedPath = GetSymbolicLinkTargetWindows(directory.FullName);
+                			if (!string.IsNullOrEmpty(resolvedPath))
+                			{
+                    				return new DirectoryInfo(resolvedPath);
+                			}
+            			}
+        		}
+        		else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        		{
+            			var linkTarget = directory.ResolveLinkTarget(true);
+            			if (linkTarget != null && Directory.Exists(linkTarget.FullName))
+            		{
+                		return new DirectoryInfo(linkTarget.FullName);
+            		}
+        	}
+    	}
+    	return directory;
+}
+
+[DllImport("Kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+private static extern uint GetFinalPathNameByHandle(IntPtr hFile, [Out] StringBuilder lpszFilePath, uint cchFilePath, uint dwFlags);
+
+private static string GetSymbolicLinkTargetWindows(string linkPath)
+{
+    using (var fileHandle = File.Open(linkPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+    {
+        var handle = fileHandle.SafeFileHandle;
+        var builder = new StringBuilder(1024);
+        uint result = GetFinalPathNameByHandle(handle.DangerousGetHandle(), builder, (uint)builder.Capacity, 0);
+        return result > 0 ? builder.ToString() : linkPath;
+    }
+}
 		public IEngineConfiguration Configuration { get; private set; } = new SkyrimConfiguration();
 		public bool IsExternalOutput = false; 
         private DirectoryInfo CurrentDirectory { get; } = new DirectoryInfo(Directory.GetCurrentDirectory());
