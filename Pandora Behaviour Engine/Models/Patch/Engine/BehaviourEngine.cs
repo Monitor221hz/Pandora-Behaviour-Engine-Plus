@@ -78,9 +78,22 @@ namespace Pandora.Core
 					if (defaultPath != null)
 					{
 						SkyrimGameDirectory = new DirectoryInfo(Path.Join(defaultPath, "Data"));
+						return;
+					}
+				}
+						
+				var subKey = "SOFTWARE\\WOW6432Node\\GOG.com\\Games\\1711230643";
+				using (var keyGOG = Registry.LocalMachine.OpenSubKey(subKeyGOG, false))
+				{
+					 string? defaultPathGOG = keyGOG?.GetValue("path") as string;
+					if (defaultPathGOG != null)
+					{
+						SkyrimGameDirectory = new DirectoryInfo(Path.Join(defaultPathGOG, "Data"));
+						return;
 					}
 				}
 			}
+			
 			var args = Environment.GetCommandLineArgs(); 
 			var inputArg = args.Where(s => s.StartsWith("-tesv:", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
 
