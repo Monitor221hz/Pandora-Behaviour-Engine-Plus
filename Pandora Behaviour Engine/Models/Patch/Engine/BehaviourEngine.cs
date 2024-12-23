@@ -83,12 +83,12 @@ namespace Pandora.Core
 				}
 						
 				var subKey = "SOFTWARE\\WOW6432Node\\GOG.com\\Games\\1711230643";
-				using (var keyGOG = Registry.LocalMachine.OpenSubKey(subKeyGOG, false))
+				using (var key = Registry.LocalMachine.OpenSubKey(subKey, false))
 				{
-					 string? defaultPathGOG = keyGOG?.GetValue("path") as string;
-					if (defaultPathGOG != null)
+					 string? defaultPath = key?.GetValue("Installed Path") as string;
+					if (defaultPath != null)
 					{
-						SkyrimGameDirectory = new DirectoryInfo(Path.Join(defaultPathGOG, "Data"));
+						SkyrimGameDirectory = new DirectoryInfo(Path.Join(defaultPath, "Data"));
 						return;
 					}
 				}
