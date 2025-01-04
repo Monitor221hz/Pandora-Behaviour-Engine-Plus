@@ -93,22 +93,7 @@ public class SkyrimPatcher : IPatcher
 	}
 	public async Task<bool> RunAsync()
 	{
-		var loadMetaDataTask = Task.Run(() => { exporter.LoadMetaData(); });
-
-		var projectManager = nemesisAssembler.ProjectManager;
-		var mainTask = await Task.Run<bool>(() => { return projectManager.ApplyPatchesParallel(); });
-		await Task.Run(() => { pandoraAssembler.ApplyNativePatches(); });
-		var animSetDataTask = Task.Run(() => { nemesisAssembler.AnimSetDataManager.MergeAnimSetDataSingleFile(); });
-		var animDataTask = Task.Run(() => { nemesisAssembler.AnimDataManager.MergeAnimDataSingleFile(); });
-		await loadMetaDataTask;
-
-		bool exportSuccess = exporter.ExportParallel(projectManager.ActivePackFiles);
-		var saveMetaDataTask = Task.Run(() => { exporter.SaveMetaData(projectManager.ActivePackFiles); });
-		await animDataTask;
-		await animSetDataTask;
-		await saveMetaDataTask;
-		return mainTask && exportSuccess;
-		//return await nemesisAssembler.ApplyPatchesAsync();
+		return await nemesisAssembler.ApplyPatchesAsync();
 	}
 
 	public async Task<bool> UpdateAsync()
