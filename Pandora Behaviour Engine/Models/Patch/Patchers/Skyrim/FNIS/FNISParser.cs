@@ -131,18 +131,20 @@ public class FNISParser
 		{ 
 			sourceFile = new(Path.Join(behaviorFolder.FullName, $"FNIS_{folder.Name}_{behaviorFolder.Parent!.Name}_Behavior.hkx"));
 			if (!sourceFile.Exists) 
-			{ 
+			{
+				logger.Warn($"FNIS Parser > Find > Animlist Behavior > {folder.Name} > FAILED");
 				return false; 
 			}
 		}	
-		if (!stateMachineMap.TryGetValue(destPackFile.UniqueName, out stateFolderName!)) { return false; }
+		if (!stateMachineMap.TryGetValue(destPackFile.UniqueName, out stateFolderName!)) { return false; } //thread safe
 		projectManager.TryActivatePackFile(destPackFile); 
 		string nameWithoutExtension = Path.GetFileNameWithoutExtension(sourceFile.Name);
 		string graphPath = $"{destPackFile.InputHandle.Directory?.Name}\\{nameWithoutExtension}.hkx";
-		hkbStateMachine rootState = destPackFile.GetPushedObjectAs<hkbStateMachine>(stateFolderName);
+
 		hkbBehaviorReferenceGenerator refGenerator = new() { name = nameWithoutExtension, variableBindingSet = null, userData = 0, behaviorName = graphPath };
 		hkbStateMachineStateInfo stateInfo = new() {  name = "PN_StateInfo", enable = true, probability=1.0f, stateId = (graphPath.GetHashCode() & 0xfffffff), generator=refGenerator };
-		lock (rootState.states)
+		hkbStateMachine rootState = destPackFile.GetPushedObjectAs<hkbStateMachine>(stateFolderName);
+		lock (rootState)
 		{
 			rootState.states.Add(stateInfo);
 		}
