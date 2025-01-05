@@ -10,11 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HKX2 Enhanced Library\HKX2\HKX2E.csproj" />
-    <ProjectReference Include="..\Pandora API\Pandora API.csproj">
-		<Private>False</Private>
-		<ExcludeAssets>runtime</ExcludeAssets>
-    </ProjectReference>
+    <ProjectReference Include="..\Pandora API\Pandora API\Pandora API.csproj" />
   </ItemGroup>
 
   <ItemGroup>
