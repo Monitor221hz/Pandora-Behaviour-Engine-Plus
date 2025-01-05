@@ -257,7 +257,11 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 	}
 	public T GetPushedObjectAs<T>(string name) where T : class, IHavokObject
 	{
-		return GetPushXmlAsObject<T>(Deserializer.GetObjectAs<T>(name));
+		lock (Deserializer) //Lock important! Prevents mapping and deserialization from getting de-synced on high parallelization machines
+		{
+			return GetPushXmlAsObject<T>(Deserializer.GetObjectAs<T>(name));
+		}
+
 	}
 	public virtual void ApplyPriorityChanges(PackFileDispatcher dispatcher)
 	{

@@ -173,20 +173,17 @@ public class FNISParser
 				return;
 			}
 #endif
-
-		if (animList.BuildPatches(project, projectManager, patchNodeCreator))
+		animList.BuildPatches(project, projectManager, patchNodeCreator);
+		if (InjectGraphReference(folder, behaviorFolder, project.BehaviorFile))
 		{
-			if (InjectGraphReference(folder, behaviorFolder, project.BehaviorFile))
+			lock (ModInfos)
 			{
-				lock (ModInfos)
-				{
-					ModInfos.Add(animList.ModInfo);
-				}
+				ModInfos.Add(animList.ModInfo);
 			}
-			else
-			{
-				logger.Warn($"FNIS Parser > Inject Graph > {animListFile.Name} > FAILED");
-			}
+		}
+		else
+		{
+			logger.Warn($"FNIS Parser > Inject Graph > {animListFile.Name} > FAILED");
 		}
 	}
 	public void SetOutputPath(DirectoryInfo outputPath)
