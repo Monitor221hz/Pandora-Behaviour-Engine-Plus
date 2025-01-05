@@ -39,8 +39,8 @@ public class SkyrimPatcher : IPatcher
 
 	public IPatcher.PatcherFlags Flags { get; private set; } = IPatcher.PatcherFlags.None;
 
-	private static readonly Version currentVersion = new Version(2, 4, 0);
-
+	private static readonly Version currentVersion = new Version(2, 5, 4);
+		
 	private static readonly string versionLabel = "beta";
 	public string GetVersionString() => $"{currentVersion.ToString()}-{versionLabel}";
 	public Version GetVersion() => currentVersion;
@@ -101,8 +101,6 @@ public class SkyrimPatcher : IPatcher
 
 		logger.Info($"Skyrim Patcher {GetVersionString()}");
 
-		//Parallel.ForEach(activeMods, mod => { assembler.AssemblePatch(mod); });
-
 		try
 		{
 			Parallel.ForEach(activeMods, mod =>
@@ -126,15 +124,6 @@ public class SkyrimPatcher : IPatcher
 			Flags |= PatcherFlags.UpdateFailed;
 			logger.Fatal($"Skyrim Patcher > Active Mods > Update > FAILED > {ex.ToString()}");
 		}
-
-		//await assembler.LoadResourcesAsync();
-
-		//List<Task> assembleTasks = new List<Task>();
-		//foreach (var mod in activeMods)
-		//{
-		//	assembleTasks.Add(Task.Run(() => { assembler.AssemblePatch(mod); }));
-		//}
-		//await Task.WhenAll(assembleTasks);
 
 		return !Flags.HasFlag(PatcherFlags.UpdateFailed);
 	}

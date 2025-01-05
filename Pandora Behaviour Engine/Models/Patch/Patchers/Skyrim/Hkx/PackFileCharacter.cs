@@ -29,9 +29,15 @@ public class PackFileCharacter : PackFile, IEquatable<PackFileCharacter>, IPackF
 	public string BehaviorFileName => StringData.behaviorFilename;
 	public string SkeletonFileName => StringData.rigName;
 
+	private HashSet<string> uniqueBaseAnimations = new HashSet<string>(StringComparer.OrdinalIgnoreCase); 
 	private HashSet<string> uniqueAnimations = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
 	private object uniqueAnimationLock = new();
+
+	private void CacheUniqueBaseAnimations()
+	{
+		uniqueBaseAnimations = StringData.animationNames.ToHashSet(); 
+	}
 
 	[MemberNotNull(nameof(StringData), nameof(Data))]
 	public override void Load()
@@ -69,35 +75,41 @@ public class PackFileCharacter : PackFile, IEquatable<PackFileCharacter>, IPackF
 	{
 		return base.GetHashCode();
 	}
-	public void AddUniqueAnimation(string name)
+	public bool AddUniqueAnimation(string name)
 	{
+		lock (uniqueBaseAnimations)
+		{
+			if (uniqueBaseAnimations.Count == 0)
+			{
+				CacheUniqueBaseAnimations(); 
+			}
+			if (uniqueBaseAnimations.Contains(name))
+			{
+				return false; 
+			}
+		}
 		if (ParentProject!.Sibling != null)
 		{
 			var sibling = ParentProject!.Sibling.CharacterPackFile;
-			lock (sibling.uniqueAnimations) lock (uniqueAnimations)
+			lock (uniqueAnimationLock) lock (sibling.uniqueAnimationLock)
 				{
 					if (!sibling.uniqueAnimations.Add(name) || !uniqueAnimations.Add(name))
 					{
-						return;
+						return true;
 					}
-				}
-			lock (uniqueAnimationLock) lock (sibling.uniqueAnimationLock)
-				{
 					sibling.StringData.animationNames.Add(name);
 					StringData.animationNames.Add(name);
+					return true;
 				}
-			return;
 		}
-		lock (uniqueAnimations)
+		lock (uniqueAnimationLock)
 		{
 			if (uniqueAnimations.Add(name))
 			{
-				lock (StringData.animationNames)
-				{
-					StringData.animationNames.Add(name);
-				}
-
+				StringData.animationNames.Add(name);
+				return true;
 			}
+			return true;
 		}
 
 	}

@@ -4,5 +4,5 @@ namespace Pandora.Models.Patch.Engine.Plugins;
 
 public interface IPluginLoader
 {
-	Assembly LoadPlugin(DirectoryInfo directory);
+	Assembly? LoadPlugin(DirectoryInfo directory);
 }
