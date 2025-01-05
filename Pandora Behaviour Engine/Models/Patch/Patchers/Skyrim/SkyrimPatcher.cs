@@ -45,16 +45,11 @@ public class SkyrimPatcher : IPatcher
 	public string GetVersionString() => $"{currentVersion.ToString()}-{versionLabel}";
 	public Version GetVersion() => currentVersion;
 
-	public SkyrimPatcher()
-	{
-		nemesisAssembler = new NemesisAssembler();
-		pandoraAssembler = new PandoraAssembler(nemesisAssembler);
-	}
 	public SkyrimPatcher(IMetaDataExporter<PackFile> manager)
 	{
 		exporter = manager;
 		nemesisAssembler = new NemesisAssembler(manager);
-		pandoraAssembler = new PandoraAssembler(nemesisAssembler);
+		pandoraAssembler = new PandoraAssembler(manager, nemesisAssembler);
 	}
 	public string GetPostRunMessages()
 	{

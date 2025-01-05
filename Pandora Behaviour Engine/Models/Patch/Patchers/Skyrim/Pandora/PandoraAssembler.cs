@@ -2,9 +2,11 @@
 using Pandora.API.Patch;
 using Pandora.API.Patch.Engine.Config;
 using Pandora.API.Patch.Engine.Skyrim64;
+using Pandora.API.Patch.IOManagers;
 using Pandora.Core;
 using Pandora.Core.Patchers.Skyrim;
 using Pandora.Models.Patch.Engine.Plugins;
+using Pandora.Patch.IOManagers.Skyrim;
 using Pandora.Patch.Patchers.Skyrim.AnimData;
 using Pandora.Patch.Patchers.Skyrim.AnimSetData;
 using Pandora.Patch.Patchers.Skyrim.Hkx;
@@ -36,20 +38,24 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 
 		private static readonly Dictionary<string, ChangeType> changeTypeNameMap =  Enum.GetValues(typeof(ChangeType)).Cast<ChangeType>().ToDictionary(c => c.ToString(), v => v, StringComparer.OrdinalIgnoreCase);
 		
-		private List<ISkyrim64Patch> nativePatches = new List<ISkyrim64Patch>() { };
+		private List<ISkyrim64Patch> nativePatchesSerial = new List<ISkyrim64Patch>() { };
+
+		private List<ISkyrim64Patch> nativePatchesParallel = new List<ISkyrim64Patch>() { }; 
 		public ProjectManager ProjectManager { get; private set; }	
 		public AnimDataManager AnimDataManager { get; private set; }	
 		public AnimSetDataManager AnimSetDataManager { get; private set; }
 
-
-		public PandoraAssembler()
+		private IMetaDataExporter<PackFile> exporter = new PackFileExporter();
+		public PandoraAssembler(IMetaDataExporter<PackFile> exporter)
 		{
+			this.exporter = exporter;
 			ProjectManager = new ProjectManager(templateFolder, defaultOutputMeshFolder);
 			AnimSetDataManager = new AnimSetDataManager(templateFolder, defaultOutputMeshFolder);
 			AnimDataManager = new AnimDataManager(templateFolder, defaultOutputMeshFolder);
 		}
-		public PandoraAssembler(NemesisAssembler nemesisAssembler)
+		public PandoraAssembler(IMetaDataExporter<PackFile> exporter, NemesisAssembler nemesisAssembler)
 		{
+			this.exporter = exporter;
 			ProjectManager = nemesisAssembler.ProjectManager;
 			AnimSetDataManager = nemesisAssembler.AnimSetDataManager;
 			AnimDataManager = nemesisAssembler.AnimDataManager;
@@ -258,7 +264,15 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 					ISkyrim64Patch? result = Activator.CreateInstance(type) as ISkyrim64Patch;
 					if (result != null)
 					{
-						nativePatches.Add(result);
+						switch (result.Mode)
+						{
+							case ISkyrim64Patch.RunType.Parallel:
+								nativePatchesParallel.Add(result);	
+								break;
+							case ISkyrim64Patch.RunType.Serial:
+								nativePatchesSerial.Add(result);
+								break;
+						}
 					}
 				}
 			}
@@ -278,11 +292,11 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 		}
 		public void ApplyNativePatchesParallel()
 		{
-			Parallel.ForEach(nativePatches, patch => { patch.Run(ProjectManager); });
+			Parallel.ForEach(nativePatchesParallel, patch => { patch.Run(ProjectManager); });
 		}
 		public void ApplyNativePatches()
 		{
-			foreach(var patch in nativePatches)
+			foreach(var patch in nativePatchesSerial)
 			{
 				patch.Run(ProjectManager);	
 			}

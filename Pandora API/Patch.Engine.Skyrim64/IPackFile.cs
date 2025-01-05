@@ -1,4 +1,5 @@
 ﻿using HKX2E;
+using Pandora.API.Patch.IOManagers;
 namespace Pandora.API.Patch.Engine.Skyrim64;
 
 public interface IPackFile
@@ -13,6 +14,6 @@ public interface IPackFile
 	T GetPushedObjectAs<T>(string name) where T : class, IHavokObject;
 	bool PathExists(string nodeName, string path);
 	bool TargetExists(string nodeName);
-	public FileInfo GetRebasedOutput(DirectoryInfo exportDirectory);
+	public FileInfo GetOutputHandle(DirectoryInfo exportDirectory);
 }
 

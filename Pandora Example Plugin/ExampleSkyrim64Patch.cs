@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 namespace ExamplePlugin;
 public class ExampleSkyrim64Patch : ISkyrim64Patch
 {
+	public ISkyrim64Patch.RunType Mode => ISkyrim64Patch.RunType.Serial;
 	public void Run(IProjectManager projectManager)
 	{
 		if (projectManager.TryGetProjectEx("defaultmale", out  var ex))
