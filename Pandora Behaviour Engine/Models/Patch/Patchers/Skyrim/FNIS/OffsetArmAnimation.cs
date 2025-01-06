@@ -18,9 +18,9 @@ public class OffsetArmAnimation : FNISAnimation
 	{
 		var project = buildContext.TargetProject;
 		var projectManager = buildContext.ProjectManager;
-		base.BuildPatch(buildContext);
+		
 
-		if (!project.TryLookupPackFile("mt_behavior", out var targetPackFile) || targetPackFile is not PackFileGraph graph) //only supports humanoids as FNIS does
+		if (!base.BuildPatch(buildContext) || !project.TryLookupPackFile("mt_behavior", out var targetPackFile) || targetPackFile is not PackFileGraph graph) //only supports humanoids as FNIS does
 		{
 			return false;
 		}

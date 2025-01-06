@@ -41,7 +41,7 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 		OutputHandle = new FileInfo(Path.Join(exportDirectory.FullName, relativeOutputFilePath));
 		return OutputHandle;
 	}
-	public FileInfo GetRebasedOutput(DirectoryInfo exportDirectory)
+	public FileInfo GetOutputHandle(DirectoryInfo exportDirectory)
 	{
 		return new FileInfo(Path.Join(exportDirectory.FullName, relativeOutputFilePath));
 	}
@@ -205,9 +205,12 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 		try
 		{
 			var obj = PartialDeserializer.DeserializeRuntimeObjectOverwrite(element);
-			Deserializer.UpdateDirectReference(targetObject, obj);
-			Deserializer.UpdatePropertyReferences(name, obj);
-			Deserializer.UpdateMapping(name, obj);
+			lock(Deserializer)
+			{
+				Deserializer.UpdateDirectReference(targetObject, obj);
+				Deserializer.UpdatePropertyReferences(name, obj);
+				Deserializer.UpdateMapping(name, obj);
+			}
 			lock (objectElementMap)
 			{
 				objectElementMap.Remove(targetObject);
@@ -229,31 +232,36 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 			{
 				return targetObject;
 			}
-		}
-		try
-		{
-			var obj = PartialDeserializer.DeserializeRuntimeObjectOverwrite(element);
-			Deserializer.UpdateDirectReference(targetObject, obj);
-			Deserializer.UpdatePropertyReferences(name, obj);
-			Deserializer.UpdateMapping(name, obj);
-			lock (objectElementMap)
+
+			try
 			{
+				var obj = PartialDeserializer.DeserializeRuntimeObjectOverwrite(element);
+				lock (Deserializer)
+				{
+					Deserializer.UpdateDirectReference(targetObject, obj);
+					Deserializer.UpdatePropertyReferences(name, obj);
+					Deserializer.UpdateMapping(name, obj);
+				}
 				objectElementMap.Remove(targetObject);
 			}
+			catch (Exception ex)
+			{
+				Logger.Error($"Packfile > Active Nodes > Push > FAILED > {ex.ToString()}");
+			}
+			if (!Deserializer.TryGetObjectAs<T>(name, out var newObj))
+			{
+				return targetObject;
+			}
+			return newObj;
 		}
-		catch (Exception ex)
-		{
-			Logger.Error($"Packfile > Active Nodes > Push > FAILED > {ex.ToString()}");
-		}
-		if (!Deserializer.TryGetObjectAs<T>(name, out var newObj))
-		{
-			return targetObject;
-		}
-		return newObj;
 	}
 	public T GetPushedObjectAs<T>(string name) where T : class, IHavokObject
 	{
-		return GetPushXmlAsObject<T>(Deserializer.GetObjectAs<T>(name));
+		lock (Deserializer) //Lock important! Prevents mapping and deserialization from getting de-synced on high parallelization machines
+		{
+			return GetPushXmlAsObject<T>(Deserializer.GetObjectAs<T>(name));
+		}
+
 	}
 	public virtual void ApplyPriorityChanges(PackFileDispatcher dispatcher)
 	{

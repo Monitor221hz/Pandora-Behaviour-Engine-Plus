@@ -151,6 +151,7 @@ public class NemesisAssembler : IAssembler //animdata and animsetdata deviate fr
 		
 		var mainTask = await Task.Run<bool>(() => { return ProjectManager.ApplyPatchesParallel(); });
 		await Task.Run(() => { pandoraConverter.ApplyNativePatches(); });
+		await Task.Run(() => { pandoraConverter.ApplyNativePatchesParallel(); });
 		var animSetDataTask = Task.Run(() => { AnimSetDataManager.MergeAnimSetDataSingleFile(); });
 		var animDataTask = Task.Run(() => { AnimDataManager.MergeAnimDataSingleFile(); });
 		await loadMetaDataTask;

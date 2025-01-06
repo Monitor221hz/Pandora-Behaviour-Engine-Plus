@@ -198,7 +198,7 @@ namespace Pandora.Core.Patchers.Skyrim
 		public IProject? LoadProjectHeaderEx(string projectFilePath) => LoadProjectHeader(projectFilePath) as IProject;
 		public bool TryLoadOutputPackFile<T>(IPackFile packFile,[NotNullWhen(true)] out T? outPackFile) where T : class, IPackFile
 		{
-			var fileInfo = BehaviourEngine.SkyrimGameDirectory != null ? packFile.GetRebasedOutput(BehaviourEngine.SkyrimGameDirectory) : packFile.OutputHandle; 
+			var fileInfo = BehaviourEngine.SkyrimGameDirectory != null ? packFile.GetOutputHandle(BehaviourEngine.SkyrimGameDirectory) : packFile.OutputHandle; 
 			if (!fileInfo.Exists)
 			{
 				outPackFile = default;
@@ -209,7 +209,7 @@ namespace Pandora.Core.Patchers.Skyrim
 		}
 		public bool TryLoadOutputPackFile<T>(IPackFile packFile, string extension, [NotNullWhen(true)] out T? outPackFile) where T : class, IPackFile
 		{
-			var fileInfo = new FileInfo(Path.ChangeExtension((BehaviourEngine.SkyrimGameDirectory != null ? packFile.GetRebasedOutput(BehaviourEngine.SkyrimGameDirectory) : packFile.OutputHandle).FullName, extension));
+			var fileInfo = new FileInfo(Path.ChangeExtension((BehaviourEngine.SkyrimGameDirectory != null ? packFile.GetOutputHandle(BehaviourEngine.SkyrimGameDirectory) : packFile.OutputHandle).FullName, extension));
 			if (!fileInfo.Exists)
 			{
 				outPackFile = default;

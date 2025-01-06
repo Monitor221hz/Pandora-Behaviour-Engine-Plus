@@ -5,12 +5,13 @@ namespace Pandora.Models.Patch.Engine.Plugins;
 
 public class PluginLoader : IPluginLoader
 {
-	public Assembly LoadPlugin(DirectoryInfo directory)
+	public Assembly? LoadPlugin(DirectoryInfo directory)
 	{
-		string pluginPath = Path.Join(directory.FullName, $"{directory.Name}.dll");
-
-		PluginLoadContext loadContext = new(pluginPath);
+		FileInfo pluginInfo = new FileInfo(Path.Join(directory.FullName, $"{directory.Name}.dll")); 
+		if (!pluginInfo.Exists ) { return null; }
+		PluginLoadContext loadContext = new(pluginInfo.FullName);
 		
-		return loadContext.LoadFromAssemblyName(AssemblyName.GetAssemblyName(pluginPath));
+		return loadContext.LoadFromAssemblyName(AssemblyName.GetAssemblyName(pluginInfo.FullName));
 	}
+
 }

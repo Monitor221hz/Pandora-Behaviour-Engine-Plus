@@ -42,10 +42,15 @@ namespace Pandora.Core
 		}
 		private static void LoadPlugins()
 		{
-			
-			var pluginsDirectory = AssemblyDirectory.CreateSubdirectory("Plugins");
-			Assembly assembly;
-			foreach (DirectoryInfo pluginDirectory in pluginsDirectory.EnumerateDirectories())
+
+			var pluginsDirectory = new DirectoryInfo(Path.Join(AssemblyDirectory.FullName, "Plugins")); 
+			if (!pluginsDirectory.Exists)
+			{
+				return; 
+			}
+			Assembly? assembly;
+			var subDirectories = pluginsDirectory.GetDirectories();
+			foreach (DirectoryInfo pluginDirectory in subDirectories)
 			{
 #if DEBUG
 				// only for debug. DO NOT introduce json field plugin loading to release builds 
@@ -53,13 +58,13 @@ namespace Pandora.Core
 
 				if (!metaPluginLoader.TryLoadMetadata(pluginDirectory, out var pluginInfo))
 				{
-					continue; 
+					continue;
 				}
 				assembly = metaPluginLoader.LoadPlugin(pluginDirectory, pluginInfo);
 #else
-				assembly = pluginLoader.LoadPlugin(pluginDirectory);
+							assembly = pluginLoader.LoadPlugin(pluginDirectory);
 #endif
-				AddConfigurations(assembly);
+				if (assembly != null) { AddConfigurations(assembly); }
 			}
 		}
 		private void ReadSkyrimPath()

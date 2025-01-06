@@ -39,22 +39,17 @@ public class SkyrimPatcher : IPatcher
 
 	public IPatcher.PatcherFlags Flags { get; private set; } = IPatcher.PatcherFlags.None;
 
-	private static readonly Version currentVersion = new Version(2, 4, 0);
-
+	private static readonly Version currentVersion = new Version(2, 6, 0);
+		
 	private static readonly string versionLabel = "beta";
 	public string GetVersionString() => $"{currentVersion.ToString()}-{versionLabel}";
 	public Version GetVersion() => currentVersion;
 
-	public SkyrimPatcher()
-	{
-		nemesisAssembler = new NemesisAssembler();
-		pandoraAssembler = new PandoraAssembler(nemesisAssembler);
-	}
 	public SkyrimPatcher(IMetaDataExporter<PackFile> manager)
 	{
 		exporter = manager;
 		nemesisAssembler = new NemesisAssembler(manager);
-		pandoraAssembler = new PandoraAssembler(nemesisAssembler);
+		pandoraAssembler = new PandoraAssembler(manager, nemesisAssembler);
 	}
 	public string GetPostRunMessages()
 	{
@@ -93,30 +88,13 @@ public class SkyrimPatcher : IPatcher
 	}
 	public async Task<bool> RunAsync()
 	{
-		var loadMetaDataTask = Task.Run(() => { exporter.LoadMetaData(); });
-
-		var projectManager = nemesisAssembler.ProjectManager;
-		var mainTask = await Task.Run<bool>(() => { return projectManager.ApplyPatchesParallel(); });
-		await Task.Run(() => { pandoraAssembler.ApplyNativePatches(); });
-		var animSetDataTask = Task.Run(() => { nemesisAssembler.AnimSetDataManager.MergeAnimSetDataSingleFile(); });
-		var animDataTask = Task.Run(() => { nemesisAssembler.AnimDataManager.MergeAnimDataSingleFile(); });
-		await loadMetaDataTask;
-
-		bool exportSuccess = exporter.ExportParallel(projectManager.ActivePackFiles);
-		var saveMetaDataTask = Task.Run(() => { exporter.SaveMetaData(projectManager.ActivePackFiles); });
-		await animDataTask;
-		await animSetDataTask;
-		await saveMetaDataTask;
-		return mainTask && exportSuccess;
-		//return await nemesisAssembler.ApplyPatchesAsync();
+		return await nemesisAssembler.ApplyPatchesAsync();
 	}
 
 	public async Task<bool> UpdateAsync()
 	{
 
 		logger.Info($"Skyrim Patcher {GetVersionString()}");
-
-		//Parallel.ForEach(activeMods, mod => { assembler.AssemblePatch(mod); });
 
 		try
 		{
@@ -141,15 +119,6 @@ public class SkyrimPatcher : IPatcher
 			Flags |= PatcherFlags.UpdateFailed;
 			logger.Fatal($"Skyrim Patcher > Active Mods > Update > FAILED > {ex.ToString()}");
 		}
-
-		//await assembler.LoadResourcesAsync();
-
-		//List<Task> assembleTasks = new List<Task>();
-		//foreach (var mod in activeMods)
-		//{
-		//	assembleTasks.Add(Task.Run(() => { assembler.AssemblePatch(mod); }));
-		//}
-		//await Task.WhenAll(assembleTasks);
 
 		return !Flags.HasFlag(PatcherFlags.UpdateFailed);
 	}
