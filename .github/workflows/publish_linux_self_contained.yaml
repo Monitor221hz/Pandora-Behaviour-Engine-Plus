@@ -113,10 +113,10 @@ jobs:
          
       - name: Zip Artifacts For Deployment
         run: |
-          Compress-Archive -Path ./Output.Linux-x64/* -Destination "./Output/Pandora_Behaviour_Engine_${{ github.ref_name }}_linux-x64.zip"
-          Compress-Archive -Path ./Output.Linux-Arm/* -Destination "./Output/Pandora_Behaviour_Engine_${{ github.ref_name }}_linux-arm.zip"
-          Compress-Archive -Path ./Output.Linux-Arm64/* -Destination "./Output/Pandora_Behaviour_Engine_${{ github.ref_name }}_linux-arm64.zip"
-          Compress-Archive -Path ./Output.Linux-Musl-x64/* -Destination "./Output/Pandora_Behaviour_Engine_${{ github.ref_name }}_linux-musl-x64.zip"
+          Compress-Archive -Path ./Output.Linux-x64/* -Destination "./Output.Linux-x64/Pandora_Behaviour_Engine_${{ github.ref_name }}_linux-x64_net.zip"
+          Compress-Archive -Path ./Output.Linux-Arm/* -Destination "./Output.Linux-Arm/Pandora_Behaviour_Engine_${{ github.ref_name }}_linux-arm_net.zip"
+          Compress-Archive -Path ./Output.Linux-Arm64/* -Destination "./Output.Linux-Arm64/Pandora_Behaviour_Engine_${{ github.ref_name }}_linux-arm64_net.zip"
+          Compress-Archive -Path ./Output.Linux-Musl-x64/* -Destination "./Output.Linux-Musl-x64/Pandora_Behaviour_Engine_${{ github.ref_name }}_linux-musl-x64_net.zip"
          
       - name: Create Release
         env:
