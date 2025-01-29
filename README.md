@@ -130,10 +130,10 @@ Use the `-tesv:` argument if your game path is different from the registry path,
 ## Startup Arguments
 Pandora has a variety of startup arguments to support customizability. 
 | Argument  | Description |
-| ------------- | ------------- |
-| `-autorun`  | Runs the engine using the same active mods as cached from the last successful run.  |
-| `-autoclose`  | Closes the engine automatically upon finishing a single launch.  |
-| `-skyrimDebug64`  | Produces debug `.xml` files alongside normal `.hkx` output. Only for authors that know what they're doing.  |
+| ------------------------------- | ------------- |
+| `-autorun`           | Runs the engine using the same active mods as cached from the last successful run.  |
+| `-autoclose`        | Closes the engine automatically upon finishing a single launch.  |
+| `-skyrimDebug64`    | Produces debug `.xml` files alongside normal `.hkx` output. Only for authors that know what they're doing.  |
 | `-o:{output path}`  | Sets a custom output path.  |
 | `-tesv:{game path}`  | Sets the path to the game directory (the root folder containing the exe, not the data folder!). Intended for users with Wabbajack "[Stock Game](https://github.com/LivelyDismay/Learn-To-Mod/blob/main/lessons/Setting%20up%20Stock%20Game%20for%20Skyrim%20SE.md)" setup or with multiple installations.  |
 
@@ -146,18 +146,18 @@ Patches in the new Pandora format do not use multiple text files per behavior gr
 ```xml
 
 <patch>
-    <replace>
+  <replace>
     <edit path="#xxxx\...\..."><!-- content --></edit>
-    </replace>
-    <insert>
+  </replace>
+  <insert>
     <edit path="#xxxx\...\..."><!-- content --></edit>
-    </insert>
-    <append>
+  </insert>
+  <append>
     <edit path="#xxxx\...\..."><!-- content --></edit>
-    </append>
-    <loose>
+  </append>
+  <loose>
     <edit path="#xxxx\...\..."><!--content --></edit>
-    </loose>
+  </loose>
 </patch>
 ```
 Edits have the following format:
@@ -169,23 +169,23 @@ An example of a patch file:
 
 ```xml
 <patch>
-	<replace>
-		<edit path="#0885/legs/Element0/maxAnkleHeightMS">
-			<hkparam name="maxAnkleHeightMS">0.700000</hkparam>
-		</edit>
-		<edit path="#0885/legs/Element0/hipIndex">
-			<hkparam name="hipIndex">12</hkparam>
-		</edit>
-		<edit path="#0885/legs/Element0/kneeIndex">
-			<hkparam name="kneeIndex">13</hkparam>
-		</edit>
-		<edit path="#0885/legs/Element0/ankleIndex">
-			<hkparam name="ankleIndex">14</hkparam>
-		</edit>
-		<edit path="#0885/legs/Element0/isPlantedMS">
-			<hkparam name="isPlantedMS">false</hkparam>
-		</edit>
-	</replace>
+  <replace>
+    <edit path="#0885/legs/Element0/maxAnkleHeightMS">
+      <hkparam name="maxAnkleHeightMS">0.700000</hkparam>
+    </edit>
+    <edit path="#0885/legs/Element0/hipIndex">
+      <hkparam name="hipIndex">12</hkparam>
+    </edit>
+    <edit path="#0885/legs/Element0/kneeIndex">
+      <hkparam name="kneeIndex">13</hkparam>
+    </edit>
+    <edit path="#0885/legs/Element0/ankleIndex">
+      <hkparam name="ankleIndex">14</hkparam>
+    </edit>
+    <edit path="#0885/legs/Element0/isPlantedMS">
+      <hkparam name="isPlantedMS">false</hkparam>
+    </edit>
+  </replace>
 </patch>
 ```
 
