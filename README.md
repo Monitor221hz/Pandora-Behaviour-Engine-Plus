@@ -130,12 +130,12 @@ Use the `-tesv:` argument if your game path is different from the registry path,
 ## Startup Arguments
 Pandora has a variety of startup arguments to support customizability. 
 | Argument  | Description |
-| ------------------------------- | ------------- |
-| `-autorun`           | Runs the engine using the same active mods as cached from the last successful run.  |
+| --- | --- |
+| `-autorun` | Runs the engine using the same active mods as cached from the last successful run.  |
 | `-autoclose`        | Closes the engine automatically upon finishing a single launch.  |
 | `-skyrimDebug64`    | Produces debug `.xml` files alongside normal `.hkx` output. Only for authors that know what they're doing.  |
-| `-o:{output path}`  | Sets a custom output path.  |
-| `-tesv:{game path}`  | Sets the path to the game directory (the root folder containing the exe, not the data folder!). Intended for users with Wabbajack "[Stock Game](https://github.com/LivelyDismay/Learn-To-Mod/blob/main/lessons/Setting%20up%20Stock%20Game%20for%20Skyrim%20SE.md)" setup or with multiple installations.  |
+| `-o:{output_path}`  | Sets a custom output path.  |
+| `-tesv:{game_path}`  | Sets the path to the game directory (the root folder containing the exe, not the data folder!). Intended for users with Wabbajack "[Stock Game](https://github.com/LivelyDismay/Learn-To-Mod/blob/main/lessons/Setting%20up%20Stock%20Game%20for%20Skyrim%20SE.md)" setup or with multiple installations.  |
 
 ## For Mod Authors
 This section exists to inform current behavior authors of the key differences and features of Pandora, it's not a guide for making behavior mods.
