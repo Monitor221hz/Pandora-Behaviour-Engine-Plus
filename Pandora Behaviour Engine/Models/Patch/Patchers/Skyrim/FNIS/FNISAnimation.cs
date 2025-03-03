@@ -161,6 +161,10 @@ public partial class FNISAnimation : IFNISAnimation
 			if (!enterEventsExist) stateInfo.enterNotifyEvents = new hkbStateMachineEventPropertyArray() { events = enterEventList };
 			if (!exitEventsExist) stateInfo.exitNotifyEvents = new hkbStateMachineEventPropertyArray() { events = exitEventList };
 		}
+		if (Flags.HasFlag(AnimFlags.Acyclic))
+		{
+			clip.mode = (sbyte)PlaybackMode.MODE_SINGLE_PLAY;
+		}
 	}
 	public virtual bool BuildPatch(FNISAnimationListBuildContext buildContext)
 	{
