@@ -39,7 +39,7 @@ public class SkyrimPatcher : IPatcher
 
 	public IPatcher.PatcherFlags Flags { get; private set; } = IPatcher.PatcherFlags.None;
 
-	private static readonly Version currentVersion = new Version(2, 6, 0);
+	private static readonly Version currentVersion = new Version(2, 6, 1);
 		
 	private static readonly string versionLabel = "beta";
 	public string GetVersionString() => $"{currentVersion.ToString()}-{versionLabel}";
