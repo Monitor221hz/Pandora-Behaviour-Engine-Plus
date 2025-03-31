@@ -14,8 +14,8 @@ jobs:
         with:
           exempt-issue-milestones: true
           exempt-issue-labels: "enhancement,documentation"
-          days-before-issue-stale: 30
-          days-before-issue-close: 14
+          days-before-issue-stale: 120
+          days-before-issue-close: 30
           stale-issue-label: "stale"
           labels-to-remove-when-unstale: "stale"
           stale-issue-message: "This issue is stale because it has been open for 30 days with no activity. It will be closed shortly unless activity resumes."
