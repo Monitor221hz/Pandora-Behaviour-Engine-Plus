@@ -1,8 +1,10 @@
 name: publish_linux_self_contained
 
 on:
-  release:
-    types: [published]
+  workflow_run:
+    workflows: [build_release]
+    types:
+      - completed
 
 env:
   build-mode: Release # Release | Debug
