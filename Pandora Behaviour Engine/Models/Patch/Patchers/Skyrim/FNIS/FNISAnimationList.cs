@@ -104,7 +104,7 @@ public partial class FNISAnimationList
 					}
 					else
 					{
-						logger.Warn($"FNIS Animlist > New Animation > From Line > FAILED > Line > {expectedLine} > File > {file.Name}");
+						logger.Warn($"FNIS Animlist > New Animation > From Line > FAILED > String > \"{expectedLine}\" > File > {file.Name}");
 					}
 				}
 			}

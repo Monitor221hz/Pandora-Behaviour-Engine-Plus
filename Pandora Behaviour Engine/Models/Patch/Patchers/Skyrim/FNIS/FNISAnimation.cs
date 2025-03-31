@@ -173,6 +173,6 @@ public partial class FNISAnimation : IFNISAnimation
 		if (project.Sibling != null) { projectManager.TryActivatePackFile(project.Sibling.CharacterPackFile); }
 		projectManager.TryActivatePackFile(project.CharacterPackFile);
 		project.CharacterPackFile.AddUniqueAnimation(AnimationFilePath);
-		return (project.BehaviorFile.CustomEventBuffer.Add(GraphEvent));
+		return (project.BehaviorFile.AddEventBuffer(GraphEvent));
 	}
 }
