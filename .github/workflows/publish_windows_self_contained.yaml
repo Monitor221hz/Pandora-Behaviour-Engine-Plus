@@ -25,9 +25,13 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0
+          
       - name: Get Latest Tag
         id: latesttag
         uses: WyriHaximus/github-action-get-previous-tag@v1.4.0
+        with:
+          fallback: 0.0.0
+          
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
@@ -111,6 +115,6 @@ jobs:
         env:
          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-         gh release upload "${{ github.ref_name }}" "./Output.Win-x86/Pandora_Behaviour_Engine_${{ steps.latesttag.outputs.tag }}_win-x86_net.zip"
-         gh release upload "${{ github.ref_name }}" "./Output.Win-x64/Pandora_Behaviour_Engine_${{ steps.latesttag.outputs.tag }}_win-x64_net.zip"
-         gh release upload "${{ github.ref_name }}" "./Output.Win-Arm64/Pandora_Behaviour_Engine_${{ steps.latesttag.outputs.tag }}_win-arm64_net.zip"
+         gh release upload "${{ steps.latesttag.outputs.tag }}" "./Output.Win-x86/Pandora_Behaviour_Engine_${{ steps.latesttag.outputs.tag }}_win-x86_net.zip"
+         gh release upload "${{ steps.latesttag.outputs.tag }}" "./Output.Win-x64/Pandora_Behaviour_Engine_${{ steps.latesttag.outputs.tag }}_win-x64_net.zip"
+         gh release upload "${{ steps.latesttag.outputs.tag }}" "./Output.Win-Arm64/Pandora_Behaviour_Engine_${{ steps.latesttag.outputs.tag }}_win-arm64_net.zip"
