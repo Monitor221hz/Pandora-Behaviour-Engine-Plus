@@ -19,16 +19,20 @@ public class FNISAnimationListBuildContext
 {
 	private Dictionary<string, hkbStringEventPayload> stringEventPayloadNameMap = new();
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-	public FNISAnimationListBuildContext(PatchNodeCreator helper, Project targetProject, ProjectManager projectManager)
+	public FNISAnimationListBuildContext(PatchNodeCreator helper, Project targetProject, ProjectManager projectManager, IModInfo modInfo)
 	{
 		Helper = helper;
 		TargetProject = targetProject;
 		ProjectManager = projectManager;
+		ModInfo = modInfo;
+
 	}
 
 	public PatchNodeCreator Helper { get; private set; }
 	public Project TargetProject { get; private set; }
 	public ProjectManager ProjectManager { get; private set; }
+
+	public IModInfo ModInfo { get; private set; }
 
 	public hkbStringEventPayload BuildCommonStringEventPayload(string name)
 	{
@@ -111,7 +115,7 @@ public partial class FNISAnimationList
 
 	public bool BuildPatches(Project project, ProjectManager projectManager, PatchNodeCreator patchNodeCreator)
 	{
-		FNISAnimationListBuildContext buildContext = new FNISAnimationListBuildContext(patchNodeCreator, project, projectManager); 
+		FNISAnimationListBuildContext buildContext = new FNISAnimationListBuildContext(patchNodeCreator, project, projectManager, ModInfo); 
 		foreach (FNISAnimation animation in Animations)
 		{
 			animation.BuildPatch(buildContext);
