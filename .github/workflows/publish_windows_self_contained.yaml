@@ -111,7 +111,7 @@ jobs:
           Compress-Archive -Path ./Output.Win-x64/* -Destination "./Output.Win-x64/Pandora_Behaviour_Engine_${{ steps.latesttag.outputs.tag }}_win-x64_net.zip"
           Compress-Archive -Path ./Output.Win-Arm64/* -Destination "./Output.Win-Arm64/Pandora_Behaviour_Engine_${{ steps.latesttag.outputs.tag }}_win-arm64_net.zip"
          
-      - name: Create Release
+      - name: Upload Release
         env:
          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
