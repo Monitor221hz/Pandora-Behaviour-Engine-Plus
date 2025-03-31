@@ -21,7 +21,15 @@ public class PackFileGraph : PackFile, IPackFileGraph, IEquatable<PackFileGraph>
 	public hkbBehaviorGraphStringData StringData { get; private set; }
 	public hkbVariableValueSet VariableValueSet { get; private set; }
 
-	public HashSet<string> CustomEventBuffer = new();
+	private HashSet<string> customEventBuffer = new();
+
+	public bool AddEventBuffer(string name)
+	{
+		lock (customEventBuffer)
+		{
+			return customEventBuffer.Add(name);
+		}
+	}
 
 	private readonly Dictionary<string, int>  customEventIndices = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
 
@@ -74,7 +82,7 @@ public class PackFileGraph : PackFile, IPackFileGraph, IEquatable<PackFileGraph>
 
 	public void FlushEventBuffer(string name)
 	{
-		foreach(var eventName in CustomEventBuffer)
+		foreach(var eventName in customEventBuffer)
 		{
 			AddDefaultEvent(eventName);
 		}

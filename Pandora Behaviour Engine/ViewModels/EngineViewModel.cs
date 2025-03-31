@@ -325,11 +325,8 @@ as EngineConfigurationViewModelContainer;
 
             foreach (var mod in mods)
             {
-                if (!modInfos.Add(mod))
-                {
-                    logger.Warn($"Engine > Folder {mod.Folder.Parent?.Name} > Parse Info > {mod.Code} Already Exists > SKIPPED");
-                }
-            }
+                modInfos.Add(mod);
+			}
         }
 
         public void Exit(object? p)
