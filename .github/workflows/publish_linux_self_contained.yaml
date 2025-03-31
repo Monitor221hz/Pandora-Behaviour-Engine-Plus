@@ -120,7 +120,7 @@ jobs:
          
       - name: Create Release
         env:
-         GITHUB_TOKEN: ${{ secrets.PANDORA_TOKEN }}
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
          gh release upload "${{ github.ref_name }}" "./Output.Linux-x64/Pandora_Behaviour_Engine_${{ github.ref_name }}_linux-x64_net.zip"
          gh release upload "${{ github.ref_name }}" "./Output.Linux-Arm/Pandora_Behaviour_Engine_${{ github.ref_name }}_linux-arm_net.zip"
