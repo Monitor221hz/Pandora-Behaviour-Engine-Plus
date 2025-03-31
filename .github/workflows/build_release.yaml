@@ -1,4 +1,4 @@
-name: build_stable_sse
+name: build_release
 
 on:
   push:
@@ -36,8 +36,8 @@ jobs:
             ${{ github.workspace }}/.nuget/packages
             ${{ github.workspace }}/Pandora Behaviour Engine/bin
             ${{ github.workspace }}/Pandora Behaviour Engine/obj
-            ${{ github.workspace }}/HKX2-Enhanced-Library/HKX2/bin
-            ${{ github.workspace }}/HKX2-Enhanced-Library/HKX2/obj
+            ${{ github.workspace }}/Pandora API/HKX2-Enhanced-Library/HKX2/bin
+            ${{ github.workspace }}/Pandora API/HKX2-Enhanced-Library/HKX2/obj
             ${{ github.workspace }}/XML.Cake.NET/XML Cake/bin
             ${{ github.workspace }}/XML.Cake.NET/XML Cake/obj
           key: nuget-${{ runner.os }}-${{ matrix.dotnet-version }}
@@ -66,7 +66,7 @@ jobs:
          
       - name: Create Release
         env:
-         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+         GITHUB_TOKEN: ${{ secrets.PANDORA_TOKEN }}
         run: >-
          gh release create "${{ github.ref_name }}"
          "./Output/Pandora_Behaviour_Engine_${{ github.ref_name }}.zip"

@@ -37,8 +37,8 @@ jobs:
             ${{ github.workspace }}/.nuget/packages
             ${{ github.workspace }}/Pandora Behaviour Engine/bin
             ${{ github.workspace }}/Pandora Behaviour Engine/obj
-            ${{ github.workspace }}/HKX2-Enhanced-Library/HKX2/bin
-            ${{ github.workspace }}/HKX2-Enhanced-Library/HKX2/obj
+            ${{ github.workspace }}/Pandora API/HKX2-Enhanced-Library/HKX2/bin
+            ${{ github.workspace }}/Pandora API/HKX2-Enhanced-Library/HKX2/obj
             ${{ github.workspace }}/XML.Cake.NET/XML Cake/bin
             ${{ github.workspace }}/XML.Cake.NET/XML Cake/obj
           key: nuget-${{ runner.os }}-${{ matrix.dotnet-version }}
