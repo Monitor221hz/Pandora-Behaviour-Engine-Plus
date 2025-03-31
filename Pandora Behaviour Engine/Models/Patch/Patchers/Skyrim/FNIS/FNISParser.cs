@@ -119,7 +119,7 @@ public class FNISParser
 	}
     public void ScanProjectAnimlist(Project project)
 	{
-		var currentDirectory = new DirectoryInfo(Path.Join((BehaviourEngine.SkyrimGameDirectory ?? BehaviourEngine.AssemblyDirectory).FullName, project.ProjectFile.RelativeOutputDirectoryPath));
+		var currentDirectory = new DirectoryInfo(Path.Join((BehaviourEngine.SkyrimGameDirectory ?? BehaviourEngine.CurrentDirectory ?? BehaviourEngine.AssemblyDirectory).FullName, project.ProjectFile.RelativeOutputDirectoryPath));
 
 		ScanProjectAnimations(project, currentDirectory);
 	}
