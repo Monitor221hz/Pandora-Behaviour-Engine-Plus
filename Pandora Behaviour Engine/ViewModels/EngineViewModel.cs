@@ -98,9 +98,9 @@ namespace Pandora.ViewModels
         private Dictionary<string, IModInfo> modsByCode = new Dictionary<string, IModInfo>();
 
         private bool modInfoCache = false;
-        private static readonly DirectoryInfo workingDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
 
-        private DirectoryInfo currentDirectory = BehaviourEngine.SkyrimGameDirectory ?? workingDirectory;
+
+        private DirectoryInfo currentDirectory = BehaviourEngine.SkyrimGameDirectory ?? BehaviourEngine.CurrentDirectory;
 
         private Task preloadTask;
 
@@ -297,8 +297,8 @@ as EngineConfigurationViewModelContainer;
                 LoadModFolder(modInfos, await nemesisModInfoProvider?.GetInstalledMods(launchDirectory + "\\Nemesis_Engine\\mod")!);
                 LoadModFolder(modInfos, await pandoraModInfoProvider?.GetInstalledMods(launchDirectory + "\\Pandora_Engine\\mod")!);
                 //Working folder, or Skyrim\Data folder
-                LoadModFolder(modInfos, await nemesisModInfoProvider?.GetInstalledMods(workingDirectory + "\\Nemesis_Engine\\mod")!);
-                LoadModFolder(modInfos, await pandoraModInfoProvider?.GetInstalledMods(workingDirectory + "\\Pandora_Engine\\mod")!);
+                LoadModFolder(modInfos, await nemesisModInfoProvider?.GetInstalledMods(BehaviourEngine.CurrentDirectory + "\\Nemesis_Engine\\mod")!);
+                LoadModFolder(modInfos, await pandoraModInfoProvider?.GetInstalledMods(BehaviourEngine.CurrentDirectory + "\\Pandora_Engine\\mod")!);
                 //Current (defaults to Working folder) or Output (set via -o) folder
                 LoadModFolder(modInfos, await nemesisModInfoProvider?.GetInstalledMods(currentDirectory + "\\Nemesis_Engine\\mod")!);
                 LoadModFolder(modInfos, await pandoraModInfoProvider?.GetInstalledMods(currentDirectory + "\\Pandora_Engine\\mod")!);
@@ -369,7 +369,6 @@ as EngineConfigurationViewModelContainer;
                     var pathArr = argArr.Slice(3);
                     var path = pathArr.Trim().ToString();
                     currentDirectory = new DirectoryInfo(path);
-                    Engine.SetOutputPath(currentDirectory);
                     continue;
                 }
             }

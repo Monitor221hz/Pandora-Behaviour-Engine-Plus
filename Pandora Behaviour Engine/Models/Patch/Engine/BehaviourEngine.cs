@@ -103,7 +103,6 @@ namespace Pandora.Core
 
 		public IEngineConfiguration Configuration { get; private set; } = new SkyrimConfiguration();
 		public bool IsExternalOutput = false; 
-        private DirectoryInfo CurrentDirectory { get; } = new DirectoryInfo(Directory.GetCurrentDirectory());
         public DirectoryInfo OutputPath { get; private set; } = new DirectoryInfo(Directory.GetCurrentDirectory());
         public void SetOutputPath(DirectoryInfo outputPath)
 		{
