@@ -19,11 +19,13 @@ public class PackFileGraph : PackFile, IPackFileGraph, IEquatable<PackFileGraph>
 
 	public hkbBehaviorGraphData Data { get; private set; }
 	public hkbBehaviorGraphStringData StringData { get; private set; }
-	public hkbVariableValueSet VariableValueSet { get; private set; }	
+	public hkbVariableValueSet VariableValueSet { get; private set; }
+
+	public HashSet<string> CustomEventBuffer = new();
 
 	private readonly Dictionary<string, int>  customEventIndices = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
 
-
+		
 
 	public PackFileGraph(FileInfo file, Project? project) : base(file, project) 
     {
@@ -68,6 +70,14 @@ public class PackFileGraph : PackFile, IPackFileGraph, IEquatable<PackFileGraph>
 		PopObjectAsXml(Data);
 		PopObjectAsXml(StringData);
 		PopObjectAsXml(VariableValueSet);
+	}
+
+	public void FlushEventBuffer(string name)
+	{
+		foreach(var eventName in CustomEventBuffer)
+		{
+			AddDefaultEvent(eventName);
+		}
 	}
 
 	public int AddDefaultEvent(string name)
