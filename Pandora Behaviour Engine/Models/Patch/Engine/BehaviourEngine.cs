@@ -22,6 +22,8 @@ namespace Pandora.Core
 
 		public static readonly DirectoryInfo AssemblyDirectory = new FileInfo(System.Reflection.Assembly.GetEntryAssembly()!.Location).Directory!;
 
+		public static readonly DirectoryInfo CurrentDirectory = new DirectoryInfo(Directory.GetCurrentDirectory()!);
+
 		public static readonly List<IEngineConfigurationPlugin> EngineConfigurations = new List<IEngineConfigurationPlugin>();
 
 		public readonly static DirectoryInfo? SkyrimGameDirectory; 
@@ -101,7 +103,6 @@ namespace Pandora.Core
 
 		public IEngineConfiguration Configuration { get; private set; } = new SkyrimConfiguration();
 		public bool IsExternalOutput = false; 
-        private DirectoryInfo CurrentDirectory { get; } = new DirectoryInfo(Directory.GetCurrentDirectory());
         public DirectoryInfo OutputPath { get; private set; } = new DirectoryInfo(Directory.GetCurrentDirectory());
         public void SetOutputPath(DirectoryInfo outputPath)
 		{

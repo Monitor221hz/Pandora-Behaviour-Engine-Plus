@@ -19,9 +19,21 @@ public class PackFileGraph : PackFile, IPackFileGraph, IEquatable<PackFileGraph>
 
 	public hkbBehaviorGraphData Data { get; private set; }
 	public hkbBehaviorGraphStringData StringData { get; private set; }
-	public hkbVariableValueSet VariableValueSet { get; private set; }	
+	public hkbVariableValueSet VariableValueSet { get; private set; }
 
+	private HashSet<string> customEventBuffer = new();
 
+	public bool AddEventBuffer(string name)
+	{
+		lock (customEventBuffer)
+		{
+			return customEventBuffer.Add(name);
+		}
+	}
+
+	private readonly Dictionary<string, int>  customEventIndices = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+
+		
 
 	public PackFileGraph(FileInfo file, Project? project) : base(file, project) 
     {
@@ -68,18 +80,34 @@ public class PackFileGraph : PackFile, IPackFileGraph, IEquatable<PackFileGraph>
 		PopObjectAsXml(VariableValueSet);
 	}
 
+	public void FlushEventBuffer(string name)
+	{
+		foreach(var eventName in customEventBuffer)
+		{
+			AddDefaultEvent(eventName);
+		}
+	}
+
 	public int AddDefaultEvent(string name)
 	{
 		int index = -1; 
-		lock (Data.eventInfos)
+		lock (customEventIndices)
 		{
-			lock (StringData.eventNames)
+			if (customEventIndices.TryGetValue(name, out index))
 			{
-				index = StringData.eventNames.Count;
-
-				StringData.eventNames.Add(name);
+				return index;
 			}
-			Data.eventInfos.Add(new hkbEventInfo() { flags = 0 });
+			lock (Data.eventInfos)
+			{
+				lock (StringData.eventNames)
+				{
+					index = StringData.eventNames.Count;
+					Data.eventInfos.Add(new hkbEventInfo() { flags = 0 });
+					StringData.eventNames.Add(name);
+					customEventIndices.Add(name, index);
+				}
+				
+			}
 		}
 		return index; 
 	}

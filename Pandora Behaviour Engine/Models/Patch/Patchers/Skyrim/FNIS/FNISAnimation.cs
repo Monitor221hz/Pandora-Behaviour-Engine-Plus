@@ -161,6 +161,10 @@ public partial class FNISAnimation : IFNISAnimation
 			if (!enterEventsExist) stateInfo.enterNotifyEvents = new hkbStateMachineEventPropertyArray() { events = enterEventList };
 			if (!exitEventsExist) stateInfo.exitNotifyEvents = new hkbStateMachineEventPropertyArray() { events = exitEventList };
 		}
+		if (Flags.HasFlag(AnimFlags.Acyclic))
+		{
+			clip.mode = (sbyte)PlaybackMode.MODE_SINGLE_PLAY;
+		}
 	}
 	public virtual bool BuildPatch(FNISAnimationListBuildContext buildContext)
 	{
@@ -168,6 +172,7 @@ public partial class FNISAnimation : IFNISAnimation
 		var projectManager = buildContext.ProjectManager;
 		if (project.Sibling != null) { projectManager.TryActivatePackFile(project.Sibling.CharacterPackFile); }
 		projectManager.TryActivatePackFile(project.CharacterPackFile);
-		return (project.CharacterPackFile.AddUniqueAnimation(AnimationFilePath));
+		project.CharacterPackFile.AddUniqueAnimation(AnimationFilePath);
+		return (project.BehaviorFile.AddEventBuffer(GraphEvent));
 	}
 }
