@@ -29,7 +29,7 @@ public sealed class ModsDataGridDropHandler : DropHandlerBase
 		{
 			return false;
 		}
-		var items = vm.ModViewModels;
+		var items = vm.SourceMods;
 		return RunDropAction(dg, e, bExecute, vm, sourceItem, targetItem, items);
 
 	}

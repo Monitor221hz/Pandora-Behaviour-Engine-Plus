@@ -1,4 +1,5 @@
 ﻿using Avalonia;
+using Avalonia.ReactiveUI;
 using System;
 
 namespace Pandora;
@@ -17,5 +18,6 @@ internal sealed class Program
 		=> AppBuilder.Configure<App>()
 			.UsePlatformDetect()
 			.WithInterFont()
+			.UseReactiveUI()
 			.LogToTrace();
 }

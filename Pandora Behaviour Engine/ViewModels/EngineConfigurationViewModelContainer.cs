@@ -1,31 +1,28 @@
-﻿using Pandora.Command;
+﻿using Pandora.API.Patch.Engine.Config;
+using ReactiveUI;
+using ReactiveUI.SourceGenerators;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+using System.Reactive;
 
 namespace Pandora.ViewModels;
 
-public class EngineConfigurationViewModelContainer : IEngineConfigurationViewModel
+public partial class EngineConfigurationViewModelContainer : ViewModelBase, IEngineConfigurationViewModel
 {
-	public event PropertyChangedEventHandler? PropertyChanged;
-	private void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
-	{
-		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-	}
-	public string Name { get; private set; }
+    [Reactive] private string _name;
 
-	public RelayCommand? SetCommand { get; } = null;
+    public ReactiveCommand<IEngineConfigurationFactory, Unit>? SetCommand { get; }
 
-	public ObservableCollection<IEngineConfigurationViewModel> NestedViewModels { get; private set; } = new ObservableCollection<IEngineConfigurationViewModel>();
-	public EngineConfigurationViewModelContainer(string name, params IEngineConfigurationViewModel[] viewModels)
-	{
-		Name = name;
-		foreach (var viewModel in viewModels) { NestedViewModels.Add(viewModel); }
-	}
-	public EngineConfigurationViewModelContainer(string name)
-	{
-		Name = name;
-		NestedViewModels = new(); 
-	}
+    public ObservableCollection<IEngineConfigurationViewModel> NestedViewModels { get; }
+
+    public EngineConfigurationViewModelContainer(string name)
+    {
+        Name = name;
+        NestedViewModels = new ObservableCollection<IEngineConfigurationViewModel>();
+    }
+    public EngineConfigurationViewModelContainer(string name, params IEngineConfigurationViewModel[] viewModels)
+    {
+        Name = name;
+        NestedViewModels = new ObservableCollection<IEngineConfigurationViewModel>(viewModels);
+    }
+
 }
-

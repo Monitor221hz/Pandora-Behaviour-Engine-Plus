@@ -2,13 +2,14 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using Avalonia.ReactiveUI;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Windowing;
 using Pandora.ViewModels;
 
 namespace Pandora.Views;
 
-public partial class EngineMenu : UserControl
+public partial class EngineMenu : ReactiveUserControl<EngineViewModel>
 {
     public EngineMenu()
     {

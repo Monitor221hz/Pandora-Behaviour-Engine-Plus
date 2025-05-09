@@ -2,11 +2,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	     xmlns:vm="using:Pandora.ViewModels"
+             xmlns:vm="using:Pandora.ViewModels"
              mc:Ignorable="d" d:DesignWidth="500"
              x:Class="Pandora.Views.EngineMenu"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
-	     x:DataType="vm:EngineViewModel">
+             x:DataType="vm:EngineViewModel">
 
   <Grid Name="TitleBarHost"
         ColumnDefinitions="Auto,Auto,*,Auto"
@@ -24,8 +24,8 @@
         </MenuItem.ItemTemplate>
         <MenuItem.Styles>
           <Style Selector="MenuItem.SubItems MenuItem" x:DataType="vm:IEngineConfigurationViewModel">
-			  <Setter Property="Header" Value="{Binding Name}"></Setter>
-			  <Setter Property="Command" Value="{Binding SetCommand}" />
+			      <Setter Property="Header" Value="{Binding Name}" />
+			      <Setter Property="Command" Value="{Binding SetCommand}" />
             <Setter Property="CommandParameter" Value="{Binding}" />
           </Style>
         </MenuItem.Styles>
@@ -37,8 +37,9 @@
                        Classes="SampleApp"
                        MaxWidth="280"
                        FontSize="13"
-                       Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                       Watermark="Search"  />
+                       Text="{Binding SearchTerm}"
+                       Watermark="Search" 
+                       IsEnabled="{Binding !EngineRunning}" />
     </Border>
 
 
