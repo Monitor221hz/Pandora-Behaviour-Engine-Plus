@@ -11,6 +11,7 @@ using Pandora.Command;
 using Pandora.Core;
 using Pandora.Core.Engine.Configs;
 using Pandora.MVVM.Data;
+using Pandora.Services;
 using Pandora.Views;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
@@ -45,10 +46,12 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 
     private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-    public bool? DialogResult { get; set; } = true;
     private bool closeOnFinish = false;
     private bool autoRun = false;
+
     public BehaviourEngine Engine { get; private set; } = new BehaviourEngine();
+
+    public LogService _logService { get; private set; } = new LogService();
 
     public ObservableCollectionExtended<ModInfoViewModel> SourceMods { get; }
 
@@ -76,25 +79,17 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
     private bool modInfoCache = false;
 
 
+    private DirectoryInfo launchDirectory = BehaviourEngine.AssemblyDirectory;
     private DirectoryInfo currentDirectory = BehaviourEngine.SkyrimGameDirectory ?? BehaviourEngine.CurrentDirectory;
+
 
     private Task preloadTask;
 
 
     private IEngineConfigurationFactory engineConfigurationFactory;
 
-
     private static readonly char[] menuPathSeparators = ['/', '\\'];
 
-    public void SortMods()
-    {
-        Mods = Mods.OrderBy(m => m.Code == "pandora").ThenBy(m => m.Priority == 0).ThenBy(m => m.Priority).ToList();
-    }
-    private IEnumerable<ModInfoViewModel> SearchModViewModels(string searchText, IEnumerable<ModInfoViewModel> modViewModels)
-    {
-        return modViewModels.Where(m => m.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase));
-
-    }
     public EngineViewModel()
     {
         startupArguments = Environment.GetCommandLineArgs().ToHashSet(StringComparer.OrdinalIgnoreCase);
@@ -105,8 +100,8 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
             .Filter(this.WhenAnyValue(x => x.SearchTerm)
                 .Throttle(TimeSpan.FromMilliseconds(200))
                 .Select(BuildFilter))
+            .Sort(SortExpressionComparer<ModInfoViewModel>.Ascending(m => m.Priority))
             .ObserveOn(RxApp.MainThreadScheduler)
-            .Sort(SortExpressionComparer<ModInfoViewModel>.Ascending(m => m.Name))
             .Bind(out _modViewModels)
             .Subscribe();
 
@@ -126,21 +121,31 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
                 .ToProperty(this, x => x.AllSelected)
                 .DisposeWith(disposables);
 
+            Observable
+                .Interval(TimeSpan.FromMilliseconds(200))
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(_ => LogText = _logService.LogText)
+                .DisposeWith(disposables);
         });
 
+        SetupCultureInfo();
+        ReadStartupArguments();
+
+        activeModConfig = new FileInfo(Path.Combine(launchDirectory.FullName, "Pandora_Engine", "ActiveMods.txt"));
+
+        preloadTask = Task.Run(Engine.PreloadAsync);
+        Engine.SetOutputPath(currentDirectory);
+
+        if (autoRun) LaunchEngineCommand.Execute(Unit.Default);
+    }
+
+    private static void SetupCultureInfo()
+    {
         CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
 
         CultureInfo.DefaultThreadCurrentCulture = culture;
         CultureInfo.DefaultThreadCurrentUICulture = culture;
         CultureInfo.CurrentCulture = culture;
-        ReadStartupArguments();
-        activeModConfig = new FileInfo($"{currentDirectory}\\Pandora_Engine\\ActiveMods.txt");
-        preloadTask = Task.Run(Engine.PreloadAsync);
-        Engine.SetOutputPath(currentDirectory);
-
-        if (autoRun) LaunchEngineCommand.Execute(Unit.Default);
-
-
     }
 
     private void SetupExternalConfigurationPlugin(IEngineConfigurationPlugin injection)
@@ -203,7 +208,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
         }
         if (BehaviourEngine.EngineConfigurations.Count > 0)
         {
-            await WriteLogBoxLine("Plugins loaded.");
+            await _logService.WriteLineAsync("Plugins loaded.");
         }
         MenuEnabled = true;
         //EngineConfigs.Add(new EngineConfigurationViewModel<SkyrimConfiguration>("Skyrim SE/AE", SetEngineConfigCommand));
@@ -211,7 +216,6 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
     }
     public async Task LoadAsync()
     {
-        var launchDirectory = BehaviourEngine.AssemblyDirectory.FullName;
         SourceMods.Clear();
         Mods.Clear();
         modsByCode.Clear();
@@ -242,10 +246,12 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
         Mods.AddRange(modInfoList);
         SourceMods.AddRange(modInfoList.Select(m => new ModInfoViewModel(m)));
         //stopwatch.Stop();
-        //await WriteLogBoxLine($"Создание ViewModels заняло {stopwatch.ElapsedMilliseconds} мс");
+        //await _logService.WriteLineAsync($"Создание ViewModels заняло {stopwatch.ElapsedMilliseconds} мс");
+
+        AssignModPrioritiesFromViewModels(SourceMods);
 
         await pluginsTask;
-        await WriteLogBoxLine("Mods loaded.");
+        await _logService.WriteLineAsync("Mods loaded.");
     }
 
     private static void LoadModFolder(HashSet<IModInfo> modInfos, List<IModInfo> mods)
@@ -257,24 +263,11 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
             modInfos.Add(mod);
         }
     }
-    private Func<ModInfoViewModel, bool> BuildFilter(string searchText)
-    {
-        return mod => string.IsNullOrEmpty(searchText) || mod.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase);
-    }
-    internal async Task ClearLogBox() => LogText = string.Empty;
-    internal async Task WriteLogBoxLine(string text)
-    {
-        StringBuilder sb = new StringBuilder(LogText);
-        if (LogText.Length > 0) sb.Append(Environment.NewLine);
-        sb.Append(text);
-        LogText = sb.ToString();
-    }
-    internal async Task WriteLogBox(string text)
-    {
-        StringBuilder sb = new StringBuilder(LogText);
-        sb.Append(text);
-        LogText = sb.ToString();
-    }
+
+    private Func<ModInfoViewModel, bool> BuildFilter(string searchText) => 
+        mod => string.IsNullOrEmpty(searchText) || mod.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase);
+    
+
     private void ReadStartupArguments()
     {
         if (startupArguments.Remove("-skyrimDebug64"))
@@ -320,8 +313,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
                 uint priority = 0;
                 while ((expectedLine = streamReader.ReadLine()) != null)
                 {
-                    IModInfo? modInfo;
-                    if (!modsByCode.TryGetValue(expectedLine, out modInfo)) continue;
+                    if (!modsByCode.TryGetValue(expectedLine, out IModInfo? modInfo)) continue;
                     priority++;
                     modInfo.Priority = priority;
                     modInfo.Active = true;
@@ -372,7 +364,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
     [ReactiveCommand(CanExecute = nameof(_canLaunchEngine))]
     private async void SetEngineConfig(IEngineConfigurationFactory? config)
     {
-        if (config == null) { return; }
+        if (config == null) return;
         engineConfigurationFactory = config;
         await preloadTask;
         var newConfig = engineConfigurationFactory.Config;
@@ -386,7 +378,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
     {
         if (isChecked is not bool check) return;
 
-        foreach (var mod in ModViewModels)
+        foreach (var mod in SourceMods)
         {
             mod.Active = check;
         }
@@ -415,20 +407,25 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
             EngineRunning = true;
         }
 
-        await ClearLogBox();
+        await _logService.ClearAsync();
 
         var configInfoMessage = $"Engine launched with configuration: {Engine.Configuration.Name}. Do not exit before the launch is finished.";
-        await WriteLogBoxLine(configInfoMessage);
-        await WriteLogBoxLine("Waiting for preload to finish.");
+        await _logService.WriteLineAsync(configInfoMessage);
+
+        await _logService.WriteLineAsync("Waiting for preload to finish.");
         Stopwatch timer = Stopwatch.StartNew();
         await preloadTask;
-        await WriteLogBoxLine("Preload finished.");
-        AssignModPrioritiesFromViewModels(SourceMods);
+        await _logService.WriteLineAsync("Preload finished.");
+        //AssignModPrioritiesFromViewModels(SourceMods);
         List<IModInfo> activeMods = GetActiveModsByPriority();
 
         IModInfo? baseModInfo = Mods.Where(m => m.Code == "pandora").FirstOrDefault();
 
-        if (baseModInfo == null) { await WriteLogBoxLine("FATAL ERROR: Pandora Base does not exist. Ensure the engine was installed properly and data is not corrupted."); return; }
+        if (baseModInfo == null)
+        {
+            await _logService.WriteLineAsync("FATAL ERROR: Pandora Base does not exist. Ensure the engine was installed properly and data is not corrupted.");
+            return;
+        }
         if (!baseModInfo.Active)
         {
             baseModInfo.Active = true;
@@ -443,15 +440,15 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
         timer.Stop();
 
         logger.Info(configInfoMessage);
-        await WriteLogBoxLine(Engine.GetMessages(success));
+        await _logService.WriteLineAsync(Engine.GetMessages(success));
 
         if (!success)
         {
-            await WriteLogBoxLine($"Launch aborted. Existing output was not cleared, and current patch list will not be saved.");
+            await _logService.WriteLineAsync($"Launch aborted. Existing output was not cleared, and current patch list will not be saved.");
         }
         else
         {
-            await WriteLogBoxLine($"Launch finished in {Math.Round(timer.ElapsedMilliseconds / 1000.0, 2)} seconds");
+            await _logService.WriteLineAsync($"Launch finished in {Math.Round(timer.ElapsedMilliseconds / 1000.0, 2)} seconds");
             await Task.Run(() => { SaveActiveMods(activeMods); });
 
             if (closeOnFinish)
@@ -459,7 +456,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
                 if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime lifetime) lifetime.Shutdown();
             }
         }
-        await WriteLogBoxLine(string.Empty);
+        await _logService.WriteLineAsync(string.Empty);
         var newConfig = engineConfigurationFactory.Config;
         Engine = newConfig != null ? new BehaviourEngine(newConfig) : new BehaviourEngine();
 

@@ -74,6 +74,11 @@
                           x:DataType="vm:ModInfoViewModel"
                           MinWidth="64"
                           Width="*" />
+      <DataGridTextColumn Header="Priority"
+                          Binding="{Binding Priority}"
+                          x:DataType="vm:ModInfoViewModel"
+                          MinWidth="64"
+                          Width="*" />
     </DataGrid.Columns>
   </DataGrid>
 

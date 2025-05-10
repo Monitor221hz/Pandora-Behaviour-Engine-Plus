@@ -13,7 +13,7 @@ public partial class EngineConfigurationViewModel : ViewModelBase, IEngineConfig
 
     public IEngineConfiguration? Config => engineConfigurationFactory.Config;
 
-    public ObservableCollection<IEngineConfigurationViewModel> NestedViewModels { get; } = new();
+    public ObservableCollection<IEngineConfigurationViewModel> NestedViewModels { get; } = [];
 
     public ReactiveCommand<IEngineConfigurationFactory, Unit>? SetCommand { get; }
 

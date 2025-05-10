@@ -89,7 +89,7 @@ public sealed class ModsDataGridDropHandler : DropHandlerBase
 						MoveItem(items, sourceIndex, targetIndex);
 						dg.SelectedIndex = targetIndex;
 					}
-					engineViewModel.AssignModPrioritiesFromViewModels(engineViewModel.ModViewModels);
+					engineViewModel.AssignModPrioritiesFromViewModels(engineViewModel.SourceMods);
 					return true;
 				}
 			default:
