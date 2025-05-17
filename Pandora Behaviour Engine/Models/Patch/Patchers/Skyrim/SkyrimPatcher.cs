@@ -1,49 +1,47 @@
-﻿using System;
+﻿using Pandora.API.Patch;
+using Pandora.API.Patch.IOManagers;
+using Pandora.Core;
+using Pandora.Core.IOManagers;
+using Pandora.Core.Patchers;
+using Pandora.Core.Patchers.Skyrim;
+using Pandora.Patch.IOManagers;
+using Pandora.Patch.IOManagers.Skyrim;
+using Pandora.Patch.Patchers.Skyrim.AnimData;
+using Pandora.Patch.Patchers.Skyrim.AnimSetData;
+using Pandora.Patch.Patchers.Skyrim.Hkx;
+using Pandora.Patch.Patchers.Skyrim.Nemesis;
+using Pandora.Patch.Patchers.Skyrim.Pandora;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Pandora.Core;
-using Pandora.Core.Patchers;
-using Pandora.Core.Patchers.Skyrim;
-using Pandora.Patch.Patchers.Skyrim.AnimData;
 using XmlCake.Linq;
-using Pandora.Patch.Patchers.Skyrim.Nemesis;
-using System.Diagnostics.Eventing.Reader;
-using System.Security.AccessControl;
-using Pandora.Patch.Patchers.Skyrim.Pandora;
-using Pandora.Core.IOManagers;
-using Pandora.Patch.Patchers.Skyrim.Hkx;
-using Pandora.Patch.IOManagers;
-using Pandora.Patch.IOManagers.Skyrim;
-using Pandora.API.Patch;
-using Pandora.API.Patch.IOManagers;
-using Pandora.Patch.Patchers.Skyrim.AnimSetData;
+using static Pandora.API.Patch.IPatcher;
 
 namespace Pandora.Patch.Patchers.Skyrim;
-using PatcherFlags = IPatcher.PatcherFlags;
+
 public class SkyrimPatcher : IPatcher
 {
-	private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-	private List<IModInfo> activeMods { get; set; } = new List<IModInfo>();
+	private List<IModInfo> activeMods { get; set; } = [];
 
 	public void SetTarget(List<IModInfo> mods) => activeMods = mods;
 	private IMetaDataExporter<PackFile> exporter = new PackFileExporter();
 
 	private NemesisAssembler nemesisAssembler { get; set; }
-
 	private PandoraAssembler pandoraAssembler { get; set; }
 
-	public IPatcher.PatcherFlags Flags { get; private set; } = IPatcher.PatcherFlags.None;
+	public PatcherFlags Flags { get; private set; } = PatcherFlags.None;
 
-	private static readonly Version currentVersion = new Version(2, 7, 0);
-		
-	private static readonly string versionLabel = "beta";
-	public string GetVersionString() => $"{currentVersion.ToString()}-{versionLabel}";
-	public Version GetVersion() => currentVersion;
+	public Version GetVersion() => Assembly.GetEntryAssembly().GetName().Version;
+    public string GetVersionString() => Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion.Split('+')[0] ?? "Unknown";
 
 	public SkyrimPatcher(IMetaDataExporter<PackFile> manager)
 	{
@@ -53,8 +51,7 @@ public class SkyrimPatcher : IPatcher
 	}
 	public string GetPostRunMessages()
 	{
-		StringBuilder logBuilder;
-		logBuilder = new StringBuilder("\r\n");
+        StringBuilder logBuilder = new("\r\n");
 
 		for (int i = 0; i < activeMods.Count; i++)
 		{
@@ -72,8 +69,7 @@ public class SkyrimPatcher : IPatcher
 
 	public string GetFailureMessages()
 	{
-		StringBuilder logBuilder;
-		logBuilder = new StringBuilder("CRITICAL FAILURE \r\n\r\n");
+        StringBuilder logBuilder = new("CRITICAL FAILURE \r\n\r\n");
 
 		if (Flags.HasFlag(PatcherFlags.UpdateFailed)) { logBuilder.AppendLine("Engine had one or more errors while updating."); }
 
@@ -141,7 +137,7 @@ public class SkyrimPatcher : IPatcher
 	public void SetOutputPath(DirectoryInfo directoryInfo)
 	{
 		exporter.ExportDirectory = directoryInfo;
-		if (!String.Equals(directoryInfo.FullName, BehaviourEngine.AssemblyDirectory.FullName, StringComparison.OrdinalIgnoreCase))
+		if (!string.Equals(directoryInfo.FullName, BehaviourEngine.AssemblyDirectory.FullName, StringComparison.OrdinalIgnoreCase))
 		{
 			var FNISPlugin = new FileInfo(Path.Combine(BehaviourEngine.AssemblyDirectory.FullName, "FNIS.esp"));
 			var outputFNISPlugin = new FileInfo(Path.Combine(directoryInfo.FullName, "FNIS.esp"));
