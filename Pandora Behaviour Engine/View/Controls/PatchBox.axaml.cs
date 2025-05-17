@@ -1,7 +1,8 @@
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
+using Avalonia.LogicalTree;
 using Avalonia.ReactiveUI;
+using Avalonia.VisualTree;
 using Pandora.ViewModels;
 
 namespace Pandora.Views;
@@ -15,7 +16,7 @@ public partial class PatchBox : ReactiveUserControl<EngineViewModel>
 		ModInfoDataGrid.DetachedFromLogicalTree += ModInfoDataGrid_DetachedFromLogicalTree;
     }
 
-	private void ModInfoDataGrid_AttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
+    private void ModInfoDataGrid_AttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
 	{
 		var savedColumn1 = Properties.GUISettings.Default.PatchBoxNameColumnWidth;
 		var savedColumn2 = Properties.GUISettings.Default.PatchBoxAuthorColumnWidth;
@@ -25,7 +26,7 @@ public partial class PatchBox : ReactiveUserControl<EngineViewModel>
 		ModInfoDataGrid.Columns[3].Width = savedColumn3 > 1 ? new DataGridLength(savedColumn3) : ModInfoDataGrid.Columns[3].Width;
 	}
 
-	private void ModInfoDataGrid_DetachedFromLogicalTree(object? sender, Avalonia.LogicalTree.LogicalTreeAttachmentEventArgs e)
+	private void ModInfoDataGrid_DetachedFromLogicalTree(object? sender, LogicalTreeAttachmentEventArgs e)
 	{
 		Properties.GUISettings.Default.PatchBoxNameColumnWidth = ModInfoDataGrid.Columns[1].Width.Value;
 		Properties.GUISettings.Default.PatchBoxAuthorColumnWidth = ModInfoDataGrid.Columns[2].Width.Value;

@@ -2,19 +2,20 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			       xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
-			       xmlns:idd="clr-namespace:Avalonia.Xaml.Interactions.DragAndDrop;assembly=Avalonia.Xaml.Interactions.DragAndDrop"
-			       xmlns:b="using:Pandora.Behaviors"
 			       xmlns:vm="using:Pandora.ViewModels"
-			       xmlns:cr="using:Pandora.Core"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:conv="clr-namespace:Pandora.Converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Pandora.Views.PatchBox"
 			       x:DataType="vm:EngineViewModel">
 
+  <UserControl.Resources>
+    <conv:PandoraCodeToEnabledConverter x:Key="PandoraCodeToEnabledConverter" />
+  </UserControl.Resources>
+
   <DataGrid x:Name="ModInfoDataGrid"
             Grid.Row="1"
-            ItemsSource="{Binding ModViewModels, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            ItemsSource="{Binding ModViewModels}"
             RowHeight="20"
             GridLinesVisibility="None"
             HeadersVisibility="All"
@@ -23,7 +24,6 @@
             CanUserReorderColumns="True"
             CornerRadius="4"
             ClipToBounds="True"
-            IsReadOnly="True"
             IsEnabled="{Binding !EngineRunning}"
             Background="{DynamicResource ControlContent}"
             Classes="DragAndDrop ItemsDragAndDrop">
@@ -37,7 +37,8 @@
                               Width="*">
         <DataGridTemplateColumn.HeaderTemplate>
           <DataTemplate x:DataType="vm:EngineViewModel">
-            <CheckBox IsChecked="{Binding AllSelected, Mode=OneWay}"
+            <CheckBox x:Name="checkBoxHeader" 
+                      IsChecked="{Binding AllSelected, Mode=OneWay}"
                       Padding="0"
                       VerticalAlignment="Center"
                       HorizontalAlignment="Center"
@@ -51,7 +52,9 @@
         </DataGridTemplateColumn.HeaderTemplate>
         <DataGridTemplateColumn.CellTemplate>
           <DataTemplate x:DataType="vm:ModInfoViewModel">
-            <CheckBox IsChecked="{Binding Active}" Padding="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <CheckBox IsChecked="{Binding Active}" 
+                      IsEnabled="{Binding Code, Converter={StaticResource PandoraCodeToEnabledConverter}}"
+                      Padding="0" HorizontalAlignment="Center" VerticalAlignment="Center">
               <CheckBox.RenderTransform>
                 <ScaleTransform ScaleX="0.75" ScaleY="0.75" />
               </CheckBox.RenderTransform>
@@ -71,11 +74,6 @@
                           Width="*" />
       <DataGridTextColumn Header="Version"
                           Binding="{Binding Version}"
-                          x:DataType="vm:ModInfoViewModel"
-                          MinWidth="64"
-                          Width="*" />
-      <DataGridTextColumn Header="Priority"
-                          Binding="{Binding Priority}"
                           x:DataType="vm:ModInfoViewModel"
                           MinWidth="64"
                           Width="*" />
