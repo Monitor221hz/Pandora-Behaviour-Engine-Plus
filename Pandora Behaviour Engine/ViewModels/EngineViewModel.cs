@@ -76,11 +76,15 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 
     private static readonly char[] menuPathSeparators = ['/', '\\'];
 
+    public Interaction<AboutDialogViewModel, Unit> ShowAboutDialog { get; }
+
     public EngineViewModel()
     {
         startupArguments = Environment.GetCommandLineArgs().ToHashSet(StringComparer.OrdinalIgnoreCase);
 
         _modService = new ModService(Path.Combine(launchDirectory.FullName, "Pandora_Engine", "ActiveMods.txt"));
+
+        ShowAboutDialog = new Interaction<AboutDialogViewModel, Unit>();
 
         SourceMods = new ObservableCollectionExtended<ModInfoViewModel>();
         SourceMods.ToObservableChangeSet()
@@ -353,4 +357,8 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
             EngineRunning = false;
         }
     }
+
+    [ReactiveCommand]
+    private async Task ShowAboutDialogAsync() =>
+        await ShowAboutDialog.Handle(new AboutDialogViewModel());
 }
