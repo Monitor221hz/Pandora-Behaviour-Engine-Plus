@@ -1,38 +1,26 @@
-﻿using NLog.Filters;
-using Pandora.API.Patch.Engine.Config;
-using Pandora.Command;
-using Pandora.Core;
-using Pandora.Core.Engine.Configs;
-using System;
-using System.Collections.Generic;
+﻿using Pandora.API.Patch.Engine.Config;
+using ReactiveUI;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reactive;
 
 namespace Pandora.ViewModels;
-public class EngineConfigurationViewModel : IEngineConfigurationFactory, IEngineConfigurationViewModel
+
+public partial class EngineConfigurationViewModel : ViewModelBase, IEngineConfigurationFactory, IEngineConfigurationViewModel
 {
-	private IEngineConfigurationFactory engineConfigurationFactory; 
+    private readonly IEngineConfigurationFactory engineConfigurationFactory;
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-	private void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
-	{
-		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-	}
-	public string Name => engineConfigurationFactory.Name;
-	public IEngineConfiguration? Config => engineConfigurationFactory.Config;
+    public string Name => engineConfigurationFactory.Name;
 
-	public ObservableCollection<IEngineConfigurationViewModel> NestedViewModels { get; private set; } = new ObservableCollection<IEngineConfigurationViewModel>();
+    public IEngineConfiguration? Config => engineConfigurationFactory.Config;
 
-	public RelayCommand? SetCommand { get; } = null;
+    public ObservableCollection<IEngineConfigurationViewModel> NestedViewModels { get; } = [];
 
-	public EngineConfigurationViewModel(IEngineConfigurationFactory factory,RelayCommand setCommand) 
-	{
-		engineConfigurationFactory = factory;
-		SetCommand = setCommand;
-	}
+    public ReactiveCommand<IEngineConfigurationFactory, Unit>? SetCommand { get; }
+
+    public EngineConfigurationViewModel(IEngineConfigurationFactory factory, ReactiveCommand<IEngineConfigurationFactory, Unit> setCommand)
+    {
+        engineConfigurationFactory = factory;
+        SetCommand = setCommand;
+    }
 }
 

@@ -1,3 +1,4 @@
+using System;
 using FluentAvalonia.UI.Windowing;
 using Avalonia.Media;
 using Avalonia.Controls.Chrome;
@@ -6,13 +7,14 @@ using FluentAvalonia.UI.Controls;
 using Avalonia.Interactivity;
 
 namespace Pandora.Views;
+
 public partial class MainWindow : AppWindow
 {
 	public MainWindow()
 	{
 		InitializeComponent();
 
-		if(IsWindows)
+		if (IsWindows)
 		{
 			Color color = Color.Parse("#FF9370DB");
 			PlatformFeatures.SetWindowBorderColor(color);
@@ -28,11 +30,10 @@ public partial class MainWindow : AppWindow
 		Width = savedWindowWidth > 1 ? savedWindowWidth : Width;
 		Closed += MainWindow_Closed;
 	}
-	private void MainWindow_Closed(object? sender, System.EventArgs e)
+	private void MainWindow_Closed(object? sender, EventArgs e)
 	{
 		Properties.GUISettings.Default.WindowHeight = Height;
 		Properties.GUISettings.Default.WindowWidth = Width;
 		Properties.GUISettings.Default.Save();
 	}
-
 }

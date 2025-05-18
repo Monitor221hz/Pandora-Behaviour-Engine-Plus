@@ -2,19 +2,35 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			       xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
-			       xmlns:idd="clr-namespace:Avalonia.Xaml.Interactions.DragAndDrop;assembly=Avalonia.Xaml.Interactions.DragAndDrop"
-			       xmlns:b="using:Pandora.Behaviors"
 			       xmlns:vm="using:Pandora.ViewModels"
-			       xmlns:cr="using:Pandora.Core"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:conv="clr-namespace:Pandora.Converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:controls="using:Avalonia.Controls"
              x:Class="Pandora.Views.PatchBox"
 			       x:DataType="vm:EngineViewModel">
 
+  <UserControl.Resources>
+    <conv:PandoraCodeToEnabledConverter x:Key="PandoraCodeToEnabledConverter" />
+    <conv:FilterConfigurableColumnsConverter x:Key="FilterConfigurableColumnsConverter" />
+    
+    <DataTemplate x:Key="DataGridColumnsVisibilityDataTemplate">
+      <ItemsControl ItemsSource="{Binding}">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate x:DataType="controls:DataGridColumn">
+            <CheckBox IsChecked="{Binding IsVisible, Mode=TwoWay}"
+                      HorizontalAlignment="Left"
+                      VerticalAlignment="Center"
+                      Content="{Binding Header}" />
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </DataTemplate>
+  </UserControl.Resources>
+
   <DataGrid x:Name="ModInfoDataGrid"
             Grid.Row="1"
-            ItemsSource="{Binding ModViewModels, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            ItemsSource="{Binding ModViewModels}"
             RowHeight="20"
             GridLinesVisibility="None"
             HeadersVisibility="All"
@@ -23,7 +39,6 @@
             CanUserReorderColumns="True"
             CornerRadius="4"
             ClipToBounds="True"
-            IsReadOnly="True"
             IsEnabled="{Binding !EngineRunning}"
             Background="{DynamicResource ControlContent}"
             Classes="DragAndDrop ItemsDragAndDrop">
@@ -37,8 +52,13 @@
                               Width="*">
         <DataGridTemplateColumn.HeaderTemplate>
           <DataTemplate x:DataType="vm:EngineViewModel">
-            <CheckBox Command="{Binding ToggleAllCommand}" Padding="0" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"
-                      CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}">
+            <CheckBox x:Name="checkBoxHeader" 
+                      IsChecked="{Binding AllSelected, Mode=OneWay}"
+                      Padding="0"
+                      VerticalAlignment="Center"
+                      HorizontalAlignment="Center"
+                      Command="{Binding ToggleSelectAllCommand}"
+                      CommandParameter="{Binding $self.IsChecked}">
               <CheckBox.RenderTransform>
                 <ScaleTransform ScaleX="0.75" ScaleY="0.75"  />
               </CheckBox.RenderTransform>
@@ -47,7 +67,9 @@
         </DataGridTemplateColumn.HeaderTemplate>
         <DataGridTemplateColumn.CellTemplate>
           <DataTemplate x:DataType="vm:ModInfoViewModel">
-            <CheckBox IsChecked="{Binding Active}" Padding="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <CheckBox IsChecked="{Binding Active}" 
+                      IsEnabled="{Binding Code, Converter={StaticResource PandoraCodeToEnabledConverter}}"
+                      Padding="0" HorizontalAlignment="Center" VerticalAlignment="Center">
               <CheckBox.RenderTransform>
                 <ScaleTransform ScaleX="0.75" ScaleY="0.75" />
               </CheckBox.RenderTransform>
@@ -70,7 +92,34 @@
                           x:DataType="vm:ModInfoViewModel"
                           MinWidth="64"
                           Width="*" />
+      <DataGridTextColumn Header="Priority"
+                          Binding="{Binding Priority}"
+                          x:DataType="vm:ModInfoViewModel"
+                          MinWidth="64"
+                          Width="*" />
+      <DataGridTextColumn Header="Code"
+                          Binding="{Binding Code}"
+                          x:DataType="vm:ModInfoViewModel"
+                          MinWidth="64"
+                          Width="*" />
     </DataGrid.Columns>
+    <DataGrid.Styles>
+      <Style Selector="DataGridColumnHeadersPresenter">
+        <Setter Property="ContextFlyout">
+          <Flyout>
+            <Grid RowDefinitions="Auto,Auto,*">
+              <TextBlock Text="Column Visibility" Margin="0 0 0 4" FontSize="14" />
+              <Separator Grid.Row="1" />
+              <ContentPresenter Grid.Row="2" 
+                                HorizontalAlignment="Left"
+                                HorizontalContentAlignment="Left"
+                                Content="{Binding #ModInfoDataGrid.Columns, Converter={StaticResource FilterConfigurableColumnsConverter}}"
+                                ContentTemplate="{StaticResource DataGridColumnsVisibilityDataTemplate}"/>
+            </Grid>
+          </Flyout>
+        </Setter>
+      </Style>
+    </DataGrid.Styles>
   </DataGrid>
 
 </UserControl>

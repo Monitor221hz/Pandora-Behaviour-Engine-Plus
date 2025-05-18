@@ -7,7 +7,7 @@
              mc:Ignorable="d" d:DesignWidth="256" d:DesignHeight="60"
              x:Class="Pandora.Views.LaunchElement"
 						 x:DataType="vm:EngineViewModel">
-  <Button Command="{Binding LaunchCommand}"
+  <Button Command="{Binding LaunchEngineCommand}"
           HorizontalAlignment="Stretch"
           VerticalAlignment="Center"
           Classes="accent"

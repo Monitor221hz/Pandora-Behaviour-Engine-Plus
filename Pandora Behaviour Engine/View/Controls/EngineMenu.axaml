@@ -2,20 +2,18 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	     xmlns:vm="using:Pandora.ViewModels"
+             xmlns:vm="using:Pandora.ViewModels"
              mc:Ignorable="d" d:DesignWidth="500"
              x:Class="Pandora.Views.EngineMenu"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
-	     x:DataType="vm:EngineViewModel">
+             x:DataType="vm:EngineViewModel">
 
-  <Grid Name="TitleBarHost"
-        ColumnDefinitions="Auto,Auto,*,Auto"
-        Background="Transparent">
+  <Grid Name="TitleBarHost" ColumnDefinitions="Auto,Auto,*,Auto" Background="Transparent">
     <ui:IconSourceElement Name="WindowIcon"
                           IconSource="{StaticResource IconPandora}"
                           Width="22" Height="22"
                           Margin="0 -2 0 0" />
-    <Menu MinWidth="110" FontSize="13" Grid.Column="1" IsVisible="{Binding MenuEnabled}">
+    <Menu MinWidth="110" FontSize="13" Grid.Column="1" IsEnabled="{Binding !EngineRunning}">
       <MenuItem Header="Menu" Classes="SubItems" ItemsSource="{Binding EngineConfigurationViewModels}">
         <MenuItem.ItemTemplate>
           <TreeDataTemplate ItemsSource="{Binding NestedViewModels}" x:DataType="vm:IEngineConfigurationViewModel">
@@ -24,54 +22,24 @@
         </MenuItem.ItemTemplate>
         <MenuItem.Styles>
           <Style Selector="MenuItem.SubItems MenuItem" x:DataType="vm:IEngineConfigurationViewModel">
-			  <Setter Property="Header" Value="{Binding Name}"></Setter>
-			  <Setter Property="Command" Value="{Binding SetCommand}" />
+            <Setter Property="ToggleType" Value="Radio" />
+			      <Setter Property="Header" Value="{Binding Name}" />
+			      <Setter Property="Command" Value="{Binding SetCommand}" />
             <Setter Property="CommandParameter" Value="{Binding}" />
           </Style>
         </MenuItem.Styles>
       </MenuItem>
-      <MenuItem Header="About" />
+      <MenuItem Header="About" Command="{Binding ShowAboutDialogCommand}" />
     </Menu>
     <Border Padding="10 6" Grid.Column="2">
       <AutoCompleteBox x:Name="searchTextBox"
                        Classes="SampleApp"
                        MaxWidth="280"
                        FontSize="13"
-                       Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                       Watermark="Search"  />
+                       Text="{Binding SearchTerm}"
+                       Watermark="Search" 
+                       IsEnabled="{Binding !EngineRunning}" />
     </Border>
-
-
-
-    <ui:TaskDialog x:Name="TaskDialogAbout"
-                   Header="Pandora Behaviour Engine+"
-                   SubHeader="Version: 2.5.0"
-                   Content="This is some sample text, but you can put more advanced content here if you like"
-                   FooterVisibility="Never"
-                   IsFooterExpanded="False"
-                   IconSource="{StaticResource IconPandora}"
-                   ShowProgressBar="True">
-      <ui:TaskDialog.Commands>
-        <ui:TaskDialogCommand Text="Check Update"
-                              Description="Check for a new version"
-                              IsEnabled="True"
-                              ClosesOnInvoked="False"
-                              IconSource="Refresh" />
-        <ui:TaskDialogCommand Text="Github"
-                              Description="Visit GitHub page"
-                              IsEnabled="True"
-                              ClosesOnInvoked="False"
-                              IconSource="{StaticResource IconGithub}" />
-        <ui:TaskDialogCommand Text="Discord"
-                              Description="Join the Discord group"
-                              IsEnabled="True"
-                              ClosesOnInvoked="False"
-                              IconSource="{StaticResource IconDiscord}" />
-      </ui:TaskDialog.Commands>
-      <ui:TaskDialog.Buttons>
-        <ui:TaskDialogButton Text="Close" DialogResult="OK"  />
-      </ui:TaskDialog.Buttons>
-    </ui:TaskDialog>
 
     <ui:ContentDialog x:Name="DialogUpdateAvaliable"
                       Title="Update Avaliable"

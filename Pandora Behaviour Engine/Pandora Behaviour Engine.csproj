@@ -9,6 +9,11 @@
     <RootNamespace>Pandora</RootNamespace>
     <ApplicationIcon>Assets\pandora.ico</ApplicationIcon>
     <AssemblyName>Pandora Behaviour Engine+</AssemblyName>
+    <AssemblyVersion>2.7.0</AssemblyVersion>
+    <FileVersion>2.7.0</FileVersion>
+    <VersionPrefix>2.7.0</VersionPrefix>
+    <VersionSuffix>beta</VersionSuffix>
+    <GenerateAssemblyInformationalVersionAttribute>true</GenerateAssemblyInformationalVersionAttribute>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,17 +25,24 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia.Desktop" Version="11.2.0" />
-    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.0" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.3.0" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.0" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-	<PackageReference Condition="'$(Configuration)' == 'Release'" Include="Avalonia.Controls.DataGrid" Version="11.2.0" />
-    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.1.0" />
-    <PackageReference Include="Avalonia.Xaml.Interactions.DragAndDrop" Version="11.2.0" />
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
-    <PackageReference Include="FluentAvaloniaUI" Version="2.1.0" />
+	  <PackageReference Condition="'$(Configuration)' == 'Release'" Include="Avalonia.Controls.DataGrid" Version="11.3.0" />
+    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.0" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.0" />
+    <PackageReference Include="Avalonia.Xaml.Behaviors" Version="11.3.0.1" />
+    <PackageReference Include="Avalonia.Xaml.Interactions.DragAndDrop" Version="11.3.0.1" />
+    <PackageReference Include="DynamicData" Version="9.3.1" />
+    <PackageReference Include="FluentAvaloniaUI" Version="2.3.0" />
     <PackageReference Include="Nito.HashAlgorithms" Version="1.0.1" />
-    <PackageReference Include="NLog" Version="5.3.3" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
+    <PackageReference Include="NLog" Version="5.4.0" />
+    <PackageReference Include="ReactiveUI" Version="20.2.45" />
+    <PackageReference Include="ReactiveUI.SourceGenerators" Version="2.1.27">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.5" />
   </ItemGroup>
 
   <ItemGroup> 
