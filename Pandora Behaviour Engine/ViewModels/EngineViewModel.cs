@@ -54,7 +54,6 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
     private readonly StringBuilder _logBuilder = new();
 
     [Reactive] private bool _engineRunning = false;
-    [Reactive] private bool _menuEnabled = false;
     [Reactive] private string _logText = string.Empty;
     [Reactive] private string _searchTerm = string.Empty;
 
@@ -200,7 +199,6 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
         {
             _logBuilder.AppendLine("Plugins loaded.");
         }
-        MenuEnabled = true;
         //EngineConfigs.Add(new EngineConfigurationViewModel<SkyrimConfiguration>("Skyrim SE/AE", SetEngineConfigCommand));
         //EngineConfigs.Add(new EngineConfigurationViewModel<SkyrimDebugConfiguration>("Skyrim SE/AE Debug", SetEngineConfigCommand));
     }
