@@ -6,11 +6,26 @@
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:conv="clr-namespace:Pandora.Converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:controls="using:Avalonia.Controls"
              x:Class="Pandora.Views.PatchBox"
 			       x:DataType="vm:EngineViewModel">
 
   <UserControl.Resources>
     <conv:PandoraCodeToEnabledConverter x:Key="PandoraCodeToEnabledConverter" />
+    <conv:FilterConfigurableColumnsConverter x:Key="FilterConfigurableColumnsConverter" />
+    
+    <DataTemplate x:Key="DataGridColumnsVisibilityDataTemplate">
+      <ItemsControl ItemsSource="{Binding}">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate x:DataType="controls:DataGridColumn">
+            <CheckBox IsChecked="{Binding IsVisible, Mode=TwoWay}"
+                      HorizontalAlignment="Left"
+                      VerticalAlignment="Center"
+                      Content="{Binding Header}" />
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </DataTemplate>
   </UserControl.Resources>
 
   <DataGrid x:Name="ModInfoDataGrid"
@@ -77,7 +92,34 @@
                           x:DataType="vm:ModInfoViewModel"
                           MinWidth="64"
                           Width="*" />
+      <DataGridTextColumn Header="Priority"
+                          Binding="{Binding Priority}"
+                          x:DataType="vm:ModInfoViewModel"
+                          MinWidth="64"
+                          Width="*" />
+      <DataGridTextColumn Header="Code"
+                          Binding="{Binding Code}"
+                          x:DataType="vm:ModInfoViewModel"
+                          MinWidth="64"
+                          Width="*" />
     </DataGrid.Columns>
+    <DataGrid.Styles>
+      <Style Selector="DataGridColumnHeadersPresenter">
+        <Setter Property="ContextFlyout">
+          <Flyout>
+            <Grid RowDefinitions="Auto,Auto,*">
+              <TextBlock Text="Column Visibility" Margin="0 0 0 4" FontSize="14" />
+              <Separator Grid.Row="1" />
+              <ContentPresenter Grid.Row="2" 
+                                HorizontalAlignment="Left"
+                                HorizontalContentAlignment="Left"
+                                Content="{Binding #ModInfoDataGrid.Columns, Converter={StaticResource FilterConfigurableColumnsConverter}}"
+                                ContentTemplate="{StaticResource DataGridColumnsVisibilityDataTemplate}"/>
+            </Grid>
+          </Flyout>
+        </Setter>
+      </Style>
+    </DataGrid.Styles>
   </DataGrid>
 
 </UserControl>
