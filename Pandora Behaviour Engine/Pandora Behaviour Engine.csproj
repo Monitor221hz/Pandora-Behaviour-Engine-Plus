@@ -31,9 +31,9 @@
 	  <PackageReference Condition="'$(Configuration)' == 'Release'" Include="Avalonia.Controls.DataGrid" Version="11.3.0" />
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.0" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.0" />
-    <PackageReference Include="Avalonia.Xaml.Behaviors" Version="11.3.0" />
-    <PackageReference Include="Avalonia.Xaml.Interactions.DragAndDrop" Version="11.3.0" />
-    <PackageReference Include="DynamicData" Version="9.2.2" />
+    <PackageReference Include="Avalonia.Xaml.Behaviors" Version="11.3.0.1" />
+    <PackageReference Include="Avalonia.Xaml.Interactions.DragAndDrop" Version="11.3.0.1" />
+    <PackageReference Include="DynamicData" Version="9.3.1" />
     <PackageReference Include="FluentAvaloniaUI" Version="2.3.0" />
     <PackageReference Include="Nito.HashAlgorithms" Version="1.0.1" />
     <PackageReference Include="NLog" Version="5.4.0" />
@@ -42,7 +42,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.4" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.5" />
   </ItemGroup>
 
   <ItemGroup> 
