@@ -49,8 +49,6 @@ Built with backwards compatibility in mind for [Nemesis Unlimited Behavior Engin
 ## For Users
 
 ### Quickstart
-Install [.NET 8 Desktop Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) if you do not have it installed.  
-
 <br/>
 
 <details>
@@ -145,18 +143,18 @@ Patches in the new Pandora format do not use multiple text files per behavior gr
 ```xml
 
 <patch>
-    <replace>
+  <replace>
     <edit path="#xxxx\...\..."><!-- content --></edit>
-    </replace>
-    <insert>
+  </replace>
+  <insert>
     <edit path="#xxxx\...\..."><!-- content --></edit>
-    </insert>
-    <append>
+  </insert>
+  <append>
     <edit path="#xxxx\...\..."><!-- content --></edit>
-    </append>
-    <loose>
+  </append>
+  <loose>
     <edit path="#xxxx\...\..."><!--content --></edit>
-    </loose>
+  </loose>
 </patch>
 ```
 Edits have the following format:
@@ -168,23 +166,23 @@ An example of a patch file:
 
 ```xml
 <patch>
-	<replace>
-		<edit path="#0885/legs/Element0/maxAnkleHeightMS">
-			<hkparam name="maxAnkleHeightMS">0.700000</hkparam>
-		</edit>
-		<edit path="#0885/legs/Element0/hipIndex">
-			<hkparam name="hipIndex">12</hkparam>
-		</edit>
-		<edit path="#0885/legs/Element0/kneeIndex">
-			<hkparam name="kneeIndex">13</hkparam>
-		</edit>
-		<edit path="#0885/legs/Element0/ankleIndex">
-			<hkparam name="ankleIndex">14</hkparam>
-		</edit>
-		<edit path="#0885/legs/Element0/isPlantedMS">
-			<hkparam name="isPlantedMS">false</hkparam>
-		</edit>
-	</replace>
+  <replace>
+    <edit path="#0885/legs/Element0/maxAnkleHeightMS">
+      <hkparam name="maxAnkleHeightMS">0.700000</hkparam>
+    </edit>
+    <edit path="#0885/legs/Element0/hipIndex">
+      <hkparam name="hipIndex">12</hkparam>
+    </edit>
+    <edit path="#0885/legs/Element0/kneeIndex">
+      <hkparam name="kneeIndex">13</hkparam>
+    </edit>
+    <edit path="#0885/legs/Element0/ankleIndex">
+      <hkparam name="ankleIndex">14</hkparam>
+    </edit>
+    <edit path="#0885/legs/Element0/isPlantedMS">
+      <hkparam name="isPlantedMS">false</hkparam>
+    </edit>
+  </replace>
 </patch>
 ```
 
