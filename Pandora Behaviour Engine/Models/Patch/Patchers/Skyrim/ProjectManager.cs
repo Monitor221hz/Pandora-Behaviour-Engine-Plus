@@ -42,6 +42,7 @@ namespace Pandora.Core.Patchers.Skyrim
 			this.baseOutputDirectory = outputDirectory;
 			fnisParser = new FNISParser(this, baseOutputDirectory);
 		}
+
 		public void GetExportInfo(StringBuilder builder)
 		{
 			if (CompleteExportSuccess) { return; }
@@ -413,5 +414,6 @@ namespace Pandora.Core.Patchers.Skyrim
 			this.baseOutputDirectory = baseDirectory;
 			fnisParser.SetOutputPath(baseDirectory);
 		}
+		public DirectoryInfo GetOutputDirectory() { return baseOutputDirectory; }
 	}
 }
