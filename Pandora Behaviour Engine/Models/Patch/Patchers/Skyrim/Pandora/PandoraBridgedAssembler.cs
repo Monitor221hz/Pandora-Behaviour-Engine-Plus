@@ -1,4 +1,6 @@
-﻿using Pandora.Core.Patchers.Skyrim;
+﻿using Pandora.API.Patch;
+using Pandora.API.Patch.Engine.Skyrim64;
+using Pandora.Core.Patchers.Skyrim;
 using Pandora.Patch.Patchers.Skyrim.AnimData;
 using Pandora.Patch.Patchers.Skyrim.AnimSetData;
 using Pandora.Patch.Patchers.Skyrim.Hkx;
@@ -11,12 +13,12 @@ using System.Threading.Tasks;
 
 namespace Pandora.Patch.Patchers.Skyrim.Pandora
 {
-	public class PandoraFragmentInterpreter
+	public class PandoraBridgedAssembler
 	{
 
 		private PandoraAssembler assembler; 
 
-		public PandoraFragmentInterpreter(ProjectManager projManager, AnimSetDataManager animSDManager, AnimDataManager animDManager) => assembler = new PandoraAssembler(projManager, animSDManager, animDManager);
+		public PandoraBridgedAssembler(ProjectManager projManager, AnimSetDataManager animSDManager, AnimDataManager animDManager) => assembler = new PandoraAssembler(projManager, animSDManager, animDManager);
 
 		public void TryGraphInjection(DirectoryInfo folder, PackFile packFile, PackFileChangeSet changeSet)
 		{
@@ -28,8 +30,9 @@ namespace Pandora.Patch.Patchers.Skyrim.Pandora
 		}
 		public void AssembleAnimDataPatch(DirectoryInfo folder) => assembler.AssembleAnimDataPatch(folder);
 		public void AssembleAnimSetDataPatch(DirectoryInfo directoryInfo) => assembler.AssembleAnimSetDataPatch(directoryInfo);
-		public void ApplyNativePatchesParallel() => assembler.ApplyNativePatchesParallel();
-		public void ApplyNativePatches() => assembler.ApplyNativePatches();	
+		public void QueueNativePatches() => assembler.QueueNativePatches();
+		public void ApplyNativePatches(RuntimeMode mode, RunOrder order) => assembler.ApplyNativePatches(mode, order);
+
 		public void TryGenerateAnimDataPatchFile(DirectoryInfo folder)
 		{
 			var parentFolder = folder.Parent;
