@@ -2,9 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.LogicalTree;
 using Avalonia.ReactiveUI;
-using Avalonia.VisualTree;
 using Pandora.ViewModels;
-using System;
 
 namespace Pandora.Views;
 

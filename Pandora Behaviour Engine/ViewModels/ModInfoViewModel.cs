@@ -1,5 +1,4 @@
 ﻿using Pandora.API.Patch;
-using Pandora.Core;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using System;

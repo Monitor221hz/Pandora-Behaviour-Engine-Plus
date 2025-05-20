@@ -1,10 +1,6 @@
-using System;
-using FluentAvalonia.UI.Windowing;
 using Avalonia.Media;
-using Avalonia.Controls.Chrome;
-using Avalonia.Controls;
-using FluentAvalonia.UI.Controls;
-using Avalonia.Interactivity;
+using FluentAvalonia.UI.Windowing;
+using System;
 
 namespace Pandora.Views;
 

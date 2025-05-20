@@ -1,11 +1,7 @@
 ﻿using Pandora.API.Patch;
-using Pandora.Core;
-
-using System;
+using Pandora.Models.Patch.Mod;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;

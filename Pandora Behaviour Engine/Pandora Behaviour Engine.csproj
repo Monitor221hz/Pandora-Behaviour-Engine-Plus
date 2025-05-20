@@ -18,9 +18,11 @@
 
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
+    <AvaloniaXaml Remove="Data\Skyrim64\**" />
+    <Compile Remove="Data\Skyrim64\**" />
+    <EmbeddedResource Remove="Data\Skyrim64\**" />
+    <None Remove="Data\Skyrim64\**" />
     <Content Include="Assets\pandora.ico" />
-    <Folder Include="Data\Skyrim64\" />
-    <Folder Include="Models\Patch\Engine\Interface\" />
     <Folder Include="Themes\" />
   </ItemGroup>
 
@@ -1111,5 +1113,13 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>GUISettings.Designer.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\minth\Source\Repos\Pandora\Pandora Behaviour Engine\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\Users\minth\Source\Repos\Pandora\Pandora Behaviour Engine\.editorconfig" />
   </ItemGroup>
 </Project>

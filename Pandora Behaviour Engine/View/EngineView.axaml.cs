@@ -1,8 +1,5 @@
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
-using FluentAvalonia.UI.Windowing;
 using Pandora.ViewModels;
 
 namespace Pandora.Views;

@@ -1,11 +1,8 @@
-﻿using System;
+﻿using Pandora.API.Patch;
+using Pandora.Models.Patch.Mod;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Pandora.Core;
-using Pandora.API.Patch;
 namespace Pandora.MVVM.Data;
 
 public class NemesisModInfoProvider : IModInfoProvider
