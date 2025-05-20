@@ -1,9 +1,9 @@
-using System;
 using Avalonia.Data.Converters;
+using System;
 
 namespace Pandora.Converters
 {
-    public class PandoraCodeToEnabledConverter : IValueConverter
+	public class PandoraCodeToEnabledConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {

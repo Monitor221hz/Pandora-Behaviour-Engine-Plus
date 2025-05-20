@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
+﻿using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.Interactivity;
 using Avalonia.VisualTree;
-using Avalonia.Xaml.Interactions.DragAndDrop;
 using Pandora.ViewModels;
+using System;
+using System.Collections.ObjectModel;
 
 namespace Pandora.Behaviors;
 

@@ -1,8 +1,7 @@
 ﻿using Pandora.API.Patch;
-using Pandora.Core;
+using Pandora.Models;
 using Pandora.MVVM.Data;
 using Pandora.ViewModels;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;

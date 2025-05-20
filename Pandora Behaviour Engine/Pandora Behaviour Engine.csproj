@@ -18,10 +18,11 @@
 
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
+    <AvaloniaXaml Remove="Data\Skyrim64\**" />
+    <Compile Remove="Data\Skyrim64\**" />
+    <EmbeddedResource Remove="Data\Skyrim64\**" />
+    <None Remove="Data\Skyrim64\**" />
     <Content Include="Assets\pandora.ico" />
-    <Folder Include="Data\Skyrim64\" />
-    <Folder Include="Models\Patch\Engine\Interface\" />
-    <Folder Include="Models\Patch\Patchers\Interface\" />
     <Folder Include="Themes\" />
   </ItemGroup>
 

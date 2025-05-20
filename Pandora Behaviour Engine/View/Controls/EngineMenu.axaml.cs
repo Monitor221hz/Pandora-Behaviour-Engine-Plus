@@ -1,17 +1,15 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Windowing;
-using Avalonia.Visuals;
 using Pandora.ViewModels;
 using ReactiveUI;
+using ReactiveUI.SourceGenerators;
 using System;
 using System.Reactive;
 using System.Threading.Tasks;
-using ReactiveUI.SourceGenerators;
 
 namespace Pandora.Views;
 
