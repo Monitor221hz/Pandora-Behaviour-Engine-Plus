@@ -73,7 +73,7 @@ public partial class FNISAnimationList
 	};
 
 
-	public List<FNISAnimation> Animations { get; private set; } = new(); 
+	public List<BasicAnimation> Animations { get; private set; } = new(); 
 	public IModInfo ModInfo { get; private set; }
 
 	private FNISAnimationList(IModInfo modInfo)
@@ -116,7 +116,7 @@ public partial class FNISAnimationList
 	public bool BuildPatches(Project project, ProjectManager projectManager, PatchNodeCreator patchNodeCreator)
 	{
 		FNISAnimationListBuildContext buildContext = new FNISAnimationListBuildContext(patchNodeCreator, project, projectManager, ModInfo); 
-		foreach (FNISAnimation animation in Animations)
+		foreach (BasicAnimation animation in Animations)
 		{
 			animation.BuildPatch(buildContext);
 		}

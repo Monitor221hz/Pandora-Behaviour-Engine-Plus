@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace Pandora.Patch.Patchers.Skyrim.FNIS;
-public class OffsetArmAnimation : FNISAnimation
+public class OffsetArmAnimation : BasicAnimation
 {
-    public OffsetArmAnimation(Match match) : base(AnimType.OffsetArm, match)
+    public OffsetArmAnimation(Match match) : base(FNISAnimType.OffsetArm, match)
     {
         
     }
-	public OffsetArmAnimation(AnimType templateType, AnimFlags flags, string graphEvent, string animationFilePath, List<string> animationObjectNames) : base(templateType, flags, graphEvent, animationFilePath, animationObjectNames)
+	public OffsetArmAnimation(FNISAnimType templateType, FNISAnimFlags flags, string graphEvent, string animationFilePath, List<string> animationObjectNames) : base(templateType, flags, graphEvent, animationFilePath, animationObjectNames)
 	{
 
 	}
@@ -46,7 +46,7 @@ public class OffsetArmAnimation : FNISAnimation
 			name = $"{GraphEvent}_StateInfo", 
 			probability = 1.0f, 
 			generator = clipGenerator, 
-			stateId = GetPositiveHash(clipGenerator.name), 
+			stateId = Hash, 
 			enable = true, 
 			transitions = graph.GetPushedObjectAs<hkbStateMachineTransitionInfoArray>("#5111")
 		};
@@ -79,7 +79,7 @@ public class OffsetArmAnimation : FNISAnimation
 				leftArmState.wildcardTransitions.transitions.Add(transitionInfo); 
 			}
 		}
-		BuildFlags(stateInfo, clipGenerator);
+		BuildFlags(graph, stateInfo, clipGenerator);
 		return true; 
 	}
 }

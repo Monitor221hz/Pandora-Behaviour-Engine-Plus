@@ -111,6 +111,36 @@ public class PackFileGraph : PackFile, IPackFileGraph, IEquatable<PackFileGraph>
 		}
 		return index; 
 	}
+
+	public int FindEvent(string name)
+	{
+		int index;
+		lock (customEventIndices)
+		{
+			if (customEventIndices.TryGetValue(name, out index))
+			{
+				return index;
+			}
+			index = -1;
+			lock (Data.eventInfos)
+			{
+				lock (StringData.eventNames)
+				{
+					for (int i = 0; i < StringData.eventNames.Count; i++)
+					{
+						if (StringData.eventNames[i].Equals(name, StringComparison.OrdinalIgnoreCase))
+						{
+							index = i; 
+							customEventIndices.Add(name, index);
+							return index; 
+						}
+					}
+				}
+
+			}
+		}
+		return index;
+	}
 	public bool Equals(PackFileGraph? other)
 	{
 		return base.Equals(other);

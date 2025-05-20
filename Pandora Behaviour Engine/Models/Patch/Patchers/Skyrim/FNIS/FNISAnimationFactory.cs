@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Avalonia.Animation;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -6,23 +7,23 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using static Pandora.Patch.Patchers.Skyrim.FNIS.FNISAnimation;
+using static Pandora.Patch.Patchers.Skyrim.FNIS.BasicAnimation;
 
 namespace Pandora.Patch.Patchers.Skyrim.FNIS;
 struct FNISAnimPreset
 {
-	public FNISAnimPreset(AnimType animationType, AnimFlags flags)
+	public FNISAnimPreset(FNISAnimType animationType, FNISAnimFlags flags)
 	{
 		AnimationType = animationType;
 		Flags = flags;
 	}
-	public FNISAnimPreset(AnimType animationType)
+	public FNISAnimPreset(FNISAnimType animationType)
 	{
 		AnimationType = animationType; 
-		Flags = AnimFlags.None;
+		Flags = FNISAnimFlags.None;
 	}
-	public AnimType AnimationType { get; set; }
-	public AnimFlags Flags { get; set; }
+	public FNISAnimType AnimationType { get; set; }
+	public FNISAnimFlags Flags { get; set; }
 
 }
 
@@ -31,37 +32,65 @@ public class FNISAnimationFactory
 	private static readonly char[] lineWhitespace = new[] { ' ', '\t' };
 	private static readonly Dictionary<string, FNISAnimPreset> animTypePrefixes = new(StringComparer.OrdinalIgnoreCase)
 	{
-		{ "b", new(AnimType.Basic) },
-		{ "s", new(AnimType.Sequenced) },
-		{ "so", new(AnimType.SequencedOptimized) },
-		{ "fu", new (AnimType.Furniture) },
-		{ "fuo", new(AnimType.FurnitureOptimized) },
-		{ "+", new (AnimType.SequencedContinued) },
-		{ "ofa", new (AnimType.OffsetArm) },
-		{ "o", new (AnimType.Basic, AnimFlags.AnimObjects) },
-		{ "pa", new (AnimType.Paired) },
-		{ "km", new (AnimType.Killmove) },
-		{ "aa", new (AnimType.Alternate) },
-		{ "ch", new (AnimType.Chair) }
+		{ "b", new(FNISAnimType.Basic) },
+		{ "s", new(FNISAnimType.Sequenced) },
+		{ "so", new(FNISAnimType.SequencedOptimized) },
+		{ "fu", new (FNISAnimType.Furniture) },
+		{ "fuo", new(FNISAnimType.FurnitureOptimized) },
+		{ "+", new (FNISAnimType.SequencedContinued) },
+		{ "ofa", new (FNISAnimType.OffsetArm) },
+		{ "o", new (FNISAnimType.Basic, FNISAnimFlags.AnimObjects) },
+		{ "pa", new (FNISAnimType.Paired) },
+		{ "km", new (FNISAnimType.Killmove) },
+		{ "aa", new (FNISAnimType.Alternate) },
+		{ "ch", new (FNISAnimType.Chair) }
 	};
-	private static readonly Dictionary<string, AnimFlags> animFlagValues = new()
+	private static readonly Dictionary<string, FNISAnimFlags> animFlagValues = new()
 	{
-		{ "a", AnimFlags.Acyclic },
-		{ "o", AnimFlags.AnimObjects },
-		{ "ac", AnimFlags.AnimatedCamera },
-		{ "ac1", AnimFlags.AnimatedCameraSet },
-		{ "ac0", AnimFlags.AnimatedCameraReset },
-		{ "bsa", AnimFlags.BSA },
-		{ "h", AnimFlags.Headtracking },
-		{ "k", AnimFlags.Known },
-		{ "md", AnimFlags.MotionDriven },
-		{ "st", AnimFlags.Sticky },
-		{ "Tn", AnimFlags.TransitionNext }
+		{ "a", FNISAnimFlags.Acyclic },
+		{ "o", FNISAnimFlags.AnimObjects },
+		{ "ac", FNISAnimFlags.AnimatedCamera },
+		{ "ac1", FNISAnimFlags.AnimatedCameraSet },
+		{ "ac0", FNISAnimFlags.AnimatedCameraReset },
+		{ "bsa", FNISAnimFlags.BSA },
+		{ "h", FNISAnimFlags.Headtracking },
+		{ "k", FNISAnimFlags.Known },
+		{ "md", FNISAnimFlags.MotionDriven },
+		{ "st", FNISAnimFlags.Sticky },
+		{ "Tn", FNISAnimFlags.TransitionNext }
 
 	};
-	private Stack<IFNISAnimation> headAnimationStack = new(); 
+	private readonly Stack<IFNISAnimation> headAnimationStack = new(); 
 
-	public bool CreateFromLine(string animRoot, string line, [NotNullWhen(true)] out FNISAnimation? animation)
+	private BasicAnimation Create(FNISAnimType templateType, FNISAnimFlags flags, string graphEvent, string animationFilePath, List<string> animationObjectNames)
+	{
+		switch (templateType)
+		{
+			case FNISAnimType.OffsetArm:
+				return new OffsetArmAnimation(templateType, flags, graphEvent, animationFilePath, animationObjectNames);
+			case FNISAnimType.Furniture:
+				return new FurnitureAnimation(templateType, flags, graphEvent, animationFilePath, animationObjectNames);
+			case FNISAnimType.SequencedContinued:
+				if (!headAnimationStack.TryPop(out var prevAnimation))
+				{
+					return new BasicAnimation(templateType, flags, graphEvent, animationFilePath, animationObjectNames);
+				}
+				if (prevAnimation.Flags.HasFlag(FNISAnimFlags.Acyclic) && !prevAnimation.Flags.HasFlag(FNISAnimFlags.SequenceFinish))
+				{
+					prevAnimation.Flags |= FNISAnimFlags.SequenceStart;
+				}
+				else if (flags.HasFlag(FNISAnimFlags.Acyclic))
+				{
+					flags |= FNISAnimFlags.SequenceFinish;
+				}
+				BasicAnimation animation = Create(prevAnimation.TemplateType, flags, graphEvent, animationFilePath, animationObjectNames);
+				prevAnimation.NextAnimation = animation;
+				return animation;
+			default:
+				return new BasicAnimation(templateType, flags, graphEvent, animationFilePath, animationObjectNames);
+		}
+	}
+	public bool CreateFromLine(string animRoot, string line, [NotNullWhen(true)] out BasicAnimation? animation)
 	{
 		string[] args = line.Split(lineWhitespace, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 		FNISAnimPreset animPreset;
@@ -71,11 +100,11 @@ public class FNISAnimationFactory
 			return false; 
 		}
 		int optionsOffset = 0;
-		AnimFlags flags = animPreset.Flags;
+		FNISAnimFlags flags = animPreset.Flags;
 		if (args[1].Length > 0 && args[1][0] == '-')
 		{
 			string[] flagValues = args[1].Substring(1).Split(',');
-			AnimFlags flag; 
+			FNISAnimFlags flag; 
 			foreach (string flagValue in flagValues)
 			{
 				if (animFlagValues.TryGetValue(flagValue, out flag))
@@ -94,28 +123,30 @@ public class FNISAnimationFactory
 			}
 		}
 		string animationPath = Path.Combine(animRoot, args[2 + optionsOffset]);
-		switch (animPreset.AnimationType)
-		{
-			case AnimType.OffsetArm:
-				animation = new OffsetArmAnimation(animPreset.AnimationType, flags, args[1 + optionsOffset], animationPath, animObjectNames);
-				headAnimationStack.Push(animation);
-				break;
+		animation = Create(animPreset.AnimationType, flags, args[1 + optionsOffset], animationPath, animObjectNames);
+		headAnimationStack.Push(animation); 
+		//switch (animPreset.AnimationType)
+		//{
+		//	case FNISAnimType.OffsetArm:
+		//		animation = new OffsetArmAnimation(animPreset.AnimationType, flags, args[1 + optionsOffset], animationPath, animObjectNames);
+		//		headAnimationStack.Push(animation);
+		//		break;
 
-			case AnimType.Furniture:
-				animation = new FurnitureAnimation(animPreset.AnimationType, flags, args[1 + optionsOffset], animationPath, animObjectNames);
-				headAnimationStack.Push(animation);
-				break;
-			case AnimType.SequencedContinued:
-				animation = new FNISAnimation(animPreset.AnimationType, flags, args[1 + optionsOffset], animationPath, animObjectNames);
-				var head = headAnimationStack.Peek();
-				head.NextAnimation = animation;
-				headAnimationStack.Push(animation);
-				break;
-			default:
-				animation = new FNISAnimation(animPreset.AnimationType, flags, args[1 + optionsOffset], animationPath, animObjectNames);
-				headAnimationStack.Push(animation);
-				break;
-		}
+		//	case FNISAnimType.Furniture:
+		//		animation = new FurnitureAnimation(animPreset.AnimationType, flags, args[1 + optionsOffset], animationPath, animObjectNames);
+		//		headAnimationStack.Push(animation);
+		//		break;
+		//	case FNISAnimType.SequencedContinued:
+		//		animation = new BasicAnimation(animPreset.AnimationType, flags, args[1 + optionsOffset], animationPath, animObjectNames);
+		//		var head = headAnimationStack.Peek();
+		//		head.NextAnimation = animation;
+		//		headAnimationStack.Push(animation);
+		//		break;
+		//	default:
+		//		animation = new BasicAnimation(animPreset.AnimationType, flags, args[1 + optionsOffset], animationPath, animObjectNames);
+		//		headAnimationStack.Push(animation);
+		//		break;
+		//}
 		return true; 
 		
 	}
