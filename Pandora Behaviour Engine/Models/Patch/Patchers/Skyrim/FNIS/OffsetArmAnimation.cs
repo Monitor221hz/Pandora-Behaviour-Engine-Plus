@@ -79,7 +79,7 @@ public class OffsetArmAnimation : BasicAnimation
 				leftArmState.wildcardTransitions.transitions.Add(transitionInfo); 
 			}
 		}
-		BuildFlags(graph, stateInfo, clipGenerator);
+		BuildFlags(buildContext, graph, stateInfo, clipGenerator);
 		return true; 
 	}
 }

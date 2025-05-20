@@ -115,7 +115,7 @@ public partial class BasicAnimation : IFNISAnimation
 	{
 		return clip.triggers ?? new hkbClipTriggerArray() { triggers = new List<hkbClipTrigger>() };
 	}
-	public virtual void BuildFlags(PackFileGraph graph, hkbStateMachineStateInfo stateInfo, hkbClipGenerator clip)
+	public virtual void BuildFlags(FNISAnimationListBuildContext buildContext, PackFileGraph graph, hkbStateMachineStateInfo stateInfo, hkbClipGenerator clip)
 	{
 		if (HasModifier)
 		{
@@ -123,7 +123,7 @@ public partial class BasicAnimation : IFNISAnimation
 			var modifierGenerator = new hkbModifierGenerator() { modifier = modifierList, generator = clip };
 			if (Flags.HasFlag(FNISAnimFlags.MotionDriven))
 			{
-
+				buildContext.TargetProject?.AnimData?.AddDummyClipData(clip.name);
 			}
 		}
 		clip.mode = (sbyte)(Flags.HasFlag(FNISAnimFlags.Acyclic) ? PlaybackMode.MODE_SINGLE_PLAY : PlaybackMode.MODE_LOOPING);

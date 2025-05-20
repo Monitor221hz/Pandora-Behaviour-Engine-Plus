@@ -1,4 +1,5 @@
 ﻿using HKX2E;
+using Pandora.Core.Patchers.Skyrim;
 using Pandora.Patch.Patchers.Skyrim.FNIS;
 using Pandora.Patch.Patchers.Skyrim.Hkx;
 using System;
@@ -19,10 +20,22 @@ public class FurnitureAnimation : BasicAnimation
 	{
 
 	}
-
-	public override void BuildFlags(PackFileGraph graph, hkbStateMachineStateInfo stateInfo, hkbClipGenerator clip)
+	private static readonly hkbEventProperty headTrackingOffEventProperty = new() { id = 20 };
+	private static readonly hkbEventProperty idleChairSittingProperty = new() {  id = 14  };
+	private static readonly hkbEventProperty idleFurnitureExitProperty = new() {  id = 5  };
+	private static readonly hkbVariableBindingSetBinding animationDrivenBinding = new()
 	{
-		base.BuildFlags(graph, stateInfo, clip);
+		bindingType = 0,
+		bitIndex = -1,
+		variableIndex = 1, //bAnimationDriven, 
+		memberPath = "isActive",
+	};
+
+
+
+	public override void BuildFlags(FNISAnimationListBuildContext buildContext, PackFileGraph graph, hkbStateMachineStateInfo stateInfo, hkbClipGenerator clip)
+	{
+		base.BuildFlags(buildContext, graph, stateInfo, clip);
 		if (Flags.HasFlag(FNISAnimFlags.SequenceStart) && NextAnimation != null)
 		{
 			//var lastAnimation = NextAnimation;
@@ -70,10 +83,7 @@ public class FurnitureAnimation : BasicAnimation
 				{
 					localTime = -0.2f,
 					relativeToEndOfClip = true,
-					@event = new hkbEventProperty()
-					{
-						id = graph.FindEvent("IdleFurnitureExit")
-					}
+					@event = idleFurnitureExitProperty,
 				}
 			);
 			triggerObject.triggers.Add
@@ -117,13 +127,7 @@ public class FurnitureAnimation : BasicAnimation
 		{
 			bindings = new List<hkbVariableBindingSetBinding>()
 			{
-				new()
-				{
-					bindingType = 0, 
-					bitIndex = -1, 
-					variableIndex = 1, //bAnimationDriven, 
-					memberPath = "isActive",
-				}
+				animationDrivenBinding
 			}
 		};
 		string uniqueStateInfoName = $"{modInfo.Code}_{GraphEvent}_State";
@@ -183,20 +187,14 @@ public class FurnitureAnimation : BasicAnimation
 			{
 				events = new List<hkbEventProperty>()
 				{
-					new hkbEventProperty()
-					{
-						id = 20 // HeadTrackingOff
-					}
+					headTrackingOffEventProperty,
 				}
 			},
 			exitNotifyEvents = new()
 			{
 				events = new List<hkbEventProperty>()
 				{
-					new hkbEventProperty()
-					{
-						id = 14 // IdleChairSitting
-					}
+					idleChairSittingProperty,
 				}
 			},
 			generator = enterClip,
@@ -205,24 +203,18 @@ public class FurnitureAnimation : BasicAnimation
 		};
 		enterStateInfo.SetDefault();
 
-		BuildFlags(graph, enterStateInfo, enterClip);
+		BuildFlags(buildContext, graph, enterStateInfo, enterClip);
 		
 
 		furnitureBehaviorState.states.Add(enterStateInfo);
-
-		// reusable transition effect
-		hkbBlendingTransitionEffect longTransition6 = hkbBlendingTransitionEffect.GetDefault();
-		longTransition6.name = "LongBlendTransition_0.6";
-		longTransition6.duration = 0.6f;
-		longTransition6.eventMode = (sbyte)EventMode.EVENT_MODE_PROCESS_ALL;
 
 		int enterEventIndex = graph.AddDefaultEvent(GraphEvent);
 
 		// add root enter transition 
 		hkbStateMachineTransitionInfo rootEnterTransition = hkbStateMachineTransitionInfo.GetDefault();
-		rootEnterTransition.transition = longTransition6;
+		rootEnterTransition.transition = defaultTransition;
 		rootEnterTransition.eventId = enterEventIndex;
-		rootEnterTransition.toStateId = 4;
+		rootEnterTransition.toStateId = 4; // furniture state
 		rootEnterTransition.toNestedStateId = stateId;
 		rootEnterTransition.flags |= (short)TransitionFlags.FLAG_TO_NESTED_STATE_ID_IS_VALID | (short)TransitionFlags.FLAG_IS_LOCAL_WILDCARD;
 
@@ -241,7 +233,7 @@ public class FurnitureAnimation : BasicAnimation
 
 		// add enter transition manually
 		hkbStateMachineTransitionInfo transition = hkbStateMachineTransitionInfo.GetDefault();
-		transition.transition = longTransition6;
+		transition.transition = defaultTransition;
 		transition.eventId = enterEventIndex;
 		transition.toStateId = stateId;
 		transition.flags |= (short)TransitionFlags.FLAG_IS_LOCAL_WILDCARD | (short)TransitionFlags.FLAG_IS_GLOBAL_WILDCARD;
@@ -258,7 +250,6 @@ public class FurnitureAnimation : BasicAnimation
 			exitTransition.toStateId = lastAnimation.Hash;
 			exitTransition.toNestedStateId = lastAnimation.Hash;
 			exitTransition.flags |= (short)TransitionFlags.FLAG_TO_NESTED_STATE_ID_IS_VALID | (short)TransitionFlags.FLAG_IS_LOCAL_WILDCARD;
-			//furnitureBehaviorState.wildcardTransitions.transitions.Add(exitTransition);
 			furnitureGroupStateInfo.transitions = new hkbStateMachineTransitionInfoArray() { transitions = new List<hkbStateMachineTransitionInfo>() };
 			furnitureGroupStateInfo.transitions.transitions.Add(exitTransition);
 		}

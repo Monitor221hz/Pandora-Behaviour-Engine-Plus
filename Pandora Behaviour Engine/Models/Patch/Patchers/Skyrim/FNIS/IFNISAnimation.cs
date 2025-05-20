@@ -17,6 +17,6 @@ public interface IFNISAnimation
 	IFNISAnimation? NextAnimation { get; set; }
 	FNISAnimType TemplateType { get; }
 	bool BuildPatch(FNISAnimationListBuildContext buildContext);
-	void BuildFlags(PackFileGraph graph, hkbStateMachineStateInfo stateInfo, hkbClipGenerator clip);
+	void BuildFlags(FNISAnimationListBuildContext buildContext, PackFileGraph graph, hkbStateMachineStateInfo stateInfo, hkbClipGenerator clip);
 	string ToString();
 }
