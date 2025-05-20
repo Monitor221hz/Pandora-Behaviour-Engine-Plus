@@ -191,7 +191,7 @@ public class FNISParser
 				return;
 			}
 #endif
-		animList.BuildPatches(project, projectManager, patchNodeCreator);
+		animList.BuildPatches(project, projectManager);
 		if (InjectGraphReference(listName, folder, behaviorFolder, project.BehaviorFile))
 		{
 			lock (ModInfos)

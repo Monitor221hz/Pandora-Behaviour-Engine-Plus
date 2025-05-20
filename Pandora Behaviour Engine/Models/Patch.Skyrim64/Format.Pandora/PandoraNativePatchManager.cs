@@ -1,6 +1,7 @@
 ﻿using Pandora.API.Patch;
 using Pandora.API.Patch.Engine.Skyrim64;
 using Pandora.Models.Patch.Engine.Plugins;
+using Pandora.Models.Patch.Plugins;
 using System;
 using System.Collections.Generic;
 using System.IO;

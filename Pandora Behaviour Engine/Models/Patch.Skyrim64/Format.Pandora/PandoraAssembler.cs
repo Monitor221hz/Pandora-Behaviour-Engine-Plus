@@ -1,5 +1,6 @@
 ﻿using Pandora.API.Patch;
 using Pandora.API.Patch.IOManagers;
+using Pandora.Models.Patch.IO.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.AnimData;
 using Pandora.Models.Patch.Skyrim64.AnimSetData;
 using Pandora.Models.Patch.Skyrim64.Format.Nemesis;

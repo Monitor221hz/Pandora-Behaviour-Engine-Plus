@@ -1,5 +1,7 @@
 ﻿using Pandora.API.Patch;
 using Pandora.API.Patch.Engine.Config;
+using Pandora.Models.Patch.IO.Skyrim64;
+using Pandora.Models.Patch.Skyrim64;
 
 namespace Pandora.Models.Patch.Configs;
 public class SkyrimDebugConfiguration : IEngineConfiguration

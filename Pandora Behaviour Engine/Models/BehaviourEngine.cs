@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using Pandora.API.Patch;
 using Pandora.API.Patch.Engine.Config;
+using Pandora.Models.Patch.Configs;
 using Pandora.Models.Patch.Engine.Plugins;
 using Pandora.Models.Patch.Plugins;
 using System;
