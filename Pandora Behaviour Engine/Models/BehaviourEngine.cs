@@ -64,7 +64,14 @@ namespace Pandora.Models
 				}
 				assembly = metaPluginLoader.LoadPlugin(pluginDirectory, pluginInfo);
 #else
-							assembly = pluginLoader.LoadPlugin(pluginDirectory);
+				try
+				{
+					assembly = pluginLoader.LoadPlugin(pluginDirectory);
+				}
+				catch (Exception ex)
+				{
+					return;
+				}
 #endif
 				if (assembly != null) { AddConfigurations(assembly); }
 			}
