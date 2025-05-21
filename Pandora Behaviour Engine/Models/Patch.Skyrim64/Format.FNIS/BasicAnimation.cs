@@ -116,7 +116,7 @@ public partial class BasicAnimation : IFNISAnimation
 			var modifierGenerator = new hkbModifierGenerator() { modifier = modifierList, generator = clip };
 			if (Flags.HasFlag(FNISAnimFlags.MotionDriven))
 			{
-				buildContext.TargetProject?.AnimData?.AddDummyClipData(clip.name);
+				//buildContext.TargetProject?.AnimData?.AddDummyClipData(clip.name);
 			}
 		}
 		clip.mode = (sbyte)(Flags.HasFlag(FNISAnimFlags.Acyclic) ? PlaybackMode.MODE_SINGLE_PLAY : PlaybackMode.MODE_LOOPING);
