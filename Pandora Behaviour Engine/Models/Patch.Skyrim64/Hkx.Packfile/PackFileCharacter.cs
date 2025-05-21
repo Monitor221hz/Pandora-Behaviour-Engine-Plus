@@ -84,20 +84,20 @@ public class PackFileCharacter : PackFile, IEquatable<PackFileCharacter>, IPackF
 				return false;
 			}
 		}
-		if (ParentProject!.Sibling != null)
-		{
-			var sibling = ParentProject!.Sibling.CharacterPackFile;
-			lock (uniqueAnimationLock) lock (sibling.uniqueAnimationLock)
-				{
-					if (!sibling.uniqueAnimations.Add(name) || !uniqueAnimations.Add(name))
-					{
-						return true;
-					}
-					sibling.StringData.animationNames.Add(name);
-					StringData.animationNames.Add(name);
-					return true;
-				}
-		}
+		//if (ParentProject!.Sibling != null)
+		//{
+		//	var sibling = ParentProject!.Sibling.CharacterPackFile;
+		//	lock (uniqueAnimationLock) lock (sibling.uniqueAnimationLock)
+		//		{
+		//			if (!sibling.uniqueAnimations.Add(name) || !uniqueAnimations.Add(name))
+		//			{
+		//				return true;
+		//			}
+		//			sibling.StringData.animationNames.Add(name);
+		//			StringData.animationNames.Add(name);
+		//			return true;
+		//		}
+		//}
 		lock (uniqueAnimationLock)
 		{
 			if (uniqueAnimations.Add(name))
