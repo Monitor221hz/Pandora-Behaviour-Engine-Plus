@@ -17,12 +17,19 @@ public class FurnitureAnimation : BasicAnimation
 	private static readonly hkbEventProperty headTrackingOffEventProperty = new() { id = 20 };
 	private static readonly hkbEventProperty idleChairSittingProperty = new() { id = 14 };
 	private static readonly hkbEventProperty idleFurnitureExitProperty = new() { id = 5 };
+	private static readonly hkbEventProperty headTrackingOnEventProperty = new() { id = 18 };
 	private static readonly hkbVariableBindingSetBinding animationDrivenBinding = new()
 	{
 		bindingType = 0,
 		bitIndex = -1,
 		variableIndex = 1, //bAnimationDriven, 
 		memberPath = "isActive",
+	};
+	private static readonly hkbClipTrigger idleFurnitureExitTrigger = new()
+	{
+		localTime = -0.2f,
+		relativeToEndOfClip = true,
+		@event = idleFurnitureExitProperty,
 	};
 
 
@@ -69,29 +76,25 @@ public class FurnitureAnimation : BasicAnimation
 		}
 		if (Flags.HasFlag(FNISAnimFlags.SequenceFinish))
 		{
+			var arrayObject = CreateEventArrayIfNull(stateInfo.exitNotifyEvents);
+			arrayObject.events.Add(headTrackingOnEventProperty);
+			stateInfo.exitNotifyEvents = arrayObject; 
+
 			var triggerObject = GetOrCreateTriggerArray(clip);
 
-			triggerObject.triggers.Add
-			(
-				new hkbClipTrigger()
-				{
-					localTime = -0.2f,
-					relativeToEndOfClip = true,
-					@event = idleFurnitureExitProperty,
-				}
-			);
-			triggerObject.triggers.Add
-			(
-				new hkbClipTrigger()
-				{
-					localTime = -0.3f,
-					relativeToEndOfClip = true,
-					@event = new hkbEventProperty()
-					{
-						id = graph.AddDefaultEvent(GraphEvent)
-					}
-				}
-			);
+			triggerObject.triggers.Add(idleFurnitureExitTrigger);
+			//triggerObject.triggers.Add
+			//(
+			//	new hkbClipTrigger()
+			//	{
+			//		localTime = -0.3f,
+			//		relativeToEndOfClip = true,
+			//		@event = new hkbEventProperty()
+			//		{
+			//			id = graph.AddDefaultEvent(GraphEvent)
+			//		}
+			//	}
+			//);
 			clip.triggers = triggerObject;
 		}
 	}

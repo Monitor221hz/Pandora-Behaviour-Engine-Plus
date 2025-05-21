@@ -104,6 +104,10 @@ public partial class BasicAnimation : IFNISAnimation
 	{
 		return clip.triggers ?? new hkbClipTriggerArray() { triggers = new List<hkbClipTrigger>() };
 	}
+	protected static hkbStateMachineEventPropertyArray CreateEventArrayIfNull(hkbStateMachineEventPropertyArray? property)
+	{
+		return property ?? new hkbStateMachineEventPropertyArray() { events = new List<hkbEventProperty>() };
+	}
 	public virtual void BuildFlags(FNISAnimationListBuildContext buildContext, PackFileGraph graph, hkbStateMachineStateInfo stateInfo, hkbClipGenerator clip)
 	{
 		if (HasModifier)
