@@ -3,6 +3,9 @@ using Pandora.API.Patch;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 using Pandora.Patch.Patchers.Skyrim.FNIS;
 using System.Collections.Generic;
+#pragma warning disable IDE0005
+using System;
+#pragma warning restore IDE0005
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
