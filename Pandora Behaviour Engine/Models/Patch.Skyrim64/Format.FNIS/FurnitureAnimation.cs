@@ -222,7 +222,6 @@ public class FurnitureAnimation : BasicAnimation
 		//rootExitTransition.toNestedStateId = stateId;
 		//rootExitTransition.flags |= (short)TransitionFlags.FLAG_TO_NESTED_STATE_ID_IS_VALID | (short)TransitionFlags.FLAG_IS_LOCAL_WILDCARD;
 
-
 		hkbStateMachineTransitionInfoArray rootTransitionArray = graph.GetPushedObjectAs<hkbStateMachineTransitionInfoArray>("#0089");
 		lock (rootTransitionArray.transitions)
 		{
