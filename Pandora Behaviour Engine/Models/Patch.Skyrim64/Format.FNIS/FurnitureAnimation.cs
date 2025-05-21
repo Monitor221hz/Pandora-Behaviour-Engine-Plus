@@ -154,7 +154,7 @@ public class FurnitureAnimation : BasicAnimation
 		int eventIndex = graph.AddDefaultEvent(GraphEvent);
 		hkbClipGenerator enterClip = new()
 		{
-			name = "IdleBlessingKneelEnter",
+			name = $"{GraphEvent}_FurnitureClip",
 			//triggers = new()
 			//{
 			//	triggers = new List<hkbClipTrigger>()

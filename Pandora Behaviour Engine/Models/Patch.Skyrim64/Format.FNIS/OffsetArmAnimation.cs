@@ -27,7 +27,7 @@ public class OffsetArmAnimation : BasicAnimation
 		projectManager.TryActivatePackFile(targetPackFile);
 		hkbClipGenerator clipGenerator = new()
 		{
-			name = $"{modInfo}_{GraphEvent}_Clip",
+			name = $"{modInfo.Code}_{GraphEvent}_Clip",
 			animationName = AnimationFilePath,
 			triggers = null,
 			cropStartAmountLocalTime = 0.0f,
