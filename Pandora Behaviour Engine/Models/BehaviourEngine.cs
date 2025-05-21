@@ -70,6 +70,7 @@ namespace Pandora.Models
 				}
 				catch (Exception ex)
 				{
+					logger.Error($"Critical error loading plugins: {ex.ToString()}");
 					return;
 				}
 #endif
