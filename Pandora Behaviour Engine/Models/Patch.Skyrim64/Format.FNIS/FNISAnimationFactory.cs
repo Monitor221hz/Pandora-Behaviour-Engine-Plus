@@ -64,6 +64,8 @@ public class FNISAnimationFactory
 				return new OffsetArmAnimation(templateType, flags, graphEvent, animationFilePath, animationObjectNames);
 			case FNISAnimType.Furniture:
 				return new FurnitureAnimation(templateType, flags, graphEvent, animationFilePath, animationObjectNames);
+			case FNISAnimType.FurnitureOptimized:
+				return new FurnitureAnimation(templateType, flags, graphEvent, animationFilePath, animationObjectNames);
 			case FNISAnimType.SequencedContinued:
 				if (!headAnimationStack.TryPop(out var prevAnimation))
 				{

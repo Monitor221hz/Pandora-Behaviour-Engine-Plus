@@ -92,6 +92,9 @@ public class FNISParser
 	};
 	private readonly HashSet<PackFile> parsedBehaviorFiles = new();
 	private readonly HashSet<Project> skipAnimlistProjects = new();
+	private readonly Dictionary<string, FNISAnimationList> animListFileMap = new(StringComparer.OrdinalIgnoreCase);
+
+	private readonly HashSet<string> parsedFiles = new(StringComparer.OrdinalIgnoreCase) { };
 	private DirectoryInfo outputDirectory;
 	public HashSet<IModInfo> ModInfos { get; private set; } = new HashSet<IModInfo>();
 
@@ -106,7 +109,7 @@ public class FNISParser
 	{
 		if (TryFindAnimlistHumanoid(modFolder, project, out var animListFile) && TryFindGraphHumanoid(modFolder, behaviorFolder, out var graphFile))
 		{
-			ParseAnimlistFolder(animListFile, project, projectManager);
+			ParseAnimlist(animListFile, project, projectManager);
 			InjectGraphReference(graphFile, project.BehaviorFile);
 		}
 		else
@@ -118,7 +121,7 @@ public class FNISParser
 	{
 		if (TryFindAnimlistCreature(creatureName, modFolder, project, out var animListFile) && TryFindGraphCreature(creatureName, modFolder, behaviorFolder, out var graphFile))
 		{
-			ParseAnimlistFolder(animListFile, project, projectManager);
+			ParseAnimlist(animListFile, project, projectManager);
 			InjectGraphReference(graphFile, project.BehaviorFile);
 			return true;
 		}
@@ -238,6 +241,13 @@ public class FNISParser
 	}
 	private bool InjectGraphReference(FileInfo sourceFile, PackFileGraph destPackFile)
 	{
+		lock (parsedFiles)
+		{
+			if (!parsedFiles.Add(sourceFile.FullName))
+			{
+				return false; 
+			}
+		}
 		string stateFolderName;
 		if (!stateMachineMap.TryGetValue(destPackFile.UniqueName, out stateFolderName!)) { return false; } //thread safe
 		projectManager.TryActivatePackFile(destPackFile);
@@ -253,9 +263,15 @@ public class FNISParser
 		}
 		return true;
 	}
-	private void ParseAnimlistFolder(FileInfo animListFile, Project project, ProjectManager projectManager)
+	private void ParseAnimlist(FileInfo animListFile, Project project, ProjectManager projectManager)
 	{
-
+		lock (parsedFiles)
+		{
+			if (!parsedFiles.Add(animListFile.FullName))
+			{
+				return;
+			}
+		}
 		FNISAnimationList animList;
 #if DEBUG
 		animList = FNISAnimationList.FromFile(animListFile);
@@ -271,7 +287,9 @@ public class FNISParser
 				return;
 			}
 #endif
-		animList.BuildPatches(project, projectManager);
+		animList.BuildAllBehaviors(project, projectManager);
+		animList.BuildAllAnimations(project, projectManager);
+		if (project.Sibling != null) animList.BuildAllAnimations(project.Sibling, projectManager);
 		lock (ModInfos)
 		{
 			ModInfos.Add(animList.ModInfo);

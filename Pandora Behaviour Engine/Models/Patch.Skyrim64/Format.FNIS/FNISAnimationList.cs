@@ -67,13 +67,19 @@ public partial class FNISAnimationList
 
 		return animlist; 
 	}
-
-	public bool BuildPatches(Project project, ProjectManager projectManager)
+	public void BuildAllAnimations(Project project, ProjectManager projectManager)
+	{
+		foreach (BasicAnimation animation in Animations)
+		{
+			animation.BuildAnimation(project, projectManager);
+		}
+	}
+	public bool BuildAllBehaviors(Project project, ProjectManager projectManager)
 	{
 		FNISAnimationListBuildContext buildContext = new FNISAnimationListBuildContext(project, projectManager, ModInfo); 
 		foreach (BasicAnimation animation in Animations)
 		{
-			animation.BuildPatch(buildContext);
+			animation.BuildBehavior(buildContext);
 		}
 		return true;
 	}

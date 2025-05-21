@@ -14,13 +14,13 @@ public class OffsetArmAnimation : BasicAnimation
 	{
 
 	}
-	public override bool BuildPatch(FNISAnimationListBuildContext buildContext)
+	public override bool BuildBehavior(FNISAnimationListBuildContext buildContext)
 	{
 		var project = buildContext.TargetProject;
 		var projectManager = buildContext.ProjectManager;
 		var modInfo = buildContext.ModInfo;
 
-		if (!base.BuildPatch(buildContext) || !project.TryLookupPackFile("mt_behavior", out var targetPackFile) || targetPackFile is not PackFileGraph graph) //only supports humanoids as FNIS does
+		if (!base.BuildBehavior(buildContext) || !project.TryLookupPackFile("mt_behavior", out var targetPackFile) || targetPackFile is not PackFileGraph graph) //only supports humanoids as FNIS does
 		{
 			return false;
 		}

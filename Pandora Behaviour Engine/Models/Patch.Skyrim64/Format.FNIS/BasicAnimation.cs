@@ -196,13 +196,19 @@ public partial class BasicAnimation : IFNISAnimation
 		}
 
 	}
-	public virtual bool BuildPatch(FNISAnimationListBuildContext buildContext)
+	public virtual void BuildAnimation(Project project, ProjectManager projectManager)
 	{
-		var project = buildContext.TargetProject;
-		var projectManager = buildContext.ProjectManager;
 		if (project.Sibling != null) { projectManager.TryActivatePackFile(project.Sibling.CharacterPackFile); }
 		projectManager.TryActivatePackFile(project.CharacterPackFile);
 		project.CharacterPackFile.AddUniqueAnimation(AnimationFilePath);
+	}
+	public virtual bool BuildBehavior(FNISAnimationListBuildContext buildContext)
+	{
+		//var project = buildContext.TargetProject;
+		//var projectManager = buildContext.ProjectManager;
+		//if (project.Sibling != null) { projectManager.TryActivatePackFile(project.Sibling.CharacterPackFile); }
+		//projectManager.TryActivatePackFile(project.CharacterPackFile);
+		//project.CharacterPackFile.AddUniqueAnimation(AnimationFilePath);
 		//return (project.BehaviorFile.AddEventBuffer(GraphEvent));
 		return true;
 	}
