@@ -1,9 +1,6 @@
 name: build
 
-on:
-  push:
-  pull_request:
-    branches: ["main"]
+on: [push, pull_request]
 
 env:
   build-mode: Debug # Release | Debug
