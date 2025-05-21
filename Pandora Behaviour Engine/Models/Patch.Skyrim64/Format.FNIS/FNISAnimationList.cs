@@ -57,10 +57,10 @@ public partial class FNISAnimationList
 					{
 						animlist.Animations.Add(animation);
 					}
-					else
-					{
-						logger.Warn($"FNIS Animlist > New Animation > From Line > FAILED > String > \"{expectedLine}\" > File > {file.Name}");
-					}
+					//else
+					//{
+					//	logger.Warn($"FNIS Animlist > New Animation > From Line > FAILED > String > \"{expectedLine}\" > File > {file.Name}");
+					//}
 				}
 			}
 		}
