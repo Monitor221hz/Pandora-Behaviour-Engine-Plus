@@ -124,23 +124,22 @@ public class FNISParser
 		}
 		else
 		{
-			logger.Warn($"FNIS Parser > {nameof(ProcessFNISAnimationsCreature)} > Creature {creatureName} in {modFolder.Name} in {project.Identifier} > FAILED");
 			return false;
 		}
 	}
 	public void ScanProjectAnimations(Project project, DirectoryInfo absoluteOutputDirectory)
 	{
-		lock (skipAnimlistProjects)
-		{
-			if (skipAnimlistProjects.Contains(project))
-			{
-				return;
-			}
-			if (project.Sibling != null)
-			{
-				skipAnimlistProjects.Add(project.Sibling);
-			}
-		}
+		//lock (skipAnimlistProjects)
+		//{
+		//	if (skipAnimlistProjects.Contains(project))
+		//	{
+		//		return;
+		//	}
+		//	if (project.Sibling != null)
+		//	{
+		//		skipAnimlistProjects.Add(project.Sibling);
+		//	}
+		//}
 		var animationsFolder = new DirectoryInfo(Path.Join(absoluteOutputDirectory.FullName, "animations"));
 		if (!animationsFolder.Exists) { return; }
 		var modAnimationFolders = animationsFolder.GetDirectories();
@@ -176,9 +175,10 @@ public class FNISParser
 		//}
 		Parallel.ForEach(modAnimationFolders, folder => 
 		{
-			if (!ProcessFNISAnimationsCreature(pseudoProjectIdentifier, folder, behaviorFolder, project, projectManager))
+			if (!ProcessFNISAnimationsCreature(pseudoProjectIdentifier, folder, behaviorFolder, project, projectManager) && 
+				!ProcessFNISAnimationsCreature(project.Identifier.Replace("project", string.Empty), folder, behaviorFolder, project, projectManager))
 			{
-				ProcessFNISAnimationsCreature(project.Identifier.Replace("project", string.Empty), folder, behaviorFolder, project, projectManager); 
+				logger.Warn($"FNIS Parser > {nameof(ProcessFNISAnimationsCreature)} > {pseudoProjectIdentifier}/{folder.Name} in {project.Identifier} > FAILED");
 			};
 		});
 	}
