@@ -5,6 +5,7 @@ using Pandora.Models.Patch.Skyrim64.Format.FNIS;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Pandora.Patch.Patchers.Skyrim.FNIS;
 
@@ -69,10 +70,51 @@ public partial class FNISAnimationList
 	}
 	public void BuildAllAnimations(Project project, ProjectManager projectManager)
 	{
-		foreach (BasicAnimation animation in Animations)
+		if (project.Sibling == null)
 		{
-			animation.BuildAnimation(project, projectManager);
+			foreach (BasicAnimation animation in Animations)
+			{
+				lock (project.CharacterPackFile.uniqueAnimationLock) animation.BuildAnimation(project, projectManager);
+			}
 		}
+		else
+		{
+			foreach (BasicAnimation animation in Animations)
+			{
+				lock(project.CharacterPackFile.uniqueAnimationLock)
+				{
+					animation.BuildAnimation(project, projectManager);
+					animation.BuildAnimation(project.Sibling, projectManager);
+				}
+			}
+		}
+
+	}
+	//public void BuildAllAnimations(Project project, Project sibling, ProjectManager projectManager)
+	//{
+	//	foreach (BasicAnimation animation in Animations)
+	//	{		
+	//		animation.BuildAnimation(project, projectManager);
+	//		animation.BuildAnimation(sibling, projectManager);
+	//	}
+	//}
+	//public void BuildAllAnimations(ProjectManager projectManager, params Project[] projects)
+	//{
+	//	foreach (BasicAnimation animation in Animations)
+	//	{
+	//		foreach(Project project in projects)
+	//		{
+	//			animation.BuildAnimation(project, projectManager);
+	//		}
+	//	}
+	
+	public void BuildAllBehaviorsParallel(Project project, ProjectManager projectManager)
+	{
+		FNISAnimationListBuildContext buildContext = new FNISAnimationListBuildContext(project, projectManager, ModInfo);
+		Parallel.ForEach(Animations, animation =>
+		{
+			animation.BuildBehavior(buildContext);
+		});
 	}
 	public bool BuildAllBehaviors(Project project, ProjectManager projectManager)
 	{

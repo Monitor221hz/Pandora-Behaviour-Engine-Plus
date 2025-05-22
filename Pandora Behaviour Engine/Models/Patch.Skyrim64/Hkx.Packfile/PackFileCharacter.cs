@@ -28,7 +28,7 @@ public class PackFileCharacter : PackFile, IEquatable<PackFileCharacter>, IPackF
 	private HashSet<string> uniqueBaseAnimations = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 	private HashSet<string> uniqueAnimations = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-	private object uniqueAnimationLock = new();
+	public object uniqueAnimationLock = new();
 
 	private void CacheUniqueBaseAnimations()
 	{
@@ -84,29 +84,11 @@ public class PackFileCharacter : PackFile, IEquatable<PackFileCharacter>, IPackF
 				return false;
 			}
 		}
-		//if (ParentProject!.Sibling != null)
-		//{
-		//	var sibling = ParentProject!.Sibling.CharacterPackFile;
-		//	lock (uniqueAnimationLock) lock (sibling.uniqueAnimationLock)
-		//		{
-		//			if (!sibling.uniqueAnimations.Add(name) || !uniqueAnimations.Add(name))
-		//			{
-		//				return true;
-		//			}
-		//			sibling.StringData.animationNames.Add(name);
-		//			StringData.animationNames.Add(name);
-		//			return true;
-		//		}
-		//}
-		lock (uniqueAnimationLock)
+		if (uniqueAnimations.Add(name))
 		{
-			if (uniqueAnimations.Add(name))
-			{
-				StringData.animationNames.Add(name);
-				return true;
-			}
+			StringData.animationNames.Add(name);
 			return true;
 		}
-
+		return false;
 	}
 }

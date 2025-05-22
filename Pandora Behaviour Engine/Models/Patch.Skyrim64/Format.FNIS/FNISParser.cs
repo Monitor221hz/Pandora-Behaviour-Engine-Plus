@@ -289,7 +289,7 @@ public class FNISParser
 #endif
 		animList.BuildAllBehaviors(project, projectManager);
 		animList.BuildAllAnimations(project, projectManager);
-		if (project.Sibling != null) animList.BuildAllAnimations(project.Sibling, projectManager);
+
 		lock (ModInfos)
 		{
 			ModInfos.Add(animList.ModInfo);
