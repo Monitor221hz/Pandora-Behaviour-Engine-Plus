@@ -1,17 +1,18 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
 namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
-public class PackFileCache : IPackFileCache
+public class PackFileConcurrentCache : IPackFileCache
 {
-	private Dictionary<string, PackFile> pathMap = new Dictionary<string, PackFile>(StringComparer.OrdinalIgnoreCase);
+	private ConcurrentDictionary<string, PackFile> pathMap = new ConcurrentDictionary<string, PackFile>(StringComparer.OrdinalIgnoreCase);
 	private static readonly FileInfo PreviousOutputFile = new FileInfo(Path.Combine(BehaviourEngine.AssemblyDirectory.FullName, "Pandora_Engine\\PreviousOutput.txt"));
 
 	private Dictionary<PackFile, List<Project>> sharedPackFileProjectMap = new();
-	public PackFileCache() { }
+	public PackFileConcurrentCache() { }
 	public PackFile LoadPackFile(FileInfo file)
 	{
 
@@ -22,13 +23,12 @@ public class PackFileCache : IPackFileCache
 			if (!pathMap.TryGetValue(file.FullName, out packFile))
 			{
 				packFile = new PackFile(file);
-				pathMap.Add(file.FullName, packFile);
+				pathMap.TryAdd(file.FullName, packFile);
 			}
 		}
 
 		return packFile;
 	}
-
 	public PackFileGraph LoadPackFileGraph(FileInfo file)
 	{
 		PackFile? packFile = null;
@@ -37,7 +37,7 @@ public class PackFileCache : IPackFileCache
 			if (!pathMap.TryGetValue(file.FullName, out packFile))
 			{
 				packFile = new PackFileGraph(file);
-				pathMap.Add(file.FullName, packFile);
+				pathMap.TryAdd(file.FullName, packFile);
 			}
 		}
 
@@ -52,7 +52,7 @@ public class PackFileCache : IPackFileCache
 			if (!pathMap.TryGetValue(file.FullName, out packFile))
 			{
 				packFile = new PackFileGraph(file, project);
-				pathMap.Add(file.FullName, packFile);
+				pathMap.TryAdd(file.FullName, packFile);
 
 			}
 		}
@@ -68,7 +68,7 @@ public class PackFileCache : IPackFileCache
 			if (!pathMap.TryGetValue(file.FullName, out packFile))
 			{
 				packFile = new PackFileCharacter(file);
-				pathMap.Add(file.FullName, packFile);
+				pathMap.TryAdd(file.FullName, packFile);
 			}
 		}
 
@@ -83,7 +83,7 @@ public class PackFileCache : IPackFileCache
 			if (!pathMap.TryGetValue(file.FullName, out packFile))
 			{
 				packFile = new PackFileCharacter(file, project);
-				pathMap.Add(file.FullName, packFile);
+				pathMap.TryAdd(file.FullName, packFile);
 			}
 		}
 
@@ -98,7 +98,7 @@ public class PackFileCache : IPackFileCache
 			if (!pathMap.TryGetValue(file.FullName, out packFile))
 			{
 				packFile = new PackFileSkeleton(file);
-				pathMap.Add(file.FullName, packFile);
+				pathMap.TryAdd(file.FullName, packFile);
 			}
 		}
 
@@ -113,7 +113,7 @@ public class PackFileCache : IPackFileCache
 			if (!pathMap.TryGetValue(file.FullName, out packFile))
 			{
 				packFile = new PackFileSkeleton(file, project);
-				pathMap.Add(file.FullName, packFile);
+				pathMap.TryAdd(file.FullName, packFile);
 			}
 		}
 

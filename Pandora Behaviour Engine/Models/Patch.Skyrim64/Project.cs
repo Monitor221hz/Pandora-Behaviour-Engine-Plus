@@ -86,7 +86,7 @@ namespace Pandora.Models.Patch.Skyrim64
 
 		public bool ContainsPackFile(string name) => filesByName.ContainsKey(name);
 
-		public List<string> MapFiles(PackFileCache cache)
+		public List<string> MapFiles(IPackFileCache cache)
 		{
 			DirectoryInfo? behaviorFolder = BehaviorFile.InputHandle.Directory;
 			if (behaviorFolder == null) return new List<string>();
@@ -118,7 +118,7 @@ namespace Pandora.Models.Patch.Skyrim64
 				return filesByName.Keys.ToList();
 			}
 		}
-		public static Project Create(PackFile projectFile, PackFileCache cache)
+		public static Project Create(PackFile projectFile, IPackFileCache cache)
 		{
 			if (!projectFile.InputHandle.Exists) return new Project();
 
@@ -142,7 +142,7 @@ namespace Pandora.Models.Patch.Skyrim64
 
 			return project;
 		}
-		public bool Load(PackFileCache cache)
+		public bool Load(IPackFileCache cache)
 		{
 			if (!ProjectFile.InputHandle.Exists) return false;
 
@@ -165,12 +165,12 @@ namespace Pandora.Models.Patch.Skyrim64
 
 			return true;
 		}
-		public static Project Load(FileInfo file, PackFileCache cache) => Create(cache.LoadPackFile(file), cache);
+		public static Project Load(FileInfo file, IPackFileCache cache) => Create(cache.LoadPackFile(file), cache);
 
 		//public static Project Load(string projectFilePath) => Load(new PackFile(projectFilePath));
 
 
-		private static PackFileCharacter GetCharacterFile(PackFile projectFile, PackFileCache cache)
+		private static PackFileCharacter GetCharacterFile(PackFile projectFile, IPackFileCache cache)
 		{
 
 			if (projectFile.Container.namedVariants.Count == 0) { throw new InvalidDataException($"{nameof(hkRootLevelContainer)} for project file has no named variants in file {projectFile.Name}"); }
@@ -182,7 +182,7 @@ namespace Pandora.Models.Patch.Skyrim64
 			return cache.LoadPackFileCharacter(new FileInfo(Path.Combine(projectFile.InputHandle.DirectoryName!, characterFilePath)));
 		}
 
-		private static (PackFileSkeleton skeleton, PackFileGraph behavior) GetSkeletonAndBehaviorFile(PackFile projectFile, PackFileCharacter characterFile, PackFileCache cache)
+		private static (PackFileSkeleton skeleton, PackFileGraph behavior) GetSkeletonAndBehaviorFile(PackFile projectFile, PackFileCharacter characterFile, IPackFileCache cache)
 		{
 			return (cache.LoadPackFileSkeleton(new FileInfo(Path.Combine(projectFile.InputHandle.DirectoryName!, characterFile.SkeletonFileName))), cache.LoadPackFileGraph(new FileInfo(Path.Combine(projectFile.InputHandle.DirectoryName!, characterFile.BehaviorFileName))));
 		}

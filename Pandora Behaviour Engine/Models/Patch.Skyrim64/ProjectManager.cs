@@ -4,6 +4,7 @@ using Pandora.API.Patch.Engine.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.Format.FNIS;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -16,24 +17,25 @@ namespace Pandora.Models.Patch.Skyrim64
 	public class ProjectManager : IProjectManager
 	{
 		private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-		private Dictionary<string, Project> projectMap { get; set; } = new Dictionary<string, Project>();
-		private Dictionary<string, Project> fileProjectMap { get; set; } = new Dictionary<string, Project>();
+		private Dictionary<string, Project> projectMap = new Dictionary<string, Project>();
+		private Dictionary<string, Project> fileProjectMap = new Dictionary<string, Project>();
 
-		private Dictionary<string, Project> folderProjectMap { get; set; } = new Dictionary<string, Project>();
+		private Dictionary<string, Project> folderProjectMap = new Dictionary<string, Project>();
 
-		private Dictionary<string, List<Project>> linkedProjectMap { get; set; } = new Dictionary<string, List<Project>>();
+		private Dictionary<string, List<Project>> linkedProjectMap = new Dictionary<string, List<Project>>();
 
 		private readonly DirectoryInfo templateFolder;
 
 		private DirectoryInfo baseOutputDirectory;
 
 
-		private PackFileCache packFileCache { get; set; } = new();
+		private IPackFileCache packFileCache = new PackFileCache();
 
 
 		private FNISParser fnisParser;
 
 		private bool CompleteExportSuccess = true;
+
 		public HashSet<PackFile> ActivePackFiles { get; private set; } = new HashSet<PackFile>();
 
 		public ProjectManager(DirectoryInfo templateFolder, DirectoryInfo outputDirectory)
@@ -91,7 +93,7 @@ namespace Pandora.Models.Patch.Skyrim64
 		}
 		public bool ProjectExists(string name) => projectMap.ContainsKey(name);
 
-		internal void LoadTrackedProjects()
+		public void LoadTrackedProjects()
 		{
 			FileInfo projectList = new FileInfo($"{templateFolder.FullName}\\vanilla_projectpaths.txt");
 			string? expectedLine = null;
@@ -134,38 +136,28 @@ namespace Pandora.Models.Patch.Skyrim64
 		}
 		internal void LoadProjectsParallel(List<string> projectPaths)
 		{
-			List<Project> projects = new List<Project>();
-			List<List<Project>> projectChunks = new List<List<Project>>();
-			foreach (var projectPath in projectPaths)
+			packFileCache = new PackFileConcurrentCache();
+			ConcurrentDictionary<string, Project> directoryProjectPaths = new();
+			Partitioner<string> partitioner = Partitioner.Create(projectPaths, true);
+			ParallelOptions options = new() { MaxDegreeOfParallelism = Environment.ProcessorCount / 2 };
+			Parallel.ForEach(partitioner, options, projectPath =>
 			{
-				var project = LoadProjectHeader(projectPath);
-				if (project == null) continue;
-				projects.Add(project);
-			}
-			List<Project> buffer = new List<Project>();
-			for (int i = 0; i < projects.Count; i++)
-			{
-				buffer.Add(projects[i]);
-				if (i % 10 == 0 && i > 0 || i == projects.Count - 1)
-				{
-					var chunk = new List<Project>();
-					foreach (var project in buffer) { chunk.Add(project); }
-					projectChunks.Add(chunk);
-					buffer.Clear();
-				}
-			}
-			foreach (var chunk in projectChunks)
-			{
-				Parallel.ForEach(chunk, project =>
-				{
-					project.Load(packFileCache);
-				});
-			}
-
-			foreach (var project in projects)
-			{
+				var project = LoadProject(projectPath);
+				if (project == null || !project.Valid) return;
 				ExtractProject(project);
-			}
+				if (project.ProjectDirectory == null) return;
+				var projectFolderPath = project.ProjectDirectory.FullName;
+				if (directoryProjectPaths.TryGetValue(projectFolderPath, out var existingProject))
+				{
+					existingProject.Sibling = project;
+					project.Sibling = existingProject;
+					project.CharacterPackFile.uniqueAnimationLock = project.Sibling.CharacterPackFile.uniqueAnimationLock;
+				}
+				else
+				{
+					directoryProjectPaths.TryAdd(projectFolderPath, project);
+				}
+			});
 		}
 		public Project? LoadProject(string projectFilePath)
 		{
