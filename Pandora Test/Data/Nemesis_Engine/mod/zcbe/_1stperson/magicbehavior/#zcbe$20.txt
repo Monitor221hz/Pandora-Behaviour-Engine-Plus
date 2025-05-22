@@ -1,0 +1,16 @@
+		<hkobject name="#zcbe$20" class="hkbExpressionDataArray" signature="0x4b9ee1a2">
+			<hkparam name="expressionsData" numelements="2">
+				<hkobject>
+					<hkparam name="expression">DCFixStart_Z if ((iSyncIdleLocomotion == 1) || (iSyncTurnState != 1))</hkparam>
+					<hkparam name="assignmentVariableIndex">-1</hkparam>
+					<hkparam name="assignmentEventIndex">-1</hkparam>
+					<hkparam name="eventMode">EVENT_MODE_SEND_ON_FALSE_TO_TRUE</hkparam>
+				</hkobject>
+				<hkobject>
+					<hkparam name="expression">DCFixStop_Z if ((iSyncIdleLocomotion == 0) &amp;&amp; (iSyncTurnState == 1))</hkparam>
+					<hkparam name="assignmentVariableIndex">-1</hkparam>
+					<hkparam name="assignmentEventIndex">-1</hkparam>
+					<hkparam name="eventMode">EVENT_MODE_SEND_ON_FALSE_TO_TRUE</hkparam>
+				</hkobject>
+			</hkparam>
+		</hkobject>
