@@ -78,7 +78,7 @@ public class FurnitureAnimation : BasicAnimation
 		{
 			var arrayObject = CreateEventArrayIfNull(stateInfo.exitNotifyEvents);
 			arrayObject.events.Add(headTrackingOnEventProperty);
-			stateInfo.exitNotifyEvents = arrayObject; 
+			stateInfo.exitNotifyEvents = arrayObject;
 
 			var triggerObject = GetOrCreateTriggerArray(clip);
 
@@ -154,7 +154,7 @@ public class FurnitureAnimation : BasicAnimation
 		int eventIndex = graph.AddDefaultEvent(GraphEvent);
 		hkbClipGenerator enterClip = new()
 		{
-			name = $"{GraphEvent}_FurnitureClip",
+			name = "IdleBlessingKneelEnter",
 			//triggers = new()
 			//{
 			//	triggers = new List<hkbClipTrigger>()
