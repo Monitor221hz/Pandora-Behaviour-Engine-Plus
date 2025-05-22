@@ -134,7 +134,7 @@ namespace Pandora.Models.Patch.Skyrim64
 				}
 			}
 		}
-		internal void LoadProjectsParallel(List<string> projectPaths)
+		public void LoadProjectsParallel(List<string> projectPaths)
 		{
 			packFileCache = new PackFileConcurrentCache();
 			ConcurrentDictionary<string, Project> directoryProjectPaths = new();
@@ -308,7 +308,7 @@ namespace Pandora.Models.Patch.Skyrim64
 			project = TryLookupProjectFolder(folderName, out var exProject) ? exProject as IProject : null;
 			return project != null;
 		}
-		internal bool TryActivatePackFilePriority(string name, Project project, out PackFile? packFile)
+		public bool TryActivatePackFilePriority(string name, Project project, out PackFile? packFile)
 		{
 			packFile = null;
 			if (!project.TryLookupPackFile(name, out packFile))
@@ -326,7 +326,7 @@ namespace Pandora.Models.Patch.Skyrim64
 				}
 			return true;
 		}
-		internal bool TryActivatePackFilePriority(string name, out PackFile? packFile)
+		public bool TryActivatePackFilePriority(string name, out PackFile? packFile)
 		{
 			packFile = null;
 			if (!TryLookupPackFile(name, out packFile!))
@@ -376,7 +376,7 @@ namespace Pandora.Models.Patch.Skyrim64
 			return true;
 		}
 
-		internal bool ApplyPatchesParallel()
+		public bool ApplyPatchesParallel()
 		{
 
 
@@ -402,7 +402,7 @@ namespace Pandora.Models.Patch.Skyrim64
 		}
 
 
-		internal void SetOutputPath(DirectoryInfo baseDirectory)
+		public void SetOutputPath(DirectoryInfo baseDirectory)
 		{
 			baseOutputDirectory = baseDirectory;
 			fnisParser.SetOutputPath(baseDirectory);

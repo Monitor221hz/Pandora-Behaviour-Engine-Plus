@@ -23,8 +23,8 @@ public class SkyrimPatcher : IPatcher
 	public void SetTarget(List<IModInfo> mods) => activeMods = mods;
 	private IMetaDataExporter<PackFile> exporter = new PackFileExporter();
 
-	private NemesisAssembler nemesisAssembler { get; set; }
-	private PandoraAssembler pandoraAssembler { get; set; }
+	public NemesisAssembler NemesisAssembler { get; set; }
+	public PandoraAssembler PandoraAssembler { get; set; }
 
 	public PatcherFlags Flags { get; private set; } = PatcherFlags.None;
 
@@ -34,8 +34,8 @@ public class SkyrimPatcher : IPatcher
 	public SkyrimPatcher(IMetaDataExporter<PackFile> manager)
 	{
 		exporter = manager;
-		nemesisAssembler = new NemesisAssembler(manager);
-		pandoraAssembler = new PandoraAssembler(manager, nemesisAssembler);
+		NemesisAssembler = new NemesisAssembler(manager);
+		PandoraAssembler = new PandoraAssembler(manager, NemesisAssembler);
 	}
 	public string GetPostRunMessages()
 	{
@@ -49,7 +49,7 @@ public class SkyrimPatcher : IPatcher
 			logger.Info(modLine);
 		}
 
-		nemesisAssembler.GetPostMessages(logBuilder);
+		NemesisAssembler.GetPostMessages(logBuilder);
 
 
 		return logBuilder.ToString();
@@ -72,7 +72,7 @@ public class SkyrimPatcher : IPatcher
 	}
 	public async Task<bool> RunAsync()
 	{
-		return await nemesisAssembler.ApplyPatchesAsync();
+		return await NemesisAssembler.ApplyPatchesAsync();
 	}
 
 	public async Task<bool> UpdateAsync()
@@ -87,10 +87,10 @@ public class SkyrimPatcher : IPatcher
 				switch (mod.Format)
 				{
 					case IModInfo.ModFormat.Nemesis:
-						nemesisAssembler.AssemblePatch(mod);
+						NemesisAssembler.AssemblePatch(mod);
 						break;
 					case IModInfo.ModFormat.Pandora:
-						pandoraAssembler.AssemblePatch(mod);
+						PandoraAssembler.AssemblePatch(mod);
 						break;
 					default:
 						break;
@@ -119,7 +119,7 @@ public class SkyrimPatcher : IPatcher
 
 	public async Task PreloadAsync()
 	{
-		await nemesisAssembler.LoadResourcesAsync();
+		await NemesisAssembler.LoadResourcesAsync();
 	}
 
 	public void SetOutputPath(DirectoryInfo directoryInfo)
@@ -136,8 +136,8 @@ public class SkyrimPatcher : IPatcher
 			}
 		}
 
-		nemesisAssembler.SetOutputPath(directoryInfo);
-		pandoraAssembler.SetOutputPath(directoryInfo);
+		NemesisAssembler.SetOutputPath(directoryInfo);
+		PandoraAssembler.SetOutputPath(directoryInfo);
 	}
 
 	public string GetPostUpdateMessages()
