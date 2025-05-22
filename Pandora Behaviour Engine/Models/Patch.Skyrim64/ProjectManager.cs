@@ -124,6 +124,7 @@ namespace Pandora.Models.Patch.Skyrim64
 				{
 					existingProject.Sibling = project;
 					project.Sibling = existingProject;
+					project.CharacterPackFile.uniqueAnimationLock = project.Sibling.CharacterPackFile.uniqueAnimationLock;
 				}
 				else
 				{

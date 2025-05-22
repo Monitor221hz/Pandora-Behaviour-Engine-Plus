@@ -78,7 +78,7 @@ public class FurnitureAnimation : BasicAnimation
 		{
 			var arrayObject = CreateEventArrayIfNull(stateInfo.exitNotifyEvents);
 			arrayObject.events.Add(headTrackingOnEventProperty);
-			stateInfo.exitNotifyEvents = arrayObject; 
+			stateInfo.exitNotifyEvents = arrayObject;
 
 			var triggerObject = GetOrCreateTriggerArray(clip);
 
@@ -98,13 +98,13 @@ public class FurnitureAnimation : BasicAnimation
 			clip.triggers = triggerObject;
 		}
 	}
-	public override bool BuildPatch(FNISAnimationListBuildContext buildContext)
+	public override bool BuildBehavior(FNISAnimationListBuildContext buildContext)
 	{
 		var project = buildContext.TargetProject;
 		var projectManager = buildContext.ProjectManager;
 		var modInfo = buildContext.ModInfo;
 
-		if (!base.BuildPatch(buildContext) || !project.TryLookupPackFile("mt_behavior", out var targetPackFile) || targetPackFile is not PackFileGraph graph) //only supports humanoids as FNIS does
+		if (!base.BuildBehavior(buildContext) || !project.TryLookupPackFile("mt_behavior", out var targetPackFile) || targetPackFile is not PackFileGraph graph) //only supports humanoids as FNIS does
 		{
 			return false;
 		}
