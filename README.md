@@ -1,8 +1,7 @@
 # Pandora Behaviour Engine+
-
 <div>
     <a href="https://github.com/Monitor144hz/Pandora-Behaviour-Engine-Plus/actions/workflows/build.yaml" target="_blank">
-        <img src="https://github.com/Monitor144hz/Pandora-Behaviour-Engine-Plus/actions/workflows/build.yaml/badge.svg" alt="Build">
+        <img src="https://github.com/Monitor221hz/Pandora-Behaviour-Engine-Plus/actions/workflows/build.yaml/badge.svg?branch=main&event=pull_request" alt="Build">
     </a>
     <a href="https://discord.gg/8nUQCWMn3w" target="_blank">
         <img src="https://img.shields.io/discord/1218265541106466826?logo=discord&logoColor=white&color=7289da" alt="Discord">
