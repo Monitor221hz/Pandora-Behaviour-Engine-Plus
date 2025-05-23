@@ -1,4 +1,4 @@
-name: build
+name: build & tests
 
 on: [push, pull_request]
 
@@ -37,12 +37,14 @@ jobs:
             ${{ github.workspace }}/Pandora API/HKX2-Enhanced-Library/HKX2/obj
             ${{ github.workspace }}/XML.Cake.NET/XML Cake/bin
             ${{ github.workspace }}/XML.Cake.NET/XML Cake/obj
+            ${{ github.workspace }}/Pandora Tests/bin
+            ${{ github.workspace }}/Pandora Tests/obj
           key: nuget-${{ runner.os }}-${{ matrix.dotnet-version }}
           restore-keys: |
             nuget-${{ runner.os }}-
 
-      - name: Build
-        run: dotnet build "./Pandora+.sln" --configuration ${{ env.build-mode }}
+      - name: Build and Test
+        run: dotnet test "./Pandora+.sln" --configuration ${{ env.build-mode }} --logger GitHubActions
       
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4
