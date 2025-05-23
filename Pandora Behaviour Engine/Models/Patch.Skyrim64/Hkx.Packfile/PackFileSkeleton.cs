@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
 namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
+
 public class PackFileSkeleton : PackFile, IPackFileSkeleton
 {
 	public PackFileSkeleton(FileInfo file, Project? project) : base(file, project) { Load(); }
@@ -30,7 +31,7 @@ public class PackFileSkeleton : PackFile, IPackFileSkeleton
 	public override void Load()
 	{
 		base.Load();
-		SkeletonMappers = new();
+		SkeletonMappers = [];
 		foreach (var namedVariant in Container.namedVariants)
 		{
 			if (namedVariant == null || namedVariant.variant == null) { continue; }
@@ -77,5 +78,4 @@ public class PackFileSkeleton : PackFile, IPackFileSkeleton
 			PushXmlAsObject(skeletonMapper);
 		}
 	}
-
 }

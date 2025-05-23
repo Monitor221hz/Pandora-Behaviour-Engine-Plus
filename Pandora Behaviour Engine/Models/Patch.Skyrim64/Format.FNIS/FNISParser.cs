@@ -12,17 +12,18 @@ using System.Threading.Tasks;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
+
 public class FNISParser
 {
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-	private static readonly HashSet<string> animTypePrefixes = new HashSet<string>() { "b", "s", "so", "fu", "fuo", "+", "ofa", "pa", "km", "aa", "ch" };
+	private static readonly HashSet<string> animTypePrefixes = ["b", "s", "so", "fu", "fuo", "+", "ofa", "pa", "km", "aa", "ch"];
 
-	private static readonly Regex hkxRegex = new Regex("\\S*\\.hkx", RegexOptions.IgnoreCase);
+	private static readonly Regex hkxRegex = new("\\S*\\.hkx", RegexOptions.IgnoreCase);
 
-	private static readonly Regex animLineRegex = new Regex(@"^([^('|\s)]+)\s*(-\S+)*\s*(\S+)\s+(\S+.hkx)(?:[^\S\r\n]+(\S+))*", RegexOptions.Compiled);
+	private static readonly Regex animLineRegex = new(@"^([^('|\s)]+)\s*(-\S+)*\s*(\S+)\s+(\S+.hkx)(?:[^\S\r\n]+(\S+))*", RegexOptions.Compiled);
 
-	private static readonly Dictionary<string, string> stateMachineMap = new Dictionary<string, string>()
+	private static readonly Dictionary<string, string> stateMachineMap = new()
 	{
 		{"atronachflame~atronachflamebehavior", "#0414" },
 		{"atronachfrostproject~atronachfrostbehavior", "#0439" },
@@ -75,12 +76,12 @@ public class FNISParser
 		{"scribproject~scribbehavior", "#0578" }
 	};
 
-	private static readonly Dictionary<string, string> animListExcludeMap = new Dictionary<string, string>()
+	private static readonly Dictionary<string, string> animListExcludeMap = new()
 	{
 		{"dogproject", "wolf" },
 		{"wolfproject", "dog" }
 	};
-	private static readonly Dictionary<string, string[]> manualScanDirectories = new Dictionary<string, string[]>()
+	private static readonly Dictionary<string, string[]> manualScanDirectories = new()
 	{
 		{"canine", ["wolf", "dog"]},
 	};
@@ -90,13 +91,13 @@ public class FNISParser
 		"defaultmale",
 		"defaultfemale"
 	};
-	private readonly HashSet<PackFile> parsedBehaviorFiles = new();
-	private readonly HashSet<Project> skipAnimlistProjects = new();
+	private readonly HashSet<PackFile> parsedBehaviorFiles = [];
+	private readonly HashSet<Project> skipAnimlistProjects = [];
 	private readonly Dictionary<string, FNISAnimationList> animListFileMap = new(StringComparer.OrdinalIgnoreCase);
 
 	private readonly HashSet<string> parsedFiles = new(StringComparer.OrdinalIgnoreCase) { };
 	private DirectoryInfo outputDirectory;
-	public HashSet<IModInfo> ModInfos { get; private set; } = new HashSet<IModInfo>();
+	public HashSet<IModInfo> ModInfos { get; private set; } = [];
 
 	public FNISParser(ProjectManager manager, DirectoryInfo outputPath)
 	{

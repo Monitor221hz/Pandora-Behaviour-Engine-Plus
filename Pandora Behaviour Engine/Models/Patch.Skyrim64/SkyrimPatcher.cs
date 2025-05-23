@@ -28,7 +28,7 @@ public class SkyrimPatcher : IPatcher
 
 	public PatcherFlags Flags { get; private set; } = PatcherFlags.None;
 
-	public Version GetVersion() => Assembly.GetEntryAssembly().GetName().Version;
+	public Version GetVersion() => Assembly.GetEntryAssembly()!.GetName().Version!;
 	public string GetVersionString() => Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion.Split('+')[0] ?? "Unknown";
 
 	public SkyrimPatcher(IMetaDataExporter<PackFile> manager)
@@ -101,7 +101,7 @@ public class SkyrimPatcher : IPatcher
 		catch (Exception ex)
 		{
 			Flags |= PatcherFlags.UpdateFailed;
-			logger.Fatal($"Skyrim Patcher > Active Mods > Update > FAILED > {ex.ToString()}");
+			logger.Fatal($"Skyrim Patcher > Active Mods > Update > FAILED > {ex}");
 		}
 
 		return !Flags.HasFlag(PatcherFlags.UpdateFailed);

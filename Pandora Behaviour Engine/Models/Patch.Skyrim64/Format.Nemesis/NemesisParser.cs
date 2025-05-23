@@ -16,11 +16,12 @@ namespace Pandora.Models.Patch.Skyrim64.Format.Nemesis;
 public class NemesisParser
 {
 	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger(); //to do: move logger into inheritable base class
-	private static readonly XSkipWrapExpression replacePattern = new XSkipWrapExpression(new XStep(XmlNodeType.Comment, "CLOSE"), new XStep(XmlNodeType.Comment, "OPEN"), new XStep(XmlNodeType.Comment, "ORIGINAL"), new XStep(XmlNodeType.Comment, "CLOSE"));
-	private static readonly XSkipWrapExpression insertPattern = new XSkipWrapExpression(new XStep(XmlNodeType.Comment, "ORIGINAL"), new XStep(XmlNodeType.Comment, "OPEN"), new XStep(XmlNodeType.Comment, "CLOSE"));
+
+	private static readonly XSkipWrapExpression replacePattern = new(new XStep(XmlNodeType.Comment, "CLOSE"), new XStep(XmlNodeType.Comment, "OPEN"), new XStep(XmlNodeType.Comment, "ORIGINAL"), new XStep(XmlNodeType.Comment, "CLOSE"));
+	private static readonly XSkipWrapExpression insertPattern = new(new XStep(XmlNodeType.Comment, "ORIGINAL"), new XStep(XmlNodeType.Comment, "OPEN"), new XStep(XmlNodeType.Comment, "CLOSE"));
 	public static void ParseReplaceEdit(PackFile packFile, string nodeName, XMatch match, PackFileChangeSet changeSet, XPathLookup lookup)
 	{
-		List<XNode> newNodes = new List<XNode>();
+		List<XNode> newNodes = [];
 		int separatorIndex = match.Count;
 
 		XNode? previousNode = match[0].PreviousNode;
@@ -249,10 +250,10 @@ public class NemesisParser
 
 		var changeSet = new PackFileChangeSet(modInfo);
 		var modName = modInfo.Name;
-		XPathLookup lookup = new XPathLookup();
+		XPathLookup lookup = new();
 		foreach (FileInfo editFile in editFiles)
 		{
-			List<XNode> nodes = new List<XNode>();
+			List<XNode> nodes = [];
 			string nodeName = Path.GetFileNameWithoutExtension(editFile.Name);
 			XElement element;
 			try

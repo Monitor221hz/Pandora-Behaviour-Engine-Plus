@@ -5,119 +5,121 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Pandora.Models.Patch.Skyrim64.AnimData
+namespace Pandora.Models.Patch.Skyrim64.AnimData;
+
+public class ProjectAnimData : IProjectAnimData
 {
+	public ProjectAnimDataHeader Header { get; private set; } = new ProjectAnimDataHeader();
+	public IProjectAnimDataHeader GetHeader() => Header;
+	public List<ClipDataBlock> Blocks { get; set; } = [];
+	public List<IClipDataBlock> GetBlocks() => Blocks.Cast<IClipDataBlock>().ToList();
+	public MotionData? BoundMotionDataProject { get; set; }
+	public IMotionData? GetBoundMotionData() => BoundMotionDataProject;
+	private AnimDataManager manager { get; set; }
 
-
-	public class ProjectAnimData : IProjectAnimData
+	private HashSet<string> dummyClipNames { get; set; } = [];
+	public ProjectAnimData(AnimDataManager manager)
 	{
-		public ProjectAnimDataHeader Header { get; private set; } = new ProjectAnimDataHeader();
-		public IProjectAnimDataHeader GetHeader() => Header;
-		public List<ClipDataBlock> Blocks { get; set; } = new List<ClipDataBlock>();
-		public List<IClipDataBlock> GetBlocks() => Blocks.Cast<IClipDataBlock>().ToList();
-		public MotionData? BoundMotionDataProject { get; set; }
-		public IMotionData? GetBoundMotionData() => BoundMotionDataProject;
-		private AnimDataManager manager { get; set; }
+		this.manager = manager;
+	}
 
-		private HashSet<string> dummyClipNames { get; set; } = new HashSet<string>();
-		public ProjectAnimData(AnimDataManager manager)
+	public void AddDummyClipData(string clipName)
+	{
+		lock (dummyClipNames)
 		{
-			this.manager = manager;
+			if (dummyClipNames.Contains(clipName)) return;
 		}
 
-		public void AddDummyClipData(string clipName)
+
+
+		var id = manager.GetNextValidID().ToString();
+		Blocks.Add(new ClipDataBlock(clipName, id));
+
+		BoundMotionDataProject?.AddDummyClipMotionData(id);
+		lock (dummyClipNames)
 		{
-			lock (dummyClipNames)
-			{
-				if (dummyClipNames.Contains(clipName)) return;
-			}
-
-
-
-			var id = manager.GetNextValidID().ToString();
-			Blocks.Add(new ClipDataBlock(clipName, id));
-
-			BoundMotionDataProject?.AddDummyClipMotionData(id);
-			lock (dummyClipNames)
-			{
-				dummyClipNames.Add(clipName);
-			}
-
+			dummyClipNames.Add(clipName);
 		}
 
-		public static ProjectAnimData ReadProject(StreamReader reader, int lineLimit, AnimDataManager manager)
+	}
+
+	public static ProjectAnimData ReadProject(StreamReader reader, int lineLimit, AnimDataManager manager)
+	{
+		ProjectAnimData project = new(manager)
 		{
-			ProjectAnimData project = new ProjectAnimData(manager);
+			Header = ProjectAnimDataHeader.ReadBlock(reader)
+		};
 
-			project.Header = ProjectAnimDataHeader.ReadBlock(reader);
+		int i = project.Header.GetLineCount() + 1; //+1 to account for 1 empty line 
+		string? whiteSpace = "";
 
-			int i = project.Header.GetLineCount() + 1; //+1 to account for 1 empty line 
-			string? whiteSpace = "";
-
-			while (whiteSpace != null && i < lineLimit)
-			{
-				ClipDataBlock block = ClipDataBlock.ReadBlock(reader);
-				project.Blocks.Add(block);
-				i += block.GetLineCount();
-
-				whiteSpace = reader.ReadLine();
-				i++;
-			}
-			return project;
-		}
-		public static ProjectAnimData ReadProject(StreamReader reader, AnimDataManager manager)
+		while (whiteSpace != null && i < lineLimit)
 		{
-			ProjectAnimData project = new ProjectAnimData(manager);
-			project.Header = ProjectAnimDataHeader.ReadBlock(reader);
+			ClipDataBlock block = ClipDataBlock.ReadBlock(reader);
+			project.Blocks.Add(block);
+			i += block.GetLineCount();
 
-			string? whiteSpace = "";
-			while (whiteSpace != null)
-			{
-				ClipDataBlock block = ClipDataBlock.ReadBlock(reader);
-				project.Blocks.Add(block);
-
-				whiteSpace = reader.ReadLine();
-			}
-			return project;
+			whiteSpace = reader.ReadLine();
+			i++;
 		}
-		public static ProjectAnimData ExtractProject(StreamReader reader, string openString, string closeString, AnimDataManager manager)
+		return project;
+	}
+	public static ProjectAnimData ReadProject(StreamReader reader, AnimDataManager manager)
+	{
+		ProjectAnimData project = new(manager)
 		{
-			while (reader.ReadLine()?.Contains(openString) == false) ;
+			Header = ProjectAnimDataHeader.ReadBlock(reader)
+		};
 
-			ProjectAnimData project = new ProjectAnimData(manager);
-			project.Header = ProjectAnimDataHeader.ReadBlock(reader);
-
-			string? whiteSpace = "";
-			while (whiteSpace != null && !whiteSpace.Contains(closeString))
-			{
-				ClipDataBlock block = ClipDataBlock.ReadBlock(reader);
-				project.Blocks.Add(block);
-
-				whiteSpace = reader.ReadLineSafe();
-			}
-			return project;
-		}
-		public override string ToString()
+		string? whiteSpace = "";
+		while (whiteSpace != null)
 		{
-			StringBuilder sb = new StringBuilder();
-			sb.Append(Header.ToString());
-			if (Blocks.Count > 0)
-			{
-				sb.AppendJoin("\r\n", Blocks);
-			}
-			return sb.ToString();
-			//byte[] bytes = Encoding.Default.GetBytes(sb.ToString());
-			//return Encoding.UTF8.GetString(bytes);
+			ClipDataBlock block = ClipDataBlock.ReadBlock(reader);
+			project.Blocks.Add(block);
+
+			whiteSpace = reader.ReadLine();
 		}
-		public int GetLineCount()
+		return project;
+	}
+	public static ProjectAnimData ExtractProject(StreamReader reader, string openString, string closeString, AnimDataManager manager)
+	{
+		while (reader.ReadLine()?.Contains(openString) == false) ;
+
+		ProjectAnimData project = new(manager)
 		{
-			int i = Header.GetLineCount() + 1;
-			foreach (ClipDataBlock block in Blocks)
-			{
-				i += block.GetLineCount();
-				i++;
-			}
-			return i;
+			Header = ProjectAnimDataHeader.ReadBlock(reader)
+		};
+
+		string? whiteSpace = "";
+		while (whiteSpace != null && !whiteSpace.Contains(closeString))
+		{
+			ClipDataBlock block = ClipDataBlock.ReadBlock(reader);
+			project.Blocks.Add(block);
+
+			whiteSpace = reader.ReadLineSafe();
 		}
+		return project;
+	}
+	public override string ToString()
+	{
+		StringBuilder sb = new();
+		sb.Append(Header.ToString());
+		if (Blocks.Count > 0)
+		{
+			sb.AppendJoin("\r\n", Blocks);
+		}
+		return sb.ToString();
+		//byte[] bytes = Encoding.Default.GetBytes(sb.ToString());
+		//return Encoding.UTF8.GetString(bytes);
+	}
+	public int GetLineCount()
+	{
+		int i = Header.GetLineCount() + 1;
+		foreach (ClipDataBlock block in Blocks)
+		{
+			i += block.GetLineCount();
+			i++;
+		}
+		return i;
 	}
 }

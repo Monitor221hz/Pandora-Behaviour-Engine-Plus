@@ -4,63 +4,61 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace Pandora.Models.Patch.Skyrim64.AnimData
+namespace Pandora.Models.Patch.Skyrim64.AnimData;
+
+public class ProjectAnimDataHeader : IProjectAnimDataHeader
 {
+	public int LeadInt { get; set; }
 
-	public class ProjectAnimDataHeader : IProjectAnimDataHeader
+	public int AssetCount { get; set; }
+	public List<string> ProjectAssets { get; set; } = [];
+	public int HasMotionData { get; set; }
+
+	public static ProjectAnimDataHeader ReadBlock(StreamReader reader)
 	{
-		public int LeadInt { get; set; }
-
-		public int AssetCount { get; set; }
-		public List<string> ProjectAssets { get; set; } = new List<string>();
-		public int HasMotionData { get; set; }
-
-		public static ProjectAnimDataHeader ReadBlock(StreamReader reader)
+		ProjectAnimDataHeader header = new();
+		try
 		{
-			ProjectAnimDataHeader header = new ProjectAnimDataHeader();
-			try
+			int[] headerData = [];
+
+			header.LeadInt = int.Parse(reader.ReadLine());
+
+			header.AssetCount = int.Parse(reader.ReadLine());
+
+
+			for (int i = 0; i < header.AssetCount; i++)
 			{
-				int[] headerData = new int[0];
+				header.ProjectAssets.Add(reader.ReadLine());
 
-				header.LeadInt = int.Parse(reader.ReadLine());
-
-				header.AssetCount = int.Parse(reader.ReadLine());
-
-
-				for (int i = 0; i < header.AssetCount; i++)
-				{
-					header.ProjectAssets.Add(reader.ReadLine());
-
-				}
-
-				header.HasMotionData = int.Parse(reader.ReadLine());
-			}
-			catch (Exception ex)
-			{
-				throw new Exception(ex.Message, ex);
 			}
 
-
-			return header;
+			header.HasMotionData = int.Parse(reader.ReadLine());
+		}
+		catch (Exception ex)
+		{
+			throw new Exception(ex.Message, ex);
 		}
 
-		public override string ToString()
+
+		return header;
+	}
+
+	public override string ToString()
+	{
+		StringBuilder sb = new();
+		sb.AppendLine(LeadInt.ToString()).AppendLine(ProjectAssets.Count.ToString()).AppendLine(string.Join("\r\n", ProjectAssets));
+		if (HasMotionData == 1)
 		{
-			StringBuilder sb = new StringBuilder();
-			sb.AppendLine(LeadInt.ToString()).AppendLine(ProjectAssets.Count.ToString()).AppendLine(string.Join("\r\n", ProjectAssets));
-			if (HasMotionData == 1)
-			{
-				sb.AppendLine(HasMotionData.ToString());
-			}
-			else
-			{
-				sb.Append(HasMotionData.ToString());
-			}
-			return sb.ToString();
+			sb.AppendLine(HasMotionData.ToString());
 		}
-		public int GetLineCount()
+		else
 		{
-			return 2 + ProjectAssets.Count;
+			sb.Append(HasMotionData.ToString());
 		}
+		return sb.ToString();
+	}
+	public int GetLineCount()
+	{
+		return 2 + ProjectAssets.Count;
 	}
 }

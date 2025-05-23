@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-
 using System.Xml;
 using XmlCake.Linq.Expressions;
 
@@ -27,15 +26,15 @@ public class NemesisAssembler
 
 	//private XPathLookup lookup = new XPathLookup();
 
-	List<PackFile> packFiles = new List<PackFile>();
+	List<PackFile> packFiles = [];
 
-	private static readonly DirectoryInfo engineFolder = new DirectoryInfo(Directory.GetCurrentDirectory() + "\\Pandora_Engine");
+	private static readonly DirectoryInfo engineFolder = new(Directory.GetCurrentDirectory() + "\\Pandora_Engine");
 
-	private static readonly DirectoryInfo templateFolder = new DirectoryInfo(Path.Combine(BehaviourEngine.AssemblyDirectory.FullName, "Pandora_Engine\\Skyrim\\Template"));
+	private static readonly DirectoryInfo templateFolder = new(Path.Combine(BehaviourEngine.AssemblyDirectory.FullName, "Pandora_Engine\\Skyrim\\Template"));
 
-	private static readonly DirectoryInfo defaultOutputMeshFolder = new DirectoryInfo(Path.Join(Directory.GetCurrentDirectory(), "meshes"));
+	private static readonly DirectoryInfo defaultOutputMeshFolder = new(Path.Join(Directory.GetCurrentDirectory(), "meshes"));
 
-	private static readonly DirectoryInfo currentDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
+	private static readonly DirectoryInfo currentDirectory = new(Directory.GetCurrentDirectory());
 	public ProjectManager ProjectManager { get; private set; }
 	public AnimDataManager AnimDataManager { get; private set; }
 	public AnimSetDataManager AnimSetDataManager { get; private set; }
@@ -219,7 +218,7 @@ public class NemesisAssembler
 
 	public List<(FileInfo inFile, FileInfo outFile)> GetExportFiles()
 	{
-		List<(FileInfo inFile, FileInfo outFile)> exportFiles = new List<(FileInfo inFile, FileInfo outFile)>();
+		List<(FileInfo inFile, FileInfo outFile)> exportFiles = [];
 		foreach (PackFile packFile in ProjectManager.ActivePackFiles)
 		{
 			exportFiles.Add((packFile.InputHandle, new FileInfo(Path.Join(Directory.GetCurrentDirectory(), packFile.InputHandle.Name))));

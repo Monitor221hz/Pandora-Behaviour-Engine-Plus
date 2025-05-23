@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 
 namespace Pandora.Models.Extensions;
+
 public static class ListExtensions
 {
 	public static IEnumerable<T> FastReverse<T>(this IList<T> items)
@@ -10,5 +11,4 @@ public static class ListExtensions
 			yield return items[i];
 		}
 	}
-
 }

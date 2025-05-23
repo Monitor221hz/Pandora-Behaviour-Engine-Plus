@@ -1,5 +1,5 @@
 ﻿using Pandora.API.Patch;
-using Pandora.Core;
+using Pandora.Models.Patch.Mod;
 using Pandora.Models.Patch.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.Format.FNIS;
 using System.Collections.Generic;
@@ -18,7 +18,7 @@ public partial class FNISAnimationList
 
 	private static readonly Regex animLineRegex = FNISAnimLineRegex();
 
-	private static readonly Dictionary<string, string> linkedCharacterNameMap = new Dictionary<string, string>()
+	private static readonly Dictionary<string, string> linkedCharacterNameMap = new()
 	{
 		{"defaultmale", "defaultfemale" },
 		{"defaultfemale", "defaultmale" },
@@ -29,7 +29,7 @@ public partial class FNISAnimationList
 	};
 
 
-	public List<BasicAnimation> Animations { get; private set; } = new(); 
+	public List<BasicAnimation> Animations { get; private set; } = []; 
 	public IModInfo ModInfo { get; private set; }
 
 	private FNISAnimationList(IModInfo modInfo)
@@ -38,7 +38,7 @@ public partial class FNISAnimationList
 	}
 	public static FNISAnimationList FromFile(FileInfo file)
 	{
-		FNISModInfo modInfo = new FNISModInfo(file);
+		FNISModInfo modInfo = new(file);
 		var animlist = new FNISAnimationList(modInfo);
 		if (file.Directory== null || file.Directory.Parent == null) { return animlist; }
 		string animRoot = Path.Combine(file.Directory.Parent.Name, file.Directory.Name);
@@ -110,7 +110,7 @@ public partial class FNISAnimationList
 	
 	public void BuildAllBehaviorsParallel(Project project, ProjectManager projectManager)
 	{
-		FNISAnimationListBuildContext buildContext = new FNISAnimationListBuildContext(project, projectManager, ModInfo);
+		FNISAnimationListBuildContext buildContext = new(project, projectManager, ModInfo);
 		Parallel.ForEach(Animations, animation =>
 		{
 			animation.BuildBehavior(buildContext);
@@ -118,7 +118,7 @@ public partial class FNISAnimationList
 	}
 	public bool BuildAllBehaviors(Project project, ProjectManager projectManager)
 	{
-		FNISAnimationListBuildContext buildContext = new FNISAnimationListBuildContext(project, projectManager, ModInfo); 
+		FNISAnimationListBuildContext buildContext = new(project, projectManager, ModInfo); 
 		foreach (BasicAnimation animation in Animations)
 		{
 			animation.BuildBehavior(buildContext);

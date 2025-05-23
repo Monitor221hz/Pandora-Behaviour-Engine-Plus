@@ -9,11 +9,12 @@ namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 public class PackFileDispatcher
 {
 	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-	private List<IPackFileChange> elementChanges { get; set; } = new List<IPackFileChange>();
 
-	private List<IPackFileChange> textChanges { get; set; } = new List<IPackFileChange>();
+	private List<IPackFileChange> elementChanges { get; set; } = [];
 
-	private List<PackFileChangeSet> changeSets { get; set; } = new List<PackFileChangeSet>();
+	private List<IPackFileChange> textChanges { get; set; } = [];
+
+	private List<PackFileChangeSet> changeSets { get; set; } = [];
 
 	private PackFileValidator packFileValidator { get; set; } = new PackFileValidator();
 

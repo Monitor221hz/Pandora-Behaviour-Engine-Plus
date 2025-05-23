@@ -11,19 +11,20 @@ using System.IO;
 using System.Xml.Linq;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.Pandora;
+
 public class PandoraAssembler
 {
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-	private readonly DirectoryInfo templateFolder = new DirectoryInfo(Directory.GetCurrentDirectory() + "\\Pandora_Engine\\Skyrim\\Template");
+	private readonly DirectoryInfo templateFolder = new(Directory.GetCurrentDirectory() + "\\Pandora_Engine\\Skyrim\\Template");
 
-	private readonly DirectoryInfo defaultOutputMeshFolder = new DirectoryInfo($"{Directory.GetCurrentDirectory()}\\meshes");
+	private readonly DirectoryInfo defaultOutputMeshFolder = new($"{Directory.GetCurrentDirectory()}\\meshes");
 
 	public ProjectManager ProjectManager { get; private set; }
 	public AnimDataManager AnimDataManager { get; private set; }
 	public AnimSetDataManager AnimSetDataManager { get; private set; }
 
-	private PandoraNativePatchManager nativeManager = new PandoraNativePatchManager();
+	private PandoraNativePatchManager nativeManager = new();
 
 	private IMetaDataExporter<PackFile> exporter = new PackFileExporter();
 	public PandoraAssembler(IMetaDataExporter<PackFile> exporter)
@@ -108,8 +109,7 @@ public class PandoraAssembler
 		var files = folder.GetFiles();
 		foreach (var file in files)
 		{
-			Project? targetProject;
-			if (!file.Exists || !ProjectManager.TryGetProject(Path.GetFileNameWithoutExtension(file.Name.ToLower()), out targetProject)) continue;
+			if (!file.Exists || !ProjectManager.TryGetProject(Path.GetFileNameWithoutExtension(file.Name.ToLower()), out Project? targetProject)) continue;
 
 			using (var readStream = file.OpenRead())
 			{
@@ -136,9 +136,8 @@ public class PandoraAssembler
 
 			foreach (var patchFile in patchFiles)
 			{
-				AnimSet? targetAnimSet;
 
-				if (!targetAnimSetData.AnimSetsByName.TryGetValue(patchFile.Name, out targetAnimSet)) continue;
+				if (!targetAnimSetData.AnimSetsByName.TryGetValue(patchFile.Name, out AnimSet? targetAnimSet)) continue;
 
 				using (var readStream = patchFile.OpenRead())
 				{
@@ -164,7 +163,7 @@ public class PandoraAssembler
 		foreach (FileInfo patchFile in directoryInfo.GetFiles("*.txt"))
 		{
 			if (!AnimSetDataManager.AnimSetDataMap.TryGetValue(Path.GetFileNameWithoutExtension(patchFile.Name), out targetAnimSetData)) continue;
-			List<SetCachedAnimInfo> animInfos = new();
+			List<SetCachedAnimInfo> animInfos = [];
 			using (var readStream = patchFile.OpenRead())
 			{
 				using (var reader = new StreamReader(readStream))
