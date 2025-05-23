@@ -143,7 +143,7 @@ public class PackFileValidator
 		packFile.ParentProject?.AnimData?.AddDummyClipData(clipName);
 	}
 
-	public void Validate(PackFile packFile, params List<IPackFileChange>[] changeLists)
+	public void Validate(PackFile packFile, params ReadOnlySpan<List<IPackFileChange>> changeLists)
 	{
 		//if (!ValidateEventsAndVariables(packFile)) return; 
 
