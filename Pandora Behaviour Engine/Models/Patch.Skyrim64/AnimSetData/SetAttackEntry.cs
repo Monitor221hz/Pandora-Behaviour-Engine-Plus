@@ -19,17 +19,17 @@ public class SetAttackEntry
 	{
 		SetAttackEntry entry = new()
 		{
-			AttackTrigger = reader.ReadLineSafe()
+			AttackTrigger = reader.ReadLineOrEmpty()
 		};
 
-		if (!int.TryParse(reader.ReadLineSafe(), out int unk) || !int.TryParse(reader.ReadLineSafe(), out int numClips)) return entry;
+		if (!int.TryParse(reader.ReadLineOrEmpty(), out int unk) || !int.TryParse(reader.ReadLineOrEmpty(), out int numClips)) return entry;
 		entry.NumClips = numClips;
 		entry.Unk = unk;
 
 		if (numClips > 0) { entry.ClipNames = []; }
 		for (int i = 0; i < numClips; i++)
 		{
-			entry.ClipNames.Add(reader.ReadLineSafe());
+			entry.ClipNames.Add(reader.ReadLineOrEmpty());
 		}
 
 

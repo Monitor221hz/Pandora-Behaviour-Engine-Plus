@@ -185,36 +185,21 @@ public class NemesisAssembler
 
 		var projectName = folder.Name.Split('~')[0];
 
-		if (!ProjectManager.TryGetProject(projectName, out var project) || 
-			project.AnimData == null || 
+		if (!ProjectManager.TryGetProject(projectName, out var project) ||
+			project.AnimData == null ||
 			project.AnimData.BoundMotionDataProject == null)
 		{
-			return; 
+			return;
 		}
 
 		var clipDataFiles = folder.GetFiles("*~*.txt");
-		//var partitioner = Partitioner.Create(clipDataFiles, true);
-		//Parallel.ForEach(partitioner, clipDataFile =>
-		//{
-		//	if (!ClipDataBlock.TryReadBlock(clipDataFile, out var clipDataBlock))
-		//	{
-		//		return;
-		//	}
-		//	FileInfo motionDataFile = new(Path.Combine(clipDataFile.DirectoryName!, $"{clipDataBlock.ClipID}.txt"));
-		//	if (!motionDataFile.Exists || !ClipMotionDataBlock.TryReadBlock(motionDataFile, out var motionDataBlock))
-		//	{
-		//		return;
-		//	}
-		//	project.AnimData.AddClipData(clipDataBlock, motionDataBlock);
-		//});
-
 		foreach (var clipDataFile in clipDataFiles)
 		{
 			if (!ClipDataBlock.TryReadBlock(clipDataFile, out var clipDataBlock))
 			{
 				continue;
 			}
-			FileInfo motionDataFile = new(Path.Combine(clipDataFile.DirectoryName!, clipDataBlock.ClipID));
+			FileInfo motionDataFile = new(Path.Combine(clipDataFile.DirectoryName!, $"{clipDataBlock.ClipID}.txt"));
 			if (!motionDataFile.Exists || !ClipMotionDataBlock.TryReadBlock(motionDataFile, out var motionDataBlock))
 			{
 				continue;

@@ -25,7 +25,7 @@ public class ProjectAnimSetData
 
 		for (int i = 0; i < numSets; i++)
 		{
-			var fileName = reader.ReadLineSafe();
+			var fileName = reader.ReadLineOrEmpty();
 			setData.AnimSetFileNames.Add(fileName);
 		}
 

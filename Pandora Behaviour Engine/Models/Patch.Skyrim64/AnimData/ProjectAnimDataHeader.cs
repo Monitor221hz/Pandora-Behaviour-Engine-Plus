@@ -1,5 +1,7 @@
 using Pandora.API.Patch.Engine.Skyrim64.AnimData;
+using Pandora.Models.Extensions;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 
@@ -8,34 +10,37 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 
 	public class ProjectAnimDataHeader : IProjectAnimDataHeader
 	{
+		public ProjectAnimDataHeader(int leadInt, int assetCount, IList<string> projectAssets, int hasMotionData)
+		{
+			LeadInt = leadInt;
+			AssetCount = assetCount;
+			ProjectAssets = projectAssets;
+			HasMotionData = hasMotionData;
+		}
+
 		public int LeadInt { get; set; }
 
 		public int AssetCount { get; set; }
-		public List<string> ProjectAssets { get; set; } = new List<string>();
+		public IList<string> ProjectAssets { get; set; } = [];
 		public int HasMotionData { get; set; }
-
-		public static ProjectAnimDataHeader ReadBlock(StreamReader reader)
+		public static bool TryReadBlock(StreamReader reader, [NotNullWhen(true)] out ProjectAnimDataHeader? header)
 		{
-			ProjectAnimDataHeader header = new ProjectAnimDataHeader();
-			int[] headerData = [];
+			header = null;
+			if (!int.TryParse(reader.ReadLine(), out var leadInt)) { return false; }
 
-			header.LeadInt = int.Parse(reader.ReadLine());
+			if (!int.TryParse(reader.ReadLine(), out var assetCount)) { return false; }
 
-			header.AssetCount = int.Parse(reader.ReadLine());
-
-
-			for (int i = 0; i < header.AssetCount; i++)
+			string[] projectAssets = new string[assetCount];
+			for (int i = 0; i < assetCount; i++)
 			{
-				header.ProjectAssets.Add(reader.ReadLine());
-
+				if (!reader.TryReadLine(out var value)) { continue; }
+				projectAssets[i] = value;
 			}
 
-			header.HasMotionData = int.Parse(reader.ReadLine());
-
-
-			return header;
+			if (!int.TryParse(reader.ReadLine(), out var hasMotionData)) { return false; }
+			header = new(leadInt, assetCount, projectAssets, hasMotionData);
+			return true;
 		}
-
 		public override string ToString()
 		{
 			StringBuilder sb = new StringBuilder();

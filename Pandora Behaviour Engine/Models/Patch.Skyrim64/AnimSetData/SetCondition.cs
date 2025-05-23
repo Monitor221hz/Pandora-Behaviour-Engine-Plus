@@ -16,11 +16,11 @@ public class SetCondition
 	{
 		var condition = new SetCondition
 		{
-			VariableName = reader.ReadLineSafe()
+			VariableName = reader.ReadLineOrEmpty()
 		};
 
 
-		if (!int.TryParse(reader.ReadLineSafe(), out int value1) || !int.TryParse(reader.ReadLineSafe(), out int value2)) return condition;
+		if (!int.TryParse(reader.ReadLineOrEmpty(), out int value1) || !int.TryParse(reader.ReadLineOrEmpty(), out int value2)) return condition;
 
 		condition.Value1 = value1;
 		condition.Value2 = value2;

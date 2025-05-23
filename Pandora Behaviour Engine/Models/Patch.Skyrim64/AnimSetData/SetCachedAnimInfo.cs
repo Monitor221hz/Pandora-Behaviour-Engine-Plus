@@ -17,9 +17,9 @@ public class SetCachedAnimInfo
 	{
 		var animInfo = new SetCachedAnimInfo
 		{
-			encodedPath = uint.Parse(reader.ReadLineSafe()),
-			encodedFileName = uint.Parse(reader.ReadLineSafe()),
-			encodedExtension = uint.Parse(reader.ReadLineSafe())
+			encodedPath = uint.Parse(reader.ReadLineOrEmpty()),
+			encodedFileName = uint.Parse(reader.ReadLineOrEmpty()),
+			encodedExtension = uint.Parse(reader.ReadLineOrEmpty())
 		};
 
 		return animInfo;
