@@ -1,5 +1,7 @@
 using Pandora.Models.Extensions;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 
@@ -7,36 +9,42 @@ namespace Pandora.Models.Patch.Skyrim64.AnimSetData;
 
 public class ProjectAnimSetData
 {
+	public ProjectAnimSetData(int numSets, IList<string> animSetFileNames, IList<AnimSet> animSets, Dictionary<string, AnimSet> animSetsByName)
+	{
+		NumSets = numSets;
+		AnimSetFileNames = animSetFileNames;
+		AnimSets = animSets;
+		AnimSetsByName = animSetsByName;
+	}
+
 	public int NumSets { get; private set; } = 1;
 
-	public List<string> AnimSetFileNames { get; private set; } = [];
+	public IList<string> AnimSetFileNames { get; private set; } = [];
 
-	public List<AnimSet> AnimSets { get; private set; } = [];
+	public IList<AnimSet> AnimSets { get; private set; } = [];
 
 	public Dictionary<string, AnimSet> AnimSetsByName { get; private set; } = [];
-
-	public static ProjectAnimSetData Read(StreamReader reader)
+	public static bool TryRead(StreamReader reader, [NotNullWhen(true)] out ProjectAnimSetData? setData)
 	{
-		var setData = new ProjectAnimSetData();
+		setData = null;
+		if (!int.TryParse(reader.ReadLine(), out int numSets)) { return false; }
 
-
-		if (!int.TryParse(reader.ReadLine(), out int numSets)) { return setData; }
-		setData.NumSets = numSets;
-
+		string[] animSetFileNames = new string[numSets];
+		AnimSet[] animSets = new AnimSet[numSets];
+		Dictionary<string, AnimSet> animSetNameMap = new(numSets, StringComparer.OrdinalIgnoreCase);
 		for (int i = 0; i < numSets; i++)
 		{
-			var fileName = reader.ReadLineOrEmpty();
-			setData.AnimSetFileNames.Add(fileName);
+			if (!reader.TryReadLine(out var fileName)) { return false; }
+			animSetFileNames[i] = fileName;
 		}
-
 		for (int i = 0; i < numSets; i++)
 		{
-			var animSet = AnimSet.Read(reader);
-			setData.AnimSets.Add(animSet);
-			setData.AnimSetsByName.Add(setData.AnimSetFileNames[i], animSet);
+			if (!AnimSet.TryRead(reader, out var animSet)) { return false; }
+			animSets[i] = animSet;
+			animSetNameMap.Add(animSetFileNames[i], animSet);
 		}
-
-		return setData;
+		setData = new(numSets, animSetFileNames, animSets, animSetNameMap);
+		return true;
 	}
 
 	public override string ToString()

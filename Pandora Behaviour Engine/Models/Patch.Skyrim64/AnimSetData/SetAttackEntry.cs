@@ -1,5 +1,6 @@
 using Pandora.Models.Extensions;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 
@@ -7,34 +8,61 @@ namespace Pandora.Models.Patch.Skyrim64.AnimSetData;
 
 public class SetAttackEntry
 {
+	public SetAttackEntry(string attackTrigger, int unk, int numClips, IList<string> clipNames)
+	{
+		AttackTrigger = attackTrigger;
+		Unk = unk;
+		NumClips = numClips;
+		ClipNames = clipNames;
+	}
+
 	public string AttackTrigger { get; private set; } = "attackStart";
 
 	public int Unk { get; private set; } = 0;
 
 	public int NumClips { get; private set; } = 1;
 
-	public List<string> ClipNames { get; private set; } = ["attackClip"];
+	public IList<string> ClipNames { get; private set; } = ["attackClip"];
 
-	public static SetAttackEntry ReadEntry(StreamReader reader)
+	public static bool TryRead(StreamReader reader, [NotNullWhen(true)] out SetAttackEntry? entry)
 	{
-		SetAttackEntry entry = new()
+		entry = null;
+		if (!reader.TryReadLine(out var attackTrigger) ||
+			!int.TryParse(reader.ReadLineOrEmpty(), out int unk) ||
+			!int.TryParse(reader.ReadLineOrEmpty(), out int numClips))
 		{
-			AttackTrigger = reader.ReadLineOrEmpty()
-		};
-
-		if (!int.TryParse(reader.ReadLineOrEmpty(), out int unk) || !int.TryParse(reader.ReadLineOrEmpty(), out int numClips)) return entry;
-		entry.NumClips = numClips;
-		entry.Unk = unk;
-
-		if (numClips > 0) { entry.ClipNames = []; }
+			return false;
+		}
+		string[] clips = new string[numClips];
 		for (int i = 0; i < numClips; i++)
 		{
-			entry.ClipNames.Add(reader.ReadLineOrEmpty());
+			if (!reader.TryReadLine(out var value)) { return false; }
+			clips[i] = value;
 		}
 
-
-		return entry;
+		entry = new(attackTrigger, unk, numClips, clips);
+		return true;
 	}
+	//public static SetAttackEntry ReadEntry(StreamReader reader)
+	//{
+	//	SetAttackEntry entry = new()
+	//	{
+	//		AttackTrigger = reader.ReadLineOrEmpty()
+	//	};
+
+	//	if (!int.TryParse(reader.ReadLineOrEmpty(), out int unk) || !int.TryParse(reader.ReadLineOrEmpty(), out int numClips)) return entry;
+	//	entry.NumClips = numClips;
+	//	entry.Unk = unk;
+
+	//	if (numClips > 0) { entry.ClipNames = []; }
+	//	for (int i = 0; i < numClips; i++)
+	//	{
+	//		entry.ClipNames.Add(reader.ReadLineOrEmpty());
+	//	}
+
+
+	//	return entry;
+	//}
 
 	public override string ToString()
 	{

@@ -53,19 +53,21 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 		public static bool TryReadBlock(StreamReader reader, [NotNullWhen(true)] out ClipDataBlock? block)
 		{
 			block = null;
-			if (!reader.TryReadLine(out var clipName)) { return false; }
-			if (!reader.TryReadLine(out var clipId)) { return false; }
-			if (!float.TryParse(reader.ReadLine(), out float playBackSpeed)) { return false; }
-			if (!float.TryParse(reader.ReadLine(), out float  cropStartLocalTime)) { return false; }
-			if (!float.TryParse(reader.ReadLine(), out float cropEndLocalTime)) { return false; }
-			if (!int.TryParse(reader.ReadLine(), out int numClipTriggers)) { return false; }
+			if (!reader.TryReadLine(out var clipName) ||
+				!reader.TryReadLine(out var clipId) ||
+				!float.TryParse(reader.ReadLine(), out float playBackSpeed) ||
+				!float.TryParse(reader.ReadLine(), out float cropStartLocalTime) ||
+				!float.TryParse(reader.ReadLine(), out float cropEndLocalTime) ||
+				!int.TryParse(reader.ReadLine(), out int numClipTriggers))
+			{
+				return false;
+			}
 			string[] triggerNames = new string[numClipTriggers];
 			for (int i = 0; i < numClipTriggers; i++)
 			{
 				if (!reader.TryReadLine(out var triggerName)) { return false; }
 				triggerNames[i] = triggerName;
 			}
-
 			block = new ClipDataBlock(clipName, clipId, playBackSpeed, cropStartLocalTime, cropEndLocalTime, numClipTriggers, triggerNames);
 			return true;
 		}

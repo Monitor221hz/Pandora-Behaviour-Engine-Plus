@@ -1,5 +1,6 @@
 using Pandora.Models.Extensions;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 
@@ -7,6 +8,19 @@ namespace Pandora.Models.Patch.Skyrim64.AnimSetData;
 
 public class AnimSet
 {
+	public AnimSet(string versionName, int numTriggers, int numConditions, int numAttackEntries, int numAnimationInfos, IList<string> triggers, IList<SetCondition> conditions, IList<SetAttackEntry> attackEntries, IList<SetCachedAnimInfo> animInfos)
+	{
+		VersionName = versionName;
+		NumTriggers = numTriggers;
+		NumConditions = numConditions;
+		NumAttackEntries = numAttackEntries;
+		NumAnimationInfos = numAnimationInfos;
+		Triggers = triggers;
+		Conditions = conditions;
+		AttackEntries = attackEntries;
+		AnimInfos = animInfos;
+	}
+
 	public string VersionName { get; private set; } = "V3";
 	public int NumTriggers { get; private set; } = 0;
 
@@ -16,39 +30,55 @@ public class AnimSet
 
 	public int NumAnimationInfos { get; private set; } = 0;
 
-	public List<string> Triggers { get; private set; } = [];
+	public IList<string> Triggers { get; private set; } = [];
 
-	public List<SetCondition> Conditions { get; private set; } = [];
+	public IList<SetCondition> Conditions { get; private set; } = [];
 
-	public List<SetAttackEntry> AttackEntries { get; private set; } = [];
+	public IList<SetAttackEntry> AttackEntries { get; private set; } = [];
 
-	public List<SetCachedAnimInfo> AnimInfos { get; private set; } = [];
+	public IList<SetCachedAnimInfo> AnimInfos { get; private set; } = [];
 
 	public void AddAnimInfo(SetCachedAnimInfo animInfo) => AnimInfos.Add(animInfo);
 
-	public static AnimSet Read(StreamReader reader)
+	public static bool TryRead(StreamReader reader, [NotNullWhen(true)] out AnimSet? animSet)
 	{
-		var animSet = new AnimSet
+		animSet = null;
+		if (!reader.TryReadLine(out var versionName)) { return false; }
+
+		if (!int.TryParse(reader.ReadLineOrEmpty(), out int numTriggers)) { return false; }
+		string[] triggers = new string[numTriggers];
+		for (int i = 0; i < numTriggers; i++)
 		{
-			VersionName = reader.ReadLineOrEmpty()
-		};
+			if (!reader.TryReadLine(out var value)) { return false; }
+			triggers[i] = value;
+		}
 
+		if (!int.TryParse(reader.ReadLineOrEmpty(), out int numConditions)) { return false; }
+		SetCondition[] conditions = new SetCondition[numConditions];
+		for (int i = 0; i < numConditions; i++)
+		{
+			if (!SetCondition.TryRead(reader, out var value)) { return false; }
+			conditions[i] = value;
+		}
 
-		if (!int.TryParse(reader.ReadLineOrEmpty(), out int numTriggers)) return animSet;
-		for (int i = 0; i < numTriggers; i++) { animSet.Triggers.Add(reader.ReadLineOrEmpty()); }
+		if (!int.TryParse(reader.ReadLineOrEmpty(), out int numAttacks)) { return false; }
+		SetAttackEntry[] attacks = new SetAttackEntry[numAttacks];
+		for (int i = 0; i < numAttacks; i++)
+		{
+			if (!SetAttackEntry.TryRead(reader, out var value)) { return false; }
+			attacks[i] = value;
+		}
 
-		if (!int.TryParse(reader.ReadLineOrEmpty(), out int numConditions)) return animSet;
-		for (int i = 0; i < numConditions; i++) { animSet.Conditions.Add(SetCondition.ReadCondition(reader)); }
+		if (!int.TryParse(reader.ReadLineOrEmpty(), out int numAnimationInfos)) { return false; }
+		SetCachedAnimInfo[] animationInfos = new SetCachedAnimInfo[numAnimationInfos];
+		for (int i = 0; i < numAnimationInfos; i++)
+		{
+			if (!SetCachedAnimInfo.TryRead(reader, out var value)) { return false; }
+			animationInfos[i] = value;
+		}
 
-		if (!int.TryParse(reader.ReadLineOrEmpty(), out int numAttacks)) return animSet;
-		for (int i = 0; i < numAttacks; i++) { animSet.AttackEntries.Add(SetAttackEntry.ReadEntry(reader)); }
-
-		if (!int.TryParse(reader.ReadLineOrEmpty(), out int numAnimationInfos)) return animSet;
-		for (int i = 0; i < numAnimationInfos; i++) { animSet.AnimInfos.Add(SetCachedAnimInfo.Read(reader)); }
-
-		animSet.SyncCounts();
-
-		return animSet;
+		animSet = new(versionName, numTriggers, numConditions, numAttacks, numAnimationInfos, triggers, conditions, attacks, animationInfos);
+		return true;
 	}
 	private void SyncCounts()
 	{

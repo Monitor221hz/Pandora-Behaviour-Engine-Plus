@@ -9,18 +9,17 @@ public class AnimSetDataManager
 {
 	private static readonly string ANIMSETDATA_FILENAME = "animationsetdatasinglefile.txt";
 
-	private DirectoryInfo templateFolder { get; set; }
-	private DirectoryInfo outputMeshDirectory { get; set; }
-	private FileInfo templateAnimSetDataSingleFile { get; set; }
-	private FileInfo outputAnimSetDataSingleFile { get; set; }
+	private DirectoryInfo templateFolder;
+	private DirectoryInfo outputMeshDirectory;
 
-	private FileInfo vanillaHkxFiles { get; set; }
+	private FileInfo templateAnimSetDataSingleFile;
+	private FileInfo outputAnimSetDataSingleFile;
+	private FileInfo vanillaHkxFiles;
 
-	private HashSet<string> vanillaAnimationPaths { get; set; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+	private HashSet<string> vanillaAnimationPaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-	private List<string> projectPaths { get; set; } = [];
-
-	private List<ProjectAnimSetData> animSetDataList { get; set; } = [];
+	private IList<string> projectPaths = [];
+	private IList<ProjectAnimSetData> animSetDataList = [];
 
 	public Dictionary<string, ProjectAnimSetData> AnimSetDataMap { get; private set; } = [];
 
@@ -40,7 +39,7 @@ public class AnimSetDataManager
 		outputAnimSetDataSingleFile = new FileInfo($"{outputMeshDirectory.FullName}\\{ANIMSETDATA_FILENAME}");
 	}
 
-	public void SplitAnimSetDataSingleFile()
+	public bool SplitAnimSetDataSingleFile()
 	{
 		using (var readStream = templateAnimSetDataSingleFile.OpenRead())
 		{
@@ -54,7 +53,7 @@ public class AnimSetDataManager
 
 				for (int i = 0; i < NumProjects; i++)
 				{
-					var animSetData = ProjectAnimSetData.Read(reader);
+					if (!ProjectAnimSetData.TryRead(reader, out var animSetData)) { return false; }
 					animSetDataList.Add(animSetData);
 					AnimSetDataMap.Add(Path.GetFileNameWithoutExtension(projectPaths[i]), animSetData);
 
@@ -76,6 +75,7 @@ public class AnimSetDataManager
 
 			}
 		}
+		return true;
 	}
 
 	public void MergeAnimSetDataSingleFile()

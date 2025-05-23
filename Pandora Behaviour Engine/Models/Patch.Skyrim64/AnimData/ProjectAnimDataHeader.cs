@@ -26,9 +26,7 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 		public static bool TryReadBlock(StreamReader reader, [NotNullWhen(true)] out ProjectAnimDataHeader? header)
 		{
 			header = null;
-			if (!int.TryParse(reader.ReadLine(), out var leadInt)) { return false; }
-
-			if (!int.TryParse(reader.ReadLine(), out var assetCount)) { return false; }
+			if (!int.TryParse(reader.ReadLine(), out var leadInt) || !int.TryParse(reader.ReadLine(), out var assetCount)) { return false; }
 
 			string[] projectAssets = new string[assetCount];
 			for (int i = 0; i < assetCount; i++)
@@ -43,7 +41,7 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 		}
 		public override string ToString()
 		{
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			sb.AppendLine(LeadInt.ToString()).AppendLine(ProjectAssets.Count.ToString()).AppendLine(string.Join("\r\n", ProjectAssets));
 			if (HasMotionData == 1)
 			{

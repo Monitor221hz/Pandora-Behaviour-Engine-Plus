@@ -29,21 +29,21 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 		public static bool TryReadBlock(StreamReader reader, [NotNullWhen(true)] out ClipMotionDataBlock? block)
 		{
 			block = null;
-			if (!reader.TryReadLine(out var clipId)) { return false; }
-
-			if (!float.TryParse(reader.ReadLine(), out var duration)) { return false; }
-
-			if (!int.TryParse(reader.ReadLine(), out var numTranslations)) { return false; }
+			if (!reader.TryReadLine(out var clipId) ||
+				!float.TryParse(reader.ReadLine(), out var duration) ||
+				!int.TryParse(reader.ReadLine(), out var numTranslations))
+			{
+				return false;
+			}
 
 			var translations = new string[numTranslations];
 			for (int i = 0; i < numTranslations; i++)
 			{
-				if (!reader.TryReadLine(out var value)) {  return false; }
+				if (!reader.TryReadLine(out var value)) { return false; }
 				translations[i] = value;
 			}
 
 			if (!int.TryParse(reader.ReadLine(), out var numRotations)) { return false; }
-
 			var rotations = new string[numRotations];
 			for (int i = 0; i < numRotations; i++)
 			{
@@ -59,7 +59,7 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 				Translations = translations,
 				Rotations = rotations
 			};
-			return true; 
+			return true;
 		}
 		public static bool TryReadBlock(FileInfo fileInfo, [NotNullWhen(true)] out ClipMotionDataBlock? block)
 		{
@@ -71,7 +71,7 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 				}
 			}
 		}
-		public static bool TryLoadBlock(FileInfo file,[NotNullWhen(true)] out ClipMotionDataBlock? motionDataBlock)
+		public static bool TryLoadBlock(FileInfo file, [NotNullWhen(true)] out ClipMotionDataBlock? motionDataBlock)
 		{
 			using (var fileStream = file.OpenRead())
 			{

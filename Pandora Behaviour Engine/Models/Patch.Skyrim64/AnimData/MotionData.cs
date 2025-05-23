@@ -41,12 +41,12 @@ public class MotionData : IMotionData
 		Dictionary<int, ClipMotionDataBlock> blocksById = [];
 		while (whitespace != null && lineLimit > 0)
 		{
-			if (!ClipMotionDataBlock.TryReadBlock(reader, out var block))
+			if (!ClipMotionDataBlock.TryReadBlock(reader, out var block) || !int.TryParse(block.ClipID, out var id))
 			{
 				return false;
 			}
 			blocks.Add(block);
-			blocksById.Add(int.Parse(block.ClipID), block);
+			blocksById.Add(id, block);
 			lineLimit -= block.GetLineCount();
 
 			whitespace = reader.ReadLine();
