@@ -177,9 +177,36 @@ public class NemesisAssembler
 	{
 		foreach (var subFolder in folder.GetDirectories())
 		{
-			pandoraConverter.TryGenerateAnimDataPatchFile(subFolder);
+			AssembleProjectAnimDataPatch(subFolder);
 		}
-		pandoraConverter.AssembleAnimDataPatch(folder);
+	}
+	public void AssembleProjectAnimDataPatch(DirectoryInfo folder)
+	{
+
+		var projectName = folder.Name.Split('~')[0];
+
+		if (!ProjectManager.TryGetProject(projectName, out var project) ||
+			project.AnimData == null ||
+			project.AnimData.BoundMotionDataProject == null)
+		{
+			return;
+		}
+
+		var clipDataFiles = folder.GetFiles("*~*.txt");
+		foreach (var clipDataFile in clipDataFiles)
+		{
+			if (!ClipDataBlock.TryReadBlock(clipDataFile, out var clipDataBlock))
+			{
+				continue;
+			}
+			FileInfo motionDataFile = new(Path.Combine(clipDataFile.DirectoryName!, $"{clipDataBlock.ClipID}.txt"));
+			if (!motionDataFile.Exists || !ClipMotionDataBlock.TryReadBlock(motionDataFile, out var motionDataBlock))
+			{
+				continue;
+			}
+			project.AnimData.AddClipData(clipDataBlock, motionDataBlock);
+		}
+
 	}
 	public void AssembleAnimSetDataPatch(DirectoryInfo directoryInfo)
 	{

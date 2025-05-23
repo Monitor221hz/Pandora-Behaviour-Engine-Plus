@@ -1,80 +1,97 @@
-﻿using Pandora.API.Patch.Engine.Skyrim64.AnimData;
-using System;
+using Pandora.API.Patch.Engine.Skyrim64.AnimData;
+using Pandora.Models.Extensions;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 
-namespace Pandora.Models.Patch.Skyrim64.AnimData;
-
-public class ClipMotionDataBlock : IClipMotionDataBlock
+namespace Pandora.Models.Patch.Skyrim64.AnimData
 {
-	public string ClipID { get; private set; } = string.Empty;
-	public float Duration { get; private set; } = 1.33f;
-	public int NumTranslations { get; private set; } = 1;
-	public List<string> Translations { get; private set; } = ["1.33 0 0 0"];
-
-	public int NumRotations { get; private set; } = 1;
-	public List<string> Rotations { get; private set; } = ["1 0 0 0 1"];
 
 
-	public ClipMotionDataBlock(string id)
+	public class ClipMotionDataBlock : IClipMotionDataBlock
 	{
-		ClipID = id;
-	}
+		public string ClipID { get; set; } = string.Empty;
+		public float Duration { get; private set; } = 1.33f;
+		public int NumTranslations { get; private set; } = 1;
+		public IList<string> Translations { get; private set; } = ["1.33 0 0 0"];
+		public int NumRotations { get; private set; } = 1;
+		public IList<string> Rotations { get; private set; } = ["1 0 0 0 1"];
 
-	public static ClipMotionDataBlock ReadBlock(StreamReader reader)
-	{
-
-		ClipMotionDataBlock block = new("");
-		try
+		public ClipMotionDataBlock()
 		{
-			block.Rotations = [];
-			block.Translations = [];
 
-			block.ClipID = reader.ReadLine();
-
-			block.Duration = float.Parse(reader.ReadLine());
-
-			block.NumTranslations = int.Parse(reader.ReadLine());
-
-			for (int i = 0; i < block.NumTranslations; i++)
+		}
+		public ClipMotionDataBlock(string id)
+		{
+			ClipID = id;
+		}
+		public static bool TryReadBlock(StreamReader reader, [NotNullWhen(true)] out ClipMotionDataBlock? block)
+		{
+			block = null;
+			if (!reader.TryReadLine(out var clipId) ||
+				!float.TryParse(reader.ReadLine(), out var duration) ||
+				!int.TryParse(reader.ReadLine(), out var numTranslations))
 			{
-				block.Translations.Add(reader.ReadLine());
-
+				return false;
 			}
 
-			block.NumRotations = int.Parse(reader.ReadLine());
-
-			for (int i = 0; i < block.NumRotations; i++)
+			var translations = new string[numTranslations];
+			for (int i = 0; i < numTranslations; i++)
 			{
-				block.Rotations.Add(reader.ReadLine());
-
+				if (!reader.TryReadLine(out var value)) { return false; }
+				translations[i] = value;
 			}
 
+			if (!int.TryParse(reader.ReadLine(), out var numRotations)) { return false; }
+			var rotations = new string[numRotations];
+			for (int i = 0; i < numRotations; i++)
+			{
+				if (!reader.TryReadLine(out var value)) { return false; }
+				rotations[i] = value;
+			}
+			block = new()
+			{
+				ClipID = clipId,
+				Duration = duration,
+				NumTranslations = numTranslations,
+				NumRotations = numRotations,
+				Translations = translations,
+				Rotations = rotations
+			};
+			return true;
 		}
-		catch (Exception ex)
+		public static bool TryReadBlock(FileInfo fileInfo, [NotNullWhen(true)] out ClipMotionDataBlock? block)
 		{
-			throw new Exception(ex.Message + " in ", ex);
+			using (var fileStream = fileInfo.OpenRead())
+			{
+				using (var reader = new StreamReader(fileStream))
+				{
+					return TryReadBlock(reader, out block);
+				}
+			}
 		}
-		return block;
-	}
-
-	public static ClipMotionDataBlock LoadBlock(string filePath)
-	{
-		using (StreamReader reader = new(filePath))
+		public static bool TryLoadBlock(FileInfo file, [NotNullWhen(true)] out ClipMotionDataBlock? motionDataBlock)
 		{
-			return ReadBlock(reader);
+			using (var fileStream = file.OpenRead())
+			{
+				using (StreamReader reader = new StreamReader(fileStream))
+				{
+					return TryReadBlock(reader, out motionDataBlock);
+				}
+			}
 		}
-	}
 
-	public override string ToString()
-	{
-		StringBuilder sb = new();
-		sb.AppendLine(ClipID).AppendLine(Duration.ToString()).AppendLine(Translations.Count.ToString()).AppendLine(string.Join("\r\n", Translations)).AppendLine(Rotations.Count.ToString()).AppendLine(string.Join("\r\n", Rotations));
-		return sb.ToString();
-	}
-	public int GetLineCount()
-	{
-		return 4 + Translations.Count + Rotations.Count;
+		public override string ToString()
+		{
+			StringBuilder sb = new StringBuilder();
+			sb.AppendLine(ClipID).AppendLine(Duration.ToString()).AppendLine(Translations.Count.ToString()).AppendLine(string.Join("\r\n", Translations)).AppendLine(Rotations.Count.ToString()).AppendLine(string.Join("\r\n", Rotations));
+			return sb.ToString();
+		}
+		public int GetLineCount()
+		{
+			return 4 + Translations.Count + Rotations.Count;
+		}
+
 	}
 }

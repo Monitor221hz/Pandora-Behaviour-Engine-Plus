@@ -9,7 +9,13 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData;
 
 public class MotionData : IMotionData
 {
-	public List<ClipMotionDataBlock> Blocks { get; private set; } = [];
+	public MotionData(IList<ClipMotionDataBlock> blocks, Dictionary<int, ClipMotionDataBlock> blocksByID)
+	{
+		Blocks = blocks;
+		BlocksByID = blocksByID;
+	}
+
+	public IList<ClipMotionDataBlock> Blocks { get; private set; } = [];
 	public Dictionary<int, ClipMotionDataBlock> BlocksByID { get; private set; } = [];
 
 	public bool TryGetBlock(int id, [NotNullWhen(true)] out IClipMotionDataBlock? block)
@@ -17,28 +23,37 @@ public class MotionData : IMotionData
 		block = BlocksByID.TryGetValue(id, out var exBlock) ? exBlock as IClipMotionDataBlock : null;
 		return block != null;
 	}
-	public List<IClipMotionDataBlock> GetBlocks() => Blocks.Cast<IClipMotionDataBlock>().ToList();
+	public IList<IClipMotionDataBlock> GetBlocks() => Blocks.Cast<IClipMotionDataBlock>().ToList();
+	public void AddClipMotionData(ClipMotionDataBlock block)
+	{
+		lock (Blocks) { Blocks.Add(block); }
+	}
 	public void AddDummyClipMotionData(string id)
 	{
 		lock (Blocks) { Blocks.Add(new ClipMotionDataBlock(id)); }
 	}
-	public static MotionData ReadProject(StreamReader reader, int lineLimit)
+	public static bool TryReadProject(StreamReader reader, int lineLimit, [NotNullWhen(true)] out MotionData? motionData)
 	{
-		MotionData project = new();
-		int i = 1; //+1 to account for 1 empty line 
-		string? whiteSpace = "";
-
-		while (whiteSpace != null && i < lineLimit)
+		motionData = null;
+		lineLimit -= 1;
+		string? whitespace = string.Empty;
+		List<ClipMotionDataBlock> blocks = [];
+		Dictionary<int, ClipMotionDataBlock> blocksById = [];
+		while (whitespace != null && lineLimit > 0)
 		{
-			ClipMotionDataBlock block = ClipMotionDataBlock.ReadBlock(reader);
-			project.Blocks.Add(block);
-			project.BlocksByID.Add(int.Parse(block.ClipID), block);
-			i += block.GetLineCount();
+			if (!ClipMotionDataBlock.TryReadBlock(reader, out var block) || !int.TryParse(block.ClipID, out var id))
+			{
+				return false;
+			}
+			blocks.Add(block);
+			blocksById.Add(id, block);
+			lineLimit -= block.GetLineCount();
 
-			whiteSpace = reader.ReadLine();
-			i++;
+			whitespace = reader.ReadLine();
+			lineLimit--;
 		}
-		return project;
+		motionData = new(blocks, blocksById);
+		return true;
 	}
 
 	public override string ToString()

@@ -1,64 +1,61 @@
-﻿using Pandora.API.Patch.Engine.Skyrim64.AnimData;
-using System;
+using Pandora.API.Patch.Engine.Skyrim64.AnimData;
+using Pandora.Models.Extensions;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 
-namespace Pandora.Models.Patch.Skyrim64.AnimData;
-
-public class ProjectAnimDataHeader : IProjectAnimDataHeader
+namespace Pandora.Models.Patch.Skyrim64.AnimData
 {
-	public int LeadInt { get; set; }
 
-	public int AssetCount { get; set; }
-	public List<string> ProjectAssets { get; set; } = [];
-	public int HasMotionData { get; set; }
-
-	public static ProjectAnimDataHeader ReadBlock(StreamReader reader)
+	public class ProjectAnimDataHeader : IProjectAnimDataHeader
 	{
-		ProjectAnimDataHeader header = new();
-		try
+		public ProjectAnimDataHeader(int leadInt, int assetCount, IList<string> projectAssets, int hasMotionData)
 		{
-			int[] headerData = [];
+			LeadInt = leadInt;
+			AssetCount = assetCount;
+			ProjectAssets = projectAssets;
+			HasMotionData = hasMotionData;
+		}
 
-			header.LeadInt = int.Parse(reader.ReadLine());
+		public int LeadInt { get; set; }
 
-			header.AssetCount = int.Parse(reader.ReadLine());
+		public int AssetCount { get; set; }
+		public IList<string> ProjectAssets { get; set; } = [];
+		public int HasMotionData { get; set; }
+		public static bool TryReadBlock(StreamReader reader, [NotNullWhen(true)] out ProjectAnimDataHeader? header)
+		{
+			header = null;
+			if (!int.TryParse(reader.ReadLine(), out var leadInt) || !int.TryParse(reader.ReadLine(), out var assetCount)) { return false; }
 
-
-			for (int i = 0; i < header.AssetCount; i++)
+			string[] projectAssets = new string[assetCount];
+			for (int i = 0; i < assetCount; i++)
 			{
-				header.ProjectAssets.Add(reader.ReadLine());
-
+				if (!reader.TryReadLine(out var value)) { continue; }
+				projectAssets[i] = value;
 			}
 
-			header.HasMotionData = int.Parse(reader.ReadLine());
+			if (!int.TryParse(reader.ReadLine(), out var hasMotionData)) { return false; }
+			header = new(leadInt, assetCount, projectAssets, hasMotionData);
+			return true;
 		}
-		catch (Exception ex)
+		public override string ToString()
 		{
-			throw new Exception(ex.Message, ex);
+			StringBuilder sb = new();
+			sb.AppendLine(LeadInt.ToString()).AppendLine(ProjectAssets.Count.ToString()).AppendLine(string.Join("\r\n", ProjectAssets));
+			if (HasMotionData == 1)
+			{
+				sb.AppendLine(HasMotionData.ToString());
+			}
+			else
+			{
+				sb.Append(HasMotionData.ToString());
+			}
+			return sb.ToString();
 		}
-
-
-		return header;
-	}
-
-	public override string ToString()
-	{
-		StringBuilder sb = new();
-		sb.AppendLine(LeadInt.ToString()).AppendLine(ProjectAssets.Count.ToString()).AppendLine(string.Join("\r\n", ProjectAssets));
-		if (HasMotionData == 1)
+		public int GetLineCount()
 		{
-			sb.AppendLine(HasMotionData.ToString());
+			return 2 + ProjectAssets.Count;
 		}
-		else
-		{
-			sb.Append(HasMotionData.ToString());
-		}
-		return sb.ToString();
-	}
-	public int GetLineCount()
-	{
-		return 2 + ProjectAssets.Count;
 	}
 }

@@ -84,7 +84,7 @@ public class AnimDataManager
 				NumProjects = int.Parse(reader.ReadLine()!);
 				Project? activeProject = null;
 				ProjectAnimData? animData = null;
-				MotionData motionData;
+				MotionData? motionData;
 				while ((expectedLine = reader.ReadLine()) != null)
 				{
 
@@ -102,8 +102,16 @@ public class AnimDataManager
 
 						if (sectionIndex % 2 != 0)
 						{
-
-							animData = ProjectAnimData.ReadProject(reader, numLines, this);
+							if (!ProjectAnimData.TryReadProject(reader, this, numLines, out animData))
+							{
+								for (int i = 0; i < numLines; i++)
+								{
+									reader.ReadLine();
+								}
+								projectIndex++;
+								sectionIndex++;
+								continue;
+							}
 
 							if (animData.Header.HasMotionData == 0)
 							{
@@ -118,8 +126,11 @@ public class AnimDataManager
 						}
 						else
 						{
-
-							motionData = MotionData.ReadProject(reader, numLines);
+							if (!MotionData.TryReadProject(reader, numLines, out motionData))
+							{
+								projectIndex++;
+								continue;
+							}
 							if (animData != null) animData.BoundMotionDataProject = motionData;
 
 
