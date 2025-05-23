@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 
 namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
+
 public class PackFileGraph : PackFile, IPackFileGraph, IEquatable<PackFileGraph>
 {
 
@@ -17,7 +18,7 @@ public class PackFileGraph : PackFile, IPackFileGraph, IEquatable<PackFileGraph>
 	public hkbBehaviorGraphStringData StringData { get; private set; }
 	public hkbVariableValueSet VariableValueSet { get; private set; }
 
-	private HashSet<string> customEventBuffer = new();
+	private HashSet<string> customEventBuffer = [];
 
 	public bool AddEventBuffer(string name)
 	{
@@ -27,7 +28,7 @@ public class PackFileGraph : PackFile, IPackFileGraph, IEquatable<PackFileGraph>
 		}
 	}
 
-	private readonly Dictionary<string, int> customEventIndices = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+	private readonly Dictionary<string, int> customEventIndices = new(StringComparer.OrdinalIgnoreCase);
 
 
 
@@ -145,5 +146,4 @@ public class PackFileGraph : PackFile, IPackFileGraph, IEquatable<PackFileGraph>
 	{
 		return base.GetHashCode();
 	}
-
 }

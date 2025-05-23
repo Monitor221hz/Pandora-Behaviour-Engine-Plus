@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
+
 struct FNISAnimPreset
 {
 	public FNISAnimPreset(FNISAnimType animationType, FNISAnimFlags flags)
@@ -23,7 +24,7 @@ struct FNISAnimPreset
 
 public class FNISAnimationFactory
 {
-	private static readonly char[] lineWhitespace = new[] { ' ', '\t' };
+	private static readonly char[] lineWhitespace = [' ', '\t'];
 	private static readonly Dictionary<string, FNISAnimPreset> animTypePrefixes = new(StringComparer.OrdinalIgnoreCase)
 	{
 		{ "b", new(FNISAnimType.Basic) },
@@ -89,8 +90,7 @@ public class FNISAnimationFactory
 	public bool CreateFromLine(string animRoot, string line, [NotNullWhen(true)] out BasicAnimation? animation)
 	{
 		string[] args = line.Split(lineWhitespace, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-		FNISAnimPreset animPreset;
-		if (!animTypePrefixes.TryGetValue(args[0], out animPreset))
+		if (!animTypePrefixes.TryGetValue(args[0], out FNISAnimPreset animPreset))
 		{
 			animation = null;
 			return false;
@@ -100,17 +100,16 @@ public class FNISAnimationFactory
 		if (args[1].Length > 0 && args[1][0] == '-')
 		{
 			string[] flagValues = args[1].Substring(1).Split(',');
-			FNISAnimFlags flag;
 			foreach (string flagValue in flagValues)
 			{
-				if (animFlagValues.TryGetValue(flagValue, out flag))
+				if (animFlagValues.TryGetValue(flagValue, out FNISAnimFlags flag))
 				{
 					flags |= flag;
 				}
 			}
 			optionsOffset = 1;
 		}
-		List<string> animObjectNames = new();
+		List<string> animObjectNames = [];
 		if (args.Length > optionsOffset + 3)
 		{
 			for (int i = 4; i < args.Length; i++)

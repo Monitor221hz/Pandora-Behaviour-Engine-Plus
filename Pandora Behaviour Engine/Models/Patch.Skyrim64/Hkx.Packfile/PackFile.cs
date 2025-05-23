@@ -12,6 +12,7 @@ namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
 public class PackFile : IEquatable<PackFile>, IPackFile
 {
+	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
 	public XMap Map { get; private set; }
 	public HavokReferenceXmlDeserializer Deserializer { get; private set; } = new();
@@ -53,11 +54,10 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 
 	public bool ExportSuccess { get; private set; } = true;
 
-	private static HashSet<FileInfo> exportedFiles = new HashSet<FileInfo>();
+	private static HashSet<FileInfo> exportedFiles = [];
 
 	protected readonly Dictionary<IHavokObject, XMapElement> objectElementMap = new(ReferenceEqualityComparer.Instance);
 
-	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 	public void ApplyChanges() => Dispatcher.ApplyChanges(this);
 	public IEnumerable<XElement> IndexedElements => objectElementMap.Values;
 
@@ -175,7 +175,7 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 		{
 			return false;
 		}
-		XMapElement mappedElement = new XMapElement(PartialSerializer.SerializeObject(node));
+		XMapElement mappedElement = new(PartialSerializer.SerializeObject(node));
 		mappedElement.MapSlice(mappedElement);
 		objectElementMap.Add(node, mappedElement);
 		return true;
@@ -215,17 +215,15 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 		}
 		catch (Exception ex)
 		{
-			Logger.Error($"Packfile > Active Nodes > Push > FAILED > {ex.ToString()}");
+			Logger.Error($"Packfile > Active Nodes > Push > FAILED > {ex}");
 		}
 		return true;
 	}
 	public T GetPushXmlAsObject<T>(T targetObject) where T : class, IHavokObject
 	{
-		XMapElement? element;
-		string? name;
 		lock (objectElementMap)
 		{
-			if (!objectElementMap.TryGetValue(targetObject, out element) || !Serializer.TryGetName(targetObject, out name))
+			if (!objectElementMap.TryGetValue(targetObject, out XMapElement? element) || !Serializer.TryGetName(targetObject, out string? name))
 			{
 				return targetObject;
 			}
@@ -243,7 +241,7 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 			}
 			catch (Exception ex)
 			{
-				Logger.Error($"Packfile > Active Nodes > Push > FAILED > {ex.ToString()}");
+				Logger.Error($"Packfile > Active Nodes > Push > FAILED > {ex}");
 			}
 			if (!Deserializer.TryGetObjectAs<T>(name, out var newObj))
 			{
@@ -279,7 +277,7 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 			}
 			catch (Exception ex)
 			{
-				Logger.Error($"Packfile > Active Nodes > Push > FAILED > {ex.ToString()}");
+				Logger.Error($"Packfile > Active Nodes > Push > FAILED > {ex}");
 				continue;
 			}
 			string name = Serializer.GetName(kvp.Key);
@@ -301,7 +299,7 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 
 	public override bool Equals(object? obj)
 	{
-		if (obj == null || !(obj is PackFile)) return false;
+		if (obj == null || obj is not PackFile) return false;
 
 		return Equals((PackFile)obj);
 	}

@@ -17,7 +17,7 @@ public partial class EngineConfigurationViewModelContainer : ViewModelBase, IEng
     public EngineConfigurationViewModelContainer(string name)
     {
         Name = name;
-        NestedViewModels = new ObservableCollection<IEngineConfigurationViewModel>();
+        NestedViewModels = [];
     }
     public EngineConfigurationViewModelContainer(string name, params IEngineConfigurationViewModel[] viewModels)
     {

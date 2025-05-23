@@ -10,10 +10,11 @@ using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.Pandora;
+
 public class PandoraNativePatchManager
 {
 	private static readonly IPluginLoader pluginLoader = new PluginLoader();
-	private readonly List<ISkyrim64Patch> patches = new List<ISkyrim64Patch>();
+	private readonly List<ISkyrim64Patch> patches = [];
 	IEnumerable<IGrouping<RuntimeMode, ISkyrim64Patch>>? patchesByRuntime;
 
 	public void QueuePatches()

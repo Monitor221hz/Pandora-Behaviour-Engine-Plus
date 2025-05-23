@@ -8,7 +8,7 @@ public class PluginLoader : IPluginLoader
 {
 	public Assembly? LoadPlugin(DirectoryInfo directory)
 	{
-		FileInfo pluginInfo = new FileInfo(Path.Join(directory.FullName, $"{directory.Name}.dll"));
+		FileInfo pluginInfo = new(Path.Join(directory.FullName, $"{directory.Name}.dll"));
 		if (!pluginInfo.Exists) { return null; }
 		PluginLoadContext loadContext = new(pluginInfo.FullName);
 

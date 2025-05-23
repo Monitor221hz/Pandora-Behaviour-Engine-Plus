@@ -44,8 +44,8 @@ public class PackFileChangeSet : IPackFileChangeOwner
 			changeTypedMap[change.Type].Add(change);
 			return;
 		}
-		changeTypedMap = new();
-		foreach (ChangeType changeType in orderedChangeTypes) { changeTypedMap.Add(changeType, new List<IPackFileChange>()); }
+		changeTypedMap = [];
+		foreach (ChangeType changeType in orderedChangeTypes) { changeTypedMap.Add(changeType, []); }
 		changeTypedMap[change.Type].Add(change);
 		nodeScopedChangeMap.Add(change.Target, changeTypedMap);
 	}

@@ -6,15 +6,16 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace Pandora.MVVM.Data;
+namespace Pandora.Data;
+
 public class PandoraModInfoProvider : IModInfoProvider
 {
 	public async Task<List<IModInfo>> GetInstalledMods(string folderPath) => await Task.Run(() => GetInstalledMods(new DirectoryInfo(folderPath)));
 
-	private static readonly XmlSerializer xmlSerializer = new XmlSerializer(typeof(PandoraModInfo));
+	private static readonly XmlSerializer xmlSerializer = new(typeof(PandoraModInfo));
 	private static List<IModInfo> GetInstalledMods(DirectoryInfo folder)
 	{
-		List<IModInfo> infoList = new List<IModInfo>();
+		List<IModInfo> infoList = [];
 		if (!folder.Exists) { return infoList; }
 
 		var modFolders = folder.GetDirectories();

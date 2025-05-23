@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
+
 public class FurnitureAnimation : BasicAnimation
 {
 	public FurnitureAnimation(Match match) : base(FNISAnimType.OffsetArm, match)
@@ -114,7 +115,7 @@ public class FurnitureAnimation : BasicAnimation
 			name = $"{GraphEvent}_Behavior",
 			wildcardTransitions = new()
 			{
-				transitions = new List<hkbStateMachineTransitionInfo>()
+				transitions = []
 			}
 		};
 		furnitureBehaviorState.SetDefault();
@@ -122,10 +123,10 @@ public class FurnitureAnimation : BasicAnimation
 		//variable binding set for animation driven
 		hkbVariableBindingSet bindingSet = new()
 		{
-			bindings = new List<hkbVariableBindingSetBinding>()
-			{
+			bindings =
+			[
 				animationDrivenBinding
-			}
+			]
 		};
 		string uniqueStateInfoName = $"{modInfo.Code}_{GraphEvent}_State";
 		int stateId = Hash;
@@ -182,17 +183,17 @@ public class FurnitureAnimation : BasicAnimation
 			stateId = stateId,
 			enterNotifyEvents = new()
 			{
-				events = new List<hkbEventProperty>()
-				{
+				events =
+				[
 					headTrackingOffEventProperty,
-				}
+				]
 			},
 			exitNotifyEvents = new()
 			{
-				events = new List<hkbEventProperty>()
-				{
+				events =
+				[
 					idleChairSittingProperty,
-				}
+				]
 			},
 			generator = enterClip,
 			transitions = exitTransitionInfoArray
@@ -247,7 +248,7 @@ public class FurnitureAnimation : BasicAnimation
 			exitTransition.toStateId = lastAnimation.Hash;
 			exitTransition.toNestedStateId = lastAnimation.Hash;
 			exitTransition.flags |= (short)TransitionFlags.FLAG_TO_NESTED_STATE_ID_IS_VALID | (short)TransitionFlags.FLAG_IS_LOCAL_WILDCARD;
-			furnitureGroupStateInfo.transitions = new hkbStateMachineTransitionInfoArray() { transitions = new List<hkbStateMachineTransitionInfo>() };
+			furnitureGroupStateInfo.transitions = new hkbStateMachineTransitionInfoArray() { transitions = [] };
 			furnitureGroupStateInfo.transitions.transitions.Add(exitTransition);
 		}
 		furnitureBehaviorState.wildcardTransitions.transitions.Add(transition);

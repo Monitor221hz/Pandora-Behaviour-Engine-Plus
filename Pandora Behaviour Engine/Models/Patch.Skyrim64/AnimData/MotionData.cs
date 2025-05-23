@@ -7,12 +7,10 @@ using System.Text;
 
 namespace Pandora.Models.Patch.Skyrim64.AnimData;
 
-
-
 public class MotionData : IMotionData
 {
-	public List<ClipMotionDataBlock> Blocks { get; private set; } = new List<ClipMotionDataBlock>();
-	public Dictionary<int, ClipMotionDataBlock> BlocksByID { get; private set; } = new Dictionary<int, ClipMotionDataBlock>();
+	public List<ClipMotionDataBlock> Blocks { get; private set; } = [];
+	public Dictionary<int, ClipMotionDataBlock> BlocksByID { get; private set; } = [];
 
 	public bool TryGetBlock(int id, [NotNullWhen(true)] out IClipMotionDataBlock? block)
 	{
@@ -26,7 +24,7 @@ public class MotionData : IMotionData
 	}
 	public static MotionData ReadProject(StreamReader reader, int lineLimit)
 	{
-		MotionData project = new MotionData();
+		MotionData project = new();
 		int i = 1; //+1 to account for 1 empty line 
 		string? whiteSpace = "";
 
@@ -45,7 +43,7 @@ public class MotionData : IMotionData
 
 	public override string ToString()
 	{
-		StringBuilder sb = new StringBuilder();
+		StringBuilder sb = new();
 		sb.AppendJoin("\r\n", Blocks);
 		return sb.ToString();
 		//byte[] bytes = Encoding.Default.GetBytes(sb.ToString());
@@ -61,5 +59,4 @@ public class MotionData : IMotionData
 		}
 		return i;
 	}
-
 }

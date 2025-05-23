@@ -13,13 +13,13 @@ public class PackFileValidator
 {
 	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-	private static Regex EventFormat = new Regex(@"[$]{1}eventID{1}[\[]{1}(.+)[\]]{1}[$]{1}");
-	private static Regex VarFormat = new Regex(@"[$]{1}variableID{1}[\[]{1}(.+)[\]]{1}[$]{1}");
+	private static Regex EventFormat = new(@"[$]{1}eventID{1}[\[]{1}(.+)[\]]{1}[$]{1}");
+	private static Regex VarFormat = new(@"[$]{1}variableID{1}[\[]{1}(.+)[\]]{1}[$]{1}");
 
-	private Dictionary<string, int> eventIndices = new Dictionary<string, int>();
-	private Dictionary<string, int> variableIndices = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+	private Dictionary<string, int> eventIndices = [];
+	private Dictionary<string, int> variableIndices = new(StringComparer.OrdinalIgnoreCase);
 
-	private List<XElement> registeredElements = new();
+	private List<XElement> registeredElements = [];
 
 	public void TrackElement(XElement element) => registeredElements.Add(element);
 
@@ -27,8 +27,7 @@ public class PackFileValidator
 	{
 		if (!match.Success) return -1;
 
-		int index;
-		if (!map.TryGetValue(match.Groups[1].Value, out index))
+		if (!map.TryGetValue(match.Groups[1].Value, out int index))
 		{
 			Logger.Warn($"Validator > Nemesis Event ID > {match.Groups[1].Value} > Index > NOT FOUND");
 			return -1;
@@ -48,12 +47,12 @@ public class PackFileValidator
 		int eventLowerBound = (int)graph.InitialEventCount;
 		int variableLowerBound = (int)graph.InitialVariableCount;
 
-		List<string> eventNames = new();
-		List<hkbEventInfo> eventInfos = new();
+		List<string> eventNames = [];
+		List<hkbEventInfo> eventInfos = [];
 
-		List<string> variableNames = new();
-		List<hkbVariableValue> variableValues = new();
-		List<hkbVariableInfo> variableInfos = new();
+		List<string> variableNames = [];
+		List<hkbVariableValue> variableValues = [];
+		List<hkbVariableInfo> variableInfos = [];
 
 		eventIndices.Clear();
 		variableIndices.Clear();
@@ -139,8 +138,7 @@ public class PackFileValidator
 	}
 	public void TryValidateClipGenerator(string path, PackFile packFile)
 	{
-		XElement element;
-		if (!packFile.Map.TryLookup($"{path}/animationName", out element)) return;
+		if (!packFile.Map.TryLookup($"{path}/animationName", out XElement element)) return;
 		string clipName = packFile.Map.Lookup($"{path}/name").Value!;
 		packFile.ParentProject?.AnimData?.AddDummyClipData(clipName);
 	}
@@ -153,8 +151,7 @@ public class PackFileValidator
 		{
 			foreach (IPackFileChange change in changeList)
 			{
-				XMapElement element;
-				if (!packFile.TryGetXMap(change.Target, out element))
+				if (!packFile.TryGetXMap(change.Target, out XMapElement element))
 				{
 					continue;
 				}

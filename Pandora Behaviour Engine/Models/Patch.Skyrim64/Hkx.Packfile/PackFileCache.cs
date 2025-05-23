@@ -7,10 +7,10 @@ namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
 public class PackFileCache : IPackFileCache
 {
-	private Dictionary<string, PackFile> pathMap = new Dictionary<string, PackFile>(StringComparer.OrdinalIgnoreCase);
-	private static readonly FileInfo PreviousOutputFile = new FileInfo(Path.Combine(BehaviourEngine.AssemblyDirectory.FullName, "Pandora_Engine\\PreviousOutput.txt"));
+	private Dictionary<string, PackFile> pathMap = new(StringComparer.OrdinalIgnoreCase);
+	private static readonly FileInfo PreviousOutputFile = new(Path.Combine(BehaviourEngine.AssemblyDirectory.FullName, "Pandora_Engine\\PreviousOutput.txt"));
 
-	private Dictionary<PackFile, List<Project>> sharedPackFileProjectMap = new();
+	private Dictionary<PackFile, List<Project>> sharedPackFileProjectMap = [];
 	public PackFileCache() { }
 	public PackFile LoadPackFile(FileInfo file)
 	{

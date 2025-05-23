@@ -27,18 +27,19 @@ namespace Pandora.ViewModels;
 
 public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 {
+	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
 	public ViewModelActivator Activator { get; }
 
 	private readonly HashSet<string> startupArguments = new(StringComparer.OrdinalIgnoreCase);
 
-	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 	private bool closeOnFinish = false;
 	private bool autoRun = false;
 
 	public BehaviourEngine Engine { get; private set; } = new BehaviourEngine();
 
-	public ModService _modService { get; private set; }
+	public ModService ModService { get; private set; }
 
 	private readonly StringBuilder _logBuilder = new();
 
@@ -70,11 +71,11 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 	{
 		startupArguments = Environment.GetCommandLineArgs().ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-		_modService = new ModService(Path.Combine(launchDirectory.FullName, "Pandora_Engine", "ActiveMods.txt"));
+		ModService = new ModService(Path.Combine(launchDirectory.FullName, "Pandora_Engine", "ActiveMods.txt"));
 
 		ShowAboutDialog = new Interaction<AboutDialogViewModel, Unit>();
 
-		SourceMods = new ObservableCollectionExtended<ModInfoViewModel>();
+		SourceMods = [];
 		SourceMods.ToObservableChangeSet()
 			.AutoRefresh(x => x.Priority)
 			.Filter(this.WhenAnyValue(x => x.SearchTerm)
@@ -196,7 +197,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		SourceMods.Clear();
 
 		var pluginsTask = SetupConfigurationOptions();
-		var modInfoList = await _modService.LoadModsAsync(launchDirectory, currentDirectory);
+		var modInfoList = await ModService.LoadModsAsync(launchDirectory, currentDirectory);
 
 		var pandoraMod = modInfoList.FirstOrDefault(m => string.Equals(m.Code, "pandora", StringComparison.OrdinalIgnoreCase));
 		if (pandoraMod is not null)
@@ -210,7 +211,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 
 		SourceMods.AddRange(modInfoList.Select(m => new ModInfoViewModel(m)));
 
-		_modService.AssignModPrioritiesFromViewModels(SourceMods);
+		ModService.AssignModPrioritiesFromViewModels(SourceMods);
 
 		await pluginsTask;
 		_logBuilder.AppendLine("Mods loaded.");
@@ -308,7 +309,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		await preloadTask;
 		_logBuilder.AppendLine("Preload finished.");
 
-		List<IModInfo> activeMods = _modService.GetActiveModsByPriority(SourceMods);
+		List<IModInfo> activeMods = ModService.GetActiveModsByPriority(SourceMods);
 
 		bool success = false;
 		await Task.Run(async () => { success = await Engine.LaunchAsync(activeMods); });
@@ -325,7 +326,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		else
 		{
 			_logBuilder.AppendLine($"Launch finished in {Math.Round(timer.ElapsedMilliseconds / 1000.0, 2)} seconds");
-			await Task.Run(() => { _modService.SaveActiveMods(activeMods); });
+			await Task.Run(() => { ModService.SaveActiveMods(activeMods); });
 
 			if (closeOnFinish)
 			{

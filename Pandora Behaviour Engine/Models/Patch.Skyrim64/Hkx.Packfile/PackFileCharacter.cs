@@ -5,9 +5,8 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+
 namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
-
-
 
 public class PackFileCharacter : PackFile, IEquatable<PackFileCharacter>, IPackFileCharacter
 {
@@ -25,8 +24,8 @@ public class PackFileCharacter : PackFile, IEquatable<PackFileCharacter>, IPackF
 	public string BehaviorFileName => StringData.behaviorFilename;
 	public string SkeletonFileName => StringData.rigName;
 
-	private HashSet<string> uniqueBaseAnimations = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-	private HashSet<string> uniqueAnimations = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+	private HashSet<string> uniqueBaseAnimations = new(StringComparer.OrdinalIgnoreCase);
+	private HashSet<string> uniqueAnimations = new(StringComparer.OrdinalIgnoreCase);
 
 	public object uniqueAnimationLock = new();
 

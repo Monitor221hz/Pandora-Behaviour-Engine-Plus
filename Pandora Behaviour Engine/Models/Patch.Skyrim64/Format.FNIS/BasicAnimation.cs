@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
+
 public partial class BasicAnimation : IFNISAnimation
 {
-
 	protected static readonly hkbBlendingTransitionEffect defaultTransition;
 
 	private static readonly Dictionary<string, FNISAnimFlags> animFlagValues = new()
@@ -34,7 +34,7 @@ public partial class BasicAnimation : IFNISAnimation
 	public string GraphEvent { get; private set; }
 	public string AnimationFilePath { get; private set; }
 
-	private List<string> animObjectNames = new();
+	private List<string> animObjectNames = [];
 
 	public IFNISAnimation? NextAnimation { get; set; } //unused
 
@@ -57,10 +57,9 @@ public partial class BasicAnimation : IFNISAnimation
 		if (TemplateType != FNISAnimType.Basic && match.Groups[2].Success)
 		{
 			var optionValues = match.Groups[2].Value.Split(',');
-			FNISAnimFlags animFlags;
 			foreach (var optionValue in optionValues)
 			{
-				if (animFlagValues.TryGetValue(optionValue, out animFlags))
+				if (animFlagValues.TryGetValue(optionValue, out FNISAnimFlags animFlags))
 				{
 					Flags |= animFlags;
 				}
@@ -102,11 +101,11 @@ public partial class BasicAnimation : IFNISAnimation
 	/// <returns></returns>
 	protected static hkbClipTriggerArray GetOrCreateTriggerArray(hkbClipGenerator clip)
 	{
-		return clip.triggers ?? new hkbClipTriggerArray() { triggers = new List<hkbClipTrigger>() };
+		return clip.triggers ?? new hkbClipTriggerArray() { triggers = [] };
 	}
 	protected static hkbStateMachineEventPropertyArray CreateEventArrayIfNull(hkbStateMachineEventPropertyArray? property)
 	{
-		return property ?? new hkbStateMachineEventPropertyArray() { events = new List<hkbEventProperty>() };
+		return property ?? new hkbStateMachineEventPropertyArray() { events = [] };
 	}
 	public virtual void BuildFlags(FNISAnimationListBuildContext buildContext, PackFileGraph graph, hkbStateMachineStateInfo stateInfo, hkbClipGenerator clip)
 	{
@@ -124,8 +123,8 @@ public partial class BasicAnimation : IFNISAnimation
 		{
 			bool enterEventsExist = stateInfo.enterNotifyEvents != null;
 			bool exitEventsExist = stateInfo.exitNotifyEvents != null;
-			var enterEventList = enterEventsExist ? stateInfo.enterNotifyEvents!.events : new List<hkbEventProperty>();
-			var exitEventList = exitEventsExist ? stateInfo.exitNotifyEvents!.events : new List<hkbEventProperty>();
+			var enterEventList = enterEventsExist ? stateInfo.enterNotifyEvents!.events : [];
+			var exitEventList = exitEventsExist ? stateInfo.exitNotifyEvents!.events : [];
 			hkbStringEventPayload payload;
 			foreach (var animObjectName in animObjectNames)
 			{

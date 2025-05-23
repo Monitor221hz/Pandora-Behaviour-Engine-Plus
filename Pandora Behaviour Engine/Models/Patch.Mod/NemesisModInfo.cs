@@ -13,15 +13,14 @@ public class NemesisModInfo : IModInfo
 	}
 	public bool Equals(IModInfo? other)
 	{
-		return other == null ? false :
-			Code == other.Code &&
+		return other != null && Code == other.Code &&
 			Version == other.Version;
 	}
 	public bool Active { get; set; } = false;
 
 	public DirectoryInfo Folder { get; private set; }
 
-	public Dictionary<string, string> StringProperties { get; private set; } = new Dictionary<string, string>();
+	public Dictionary<string, string> StringProperties { get; private set; } = [];
 
 	public string Name { get; private set; } = "Default";
 
@@ -60,13 +59,13 @@ public class NemesisModInfo : IModInfo
 	}
 	public static NemesisModInfo ParseMetadata(FileInfo file)
 	{
-		Dictionary<string, string> properties = new Dictionary<string, string>();
+		Dictionary<string, string> properties = [];
 
 		if (!file.Exists)
 		{
 			return new NemesisModInfo();
 		}
-		using (StreamReader reader = new StreamReader(file.FullName))
+		using (StreamReader reader = new(file.FullName))
 		{
 			string s;
 			string[] args;
@@ -80,17 +79,12 @@ public class NemesisModInfo : IModInfo
 				}
 			}
 		}
-		string? name;
-		string? author;
-		string? url;
-		string? hidden;
-		properties.TryGetValue("name", out name);
-		properties.TryGetValue("author", out author);
-		properties.TryGetValue("site", out url);
-		properties.TryGetValue("hidden", out hidden);
+		properties.TryGetValue("name", out string? name);
+		properties.TryGetValue("author", out string? author);
+		properties.TryGetValue("site", out string? url);
+		properties.TryGetValue("hidden", out string? hidden);
 
-		bool active;
-		bool.TryParse(hidden, out active);
+		bool.TryParse(hidden, out bool active);
 
 
 		return name != null && author != null && url != null ? new NemesisModInfo(file.Directory!, name, author, url, active, properties) : new NemesisModInfo();
