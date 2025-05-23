@@ -50,7 +50,7 @@ namespace Pandora.Models.Patch.Skyrim64.AnimSetData
 					int NumProjects = int.Parse(reader.ReadLine()!);
 					for (int i = 0; i < NumProjects; i++)
 					{
-						projectPaths.Add(reader.ReadLineSafe());
+						projectPaths.Add(reader.ReadLineOrEmpty());
 					}
 
 					for (int i = 0; i < NumProjects; i++)

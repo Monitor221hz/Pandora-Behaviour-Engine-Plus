@@ -26,7 +26,7 @@ namespace Pandora.Models.Patch.Skyrim64.AnimSetData
 
 			for (int i = 0; i < numSets; i++)
 			{
-				var fileName = reader.ReadLineSafe();
+				var fileName = reader.ReadLineOrEmpty();
 				setData.AnimSetFileNames.Add(fileName);
 			}
 

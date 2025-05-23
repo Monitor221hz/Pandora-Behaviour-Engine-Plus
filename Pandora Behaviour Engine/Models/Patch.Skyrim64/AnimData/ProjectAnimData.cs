@@ -24,7 +24,21 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 		{
 			this.manager = manager;
 		}
+		public void AddClipData(ClipDataBlock dataBlock, ClipMotionDataBlock motionDataBlock)
+		{
+			var id = manager.GetNextValidID().ToString();
+			dataBlock.ClipID = id;
+			motionDataBlock.ClipID = id;
 
+			AddClipData(dataBlock);
+
+			BoundMotionDataProject?.AddClipMotionData(motionDataBlock);
+		}
+
+		public void AddClipData(ClipDataBlock dataBlock)
+		{
+			lock (Blocks) { Blocks.Add(dataBlock); }
+		}
 		public void AddDummyClipData(string clipName)
 		{
 			lock (dummyClipNames)
@@ -93,7 +107,7 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 				ClipDataBlock block = ClipDataBlock.ReadBlock(reader);
 				project.Blocks.Add(block);
 
-				whiteSpace = reader.ReadLineSafe();
+				whiteSpace = reader.ReadLineOrEmpty();
 			}
 			return project;
 		}

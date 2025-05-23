@@ -19,18 +19,18 @@ namespace Pandora.Models.Patch.Skyrim64.AnimSetData
 		public static SetAttackEntry ReadEntry(StreamReader reader)
 		{
 			SetAttackEntry entry = new SetAttackEntry();
-			entry.AttackTrigger = reader.ReadLineSafe();
+			entry.AttackTrigger = reader.ReadLineOrEmpty();
 
 			int unk;
 			int numClips;
-			if (!int.TryParse(reader.ReadLineSafe(), out unk) || !int.TryParse(reader.ReadLineSafe(), out numClips)) return entry;
+			if (!int.TryParse(reader.ReadLineOrEmpty(), out unk) || !int.TryParse(reader.ReadLineOrEmpty(), out numClips)) return entry;
 			entry.NumClips = numClips;
 			entry.Unk = unk;
 
 			if (numClips > 0) { entry.ClipNames = new List<string>(); }
 			for (int i = 0; i < numClips; i++)
 			{
-				entry.ClipNames.Add(reader.ReadLineSafe());
+				entry.ClipNames.Add(reader.ReadLineOrEmpty());
 			}
 
 

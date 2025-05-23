@@ -17,9 +17,9 @@ namespace Pandora.Models.Patch.Skyrim64.AnimSetData
 		{
 			var animInfo = new SetCachedAnimInfo();
 
-			animInfo.encodedPath = uint.Parse(reader.ReadLineSafe());
-			animInfo.encodedFileName = uint.Parse(reader.ReadLineSafe());
-			animInfo.encodedExtension = uint.Parse(reader.ReadLineSafe());
+			animInfo.encodedPath = uint.Parse(reader.ReadLineOrEmpty());
+			animInfo.encodedFileName = uint.Parse(reader.ReadLineOrEmpty());
+			animInfo.encodedExtension = uint.Parse(reader.ReadLineOrEmpty());
 
 			return animInfo;
 		}

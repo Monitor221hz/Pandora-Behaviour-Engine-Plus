@@ -1,5 +1,4 @@
 ﻿using Pandora.API.Patch.Engine.Skyrim64.AnimData;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -18,27 +17,20 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 		public static ProjectAnimDataHeader ReadBlock(StreamReader reader)
 		{
 			ProjectAnimDataHeader header = new ProjectAnimDataHeader();
-			try
+			int[] headerData = new int[0];
+
+			header.LeadInt = int.Parse(reader.ReadLine());
+
+			header.AssetCount = int.Parse(reader.ReadLine());
+
+
+			for (int i = 0; i < header.AssetCount; i++)
 			{
-				int[] headerData = new int[0];
+				header.ProjectAssets.Add(reader.ReadLine());
 
-				header.LeadInt = int.Parse(reader.ReadLine());
-
-				header.AssetCount = int.Parse(reader.ReadLine());
-
-
-				for (int i = 0; i < header.AssetCount; i++)
-				{
-					header.ProjectAssets.Add(reader.ReadLine());
-
-				}
-
-				header.HasMotionData = int.Parse(reader.ReadLine());
 			}
-			catch (Exception ex)
-			{
-				throw new Exception(ex.Message, ex);
-			}
+
+			header.HasMotionData = int.Parse(reader.ReadLine());
 
 
 			return header;

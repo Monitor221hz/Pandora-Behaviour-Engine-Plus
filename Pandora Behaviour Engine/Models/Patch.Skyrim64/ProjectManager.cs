@@ -17,12 +17,12 @@ namespace Pandora.Models.Patch.Skyrim64
 	public class ProjectManager : IProjectManager
 	{
 		private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-		private Dictionary<string, Project> projectMap = new Dictionary<string, Project>();
-		private Dictionary<string, Project> fileProjectMap = new Dictionary<string, Project>();
+		private Dictionary<string, Project> projectMap = new Dictionary<string, Project>(StringComparer.OrdinalIgnoreCase);
+		private Dictionary<string, Project> fileProjectMap = new Dictionary<string, Project>(StringComparer.OrdinalIgnoreCase);
 
-		private Dictionary<string, Project> folderProjectMap = new Dictionary<string, Project>();
+		private Dictionary<string, Project> folderProjectMap = new Dictionary<string, Project>(StringComparer.OrdinalIgnoreCase);
 
-		private Dictionary<string, List<Project>> linkedProjectMap = new Dictionary<string, List<Project>>();
+		private Dictionary<string, List<Project>> linkedProjectMap = new Dictionary<string, List<Project>>(StringComparer.OrdinalIgnoreCase);
 
 		private readonly DirectoryInfo templateFolder;
 

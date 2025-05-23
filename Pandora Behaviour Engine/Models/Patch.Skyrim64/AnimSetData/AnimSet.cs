@@ -30,23 +30,23 @@ namespace Pandora.Models.Patch.Skyrim64.AnimSetData
 		{
 			var animSet = new AnimSet();
 
-			animSet.VersionName = reader.ReadLineSafe();
+			animSet.VersionName = reader.ReadLineOrEmpty();
 
 			int numTriggers;
 			int numConditions;
 			int numAttacks;
 			int numAnimationInfos;
 
-			if (!int.TryParse(reader.ReadLineSafe(), out numTriggers)) return animSet;
-			for (int i = 0; i < numTriggers; i++) { animSet.Triggers.Add(reader.ReadLineSafe()); }
+			if (!int.TryParse(reader.ReadLineOrEmpty(), out numTriggers)) return animSet;
+			for (int i = 0; i < numTriggers; i++) { animSet.Triggers.Add(reader.ReadLineOrEmpty()); }
 
-			if (!int.TryParse(reader.ReadLineSafe(), out numConditions)) return animSet;
+			if (!int.TryParse(reader.ReadLineOrEmpty(), out numConditions)) return animSet;
 			for (int i = 0; i < numConditions; i++) { animSet.Conditions.Add(SetCondition.ReadCondition(reader)); }
 
-			if (!int.TryParse(reader.ReadLineSafe(), out numAttacks)) return animSet;
+			if (!int.TryParse(reader.ReadLineOrEmpty(), out numAttacks)) return animSet;
 			for (int i = 0; i < numAttacks; i++) { animSet.AttackEntries.Add(SetAttackEntry.ReadEntry(reader)); }
 
-			if (!int.TryParse(reader.ReadLineSafe(), out numAnimationInfos)) return animSet;
+			if (!int.TryParse(reader.ReadLineOrEmpty(), out numAnimationInfos)) return animSet;
 			for (int i = 0; i < numAnimationInfos; i++) { animSet.AnimInfos.Add(SetCachedAnimInfo.Read(reader)); }
 
 			animSet.SyncCounts();

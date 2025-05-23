@@ -16,12 +16,12 @@ namespace Pandora.Models.Patch.Skyrim64.AnimSetData
 		{
 			var condition = new SetCondition();
 
-			condition.VariableName = reader.ReadLineSafe();
+			condition.VariableName = reader.ReadLineOrEmpty();
 
 			int value1;
 			int value2;
 
-			if (!int.TryParse(reader.ReadLineSafe(), out value1) || !int.TryParse(reader.ReadLineSafe(), out value2)) return condition;
+			if (!int.TryParse(reader.ReadLineOrEmpty(), out value1) || !int.TryParse(reader.ReadLineOrEmpty(), out value2)) return condition;
 
 			condition.Value1 = value1;
 			condition.Value2 = value2;
