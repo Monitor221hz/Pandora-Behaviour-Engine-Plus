@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
 namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
+
 public interface IPackFileCache
 {
 	PackFile LoadPackFile(FileInfo file);

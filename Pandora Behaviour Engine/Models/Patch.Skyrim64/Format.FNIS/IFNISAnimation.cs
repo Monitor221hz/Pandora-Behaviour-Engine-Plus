@@ -2,6 +2,7 @@
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
+
 public interface IFNISAnimation
 {
 	public string AnimationFilePath { get; }

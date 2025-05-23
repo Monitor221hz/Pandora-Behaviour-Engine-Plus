@@ -1,4 +1,4 @@
-﻿using Pandora.API.Patch.Engine.Skyrim64.AnimData;
+using Pandora.API.Patch.Engine.Skyrim64.AnimData;
 using Pandora.Models.Extensions;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -14,10 +14,9 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 		public string ClipID { get; set; } = string.Empty;
 		public float Duration { get; private set; } = 1.33f;
 		public int NumTranslations { get; private set; } = 1;
-		public IList<string> Translations { get; private set; } = new List<string>() { "1.33 0 0 0" };
-
+		public IList<string> Translations { get; private set; } = ["1.33 0 0 0"];
 		public int NumRotations { get; private set; } = 1;
-		public IList<string> Rotations { get; private set; } = new List<string>() { "1 0 0 0 1" };
+		public IList<string> Rotations { get; private set; } = ["1 0 0 0 1"];
 
 		public ClipMotionDataBlock()
 		{

@@ -1,15 +1,15 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
-namespace Pandora.Models.Extensions
+namespace Pandora.Models.Extensions;
+
+public static class StreamExtensions
 {
-	public static class StreamExtensions
+	public static bool TryReadLine(this StreamReader reader,[NotNullWhen(true)] out string? line)
 	{
-		public static bool TryReadLine(this StreamReader reader,[NotNullWhen(true)] out string? line)
-		{
-			line = reader.ReadLine();
-			return line != null;
-		}
-		public static string ReadLineOrEmpty(this StreamReader reader) => reader.ReadLine() ?? string.Empty;
+		line = reader.ReadLine();
+		return line != null;
 	}
+	public static string ReadLineOrEmpty(this StreamReader reader) => reader.ReadLine() ?? string.Empty;
+	public static string ReadLineSafe(this StreamReader reader) => reader.ReadLine() ?? string.Empty;
 }

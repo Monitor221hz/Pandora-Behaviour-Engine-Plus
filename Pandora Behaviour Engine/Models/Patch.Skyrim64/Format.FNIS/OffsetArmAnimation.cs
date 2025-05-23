@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
+
 public class OffsetArmAnimation : BasicAnimation
 {
 	public OffsetArmAnimation(Match match) : base(FNISAnimType.OffsetArm, match)

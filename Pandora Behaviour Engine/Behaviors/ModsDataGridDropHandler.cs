@@ -31,7 +31,7 @@ public sealed class ModsDataGridDropHandler : BaseDataGridDropHandler<ModInfoVie
         bool result = RunDropAction(dg, e, bExecute, sourceItem, targetItem, items);
 
         if (result && bExecute) 
-            vm._modService.AssignModPrioritiesFromViewModels(items);
+            vm.ModService.AssignModPrioritiesFromViewModels(items);
 
         return result;
     }

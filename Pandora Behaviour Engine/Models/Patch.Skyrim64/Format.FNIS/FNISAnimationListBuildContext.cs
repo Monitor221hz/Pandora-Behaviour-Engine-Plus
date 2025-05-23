@@ -6,8 +6,9 @@ namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
 
 public class FNISAnimationListBuildContext
 {
-	private Dictionary<string, hkbStringEventPayload> stringEventPayloadNameMap = new();
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
+	private Dictionary<string, hkbStringEventPayload> stringEventPayloadNameMap = [];
 	public FNISAnimationListBuildContext(Project targetProject, ProjectManager projectManager, IModInfo modInfo)
 	{
 		TargetProject = targetProject;

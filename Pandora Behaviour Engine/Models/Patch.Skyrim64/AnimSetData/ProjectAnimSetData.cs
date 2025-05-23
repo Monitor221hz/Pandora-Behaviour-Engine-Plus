@@ -1,58 +1,56 @@
-﻿using Pandora.Models.Extensions;
+using Pandora.Models.Extensions;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace Pandora.Models.Patch.Skyrim64.AnimSetData
+namespace Pandora.Models.Patch.Skyrim64.AnimSetData;
+
+public class ProjectAnimSetData
 {
-	public class ProjectAnimSetData
+	public int NumSets { get; private set; } = 1;
+
+	public List<string> AnimSetFileNames { get; private set; } = [];
+
+	public List<AnimSet> AnimSets { get; private set; } = [];
+
+	public Dictionary<string, AnimSet> AnimSetsByName { get; private set; } = [];
+
+	public static ProjectAnimSetData Read(StreamReader reader)
 	{
-		public int NumSets { get; private set; } = 1;
+		var setData = new ProjectAnimSetData();
 
-		public List<string> AnimSetFileNames { get; private set; } = new List<string>();
 
-		public List<AnimSet> AnimSets { get; private set; } = new List<AnimSet>();
+		if (!int.TryParse(reader.ReadLine(), out int numSets)) { return setData; }
+		setData.NumSets = numSets;
 
-		public Dictionary<string, AnimSet> AnimSetsByName { get; private set; } = new Dictionary<string, AnimSet>();
-
-		public static ProjectAnimSetData Read(StreamReader reader)
+		for (int i = 0; i < numSets; i++)
 		{
-			var setData = new ProjectAnimSetData();
-
-			int numSets;
-
-			if (!int.TryParse(reader.ReadLine(), out numSets)) { return setData; }
-			setData.NumSets = numSets;
-
-			for (int i = 0; i < numSets; i++)
-			{
-				var fileName = reader.ReadLineOrEmpty();
-				setData.AnimSetFileNames.Add(fileName);
-			}
-
-			for (int i = 0; i < numSets; i++)
-			{
-				var animSet = AnimSet.Read(reader);
-				setData.AnimSets.Add(animSet);
-				setData.AnimSetsByName.Add(setData.AnimSetFileNames[i], animSet);
-			}
-
-			return setData;
+			var fileName = reader.ReadLineSafe();
+			setData.AnimSetFileNames.Add(fileName);
 		}
 
-		public override string ToString()
+		for (int i = 0; i < numSets; i++)
 		{
-			StringBuilder sb = new StringBuilder();
-
-			sb.AppendLine(NumSets.ToString());
-			if (NumSets > 0)
-			{
-				sb.AppendJoin("\r\n", AnimSetFileNames).AppendLine();
-				sb.AppendJoin("", AnimSets);
-			}
-
-			return sb.ToString();
-
+			var animSet = AnimSet.Read(reader);
+			setData.AnimSets.Add(animSet);
+			setData.AnimSetsByName.Add(setData.AnimSetFileNames[i], animSet);
 		}
+
+		return setData;
+	}
+
+	public override string ToString()
+	{
+		StringBuilder sb = new();
+
+		sb.AppendLine(NumSets.ToString());
+		if (NumSets > 0)
+		{
+			sb.AppendJoin("\r\n", AnimSetFileNames).AppendLine();
+			sb.AppendJoin("", AnimSets);
+		}
+
+		return sb.ToString();
+
 	}
 }

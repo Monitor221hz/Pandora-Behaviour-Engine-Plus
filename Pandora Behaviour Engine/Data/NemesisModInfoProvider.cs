@@ -3,7 +3,8 @@ using Pandora.Models.Patch.Mod;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-namespace Pandora.MVVM.Data;
+
+namespace Pandora.Data;
 
 public class NemesisModInfoProvider : IModInfoProvider
 {
@@ -11,7 +12,7 @@ public class NemesisModInfoProvider : IModInfoProvider
 
     private static List<IModInfo> GetInstalledMods(DirectoryInfo folder)
     {
-		List<IModInfo> infoList = new List<IModInfo>();
+		List<IModInfo> infoList = [];
         if (!folder.Exists) { return infoList;  }
 
         var modFolders = folder.GetDirectories();

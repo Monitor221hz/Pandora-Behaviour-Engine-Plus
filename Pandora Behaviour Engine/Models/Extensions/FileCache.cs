@@ -2,16 +2,15 @@
 using System.IO;
 
 namespace Pandora.Models.Extensions;
+
 public class FileCache
 {
-
-	private Dictionary<string, FileInfo> pathMap = new Dictionary<string, FileInfo>();
+	private Dictionary<string, FileInfo> pathMap = [];
 
 	public FileInfo GetFile(string path)
 	{
-		FileInfo? fileInfo = null;
 
-		if (!pathMap.TryGetValue(path, out fileInfo))
+		if (!pathMap.TryGetValue(path, out FileInfo? fileInfo))
 		{
 			pathMap.Add(path, fileInfo = new FileInfo(path));
 		}
@@ -25,8 +24,7 @@ public class FileCache
 
 		for (int i = 0; i < fileArray.Length; i++)
 		{
-			FileInfo? fileInfo;
-			if (pathMap.TryGetValue(fileArray[i].FullName, out fileInfo))
+			if (pathMap.TryGetValue(fileArray[i].FullName, out FileInfo? fileInfo))
 			{
 				fileArray[i] = fileInfo;
 				continue;

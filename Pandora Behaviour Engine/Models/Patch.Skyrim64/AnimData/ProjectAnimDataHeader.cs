@@ -1,4 +1,4 @@
-﻿using Pandora.API.Patch.Engine.Skyrim64.AnimData;
+using Pandora.API.Patch.Engine.Skyrim64.AnimData;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -17,7 +17,7 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 		public static ProjectAnimDataHeader ReadBlock(StreamReader reader)
 		{
 			ProjectAnimDataHeader header = new ProjectAnimDataHeader();
-			int[] headerData = new int[0];
+			int[] headerData = [];
 
 			header.LeadInt = int.Parse(reader.ReadLine());
 

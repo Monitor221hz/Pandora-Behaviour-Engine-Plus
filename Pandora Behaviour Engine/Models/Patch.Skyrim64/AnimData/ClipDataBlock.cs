@@ -1,4 +1,4 @@
-﻿using Pandora.API.Patch.Engine.Skyrim64.AnimData;
+using Pandora.API.Patch.Engine.Skyrim64.AnimData;
 using Pandora.Models.Extensions;
 using System;
 using System.Collections.Generic;
@@ -22,7 +22,7 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 
 		public int NumClipTriggers { get; private set; } = 0;
 
-		public IList<string> TriggerNames { get; private set; } = new List<string>();
+		public IList<string> TriggerNames { get; private set; } = [];
 
 		public ClipDataBlock()
 		{

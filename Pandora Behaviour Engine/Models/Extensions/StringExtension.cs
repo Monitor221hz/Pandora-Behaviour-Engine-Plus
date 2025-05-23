@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
-namespace Pandora.Core.Extensions;
+namespace Pandora.Models.Extensions;
+
 public static class StringExtension
 {
-
-
 	public static string Insert(this string value, int index, string separator, params string[] values)
 	{
 		List<string> sections = value.Split(separator).ToList();
@@ -32,7 +31,7 @@ public static class StringExtension
 		int index = value.IndexOf(insertValue) + insertValue.Length;
 		string joinedValues = separator + string.Join(separator, values) + separator;
 		//sections.InsertRange(index, values);
-		return (insertValue.Length > 0) ? string.Concat(value.AsSpan(0, index), joinedValues, value.AsSpan(index + joinedValues.Length)) : joinedValues + value;
+		return insertValue.Length > 0 ? string.Concat(value.AsSpan(0, index), joinedValues, value.AsSpan(index + joinedValues.Length)) : joinedValues + value;
 	}
 
 	public static string Append(this string value, char separator, params string[] values)

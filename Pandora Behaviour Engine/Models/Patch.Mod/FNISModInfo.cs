@@ -3,11 +3,10 @@ using System;
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace Pandora.Core;
+namespace Pandora.Models.Patch.Mod;
 
 public partial class FNISModInfo : IModInfo
 {
-
 	private readonly static Regex whiteSpaceRegex = WhiteSpaceRegex();
 	public string Name { get; set; }
   
@@ -17,8 +16,7 @@ public partial class FNISModInfo : IModInfo
 	}
 	public bool Equals(IModInfo? other)
 	{
-		return other == null ? false :
-			Code == other.Code &&
+		return other != null && Code == other.Code &&
 			Version == other.Version;
 	}
 

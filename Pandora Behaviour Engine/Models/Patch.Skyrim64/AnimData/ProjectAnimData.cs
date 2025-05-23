@@ -1,4 +1,4 @@
-﻿using Pandora.API.Patch.Engine.Skyrim64.AnimData;
+using Pandora.API.Patch.Engine.Skyrim64.AnimData;
 using Pandora.Models.Extensions;
 using System.Collections.Generic;
 using System.IO;

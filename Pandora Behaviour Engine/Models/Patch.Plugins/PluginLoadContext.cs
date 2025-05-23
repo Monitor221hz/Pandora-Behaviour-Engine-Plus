@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Runtime.Loader;
 
 namespace Pandora.Models.Patch.Plugins;
+
 internal class PluginLoadContext : AssemblyLoadContext
 {
 	private readonly AssemblyDependencyResolver dependancyResolver;
