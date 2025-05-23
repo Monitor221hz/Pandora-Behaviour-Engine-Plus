@@ -9,12 +9,14 @@ using XmlCake.Linq;
 
 namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
-public class PackFileValidator
+public partial class PackFileValidator
 {
 	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-	private static Regex EventFormat = new(@"[$]{1}eventID{1}[\[]{1}(.+)[\]]{1}[$]{1}");
-	private static Regex VarFormat = new(@"[$]{1}variableID{1}[\[]{1}(.+)[\]]{1}[$]{1}");
+	[GeneratedRegex(@"[$]{1}eventID{1}[\[]{1}(.+)[\]]{1}[$]{1}")]
+	private static partial Regex EventFormat { get; }
+	[GeneratedRegex(@"[$]{1}variableID{1}[\[]{1}(.+)[\]]{1}[$]{1}")]
+	private static partial Regex VarFormat { get; }
 
 	private Dictionary<string, int> eventIndices = [];
 	private Dictionary<string, int> variableIndices = new(StringComparer.OrdinalIgnoreCase);
@@ -143,7 +145,7 @@ public class PackFileValidator
 		packFile.ParentProject?.AnimData?.AddDummyClipData(clipName);
 	}
 
-	public void Validate(PackFile packFile, params List<IPackFileChange>[] changeLists)
+	public void Validate(PackFile packFile, params ReadOnlySpan<List<IPackFileChange>> changeLists)
 	{
 		//if (!ValidateEventsAndVariables(packFile)) return; 
 

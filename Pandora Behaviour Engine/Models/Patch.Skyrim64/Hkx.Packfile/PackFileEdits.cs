@@ -9,17 +9,19 @@ namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 public partial class PackFileEditor
 {
 	private static readonly char[] trimChars = ['\t', '\r', '\n', ')', '('];
-	private static readonly Regex whiteSpaceRegex = new(@"(?:\s|\(|\))+", RegexOptions.Compiled);
-	private static readonly Regex escapeRegex = new(@"(?:\*|\+|\?|\||\^|\.|\#)", RegexOptions.Compiled);
+	[GeneratedRegex(@"(?:\s|\(|\))+", RegexOptions.Compiled)]
+	private static partial Regex WhiteSpaceRegex { get; }
+	[GeneratedRegex(@"(?:\*|\+|\?|\||\^|\.|\#)", RegexOptions.Compiled)]
+	private static partial Regex EscapeRegex { get; }
 	private static string NormalizeElementValue(XElement element)
 	{
-		var value = whiteSpaceRegex.Replace(element.Value.Trim(trimChars), " ");
+		var value = WhiteSpaceRegex.Replace(element.Value.Trim(trimChars), " ");
 		return value;
 	}
 
 	private static string NormalizeStringValue(string value)
 	{
-		return whiteSpaceRegex.Replace(value.Trim(trimChars), " ");
+		return WhiteSpaceRegex.Replace(value.Trim(trimChars), " ");
 	}
 	public static XElement ReplaceElement(IXMap xmap, string path, XElement element) => xmap.ReplaceElement(path, element);
 
@@ -58,7 +60,7 @@ public partial class PackFileEditor
 		//}
 		//preValue = NormalizeStringValue(preValue);
 		//oldValue = NormalizeStringValue(oldValue);
-		oldValue = whiteSpaceRegex.Replace(escapeRegex.Replace(oldValue, "\\$&"), "\\s*");
+		oldValue = WhiteSpaceRegex.Replace(EscapeRegex.Replace(oldValue, "\\$&"), "\\s*");
 
 		//ReadOnlySpan<char> headSpan = source.AsSpan(0, preValue.Length);
 		//ReadOnlySpan<char> tailSpan = source.AsSpan(preValue.Length+oldValue.Length+1);

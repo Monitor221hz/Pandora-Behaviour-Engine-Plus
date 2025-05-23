@@ -16,7 +16,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        dotnet-version: ["8.0.x"]
+        dotnet-version: ["9.0.x"]
 
     steps:
       # Ref: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net#building-and-testing-your-code
@@ -70,28 +70,28 @@ jobs:
         with:
           name: Pandora.Behaviour.Engine.Linux-x64
           path: |
-            ./Pandora Behaviour Engine/bin/${{ env.build-mode }}/net8.0/linux-x64/publish
+            ./Pandora Behaviour Engine/bin/${{ env.build-mode }}/net9.0/linux-x64/publish
             
       - name: Upload Linux-Arm Build Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Pandora.Behaviour.Engine.Linux-Arm
           path: |
-            ./Pandora Behaviour Engine/bin/${{ env.build-mode }}/net8.0/linux-arm/publish    
+            ./Pandora Behaviour Engine/bin/${{ env.build-mode }}/net9.0/linux-arm/publish    
             
       - name: Upload Linux-Arm64 Build Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Pandora.Behaviour.Engine.Linux-Arm64
           path: |
-            ./Pandora Behaviour Engine/bin/${{ env.build-mode }}/net8.0/linux-arm64/publish        
+            ./Pandora Behaviour Engine/bin/${{ env.build-mode }}/net9.0/linux-arm64/publish        
             
       - name: Upload Linux-Musl64 Build Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Pandora.Behaviour.Engine.Linux-Musl-x64
           path: |
-            ./Pandora Behaviour Engine/bin/${{ env.build-mode }}/net8.0/linux-musl-x64/publish    
+            ./Pandora Behaviour Engine/bin/${{ env.build-mode }}/net9.0/linux-musl-x64/publish    
             
       - name: Download Linux-x64
         uses: actions/download-artifact@v4

@@ -12,7 +12,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        dotnet-version: ["8.0.x"]
+        dotnet-version: ["9.0.x"]
 
     steps:
       # Ref: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net#building-and-testing-your-code
@@ -51,4 +51,4 @@ jobs:
         with:
           name: Pandora.Behaviour.Engine
           path: |
-            ./Pandora Behaviour Engine/bin/${{ env.build-mode }}/net8.0
+            ./Pandora Behaviour Engine/bin/${{ env.build-mode }}/net9.0
