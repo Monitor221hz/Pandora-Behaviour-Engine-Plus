@@ -18,6 +18,10 @@ public class MotionData : IMotionData
 		return block != null;
 	}
 	public List<IClipMotionDataBlock> GetBlocks() => Blocks.Cast<IClipMotionDataBlock>().ToList();
+	public void AddClipMotionData(ClipMotionDataBlock block)
+	{
+		lock (Blocks) {	Blocks.Add(block); }
+	}
 	public void AddDummyClipMotionData(string id)
 	{
 		lock (Blocks) { Blocks.Add(new ClipMotionDataBlock(id)); }
@@ -30,7 +34,10 @@ public class MotionData : IMotionData
 
 		while (whiteSpace != null && i < lineLimit)
 		{
-			ClipMotionDataBlock block = ClipMotionDataBlock.ReadBlock(reader);
+			if (!ClipMotionDataBlock.TryReadBlock(reader, out var block)) 
+			{ 
+				break; 
+			}
 			project.Blocks.Add(block);
 			project.BlocksByID.Add(int.Parse(block.ClipID), block);
 			i += block.GetLineCount();

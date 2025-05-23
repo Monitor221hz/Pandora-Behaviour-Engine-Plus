@@ -1,6 +1,8 @@
 ﻿using Pandora.API.Patch.Engine.Skyrim64.AnimData;
+using Pandora.Models.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 
@@ -10,7 +12,9 @@ public class ClipDataBlock : IClipDataBlock
 {
 	public string Name { get; private set; } = string.Empty;
 
-	public string ClipID { get; private set; } = string.Empty;
+
+		public string ClipID { get; set; } = string.Empty;
+
 
 	public float PlaybackSpeed { get; private set; } = 1.0f;
 	public float CropStartLocalTime { get; private set; } = 0.0f;
@@ -18,27 +22,68 @@ public class ClipDataBlock : IClipDataBlock
 
 	public int NumClipTriggers { get; private set; } = 0;
 
-	public List<string> TriggerNames { get; private set; } = [];
+
+	public IList<string> TriggerNames { get; private set; } = [];
+
 
 	public ClipDataBlock()
 	{
 
 	}
 
-	public ClipDataBlock(string name, string id)
-	{
-		Name = name;
-		ClipID = id;
-	}
-	private static string ReadLineSafe(StreamReader reader)
-	{
-		string? expectedLine = reader.ReadLine();
-		return expectedLine ?? string.Empty;
-	}
-	public static ClipDataBlock ReadBlock(StreamReader reader)
-	{
-		ClipDataBlock block = new();
-		try
+
+		public ClipDataBlock(string name, string id)
+		{
+			Name = name;
+			ClipID = id;
+		}
+
+		public ClipDataBlock(string name, string clipID, float playbackSpeed, float cropStartLocalTime, float cropEndLocalTime, int numClipTriggers, IList<string> triggerNames) : this(name, clipID)
+		{
+			PlaybackSpeed = playbackSpeed;
+			CropStartLocalTime = cropStartLocalTime;
+			CropEndLocalTime = cropEndLocalTime;
+			NumClipTriggers = numClipTriggers;
+			TriggerNames = triggerNames;
+		}
+
+		private static string ReadLineSafe(StreamReader reader)
+		{
+			string? expectedLine = reader.ReadLine();
+			return expectedLine == null ? string.Empty : expectedLine;
+		}
+
+		public static bool TryReadBlock(StreamReader reader, [NotNullWhen(true)] out ClipDataBlock? block)
+		{
+			block = null;
+			if (!reader.TryReadLine(out var clipName)) { return false; }
+			if (!reader.TryReadLine(out var clipId)) { return false; }
+			if (!float.TryParse(reader.ReadLine(), out float playBackSpeed)) { return false; }
+			if (!float.TryParse(reader.ReadLine(), out float  cropStartLocalTime)) { return false; }
+			if (!float.TryParse(reader.ReadLine(), out float cropEndLocalTime)) { return false; }
+			if (!int.TryParse(reader.ReadLine(), out int numClipTriggers)) { return false; }
+			string[] triggerNames = new string[numClipTriggers];
+			for (int i = 0; i < numClipTriggers; i++)
+			{
+				if (!reader.TryReadLine(out var triggerName)) { return false; }
+				triggerNames[i] = triggerName;
+			}
+
+			block = new ClipDataBlock(clipName, clipId, playBackSpeed, cropStartLocalTime, cropEndLocalTime, numClipTriggers, triggerNames);
+			return true;
+		}
+
+		public static bool TryReadBlock(FileInfo fileInfo, [NotNullWhen(true)] out ClipDataBlock? block)
+		{
+			using (var fileStream = fileInfo.OpenRead())
+			{
+				using (var reader = new StreamReader(fileStream))
+				{
+					return TryReadBlock(reader, out block);
+				}
+			}
+		}
+		public static ClipDataBlock ReadBlock(StreamReader reader)
 		{
 			block.Name = ReadLineSafe(reader);
 

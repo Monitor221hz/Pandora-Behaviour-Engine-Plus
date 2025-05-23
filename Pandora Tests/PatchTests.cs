@@ -8,7 +8,7 @@ namespace PandoraTests;
 public class PatchTests
 {
 	[Fact]
-	public async void NemesisTest()
+	public async void EngineOutputTest()
 	{
 		ModService service = new ModService(Path.Combine(BehaviourEngine.AssemblyDirectory.FullName, "Pandora_Engine", "ActiveMods.txt"));
 		var mods = await service.LoadModsAsync(BehaviourEngine.AssemblyDirectory, new DirectoryInfo(Path.Combine(Directory.GetCurrentDirectory(), "Data")));
@@ -26,5 +26,17 @@ public class PatchTests
 		{
 			PackFileAssert.DowncastValidPackFile(activePackFile);
 		}
+	}
+	[Fact]
+	public async void EngineLaunchTest()
+	{
+		ModService service = new ModService(Path.Combine(BehaviourEngine.AssemblyDirectory.FullName, "Pandora_Engine", "ActiveMods.txt"));
+		var mods = await service.LoadModsAsync(BehaviourEngine.AssemblyDirectory, new DirectoryInfo(Path.Combine(Directory.GetCurrentDirectory(), "Data")));
+		BehaviourEngine engine = new BehaviourEngine(new SkyrimDebugConfiguration());
+		DirectoryInfo outputDirectory = new DirectoryInfo(Path.Combine(Directory.GetCurrentDirectory(), "Output"));
+		outputDirectory.Create();
+		engine.SetOutputPath(outputDirectory);
+		await engine.PreloadAsync();
+		Assert.True(await engine.LaunchAsync(mods));
 	}
 }

@@ -29,7 +29,28 @@ public class ProjectAnimData : IProjectAnimData
 		{
 			if (dummyClipNames.Contains(clipName)) return;
 		}
+		public void AddClipData(ClipDataBlock dataBlock, ClipMotionDataBlock motionDataBlock)
+		{
+			var id = manager.GetNextValidID().ToString();
+			dataBlock.ClipID = id;
+			motionDataBlock.ClipID = id;
 
+
+			AddClipData(dataBlock);
+
+			BoundMotionDataProject?.AddClipMotionData(motionDataBlock);
+		}
+
+		public void AddClipData(ClipDataBlock dataBlock)
+		{
+			lock (Blocks) { Blocks.Add(dataBlock); }
+		}
+	 public void AddDummyClipData(string clipName)
+		{
+			lock (dummyClipNames)
+			{
+				if (dummyClipNames.Contains(clipName)) return;
+			}
 
 
 		var id = manager.GetNextValidID().ToString();
@@ -89,14 +110,13 @@ public class ProjectAnimData : IProjectAnimData
 		{
 			Header = ProjectAnimDataHeader.ReadBlock(reader)
 		};
-
 		string? whiteSpace = "";
 		while (whiteSpace != null && !whiteSpace.Contains(closeString))
 		{
 			ClipDataBlock block = ClipDataBlock.ReadBlock(reader);
 			project.Blocks.Add(block);
 
-			whiteSpace = reader.ReadLineSafe();
+			whiteSpace = reader.ReadLineOrEmpty();
 		}
 		return project;
 	}

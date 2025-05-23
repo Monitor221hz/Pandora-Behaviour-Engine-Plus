@@ -1,5 +1,4 @@
 ﻿using Pandora.API.Patch.Engine.Skyrim64.AnimData;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -19,6 +18,7 @@ public class ProjectAnimDataHeader : IProjectAnimDataHeader
 		ProjectAnimDataHeader header = new();
 		try
 		{
+
 			int[] headerData = [];
 
 			header.LeadInt = int.Parse(reader.ReadLine());
@@ -31,7 +31,6 @@ public class ProjectAnimDataHeader : IProjectAnimDataHeader
 				header.ProjectAssets.Add(reader.ReadLine());
 
 			}
-
 			header.HasMotionData = int.Parse(reader.ReadLine());
 		}
 		catch (Exception ex)

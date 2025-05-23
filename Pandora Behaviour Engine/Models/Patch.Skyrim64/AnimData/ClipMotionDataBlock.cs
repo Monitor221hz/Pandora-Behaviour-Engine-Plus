@@ -1,6 +1,7 @@
 ﻿using Pandora.API.Patch.Engine.Skyrim64.AnimData;
-using System;
+using Pandora.Models.Extensions;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 
@@ -11,54 +12,104 @@ public class ClipMotionDataBlock : IClipMotionDataBlock
 	public string ClipID { get; private set; } = string.Empty;
 	public float Duration { get; private set; } = 1.33f;
 	public int NumTranslations { get; private set; } = 1;
-	public List<string> Translations { get; private set; } = ["1.33 0 0 0"];
-
+	public IList<string> Translations { get; private set; } = ["1.33 0 0 0"];
 	public int NumRotations { get; private set; } = 1;
-	public List<string> Rotations { get; private set; } = ["1 0 0 0 1"];
+	public IList<string> Rotations { get; private set; } = ["1 0 0 0 1"];
 
-
-	public ClipMotionDataBlock(string id)
-	{
-		ClipID = id;
-	}
-
-	public static ClipMotionDataBlock ReadBlock(StreamReader reader)
-	{
-
-		ClipMotionDataBlock block = new("");
-		try
+		public ClipMotionDataBlock()
 		{
-			block.Rotations = [];
-			block.Translations = [];
 
-			block.ClipID = reader.ReadLine();
+		}
+		public ClipMotionDataBlock(string id)
+		{
+			ClipID = id;
+		}
+		public static bool TryReadBlock(StreamReader reader, [NotNullWhen(true)] out ClipMotionDataBlock? block)
+		{
+			block = null;
+			if (!reader.TryReadLine(out var clipId)) { return false; }
 
-			block.Duration = float.Parse(reader.ReadLine());
+			if (!float.TryParse(reader.ReadLine(), out var duration)) { return false; }
 
-			block.NumTranslations = int.Parse(reader.ReadLine());
+			if (!int.TryParse(reader.ReadLine(), out var numTranslations)) { return false; }
 
-			for (int i = 0; i < block.NumTranslations; i++)
+			var translations = new string[numTranslations];
+			for (int i = 0; i < numTranslations; i++)
 			{
-				block.Translations.Add(reader.ReadLine());
-
+				if (!reader.TryReadLine(out var value)) {  return false; }
+				translations[i] = value;
 			}
 
-			block.NumRotations = int.Parse(reader.ReadLine());
+			if (!int.TryParse(reader.ReadLine(), out var numRotations)) { return false; }
 
-			for (int i = 0; i < block.NumRotations; i++)
+			var rotations = new string[numRotations];
+			for (int i = 0; i < numRotations; i++)
 			{
-				block.Rotations.Add(reader.ReadLine());
-
+				if (!reader.TryReadLine(out var value)) { return false; }
+				rotations[i] = value;
+			}
+			block = new()
+			{
+				ClipID = clipId,
+				Duration = duration,
+				NumTranslations = numTranslations,
+				NumRotations = numRotations,
+				Translations = translations,
+				Rotations = rotations
+			};
+			return true; 
+		}
+    
+		public static bool TryReadBlock(FileInfo fileInfo, [NotNullWhen(true)] out ClipMotionDataBlock? block)
+		{
+			using (var fileStream = fileInfo.OpenRead())
+			{
+				using (var reader = new StreamReader(fileStream))
+				{
+					return TryReadBlock(reader, out block);
+				}
+			}
+		}
+    
+		public static bool TryLoadBlock(FileInfo file,[NotNullWhen(true)] out ClipMotionDataBlock? motionDataBlock)
+		{
+			using (var fileStream = file.OpenRead())
+			{
+				using (StreamReader reader = new StreamReader(fileStream))
+				{
+					return TryReadBlock(reader, out motionDataBlock);
+				}
 			}
 
 		}
-		catch (Exception ex)
-		{
-			throw new Exception(ex.Message + " in ", ex);
-		}
-		return block;
-	}
 
+	
+		public static ClipDataBlock ReadBlock(StreamReader reader)
+		{
+			ClipDataBlock block = new ClipDataBlock();
+			try
+			{
+				block.Name = ReadLineSafe(reader);
+
+				block.ClipID = ReadLineSafe(reader);
+				block.PlaybackSpeed = float.Parse(ReadLineSafe(reader));
+				block.CropStartLocalTime = float.Parse(ReadLineSafe(reader));
+				block.CropEndLocalTime = float.Parse(ReadLineSafe(reader));
+
+				block.NumClipTriggers = int.Parse(ReadLineSafe(reader));
+
+				for (int i = 0; i < block.NumClipTriggers; i++)
+				{
+					block.TriggerNames.Add(ReadLineSafe(reader));
+				}
+			}
+			catch (Exception ex)
+			{
+				throw new Exception(ex.Message + " in ", ex);
+			}
+			return block;
+
+		}
 	public static ClipMotionDataBlock LoadBlock(string filePath)
 	{
 		using (StreamReader reader = new(filePath))

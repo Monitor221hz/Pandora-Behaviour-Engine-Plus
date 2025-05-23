@@ -20,6 +20,13 @@ public class ProjectAnimSetData
 		var setData = new ProjectAnimSetData();
 
 
+			for (int i = 0; i < numSets; i++)
+			{
+				var fileName = reader.ReadLineOrEmpty();
+				setData.AnimSetFileNames.Add(fileName);
+			}
+
+
 		if (!int.TryParse(reader.ReadLine(), out int numSets)) { return setData; }
 		setData.NumSets = numSets;
 

@@ -49,28 +49,34 @@ public class AnimSetDataManager
 				int NumProjects = int.Parse(reader.ReadLine()!);
 				for (int i = 0; i < NumProjects; i++)
 				{
-					projectPaths.Add(reader.ReadLineSafe());
-				}
 
-				for (int i = 0; i < NumProjects; i++)
-				{
-					var animSetData = ProjectAnimSetData.Read(reader);
-					animSetDataList.Add(animSetData);
-					AnimSetDataMap.Add(Path.GetFileNameWithoutExtension(projectPaths[i]), animSetData);
+					int NumProjects = int.Parse(reader.ReadLine()!);
+					for (int i = 0; i < NumProjects; i++)
+					{
+						projectPaths.Add(reader.ReadLineOrEmpty());
+					}
 
-					//#if DEBUG
-					//						FileInfo animDataFile = new FileInfo($"{outputFolder.FullName}\\animsetdata\\{(Path.GetFileName(projectPaths[i]))}");
-					//						if (animDataFile.Exists) { animDataFile.Delete(); }
-					//						if (!(animDataFile.Directory!.Exists)) { animDataFile.Directory.Create(); }
-					//						using (var stream = animDataFile.OpenWrite())
-					//						{
-					//							using (var writer = new StreamWriter(stream))
-					//							{
-					//								writer.Write(animSetDataList[i]);
-					//							}
-					//						}
+					for (int i = 0; i < NumProjects; i++)
+					{
+						var animSetData = ProjectAnimSetData.Read(reader);
+						animSetDataList.Add(animSetData);
+						AnimSetDataMap.Add(Path.GetFileNameWithoutExtension(projectPaths[i]), animSetData);
 
-					//#endif
+						//#if DEBUG
+						//						FileInfo animDataFile = new FileInfo($"{outputFolder.FullName}\\animsetdata\\{(Path.GetFileName(projectPaths[i]))}");
+						//						if (animDataFile.Exists) { animDataFile.Delete(); }
+						//						if (!(animDataFile.Directory!.Exists)) { animDataFile.Directory.Create(); }
+						//						using (var stream = animDataFile.OpenWrite())
+						//						{
+						//							using (var writer = new StreamWriter(stream))
+						//							{
+						//								writer.Write(animSetDataList[i]);
+						//							}
+						//						}
+
+						//#endif
+
+					}
 
 				}
 

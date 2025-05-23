@@ -30,13 +30,12 @@ public class AnimSet
 	{
 		var animSet = new AnimSet
 		{
-			VersionName = reader.ReadLineSafe()
+			VersionName = reader.ReadLineOrEmpty();
 		};
-
 
 		if (!int.TryParse(reader.ReadLineSafe(), out int numTriggers)) return animSet;
 		for (int i = 0; i < numTriggers; i++) { animSet.Triggers.Add(reader.ReadLineSafe()); }
-
+    
 		if (!int.TryParse(reader.ReadLineSafe(), out int numConditions)) return animSet;
 		for (int i = 0; i < numConditions; i++) { animSet.Conditions.Add(SetCondition.ReadCondition(reader)); }
 

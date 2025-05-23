@@ -13,6 +13,7 @@ public class SetCachedAnimInfo
 	public uint encodedExtension { get; private set; } = 7891816; //xkh
 
 
+
 	public static SetCachedAnimInfo Read(StreamReader reader)
 	{
 		var animInfo = new SetCachedAnimInfo

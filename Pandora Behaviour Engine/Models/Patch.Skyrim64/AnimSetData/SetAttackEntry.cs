@@ -26,6 +26,7 @@ public class SetAttackEntry
 		entry.NumClips = numClips;
 		entry.Unk = unk;
 
+
 		if (numClips > 0) { entry.ClipNames = []; }
 		for (int i = 0; i < numClips; i++)
 		{
