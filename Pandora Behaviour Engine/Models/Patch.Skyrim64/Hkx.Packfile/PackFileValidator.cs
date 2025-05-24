@@ -6,25 +6,42 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using XmlCake.Linq;
-
 namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
-public partial class PackFileValidator
+public class PackFileValidator
 {
 	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-	[GeneratedRegex(@"[$]{1}eventID{1}[\[]{1}(.+)[\]]{1}[$]{1}")]
-	private static partial Regex EventFormat { get; }
-	[GeneratedRegex(@"[$]{1}variableID{1}[\[]{1}(.+)[\]]{1}[$]{1}")]
-	private static partial Regex VarFormat { get; }
+	private readonly Dictionary<string, int> eventIndices = new();
+	private readonly Dictionary<string, int> variableIndices = new(StringComparer.OrdinalIgnoreCase);
 
-	private Dictionary<string, int> eventIndices = [];
-	private Dictionary<string, int> variableIndices = new(StringComparer.OrdinalIgnoreCase);
 
 	private List<XElement> registeredElements = [];
+	private enum NemesisEntityType : sbyte
+	{
+		None,
+		Event,
+		Variable
+	}
 
 	public void TrackElement(XElement element) => registeredElements.Add(element);
+	private int GetEventIndex(ReadOnlySpan<char> key)
+	{
+		if (!eventIndices.TryGetValue(key.ToString(), out var value))
+		{
+			return -1;
+		}
+		return value;
+	}
 
+	private int GetVariableIndex(ReadOnlySpan<char> key)
+	{
+		if (!variableIndices.TryGetValue(key.ToString(), out var value))
+		{
+			return -1;
+		}
+		return value;
+	}
 	private int GetIndexFromMatch(Dictionary<string, int> map, Match match)
 	{
 		if (!match.Success) return -1;
@@ -93,25 +110,83 @@ public partial class PackFileValidator
 		graph.VariableValueSet.wordVariableValues = variableValues;
 		return true;
 	}
+
+	private NemesisEntityType TryGetNemesisEntity(ReadOnlySpan<char> value, out ReadOnlySpan<char> captured)
+	{
+		captured = new ReadOnlySpan<char>();
+		var returnType = NemesisEntityType.None;
+
+		if (value.Length < 3 || !value[0].Equals('$'))
+		{
+			return returnType;
+		}
+		switch (value[1])
+		{
+			case 'e':
+				returnType = NemesisEntityType.Event;
+				break;
+			case 'v':
+				returnType = NemesisEntityType.Variable;
+				break;
+			default:
+				return returnType;
+		}
+		int startIndex = -1;
+		int length = -1;
+		for (int i = 2; i < value.Length; i++)
+		{
+			char c = value[i];
+			switch (c)
+			{
+				case '[':
+					startIndex = i + 1;
+					break;
+				case ']':
+					length = i - startIndex;
+					break;
+				case '$':
+					captured = value.Slice(startIndex, length);
+					return returnType;
+				default:
+					break;
+			}
+		}
+		return returnType;
+	}
 	private void ValidateElementText(XElement element, Dictionary<string, int> eventIndices, Dictionary<string, int> variableIndices)
 	{
 		string rawValue = element.Value;
-
-		var eventMatch = EventFormat.Matches(rawValue);
-		foreach (Match match in eventMatch)
+		NemesisEntityType entityType;
+		if ((entityType = TryGetNemesisEntity(rawValue, out var entity)) == NemesisEntityType.None || entity.IsEmpty)
 		{
-			var index = GetIndexFromMatch(eventIndices, match);
-
-			rawValue = rawValue.Replace(match.Value, index.ToString());
+			return;
 		}
 
-		var varMatch = VarFormat.Matches(element.Value);
-		foreach (Match match in varMatch)
+		switch (entityType)
 		{
-			var index = GetIndexFromMatch(variableIndices, match);
-			rawValue = rawValue.Replace(match.Value, index.ToString());
+			case NemesisEntityType.Event:
+				element.SetValue(GetEventIndex(entity));
+				break;
+			case NemesisEntityType.Variable:
+				element.SetValue(GetVariableIndex(entity));
+				break;
 		}
-		element.SetValue(rawValue);
+
+		//var eventMatch = EventFormat.Matches(rawValue);
+		//foreach (Match match in eventMatch)
+		//{
+		//	var index = GetIndexFromMatch(eventIndices, match);
+
+		//	rawValue = rawValue.Replace(match.Value, index.ToString());
+		//}
+
+		//var varMatch = VarFormat.Matches(element.Value);
+		//foreach (Match match in varMatch)
+		//{
+		//	var index = GetIndexFromMatch(variableIndices, match);
+		//	rawValue = rawValue.Replace(match.Value, index.ToString());
+		//}
+		//element.SetValue(rawValue);
 	}
 
 	private void ValidateElementContent(XElement element, Dictionary<string, int> eventIndices, Dictionary<string, int> variableIndices)
