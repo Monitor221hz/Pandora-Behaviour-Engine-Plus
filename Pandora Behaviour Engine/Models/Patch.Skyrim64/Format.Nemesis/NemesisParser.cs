@@ -223,7 +223,7 @@ public class NemesisParser
 		}
 	}
 
-	public static bool MatchReplacePattern(PackFile packFile, string nodeName, List<XNode> nodes, PackFileChangeSet changeSet, XPathLookup lookup)
+	public static bool MatchReplacePattern(PackFile packFile, string nodeName, IEnumerable<XNode> nodes, PackFileChangeSet changeSet, XPathLookup lookup)
 	{
 		XMatchCollection matchCollection = replacePattern.Matches(nodes);
 		if (!matchCollection.Success) return false;
@@ -234,7 +234,7 @@ public class NemesisParser
 		return true;
 	}
 
-	public static bool MatchInsertPattern(PackFile packFile, string nodeName, List<XNode> nodes, PackFileChangeSet changeSet, XPathLookup lookup)
+	public static bool MatchInsertPattern(PackFile packFile, string nodeName, IEnumerable<XNode> nodes, PackFileChangeSet changeSet, XPathLookup lookup)
 	{
 		XMatchCollection matchCollection = insertPattern.Matches(nodes);
 		if (!matchCollection.Success) return false;
@@ -253,7 +253,7 @@ public class NemesisParser
 		XPathLookup lookup = new();
 		foreach (FileInfo editFile in editFiles)
 		{
-			List<XNode> nodes = [];
+			IEnumerable<XNode> nodes;
 			string nodeName = Path.GetFileNameWithoutExtension(editFile.Name);
 			XElement element;
 			try
