@@ -1,22 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-	  <EnableDynamicLoading>true</EnableDynamicLoading>
+    <TargetFramework>net9.0</TargetFramework>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
     <RootNamespace>ExamplePlugin</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	  <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
+    <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Pandora API\Pandora API\Pandora API.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <None Update="plugin.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
 </Project>
