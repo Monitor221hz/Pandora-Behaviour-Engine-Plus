@@ -8,8 +8,9 @@ namespace Pandora.ViewModels;
 public partial class EngineConfigurationViewModel : ViewModelBase, IEngineConfigurationFactory, IEngineConfigurationViewModel
 {
     private readonly IEngineConfigurationFactory engineConfigurationFactory;
+	public IEngineConfigurationFactory Factory => engineConfigurationFactory;
 
-    public string Name => engineConfigurationFactory.Name;
+	public string Name => engineConfigurationFactory.Name;
 
     public IEngineConfiguration? Config => engineConfigurationFactory.Config;
 

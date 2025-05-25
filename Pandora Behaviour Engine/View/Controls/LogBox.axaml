@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			       xmlns:vm="using:Pandora.ViewModels"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
              x:Class="Pandora.Views.LogBox"
 			       x:DataType="vm:EngineViewModel">
   <Grid>
@@ -12,15 +12,16 @@
              IsReadOnly="True"
              FontFamily="Consolas"
              FontSize="13"
-             Text="{Binding LogText,UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-             TextChanged="TextBox_TextChanged"
+             Text="{Binding LogText}"
              TextWrapping="WrapWithOverflow" />
     <Button Name="CopyCodeButton"
-            IsVisible="False"
+            Command="{Binding CopyTextCommand}"
+            IsVisible="True"
             Padding="4"
+            Margin="8"
             HorizontalAlignment="Right" VerticalAlignment="Bottom"
-            AutomationProperties.Name="Copy sample code"
-            ToolTip.Tip="Copy sample code">
+            AutomationProperties.Name="Copy text"
+            ToolTip.Tip="Copy text">
       <ui:SymbolIcon Symbol="ClipboardCode" FontSize="20" />
     </Button>
   </Grid>
