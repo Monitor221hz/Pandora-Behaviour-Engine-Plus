@@ -4,6 +4,7 @@ using Avalonia.VisualTree;
 using Pandora.ViewModels;
 using System;
 using System.Collections.ObjectModel;
+using Pandora.Services;
 
 namespace Pandora.Behaviors;
 
@@ -30,8 +31,8 @@ public sealed class ModsDataGridDropHandler : BaseDataGridDropHandler<ModInfoVie
         var items = vm.SourceMods;
         bool result = RunDropAction(dg, e, bExecute, sourceItem, targetItem, items);
 
-        if (result && bExecute) 
-            vm.ModService.AssignModPrioritiesFromViewModels(items);
+        if (result && bExecute)
+			ModService.AssignModPrioritiesFromViewModels(items);
 
         return result;
     }

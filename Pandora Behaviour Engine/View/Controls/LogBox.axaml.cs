@@ -10,8 +10,4 @@ public partial class LogBox : ReactiveUserControl<EngineViewModel>
     {
         InitializeComponent();
     }
-	private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-	{
-		LogTextBox.CaretIndex = int.MaxValue;
-	}
 }

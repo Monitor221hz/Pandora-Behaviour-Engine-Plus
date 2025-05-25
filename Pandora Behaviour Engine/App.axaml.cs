@@ -4,8 +4,10 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Pandora.ViewModels;
 using Pandora.Views;
+using System.Globalization;
 
 namespace Pandora;
+
 public partial class App : Application
 {
 	public override void Initialize()
@@ -15,6 +17,7 @@ public partial class App : Application
 
 	public override void OnFrameworkInitializationCompleted()
 	{
+		SetupCultureInfo();
 		if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
 		{
 			// Line below is needed to remove Avalonia data validation.
@@ -27,5 +30,13 @@ public partial class App : Application
 		}
 
 		base.OnFrameworkInitializationCompleted();
+	}
+	private static void SetupCultureInfo()
+	{
+		CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
+
+		CultureInfo.DefaultThreadCurrentCulture = culture;
+		CultureInfo.DefaultThreadCurrentUICulture = culture;
+		CultureInfo.CurrentCulture = culture;
 	}
 }

@@ -4,24 +4,20 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Pandora.ViewModels"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
-             mc:Ignorable="d" d:DesignWidth="256" d:DesignHeight="60"
+             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="54"
              x:Class="Pandora.Views.LaunchElement"
 						 x:DataType="vm:EngineViewModel">
   <Button Command="{Binding LaunchEngineCommand}"
+          IsEnabled="{Binding !EngineRunning}"
           HorizontalAlignment="Stretch"
           VerticalAlignment="Center"
           Classes="accent"
-          VerticalContentAlignment="Center"
-          HorizontalContentAlignment="Center"
-          IsEnabled="{Binding !EngineRunning}"
           Height="54">
-    <Button.Content>
-      <Viewbox>
-        <Grid>
-          <ui:ProgressRing IsActive="{Binding EngineRunning}" IsVisible="{Binding EngineRunning}" />
-          <PathIcon Data="{StaticResource IconPlay}" Margin="0 2" Foreground="{DynamicResource SolidBackgroundFillColorQuarternary}" IsVisible="{Binding !EngineRunning}" />
-        </Grid>
-      </Viewbox>
-    </Button.Content>
+    <Viewbox>
+      <Grid>
+        <ui:ProgressRing IsActive="{Binding EngineRunning}" IsVisible="{Binding EngineRunning}" />
+        <PathIcon Data="{StaticResource IconPlay}" Margin="0 2" Foreground="{DynamicResource SolidBackgroundFillColorQuarternary}" IsVisible="{Binding !EngineRunning}" />
+      </Grid>
+    </Viewbox>
   </Button>
 </UserControl>
