@@ -2,7 +2,7 @@ name: publish_linux_self_contained
 
 on:
   workflow_run:
-    workflows: [build_release]
+    workflows: [build & tests & release]
     types:
       - completed
 
