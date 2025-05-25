@@ -150,12 +150,14 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		if (startupArguments.Remove("-autoClose")) closeOnFinish = true;
 		foreach (var arg in startupArguments)
 		{
-			if (startupArguments.Remove("-o:"))
+			if (arg.StartsWith("-o:", StringComparison.OrdinalIgnoreCase))
 			{
-				var path = arg.Substring(3).Trim();
-				if (Directory.Exists(path)) currentDirectory = new DirectoryInfo(path);
+				var argArr = arg.AsSpan();
+				var pathArr = argArr.Slice(3);
+				var path = pathArr.Trim().ToString();
+				currentDirectory = new DirectoryInfo(path);
+				continue;
 			}
-
 		}
 		if (startupArguments.Remove("-autoRun")) { autoRun = true; closeOnFinish = true; }
 	}
