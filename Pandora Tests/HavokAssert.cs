@@ -58,19 +58,22 @@ public static class HavokAssert
 		foreach (var propertyInfo in havokObject.GetType().GetProperties())
 		{
 			var propertyType = propertyInfo.PropertyType;
-#if DEBUG
+
 			if (propertyType == typeof(string))
 			{
+
+#if DEBUG
 
 				if (isDebuggerAttached)
 				{
 					Debug.WriteLine((string)accessor[havokObject, propertyInfo.Name]);
 
 				}
-				continue;
 
-			}
 #endif
+				continue;
+			}
+
 			if (propertyType == typeof(IHavokObject) || propertyType.GetInterfaces().Any(i => i.IsAssignableFrom(typeof(IHavokObject))))
 			{
 				IHavokObject? propertyValue = (IHavokObject)accessor[havokObject, propertyInfo.Name];
