@@ -8,7 +8,7 @@ namespace PandoraTests;
 public class PatchTests
 {
 	[Fact]
-	public async void EngineOutputTest()
+	public async Task EngineOutputTest()
 	{
 		ModService service = new ModService(Path.Combine(BehaviourEngine.AssemblyDirectory.FullName, "Pandora_Engine", "ActiveMods.txt"));
 		var mods = await service.LoadModsAsync(BehaviourEngine.AssemblyDirectory, new DirectoryInfo(Path.Combine(Directory.GetCurrentDirectory(), "Data")));
@@ -28,7 +28,7 @@ public class PatchTests
 		}
 	}
 	[Fact]
-	public async void EngineLaunchTest()
+	public async Task EngineLaunchTest()
 	{
 		ModService service = new ModService(Path.Combine(BehaviourEngine.AssemblyDirectory.FullName, "Pandora_Engine", "ActiveMods.txt"));
 		var mods = await service.LoadModsAsync(BehaviourEngine.AssemblyDirectory, new DirectoryInfo(Path.Combine(Directory.GetCurrentDirectory(), "Data")));
