@@ -8,7 +8,7 @@ namespace Pandora.Models.Patch.Skyrim64.AnimSetData;
 
 public class AnimSet
 {
-	public AnimSet(string versionName, int numTriggers, int numConditions, int numAttackEntries, int numAnimationInfos, IList<string> triggers, IList<SetCondition> conditions, IList<SetAttackEntry> attackEntries, IList<SetCachedAnimInfo> animInfos)
+	public AnimSet(string versionName, int numTriggers, int numConditions, int numAttackEntries, int numAnimationInfos, IList<string> triggers, IList<SetCondition> conditions, IList<SetAttackEntry> attackEntries, List<SetCachedAnimInfo> animInfos)
 	{
 		VersionName = versionName;
 		NumTriggers = numTriggers;
@@ -36,7 +36,7 @@ public class AnimSet
 
 	public IList<SetAttackEntry> AttackEntries { get; private set; } = [];
 
-	public IList<SetCachedAnimInfo> AnimInfos { get; private set; } = [];
+	public List<SetCachedAnimInfo> AnimInfos { get; private set; } = [];
 
 	public void AddAnimInfo(SetCachedAnimInfo animInfo) => AnimInfos.Add(animInfo);
 
@@ -70,7 +70,7 @@ public class AnimSet
 		}
 
 		if (!int.TryParse(reader.ReadLineOrEmpty(), out int numAnimationInfos)) { return false; }
-		SetCachedAnimInfo[] animationInfos = new SetCachedAnimInfo[numAnimationInfos];
+		List<SetCachedAnimInfo> animationInfos = new(numAnimationInfos);
 		for (int i = 0; i < numAnimationInfos; i++)
 		{
 			if (!SetCachedAnimInfo.TryRead(reader, out var value)) { return false; }
