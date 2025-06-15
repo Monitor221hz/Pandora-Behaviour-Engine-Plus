@@ -12,10 +12,5 @@ public partial class EngineView : UserControl
         InitializeComponent();
 		_viewModel = new EngineViewModel();
 		DataContext = _viewModel;
-		Loaded += EngineViewLoaded!;
-	}
-	private async void EngineViewLoaded(object sender, RoutedEventArgs e)
-	{
-		await _viewModel.LoadAsync();
 	}
 }
