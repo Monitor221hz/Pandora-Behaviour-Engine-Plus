@@ -40,12 +40,15 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 	private readonly DirectoryInfo launchDirectory = BehaviourEngine.AssemblyDirectory;
 	private DirectoryInfo currentDirectory = BehaviourEngine.SkyrimGameDirectory ?? BehaviourEngine.CurrentDirectory;
 
+	public string CurrentDirectoryInfo => currentDirectory.ToString();
+
 	private Task preloadTask;
 	private bool closeOnFinish = false;
 	private bool autoRun = false;
 
 	[Reactive] private string _logText = string.Empty;
 	[Reactive] private string _searchTerm = string.Empty;
+	[Reactive] private bool _isPreloading;
 
 	[ObservableAsProperty(ReadOnly = false)] private bool? _allSelected;
 	[ObservableAsProperty(ReadOnly = false)] private bool _engineRunning;
