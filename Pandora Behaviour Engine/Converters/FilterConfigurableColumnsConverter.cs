@@ -13,7 +13,7 @@ public class FilterConfigurableColumnsConverter : IValueConverter
     {
         if (value is IEnumerable<DataGridColumn> columns)
         {
-            return columns.Where(c => !(c.CanUserReorder == false && c.CanUserResize == false)).ToList();
+            return columns.Where(c => (c.CanUserReorder || c.CanUserResize) && c.Header?.ToString() != (parameter?.ToString() ?? string.Empty)).ToList();
         }
         return Enumerable.Empty<DataGridColumn>();
     }
