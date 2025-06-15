@@ -1,0 +1,173 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="using:Avalonia.Controls"
+                    xmlns:conv="clr-namespace:Pandora.Converters"
+                    xmlns:vm="using:Pandora.ViewModels"
+                    xmlns:ui="using:FluentAvalonia.UI.Controls">
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceInclude Source="avares://Pandora Behaviour Engine+/Themes/DataGrid/DataGridColumnHeaderStyles.axaml" />
+    <ResourceInclude Source="avares://Pandora Behaviour Engine+/Themes/DataGrid/DataGridRowStyles.axaml" />
+    <ResourceInclude Source="avares://Pandora Behaviour Engine+/Themes/DataGrid/DataGridCellStyles.axaml" />
+  </ResourceDictionary.MergedDictionaries>
+
+  <conv:GridLinesVisibilityToBoolConverter x:Key="GridLinesToBoolConverter" />
+  <conv:PandoraCodeToEnabledConverter x:Key="PandoraCodeToEnabledConverter" />
+  <conv:FilterConfigurableColumnsConverter x:Key="FilterConfigurableColumnsConverter" />
+  <conv:GridLinesEnumMatchConverter x:Key="GridLinesEnumConverter" />
+  
+  <x:Double x:Key="DataGridRowHeightCompact">20</x:Double>
+
+  <DataTemplate x:Key="DataGridColumnsVisibilityDataTemplate">
+    <ItemsControl ItemsSource="{Binding}">
+      <ItemsControl.ItemTemplate>
+        <DataTemplate x:DataType="controls:DataGridColumn">
+          <CheckBox IsChecked="{Binding IsVisible, Mode=TwoWay}"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Content="{Binding Header}" />
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+  </DataTemplate>
+
+  <!-- Add Resources Here -->
+  <ControlTheme x:Key="{x:Type DataGrid}" TargetType="DataGrid">
+    <Setter Property="RowBackground" Value="Transparent" />
+    <Setter Property="HeadersVisibility" Value="Column" />
+    <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />
+    <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+    <Setter Property="SelectionMode" Value="Extended" />
+    <Setter Property="GridLinesVisibility" Value="None" />
+    <Setter Property="HorizontalGridLinesBrush" Value="{DynamicResource DataGridGridLinesBrush}" />
+    <Setter Property="VerticalGridLinesBrush" Value="{DynamicResource DataGridGridLinesBrush}" />
+    <Setter Property="DropLocationIndicatorTemplate">
+      <Template>
+        <Rectangle Fill="{DynamicResource DataGridDropLocationIndicatorBackground}" Width="2" />
+      </Template>
+    </Setter>
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="DataGridBorder"
+                Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                CornerRadius="{TemplateBinding CornerRadius}">
+          <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,*,Auto,Auto">
+            <DataGridColumnHeader Name="PART_TopLeftCornerHeader"
+                                  Theme="{StaticResource DataGridTopLeftColumnHeader}" 
+                                  SeparatorBrush="{TemplateBinding VerticalGridLinesBrush}"
+                                  CornerRadius="4 0 0 0" />
+            <DataGridColumnHeadersPresenter Name="PART_ColumnHeadersPresenter"
+                                            Grid.Column="1"
+                                            Grid.Row="0" Grid.ColumnSpan="2" />
+            <Button VerticalAlignment="Stretch"
+                    HorizontalAlignment="Stretch"
+                    Padding="0"
+                    Margin="0"
+                    IsTabStop="False"
+                    BorderThickness="0"
+                    Theme="{DynamicResource TransparentButton}">
+              <ui:FontIcon Name="OptionsIcon"
+                           FontSize="14"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"
+                           Foreground="{DynamicResource DataGridColumnHeaderForegroundBrush}"
+                           FontFamily="{StaticResource SymbolThemeFontFamily}"
+                           Glyph="&#xF809E;" />
+              <Button.Flyout>
+                <Flyout Placement="LeftEdgeAlignedTop">
+                  <StackPanel Orientation="Vertical">
+                    <TextBlock Text="DataGrid Settings" FontSize="16" FontWeight="Bold" Margin="0 0 0 4" />
+                    <Separator />
+                    <TextBlock Text="Column Visibility" Margin="0 0 0 4" />
+                    <ContentPresenter HorizontalAlignment="Left"
+                                      HorizontalContentAlignment="Left"
+                                      Content="{Binding $parent[DataGrid].Columns, Converter={StaticResource FilterConfigurableColumnsConverter}, ConverterParameter=Name}"
+                                      ContentTemplate="{StaticResource DataGridColumnsVisibilityDataTemplate}"/>
+                    <Separator />
+                    <StackPanel Orientation="Horizontal">
+                      <TextBlock Text="Compact Row" VerticalAlignment="Center" Margin="0 0 10 0" />
+                      <ToggleSwitch VerticalAlignment="Center" IsChecked="{Binding $parent[DataGrid].((vm:EngineViewModel)DataContext).IsCompactRowHeight}" />
+                    </StackPanel>
+                    <Separator />
+                    <TextBlock Text="Grid Lines Style" Margin="0 0 0 4" />
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                      <RadioButton Content="None"
+                                   GroupName="GridLinesGroup"
+                                   IsChecked="{Binding $parent[DataGrid].((vm:EngineViewModel)DataContext).GridLinesVisibility, Converter={StaticResource GridLinesEnumConverter}, ConverterParameter=None}" />
+                      <RadioButton Content="Horizontal"
+                                   GroupName="GridLinesGroup"
+                                   IsChecked="{Binding $parent[DataGrid].((vm:EngineViewModel)DataContext).GridLinesVisibility, Converter={StaticResource GridLinesEnumConverter}, ConverterParameter=Horizontal}" />
+                      <RadioButton Content="Vertical"
+                                   GroupName="GridLinesGroup"
+                                   IsChecked="{Binding $parent[DataGrid].((vm:EngineViewModel)DataContext).GridLinesVisibility, Converter={StaticResource GridLinesEnumConverter}, ConverterParameter=Vertical}" />
+                      <RadioButton Content="All"
+                                   GroupName="GridLinesGroup"
+                                   IsChecked="{Binding $parent[DataGrid].((vm:EngineViewModel)DataContext).GridLinesVisibility, Converter={StaticResource GridLinesEnumConverter}, ConverterParameter=All}" />
+                    </StackPanel>
+
+                  </StackPanel>
+                </Flyout>
+              </Button.Flyout>
+            </Button>
+            <Rectangle Name="PART_ColumnHeadersAndRowsSeparator"
+                       Grid.Row="0" Grid.ColumnSpan="3" Grid.Column="0"
+                       VerticalAlignment="Bottom"
+                       Height="1"
+                       Fill="{DynamicResource DataGridGridLinesBrush}" /> 
+
+            <DataGridRowsPresenter Name="PART_RowsPresenter"
+                                   Grid.Row="1"
+                                   Grid.RowSpan="2"
+                                   Grid.ColumnSpan="3" Grid.Column="0">
+              <DataGridRowsPresenter.GestureRecognizers>
+                <ScrollGestureRecognizer CanHorizontallyScroll="True" CanVerticallyScroll="True" />
+              </DataGridRowsPresenter.GestureRecognizers>
+            </DataGridRowsPresenter>
+            <Rectangle Name="PART_BottomRightCorner"
+                       Fill="{DynamicResource DataGridScrollBarsSeparatorBackground}"
+                       Grid.Column="2"
+                       Grid.Row="2" />
+            <ScrollBar Name="PART_VerticalScrollbar"
+                       Orientation="Vertical"
+                       Grid.Column="2"
+                       Grid.Row="1"
+                       Width="{DynamicResource ScrollBarSize}" />
+
+            <Grid Grid.Column="1"
+                  Grid.Row="2"
+                  ColumnDefinitions="Auto,*">
+              <Rectangle Name="PART_FrozenColumnScrollBarSpacer" />
+              <ScrollBar Name="PART_HorizontalScrollbar"
+                         Grid.Column="1"
+                         Orientation="Horizontal"
+                         Height="{DynamicResource ScrollBarSize}" />
+            </Grid>
+            <Border Name="PART_DisabledVisualElement"
+                    Grid.ColumnSpan="3" Grid.Column="0"
+                    Grid.Row="0" Grid.RowSpan="4"
+                    IsHitTestVisible="False"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    CornerRadius="2"
+                    Background="{DynamicResource DataGridDisabledVisualElementBackground}"
+                    IsVisible="{Binding !$parent[DataGrid].IsEnabled}" />
+          </Grid>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^:empty-columns">
+      <Style Selector="^ /template/ DataGridColumnHeader#PART_TopLeftCornerHeader">
+        <Setter Property="IsVisible" Value="True" />
+      </Style>
+      <Style Selector="^ /template/ DataGridColumnHeadersPresenter#PART_ColumnHeadersPresenter">
+        <Setter Property="IsVisible" Value="False" />
+      </Style>
+      <Style Selector="^ /template/ Rectangle#PART_ColumnHeadersAndRowsSeparator">
+        <Setter Property="IsVisible" Value="False" />
+      </Style>
+    </Style>
+    
+  </ControlTheme>
+</ResourceDictionary>
