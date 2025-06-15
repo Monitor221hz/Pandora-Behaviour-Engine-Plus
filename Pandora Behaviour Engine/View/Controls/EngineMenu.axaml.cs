@@ -6,10 +6,7 @@ using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Windowing;
 using Pandora.ViewModels;
 using ReactiveUI;
-using ReactiveUI.SourceGenerators;
-using System;
 using System.Reactive;
-using System.Threading.Tasks;
 
 namespace Pandora.Views;
 
@@ -18,8 +15,8 @@ public partial class EngineMenu : ReactiveUserControl<EngineViewModel>
     public EngineMenu()
     {
         InitializeComponent();
-        
-        this.WhenActivated(disposables =>
+
+		this.WhenActivated(disposables =>
         {
             this.BindInteraction(
                 ViewModel,
@@ -51,8 +48,8 @@ public partial class EngineMenu : ReactiveUserControl<EngineViewModel>
                         Text = "Github",
                         Description = "Visit GitHub page",
                         IsEnabled = true,
-                        Command = OpenUrlCommand,
-                        CommandParameter = new Uri("https://github.com/Monitor221hz/Pandora-Behaviour-Engine-Plus"),
+                        Command = ViewModel!.OpenUrlCommand,
+                        CommandParameter = "https://github.com/Monitor221hz/Pandora-Behaviour-Engine-Plus",
                         ClosesOnInvoked = false,
                         IconSource = (IconSource)Application.Current.FindResource("IconGithub")
                     });
@@ -61,8 +58,8 @@ public partial class EngineMenu : ReactiveUserControl<EngineViewModel>
                         Text = "Discord",
                         Description = "Join the Discord group",
                         IsEnabled = true,
-                        Command = OpenUrlCommand,
-                        CommandParameter = new Uri("https://discord.gg/8nUQCWMn3w"),
+                        Command = ViewModel!.OpenUrlCommand,
+                        CommandParameter = "https://discord.gg/8nUQCWMn3w",
                         ClosesOnInvoked = false,
                         IconSource = (IconSource)Application.Current.FindResource("IconDiscord")
                     });
@@ -82,13 +79,7 @@ public partial class EngineMenu : ReactiveUserControl<EngineViewModel>
 
         if (VisualRoot is AppWindow aw)
         {
-            TitleBarHost.ColumnDefinitions[3].Width = new GridLength(aw.TitleBar.RightInset, GridUnitType.Pixel);
+            TitleBarHost.ColumnDefinitions[4].Width = new GridLength(aw.TitleBar.RightInset, GridUnitType.Pixel);
         }
-    }
-    [ReactiveCommand]
-    private async Task OpenUrlAsync(Uri url)
-    {
-        var topLevel = TopLevel.GetTopLevel(this);
-        await topLevel.Launcher.LaunchUriAsync(url);
     }
 }
