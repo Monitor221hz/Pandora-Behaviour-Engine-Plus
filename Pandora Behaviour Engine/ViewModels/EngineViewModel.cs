@@ -37,8 +37,6 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 	public ObservableCollectionExtended<ModInfoViewModel> SourceMods { get; } = [];
 	public ObservableCollection<IEngineConfigurationViewModel> EngineConfigurationViewModels { get; } = [];
 
-	private readonly HashSet<string> startupArguments = new(StringComparer.OrdinalIgnoreCase);
-
 	private readonly ModService _modService;
 	private readonly EngineConfigurationService _configService;
 
@@ -67,7 +65,8 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 
 	public EngineViewModel()
 	{
-		startupArguments = Environment.GetCommandLineArgs().ToHashSet(StringComparer.OrdinalIgnoreCase);
+		var rawArgs = Environment.GetCommandLineArgs().Skip(1).ToArray();
+		var options = LaunchOptions.Parse(rawArgs);
 
 		_modService = new ModService(Path.Combine(launchDirectory.FullName, "Pandora_Engine", "ActiveMods.json"));
 		_configService = new EngineConfigurationService();
@@ -85,7 +84,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 			.Bind(out _modViewModels)
 			.Subscribe();
 
-		ReadStartupArguments();
+		ReadStartupArguments(options);
 
 		this.WhenActivated(disposables =>
 		{
@@ -147,7 +146,6 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 				LaunchEngineCommand.Execute().Subscribe().DisposeWith(disposables));
 
 		});
-
 	}
 	private void PreloadEngine()
 	{
@@ -175,41 +173,33 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		});
 	}
 
-	private void ReadStartupArguments()
+	private void ReadStartupArguments(LaunchOptions options)
 	{
-		foreach (var arg in startupArguments)
-			ProcessArgument(arg);
-	}
-
-	private void ProcessArgument(string arg)
-	{
-		switch (arg.ToLowerInvariant())
+		if (options.OutputDirectory is not null)
 		{
-			case "-autoclose":
-				closeOnFinish = true;
-				break;
-			case "-autorun":
-				autoRun = true;
-				closeOnFinish = true;
-				break;
-			case "-skyrimdebug64":
-				var debugConfig = EngineConfigurationService.FlattenConfigurations(EngineConfigurationViewModels)
-					.OfType<EngineConfigurationViewModel>()
-					.Select(vm => vm.Factory)
-					.FirstOrDefault(f => f is ConstEngineConfigurationFactory<SkyrimDebugConfiguration>);
+			currentDirectory = options.OutputDirectory;
+			IsOutputFolderCustomSet = true;
+		}
+
+		autoRun = options.AutoRun;
+		closeOnFinish = options.AutoClose;
+
+		if (options.UseSkyrimDebug64)
+		{
+			var debugConfig = EngineConfigurationService.FlattenConfigurations(EngineConfigurationViewModels)
+				.OfType<EngineConfigurationViewModel>()
+				.Select(vm => vm.Factory)
+				.FirstOrDefault(f => f is ConstEngineConfigurationFactory<SkyrimDebugConfiguration>);
+
+			if (debugConfig is not null)
+			{
 				_configService.SetCurrentFactory(debugConfig);
-				Engine = new BehaviourEngine(debugConfig?.Config);
-				break;
-			default:
-				if (arg.StartsWith("-o:"))
-				{
-					currentDirectory = new DirectoryInfo(arg[3..]);
-					IsOutputFolderCustomSet = true;
-				}
-				break;
+				Engine = new BehaviourEngine(debugConfig.Config);
+			}
 		}
 	}
-	public async Task LoadAsync()
+
+	private async Task LoadAsync()
 	{
 		SourceMods.Clear();
 
