@@ -8,11 +8,9 @@
              x:Class="Pandora.Views.LaunchElement"
 						 x:DataType="vm:EngineViewModel">
   <Button Command="{Binding LaunchEngineCommand}"
-          IsEnabled="{Binding !EngineRunning}"
           HorizontalAlignment="Stretch"
           VerticalAlignment="Center"
-          Classes="accent"
-          Height="54">
+          Classes="accent">
     <Viewbox>
       <Grid>
         <ui:ProgressRing IsActive="{Binding EngineRunning}" IsVisible="{Binding EngineRunning}" />
