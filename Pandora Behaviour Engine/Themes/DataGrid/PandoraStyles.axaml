@@ -1,6 +1,7 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:b="using:Pandora.Behaviors"
+        xmlns:vm="using:Pandora.ViewModels"
         xmlns:ui="using:FluentAvalonia.UI.Controls">
   <Design.PreviewWith>
     <Border Padding="20">
@@ -9,16 +10,21 @@
   </Design.PreviewWith>
 
   <Styles.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <MergeResourceInclude Source="avares://Pandora Behaviour Engine+/Themes/DataGrid/DataGridStyles.axaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+
     <b:ModsDataGridDropHandler x:Key="ModsDataGridDropHandler" />
   </Styles.Resources>
-
-  <!-- Add Styles Here -->
+  
   <Style Selector="DataGrid.DragAndDrop">
-    <Setter Property="RowHeaderWidth" Value="28" />
     <Setter Property="(Interaction.Behaviors)">
       <BehaviorCollectionTemplate>
         <BehaviorCollection>
           <ContextDropBehavior Handler="{StaticResource ModsDataGridDropHandler}" />
+          <b:KeyboardModMoveBehavior DropHandler="{StaticResource ModsDataGridDropHandler}" />
         </BehaviorCollection>
       </BehaviorCollectionTemplate>
     </Setter>
@@ -27,7 +33,7 @@
   <Style Selector="DataGrid.DragAndDrop DataGridRow.DraggingUp">
     <Setter Property="AdornerLayer.Adorner">
       <Template>
-        <Border BorderThickness="0 2 0 0" BorderBrush="Purple"/>
+        <Border BorderThickness="0 2 0 0" Height="20" BorderBrush="{DynamicResource SystemAccentColor}"/>
       </Template>
     </Setter>
   </Style>
@@ -35,11 +41,11 @@
   <Style Selector="DataGrid.DragAndDrop DataGridRow.DraggingDown">
     <Setter Property="AdornerLayer.Adorner">
       <Template>
-        <Border BorderThickness="0 0 0 2" BorderBrush="Purple"/>
+        <Border BorderThickness="0 0 0 2" BorderBrush="{DynamicResource SystemAccentColor}"/>
       </Template>
     </Setter>
   </Style>
-  <Style Selector="DataGrid.DragAndDrop DataGridRowHeader">
+  <Style Selector="DataGrid.DragAndDrop DataGridRow">
     <Setter Property="(Interaction.Behaviors)">
       <BehaviorCollectionTemplate>
         <BehaviorCollection>
@@ -47,11 +53,12 @@
         </BehaviorCollection>
       </BehaviorCollectionTemplate>
     </Setter>
+  </Style>
+
+  <Style Selector="DataGrid.DragAndDrop DataGridRowHeader">
     <Setter Property="Content">
       <Template>
-        <PathIcon Width="12" Height="12"
-                  Foreground="{DynamicResource DataGridColumnHeaderForegroundBrush}"
-                  Data="{StaticResource IconGrabber}" />
+        <TextBlock Text="{Binding Priority}" x:DataType="vm:ModInfoViewModel" FontSize="12" Margin="6 0 0 0" />
       </Template>
     </Setter>
   </Style>
@@ -60,7 +67,14 @@
     <Setter Property="(Interaction.Behaviors)">
       <BehaviorCollectionTemplate>
         <BehaviorCollection>
+          <DataTrigger Binding="{Binding $parent[DataGrid].((vm:EngineViewModel)DataContext).IsCompactRowHeight}" ComparisonCondition="Equal" Value="True">
+            <ChangePropertyAction TargetObject="ModInfoDataGrid" PropertyName="RowHeight" Value="20" />
+          </DataTrigger>
+          <DataTrigger Binding="{Binding $parent[DataGrid].((vm:EngineViewModel)DataContext).IsCompactRowHeight}" ComparisonCondition="NotEqual" Value="True">
+            <ChangePropertyAction TargetObject="ModInfoDataGrid" PropertyName="RowHeight" Value="26" />
+          </DataTrigger>
           <ContextDropBehavior Handler="{StaticResource ModsDataGridDropHandler}" />
+          <b:KeyboardModMoveBehavior DropHandler="{StaticResource ModsDataGridDropHandler}" />
         </BehaviorCollection>
       </BehaviorCollectionTemplate>
     </Setter>
@@ -90,7 +104,7 @@
                 </Grid.ColumnDefinitions>
                 <ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
               </Grid>
-              <Rectangle Name="VerticalSeparator" Grid.Column="1" Width="1" VerticalAlignment="Stretch" Fill="{TemplateBinding SeparatorBrush}" IsVisible="{TemplateBinding AreSeparatorsVisible}" />
+              <Rectangle Name="VerticalSeparator" Grid.Column="1" Width="1" VerticalAlignment="Stretch" Fill="{TemplateBinding SeparatorBrush}" IsVisible="False" />
               <Grid Name="FocusVisual" IsHitTestVisible="False" IsVisible="False">
                 <Rectangle Name="FocusVisualPrimary" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Fill="Transparent" IsHitTestVisible="False" Stroke="{DynamicResource DataGridCellFocusVisualPrimaryBrush}" StrokeThickness="2" />
                 <Rectangle Name="FocusVisualSecondary" Margin="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Fill="Transparent" IsHitTestVisible="False" Stroke="{DynamicResource DataGridCellFocusVisualSecondaryBrush}" StrokeThickness="1" />
@@ -107,9 +121,11 @@
       <Setter Property="CornerRadius" Value="0 4 0 0" />
     </Style>
   </Style>
-  
-  
 
+
+ 
+  <!-- Add Styles Here -->
+  
   <Style Selector="GridSplitter.innerStyle">
     <Setter Property="Template">
       <ControlTemplate>

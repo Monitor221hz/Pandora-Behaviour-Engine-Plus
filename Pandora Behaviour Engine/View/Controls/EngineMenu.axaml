@@ -7,7 +7,36 @@
              x:Class="Pandora.Views.EngineMenu"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              x:DataType="vm:EngineViewModel">
-  <Grid Name="TitleBarHost" ColumnDefinitions="Auto,Auto,*,Auto" Background="Transparent">
+  <UserControl.Styles>
+    <Style Selector="ToggleButton PathIcon.theme-light">
+      <Setter Property="IsVisible" Value="False"/>
+    </Style>
+    <Style Selector="ToggleButton:checked PathIcon.theme-light">
+      <Setter Property="IsVisible" Value="True"/>
+    </Style>
+    <Style Selector="ToggleButton PathIcon.theme-dark">
+      <Setter Property="IsVisible" Value="True"/>
+    </Style>
+    <Style Selector="ToggleButton:checked PathIcon.theme-dark">
+      <Setter Property="IsVisible" Value="False"/>
+    </Style>
+  </UserControl.Styles>
+  <UserControl.Resources>
+    <ControlTheme TargetType="ToggleButton" BasedOn="{StaticResource TransparentToggleButton}" x:Key="TransparentToggleButtonPandora">
+      <Style Selector="^:checked">
+        <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+          <Setter Property="Background" Value="{DynamicResource SubtleFillColorTransparentBrush}" />
+        </Style>
+        <Style Selector="^:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+          <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+        </Style>
+        <Style Selector="^:pressed /template/ ContentPresenter#PART_ContentPresenter">
+          <Setter Property="Background" Value="{DynamicResource SubtleFillColorTertiaryBrush}" />
+        </Style>
+      </Style>
+    </ControlTheme>
+  </UserControl.Resources>
+  <Grid Name="TitleBarHost" ColumnDefinitions="Auto,Auto,*,Auto,Auto" Background="Transparent">
     <ui:IconSourceElement Name="WindowIcon"
                           IconSource="{StaticResource IconPandora}"
                           Width="22" Height="22"
@@ -30,7 +59,7 @@
       </MenuItem>
       <MenuItem Header="About" Command="{Binding ShowAboutDialogCommand}" />
     </Menu>
-    <Border Padding="10 6" Grid.Column="2">
+    <Border Grid.Column="2" VerticalAlignment="Center">
       <AutoCompleteBox x:Name="searchTextBox"
                        Classes="SampleApp"
                        MaxWidth="280"
@@ -39,12 +68,24 @@
                        Watermark="Search" 
                        IsEnabled="{Binding !EngineRunning}" />
     </Border>
-
-    <ui:ContentDialog x:Name="DialogUpdateAvaliable"
-                      Title="Update Avaliable"
-                      IsVisible="False"
-                      Content="A new version of Pandora Engine Behavior+ v2.5.0 is available for download. Want to install?"
-                      PrimaryButtonText="Install"
-                      CloseButtonText="Cancel" />
+    <ToggleButton Name="ThemeToggle" 
+                  Grid.Column="3" 
+                  Height="30"
+                  IsChecked="{Binding ThemeToggleState}" 
+                  VerticalAlignment="Center" 
+                  Theme="{DynamicResource TransparentToggleButtonPandora}" 
+                  Background="Transparent" 
+                  Command="{Binding ToggleThemeCommand}"
+                  CommandParameter="{Binding $self.IsChecked}">
+      <Viewbox>
+        <Panel>
+          <PathIcon Classes="theme-light"
+                    Data="{StaticResource IconThemeLight}" />
+          <PathIcon Classes="theme-dark"
+                    Data="{StaticResource IconThemeDark}" />
+        </Panel>
+      </Viewbox>
+    </ToggleButton>
+    <Rectangle Grid.Column="4" Height="24" Width="1" Fill="{DynamicResource MenuFlyoutSeparatorBackground}" HorizontalAlignment="Left" Margin="4 0 0 0" />
   </Grid>
 </UserControl>

@@ -24,24 +24,22 @@
     <EmbeddedResource Remove="Data\Skyrim64\**" />
     <None Remove="Data\Skyrim64\**" />
     <Content Include="Assets\pandora.ico" />
-    <Folder Include="Themes\" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia.Desktop" Version="11.3.0" />
-    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.0" />
+    <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.3.1" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.3.1" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.1" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-	  <PackageReference Condition="'$(Configuration)' == 'Release'" Include="Avalonia.Controls.DataGrid" Version="11.3.0" />
-    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.0" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.0" />
-    <PackageReference Include="Avalonia.Xaml.Behaviors" Version="11.3.0.1" />
-    <PackageReference Include="Avalonia.Xaml.Interactions.DragAndDrop" Version="11.3.0.1" />
-    <PackageReference Include="DynamicData" Version="9.3.1" />
+    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.1" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.1" />
+    <PackageReference Include="Xaml.Behaviors.Avalonia" Version="11.3.0.10" />
+    <PackageReference Include="DynamicData" Version="9.4.1" />
     <PackageReference Include="FluentAvaloniaUI" Version="2.3.0" />
     <PackageReference Include="Nito.HashAlgorithms" Version="1.0.1" />
-    <PackageReference Include="NLog" Version="5.4.0" />
-    <PackageReference Include="ReactiveUI" Version="20.2.45" />
-    <PackageReference Include="ReactiveUI.SourceGenerators" Version="2.1.27">
+    <PackageReference Include="NLog" Version="5.5.0" />
+    <PackageReference Include="ReactiveUI" Version="20.3.1" />
+    <PackageReference Include="ReactiveUI.SourceGenerators" Version="2.2.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -55,12 +53,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <AvaloniaResource Update="Assets\CustomStyleControls.axaml">
-      <SubType>Designer</SubType>
-    </AvaloniaResource>
-    <AvaloniaResource Update="Assets\CutsomStyles.axaml">
-      <SubType>Designer</SubType>
-    </AvaloniaResource>
     <AvaloniaResource Update="Assets\Icons.axaml">
       <SubType>Designer</SubType>
     </AvaloniaResource>
@@ -99,9 +91,6 @@
     <None Update="FNIS.esp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="guiconfig.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -116,6 +105,12 @@
 
   <ItemGroup>
     <EditorConfigFiles Remove="C:\Users\minth\Source\Repos\Pandora\Pandora Behaviour Engine\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="Themes\DataGrid\*.axaml">
+      <SubType>Designer</SubType>
+    </AvaloniaResource>
   </ItemGroup>
 
   <ItemGroup>

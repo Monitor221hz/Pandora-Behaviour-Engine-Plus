@@ -166,5 +166,41 @@ namespace Pandora.Properties {
                 this["PatchBoxCodeColumnVisible"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsCompactRowHeight {
+            get {
+                return ((bool)(this["IsCompactRowHeight"]));
+            }
+            set {
+                this["IsCompactRowHeight"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int AppTheme {
+            get {
+                return ((int)(this["AppTheme"]));
+            }
+            set {
+                this["AppTheme"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int GridLinesVisibility {
+            get {
+                return ((int)(this["GridLinesVisibility"]));
+            }
+            set {
+                this["GridLinesVisibility"] = value;
+            }
+        }
     }
 }

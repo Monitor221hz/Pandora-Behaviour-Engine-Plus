@@ -5,18 +5,33 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 using Avalonia.Xaml.Interactions.DragAndDrop;
+using Pandora.Services;
 using Pandora.ViewModels;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace Pandora.Behaviors;
 
-public abstract class BaseDataGridDropHandler<T> : DropHandlerBase
+public abstract class BaseDataGridDropHandler<T>(Action<T, uint> setPriority) : DropHandlerBase
     where T : ViewModelBase
 {
     private const string rowDraggingUpStyleClass = "DraggingUp";
     private const string rowDraggingDownStyleClass = "DraggingDown";
 
-    protected abstract T MakeCopy(ObservableCollection<T> parentCollection, T item);
+	private readonly Action<T, uint> _setPriority = setPriority ?? throw new ArgumentNullException(nameof(setPriority));
+	
+	protected void AssignPriorities(IEnumerable<T> items)
+	{
+		uint priority = 0;
+		foreach (var item in items)
+		{
+			priority++;
+			_setPriority(item, priority);
+		}
+	}
+
+	protected abstract T MakeCopy(ObservableCollection<T> parentCollection, T item);
 
     protected abstract bool Validate(DataGrid dg, DragEventArgs e, object? sourceContext, object? targetContext, bool bExecute);
 
@@ -68,40 +83,41 @@ public abstract class BaseDataGridDropHandler<T> : DropHandlerBase
 
         switch (e.DragEffects)
         {
-            //case DragDropEffects.Copy:
-            //    {
-            //        if (bExecute)
-            //        {
-            //            var clone = MakeCopy(items, sourceItem);
-            //            InsertItem(items, clone, targetIndex + 1);
-            //            dg.SelectedIndex = targetIndex + 1;
-            //        }
-            //        return true;
-            //    }
-            case DragDropEffects.Move:
-                {
-                    if (bExecute)
-                    {
-                        MoveItem(items, sourceIndex, targetIndex);
-                        dg.SelectedIndex = targetIndex;
-                    }
-                    return true;
-                }
-            //case DragDropEffects.Link:
-            //    {
-            //        if (bExecute)
-            //        {
-            //            SwapItem(items, sourceIndex, targetIndex);
-            //            dg.SelectedIndex = targetIndex;
-            //        }
-            //        return true;
-            //    }
-            default:
+			//case DragDropEffects.Copy:
+			//    {
+			//        if (bExecute)
+			//        {
+			//            var clone = MakeCopy(items, sourceItem);
+			//            InsertItem(items, clone, targetIndex + 1);
+			//            dg.SelectedIndex = targetIndex + 1;
+			//        }
+			//        return true;
+			//    }
+			case DragDropEffects.Move:
+				{
+					if (bExecute)
+					{
+						MoveItem(items, sourceIndex, targetIndex);
+						AssignPriorities(items);
+						dg.SelectedIndex = targetIndex;
+					}
+					return true;
+				}
+			//case DragDropEffects.Link:
+			//    {
+			//        if (bExecute)
+			//        {
+			//            SwapItem(items, sourceIndex, targetIndex);
+			//            dg.SelectedIndex = targetIndex;
+			//        }
+			//        return true;
+			//    }
+			default:
                 return false;
         }
     }
 
-    private static DataGridRow? FindDataGridRowFromChildView(StyledElement sourceChild)
+	private static DataGridRow? FindDataGridRowFromChildView(StyledElement sourceChild)
     {
         int maxDepth = 16;
         DataGridRow? row = null;

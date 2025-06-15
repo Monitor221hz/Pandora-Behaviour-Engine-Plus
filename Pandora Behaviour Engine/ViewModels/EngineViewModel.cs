@@ -1,23 +1,28 @@
 ﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Styling;
 using DynamicData;
 using DynamicData.Binding;
 using Pandora.API.Patch.Engine.Config;
 using Pandora.Models;
 using Pandora.Models.Patch.Configs;
 using Pandora.Services;
+using Pandora.Utils;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
+using Splat;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Pandora.ViewModels;
@@ -26,26 +31,34 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 {
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-	public BehaviourEngine Engine { get; private set; } = new BehaviourEngine();
-	public ViewModelActivator Activator { get; }
-	public Interaction<AboutDialogViewModel, Unit> ShowAboutDialog { get; }
-	public ObservableCollectionExtended<ModInfoViewModel> SourceMods { get; }
+	public BehaviourEngine Engine { get; private set; } = new();
+	public ViewModelActivator Activator { get; } = new();
+	public Interaction<AboutDialogViewModel, Unit> ShowAboutDialog { get; } = new();
+	public ObservableCollectionExtended<ModInfoViewModel> SourceMods { get; } = [];
 	public ObservableCollection<IEngineConfigurationViewModel> EngineConfigurationViewModels { get; } = [];
 
 	private readonly HashSet<string> startupArguments = new(StringComparer.OrdinalIgnoreCase);
+
 	private readonly ModService _modService;
 	private readonly EngineConfigurationService _configService;
-	private readonly StringBuilder _logBuilder = new();
 
 	private readonly DirectoryInfo launchDirectory = BehaviourEngine.AssemblyDirectory;
 	private DirectoryInfo currentDirectory = BehaviourEngine.SkyrimGameDirectory ?? BehaviourEngine.CurrentDirectory;
 
+	public string CurrentDirectoryInfo => currentDirectory.ToString();
+
 	private Task preloadTask;
+
 	private bool closeOnFinish = false;
 	private bool autoRun = false;
 
 	[Reactive] private string _logText = string.Empty;
 	[Reactive] private string _searchTerm = string.Empty;
+	[Reactive] private DataGridGridLinesVisibility _gridLinesVisibility = (DataGridGridLinesVisibility)Properties.GUISettings.Default.GridLinesVisibility;
+	[Reactive] private bool _isCompactRowHeight = Properties.GUISettings.Default.IsCompactRowHeight;
+	[Reactive] private bool _isOutputFolderCustomSet;
+	[Reactive] private bool _isPreloading;
+	[Reactive] private bool? _themeToggleState = Properties.GUISettings.Default.AppTheme switch { 0 => true, 1 => false, _ => true };
 
 	[ObservableAsProperty(ReadOnly = false)] private bool? _allSelected;
 	[ObservableAsProperty(ReadOnly = false)] private bool _engineRunning;
@@ -56,28 +69,60 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 	{
 		startupArguments = Environment.GetCommandLineArgs().ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-		_modService = new ModService(Path.Combine(launchDirectory.FullName, "Pandora_Engine", "ActiveMods.txt"));
+		_modService = new ModService(Path.Combine(launchDirectory.FullName, "Pandora_Engine", "ActiveMods.json"));
 		_configService = new EngineConfigurationService();
 
 		EngineConfigurationViewModels = new ObservableCollection<IEngineConfigurationViewModel>(
 			_configService.GetInitialConfigurations(SetEngineConfigCommand));
 
-		ShowAboutDialog = new Interaction<AboutDialogViewModel, Unit>();
-
-		SourceMods = [];
 		SourceMods.ToObservableChangeSet()
 			.AutoRefresh(x => x.Priority)
 			.Filter(this.WhenAnyValue(x => x.SearchTerm)
 				.Throttle(TimeSpan.FromMilliseconds(200))
 				.ObserveOn(RxApp.MainThreadScheduler)
-				.Select(BuildFilter))
+				.Select(ModUtils.BuildFilter))
 			.Sort(SortExpressionComparer<ModInfoViewModel>.Ascending(x => x.Priority))
 			.Bind(out _modViewModels)
 			.Subscribe();
 
-		Activator = new ViewModelActivator();
+		ReadStartupArguments();
+
 		this.WhenActivated(disposables =>
 		{
+			RxApp.MainThreadScheduler.Schedule(PreloadEngine);
+
+			Observable.FromAsync(async () =>
+			{
+				try
+				{
+					await LoadAsync();
+					EngineLogger.AppendLine("Mods loaded.\n\nWaiting for preload to finish...");
+					await preloadTask;
+					EngineLogger.AppendLine("Preload finished.");
+				}
+				catch (Exception ex)
+				{
+					logger.Error(ex, "Error during activation loading/preload");
+					EngineLogger.AppendLine($"Error: {ex.Message}");
+				}
+			}).Subscribe().DisposeWith(disposables);
+
+			this.WhenAnyValue(x => x.IsCompactRowHeight)
+				.Skip(1)
+				.Subscribe(value =>
+				{
+					Properties.GUISettings.Default.IsCompactRowHeight = value;
+					Properties.GUISettings.Default.Save();
+				}).DisposeWith(disposables);
+
+			this.WhenAnyValue(x => x.GridLinesVisibility)
+				.Skip(1)
+				.Subscribe(value =>
+				{
+					Properties.GUISettings.Default.GridLinesVisibility = (int)value;
+					Properties.GUISettings.Default.Save();
+				}).DisposeWith(disposables);
+
 			_engineRunningHelper = LaunchEngineCommand.IsExecuting
 				.ToProperty(this, x => x.EngineRunning)
 				.DisposeWith(disposables);
@@ -85,166 +130,138 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 			_allSelectedHelper = SourceMods
 				.ToObservableChangeSet()
 				.AutoRefresh(x => x.Active)
-				.QueryWhenChanged(AllSelectedCheckBoxHelper)
+				.QueryWhenChanged(ModUtils.IsAllSelectedExceptPandora)
 				.DistinctUntilChanged()
 				.ToProperty(this, x => x.AllSelected)
 				.DisposeWith(disposables);
 
-			Observable
-				.Interval(TimeSpan.FromMilliseconds(200))
+			EngineLogger.LogObservable
 				.ObserveOn(RxApp.MainThreadScheduler)
-				.Subscribe(_ => LogText = _logBuilder.ToString())
+				.DistinctUntilChanged()
+				.Subscribe(text => LogText = text)
 				.DisposeWith(disposables);
 
-			Observable.Return(Unit.Default)
-				.Where(_ => autoRun)
-				.ObserveOn(RxApp.MainThreadScheduler)
-				.InvokeCommand(this, x => x.LaunchEngineCommand)
-				.DisposeWith(disposables);
+			LaunchEngineCommand.ThrownExceptions.Subscribe(ex => this.Log().Error(ex)).DisposeWith(disposables);
+
+			if (autoRun) RxApp.MainThreadScheduler.Schedule(() =>
+				LaunchEngineCommand.Execute().Subscribe().DisposeWith(disposables));
+
 		});
 
-		ReadStartupArguments();
-
-		preloadTask = Task.Run(Engine.PreloadAsync);
-		Engine.SetOutputPath(currentDirectory);
 	}
-
-	public async Task LoadAsync()
+	private void PreloadEngine()
 	{
-		SourceMods.Clear();
+		var newFactory = _configService.GetCurrentFactory();
 
-		var modInfoList = await _modService.LoadModsAsync(launchDirectory, BehaviourEngine.CurrentDirectory, currentDirectory);
+		Engine = newFactory is not null ? new BehaviourEngine(newFactory.Config) : new BehaviourEngine();
+		Engine.SetOutputPath(currentDirectory);
 
-		var pandoraMod = modInfoList.FirstOrDefault(m => string.Equals(m.Code, "pandora", StringComparison.OrdinalIgnoreCase));
-		if (pandoraMod is not null)
+		IsPreloading = true;
+
+		preloadTask = Task.Run(async () =>
 		{
-			pandoraMod.Active = true;
-		}
-		else
-		{
-			_logBuilder.AppendLine("FATAL ERROR: Pandora Base does not exist. Ensure the engine was installed properly and data is not corrupted.");
-		}
-
-		SourceMods.AddRange(modInfoList.Select(m => new ModInfoViewModel(m)));
-
-		ModService.AssignModPrioritiesFromViewModels(SourceMods);
-
-		if (BehaviourEngine.EngineConfigurations.Count > 0)
-		{
-			_logBuilder.AppendLine("Plugins loaded.");
-		}
-		_logBuilder.AppendLine("Mods loaded.");
+			try
+			{
+				await Engine.PreloadAsync();
+			}
+			catch (Exception ex)
+			{
+				logger.Error(ex, "Error during preload");
+			}
+			finally
+			{
+				RxApp.MainThreadScheduler.Schedule(() => IsPreloading = false);
+			}
+		});
 	}
 
 	private void ReadStartupArguments()
 	{
-		if (startupArguments.Remove("-skyrimDebug64"))
-		{
-			var debugConfig = EngineConfigurationService.FlattenConfigurations(EngineConfigurationViewModels)
-				.OfType<EngineConfigurationViewModel>()
-				.Select(vm => vm.Factory)
-				.FirstOrDefault(f => f is ConstEngineConfigurationFactory<SkyrimDebugConfiguration>);
-			_configService.SetCurrentFactory(debugConfig);
-			Engine = new BehaviourEngine(debugConfig.Config);
-		}
-		if (startupArguments.Remove("-autoClose")) closeOnFinish = true;
 		foreach (var arg in startupArguments)
-		{
-			if (arg.StartsWith("-o:", StringComparison.OrdinalIgnoreCase))
-			{
-				var argArr = arg.AsSpan();
-				var pathArr = argArr.Slice(3);
-				var path = pathArr.Trim().ToString();
-				currentDirectory = new DirectoryInfo(path);
-				continue;
-			}
-		}
-		if (startupArguments.Remove("-autoRun")) { autoRun = true; closeOnFinish = true; }
+			ProcessArgument(arg);
 	}
 
-	private Func<ModInfoViewModel, bool> BuildFilter(string searchText) =>
-		mod => string.IsNullOrEmpty(searchText) || mod.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase);
-
-	private bool? AllSelectedCheckBoxHelper(IReadOnlyCollection<ModInfoViewModel> query)
+	private void ProcessArgument(string arg)
 	{
-		if (query.Count == 0) return false;
-
-		var selectedCount = query.Count(x => x.Active) - 1;
-
-		return selectedCount switch
+		switch (arg.ToLowerInvariant())
 		{
-			0 => false,
-			var count when count == query.Count - 1 => true,
-			_ => null
+			case "-autoclose":
+				closeOnFinish = true;
+				break;
+			case "-autorun":
+				autoRun = true;
+				closeOnFinish = true;
+				break;
+			case "-skyrimdebug64":
+				var debugConfig = EngineConfigurationService.FlattenConfigurations(EngineConfigurationViewModels)
+					.OfType<EngineConfigurationViewModel>()
+					.Select(vm => vm.Factory)
+					.FirstOrDefault(f => f is ConstEngineConfigurationFactory<SkyrimDebugConfiguration>);
+				_configService.SetCurrentFactory(debugConfig);
+				Engine = new BehaviourEngine(debugConfig?.Config);
+				break;
+			default:
+				if (arg.StartsWith("-o:"))
+				{
+					currentDirectory = new DirectoryInfo(arg[3..]);
+					IsOutputFolderCustomSet = true;
+				}
+				break;
+		}
+	}
+	public async Task LoadAsync()
+	{
+		SourceMods.Clear();
+
+		var searchDirectories = new List<DirectoryInfo>
+		{
+			launchDirectory,
+			BehaviourEngine.CurrentDirectory,
+			currentDirectory
 		};
-	}
 
-	[ReactiveCommand]
-	private void ToggleSelectAll(bool? isChecked)
-	{
-		if (isChecked is not bool check)
-			return;
+		var mods = await _modService.LoadModsAsync(searchDirectories.ToArray());
+		var viewModelsMods = await _modService.PrepareModViewModelsAsync(mods);
+		SourceMods.AddRange(viewModelsMods);
 
-		foreach (var modVM in SourceMods)
+		if (BehaviourEngine.EngineConfigurations.Count > 0)
 		{
-			if (!string.Equals(modVM.Code, "pandora", StringComparison.OrdinalIgnoreCase))
-			{
-				modVM.Active = check;
-			}
+			EngineLogger.AppendLine("Plugins loaded.");
 		}
 	}
-	[ReactiveCommand]
-	private async Task CopyText()
-	{
-		await DoSetClipboardTextAsync(LogText);
-	}
-	private async Task DoSetClipboardTextAsync(string? text)
-	{
-		if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop ||
-			desktop.MainWindow?.Clipboard is not { } provider)
-			throw new NullReferenceException("Missing Clipboard instance.");
 
-		await provider.SetTextAsync(text);
-	}
 	[ReactiveCommand]
-	private async Task ShowAboutDialogAsync() =>
-		await ShowAboutDialog.Handle(new AboutDialogViewModel());
-
-	[ReactiveCommand(CanExecute = nameof(EngineRunning))]
-	private async void SetEngineConfig(IEngineConfigurationFactory? config)
+	private async Task SetEngineConfig(IEngineConfigurationFactory? config)
 	{
-		if (config == null) return;
+		if (config is null) return;
 		_configService.SetCurrentFactory(config);
 		await preloadTask;
-		var newConfig = _configService.GetCurrentFactory()?.Config;
-		Engine = newConfig != null ? new BehaviourEngine(newConfig) : Engine;
-		Engine.SetOutputPath(currentDirectory);
-		preloadTask = Engine.PreloadAsync();
+		PreloadEngine();
 	}
 
-	[ReactiveCommand(CanExecute = nameof(EngineRunning))]
+	[ReactiveCommand]
 	private async Task LaunchEngine()
 	{
-		_logBuilder.Clear();
+		EngineLogger.Clear();
 
-		_logBuilder.AppendLine($"Engine launched with configuration: {Engine.Configuration.Name}. Do not exit before the launch is finished.");
-		_logBuilder.AppendLine("Waiting for preload to finish...");
+		EngineLogger.AppendLine($"Engine launched with configuration: {Engine.Configuration.Name}. Do not exit before the launch is finished.");
+		EngineLogger.AppendLine("Waiting for preload to finish...");
 
 		Stopwatch timer = Stopwatch.StartNew();
 		await preloadTask;
-		_logBuilder.AppendLine("Preload finished.");
+		EngineLogger.AppendLine("\nPreload finished.");
 
-		var activeMods = ModService.GetActiveModsByPriority(SourceMods);
+		var activeMods = ModUtils.GetActiveModsByPriority(SourceMods);
 		bool success = await Task.Run(() => Engine.LaunchAsync(activeMods));
 
 		timer.Stop();
 
-		_logBuilder.AppendLine(Engine.GetMessages(success));
+		EngineLogger.AppendLine(Engine.GetMessages(success));
 
 		if (success)
 		{
-			_logBuilder.AppendLine($"Launch finished in {timer.Elapsed.TotalSeconds:F2} seconds.");
-			_modService.SaveActiveMods(activeMods);
+			EngineLogger.AppendLine($"Launch finished in {timer.Elapsed.TotalSeconds:F2} seconds.");
+			await _modService.SaveActiveModsAsync(SourceMods);
 
 			if (closeOnFinish && Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime lifetime)
 			{
@@ -253,12 +270,59 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		}
 		else
 		{
-			_logBuilder.AppendLine("Launch aborted. Existing output was not cleared, and current patch list will not be saved.");
+			EngineLogger.AppendLine("Launch aborted. Existing output was not cleared, and current patch list will not be saved.");
 		}
-		var newConfig = _configService.GetCurrentFactory().Config;
-		Engine = newConfig != null ? new BehaviourEngine(newConfig) : new BehaviourEngine();
+		PreloadEngine();
+	}
 
-		Engine.SetOutputPath(currentDirectory);
-		preloadTask = Task.Run(Engine.PreloadAsync);
+	[ReactiveCommand]
+	private async Task ShowAboutDialogAsync() =>
+		await ShowAboutDialog.Handle(new AboutDialogViewModel());
+
+	[ReactiveCommand]
+	private async Task CopyTextAsync(string? text) =>
+		await AvaloniaServices.DoSetClipboardTextAsync(text);
+
+	[ReactiveCommand]
+	private async Task OpenUrlAsync(string url) =>
+		await AvaloniaServices.DoLaunchUriAsync(url);
+
+	[ReactiveCommand]
+	private void SortAscending(DataGridColumnHeader? header) =>
+		ModUtils.ApplySort(header, c => c.Sort(ListSortDirection.Ascending));
+
+	[ReactiveCommand]
+	private void SortDescending(DataGridColumnHeader? header) =>
+		ModUtils.ApplySort(header, c => c.Sort(ListSortDirection.Descending));
+
+	[ReactiveCommand]
+	private void ClearSort(DataGridColumnHeader? header) =>
+		ModUtils.ApplySort(header, c => c.ClearSort());
+
+	[ReactiveCommand]
+	private void ToggleSelectAll(bool? isChecked)
+	{
+		if (isChecked is not bool check) return;
+
+		ModUtils.SetAllModActiveStates(SourceMods, check);
+	}
+
+	[ReactiveCommand]
+	private void ToggleTheme(bool? isChecked)
+	{
+		ThemeToggleState = isChecked;
+
+		switch (isChecked)
+		{
+			case true:
+				Application.Current!.RequestedThemeVariant = ThemeVariant.Light;
+				Properties.GUISettings.Default.AppTheme = 0;
+				break;
+			case false:
+				Application.Current!.RequestedThemeVariant = ThemeVariant.Dark;
+				Properties.GUISettings.Default.AppTheme = 1;
+				break;
+		}
+		Properties.GUISettings.Default.Save();
 	}
 }
