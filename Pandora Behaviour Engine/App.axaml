@@ -9,13 +9,12 @@
 
   <Application.Styles>
     <sty:FluentAvaloniaTheme PreferUserAccentColor="False" />
-    <StyleInclude Source="/Assets/CutsomStyles.axaml" />
+    <StyleInclude Source="avares://Pandora Behaviour Engine+/Themes/DataGrid/PandoraStyles.axaml" />
   </Application.Styles>
   <Application.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
-        <ResourceInclude Source="/Assets/Icons.axaml" />
-        <ResourceInclude Source="/Assets/CustomStyleControls.axaml" />
+        <ResourceInclude Source="avares://Pandora Behaviour Engine+/Assets/Icons.axaml" />
       </ResourceDictionary.MergedDictionaries>
 
       <ResourceDictionary.ThemeDictionaries>
