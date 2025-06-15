@@ -1,10 +1,7 @@
-﻿using DynamicData;
-using Pandora.API.Patch;
+﻿using Pandora.API.Patch;
 using Pandora.Data;
-using Pandora.Models;
+using Pandora.Utils;
 using Pandora.ViewModels;
-using System;
-using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,105 +16,54 @@ public class ModService
 	private readonly NemesisModInfoProvider nemesisModInfoProvider = new();
 	private readonly PandoraModInfoProvider pandoraModInfoProvider = new();
 
-	private FrozenDictionary<string, IModInfo> modsByCode;
-	private bool modInfoCache = false;
-	private readonly FileInfo activeModConfig;
+	private readonly ModSettingsService modSettingsService;
 
-	public ModService(string activeModConfigPath)
+	public ModService(string modSavePath)
 	{
-		activeModConfig = new FileInfo(activeModConfigPath);
+		modSettingsService = new ModSettingsService(modSavePath);
 	}
 
 	public async Task<List<IModInfo>> LoadModsAsync(params DirectoryInfo[] directories)
 	{
 		var modInfos = new HashSet<IModInfo>();
 
-		var pathProviderPairs = directories
-			.SelectMany(dir => new (string path, IModInfoProvider provider)[]
-			{
-				(Path.Combine(dir.FullName, "Nemesis_Engine", "mod"), nemesisModInfoProvider),
-				(Path.Combine(dir.FullName, "Pandora_Engine", "mod"), pandoraModInfoProvider)
-			})
-			.DistinctBy(p => p.path)
-			.ToArray();
-
-		var tasks = pathProviderPairs
-			.Select(pair => pair.provider.GetInstalledMods(pair.path))
-			.ToArray();
-
-		var results = await Task.WhenAll(tasks);
-
-		foreach (var mods in results)
+		foreach (var (path, provider) in GetModPaths(directories).DistinctBy(p => p.path))
 		{
+			var mods = await provider.GetInstalledMods(path);
 			if (mods is not null)
 				modInfos.UnionWith(mods);
 		}
 
-		var modInfoList = modInfos.ToList();
-		modsByCode = modInfoList.ToFrozenDictionary(m => m.Code);
-
-		modInfoCache = LoadActiveMods(modInfoList);
-
-		return modInfoList.OrderBy(m => m.Code == "pandora")
-			.ThenBy(m => m.Priority == 1)
-			.ThenBy(m => m.Priority)
-			.ThenBy(m => m.Name)
-			.ToList();
+		return [.. modInfos];
 	}
 
-	public bool LoadActiveMods(List<IModInfo> loadedMods)
+	private IEnumerable<(string path, IModInfoProvider provider)> GetModPaths(IEnumerable<DirectoryInfo> directories)
 	{
-		if (!activeModConfig.Exists) return false;
-
-		foreach (var mod in loadedMods)
-			mod.Active = false;
-
-		using (FileStream readStream = activeModConfig.OpenRead())
+		foreach (var dir in directories)
 		{
-			using (StreamReader streamReader = new(readStream))
-			{
-				string? expectedLine;
-				uint priority = 1;
-				while ((expectedLine = streamReader.ReadLine()) != null)
-				{
-					if (!modsByCode.TryGetValue(expectedLine, out IModInfo? modInfo)) continue;
-					modInfo.Priority = priority++;
-					modInfo.Active = true;
-				}
-			}
-		}
-		return true;
-	}
-
-	public void SaveActiveMods(List<IModInfo> activeMods)
-	{
-		activeModConfig.Directory?.Create();
-		using (FileStream writeStream = activeModConfig.Create())
-		{
-			using (StreamWriter streamWriter = new(writeStream))
-			{
-				foreach (var modInfo in activeMods)
-				{
-					streamWriter.WriteLine(modInfo.Code);
-				}
-			}
+			yield return (Path.Join(dir.FullName, "Nemesis_Engine", "mod"), nemesisModInfoProvider);
+			yield return (Path.Join(dir.FullName, "Pandora_Engine", "mod"), pandoraModInfoProvider);
 		}
 	}
 
-	public static void AssignModPrioritiesFromViewModels(IEnumerable<ModInfoViewModel> modViewModels)
+	public async Task<List<ModInfoViewModel>> PrepareModViewModelsAsync(IEnumerable<IModInfo> modInfos)
 	{
-		uint priority = 1;
-		foreach (var mod in modViewModels)
+		var viewModels = modInfos.Select(m => new ModInfoViewModel(m)).ToList();
+
+		await modSettingsService.ApplySettingsAsync(viewModels);
+
+		var pandoraMod = ModUtils.ExtractPandoraMod(viewModels);
+		if (pandoraMod is null)
 		{
-			mod.Priority = priority++;
+			const string error = "FATAL ERROR: Pandora Base does not exist.";
+			EngineLogger.AppendLine(error);
+			logger.Error(error);
 		}
+
+		return viewModels.OrderBy(m => m.Priority).ToList();
 	}
 
-	public static List<IModInfo> GetActiveModsByPriority(IEnumerable<ModInfoViewModel> sourceMods) =>
-		sourceMods.Where(m => m.Active)
-			.Select(m => m.ModInfo)
-			.OrderBy(m => m.Code == "pandora")
-			.ThenBy(m => m.Priority == 1)
-			.ThenBy(m => m.Priority)
-			.ToList();
+
+	public Task SaveActiveModsAsync(IEnumerable<ModInfoViewModel> mods) =>
+		modSettingsService.SaveSettingsAsync(mods);
 }
