@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Reactive;
 
 namespace Pandora.Services;
@@ -17,15 +16,13 @@ public class EngineConfigurationService
 	private readonly ObservableCollection<IEngineConfigurationViewModel> _configurations = [];
 	private readonly char[] _pathSeparators = ['/', '\\'];
 
-	private IEngineConfigurationFactory? _currentFactory;
+	private IEngineConfigurationFactory _currentFactory = new ConstEngineConfigurationFactory<SkyrimConfiguration>("Normal");
 
 	public void SetCurrentFactory(IEngineConfigurationFactory factory) => _currentFactory = factory;
-	public IEngineConfigurationFactory? GetCurrentFactory() => _currentFactory;
+	public IEngineConfigurationFactory GetCurrentFactory() => _currentFactory;
 
 	public IReadOnlyCollection<IEngineConfigurationViewModel> GetInitialConfigurations(ReactiveCommand<IEngineConfigurationFactory, Unit> setCommand)
 	{
-		_currentFactory = new ConstEngineConfigurationFactory<SkyrimConfiguration>("Normal");
-
 		var root = new EngineConfigurationViewModelContainer("Skyrim 64",
 			new EngineConfigurationViewModelContainer("Behavior",
 				new EngineConfigurationViewModelContainer("Patch",
