@@ -4,6 +4,7 @@ using Pandora.API.Patch.Engine.Config;
 using Pandora.Models.Patch.Configs;
 using Pandora.Models.Patch.Engine.Plugins;
 using Pandora.Models.Patch.Plugins;
+using Pandora.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -96,16 +97,12 @@ public class BehaviourEngine
 				}
 			}
 		}
-		var args = Environment.GetCommandLineArgs();
-		var inputArg = args.Where(s => s.StartsWith("-tesv:", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+		var rawArgs = Environment.GetCommandLineArgs().Skip(1).ToArray();
+		var options = LaunchOptions.Parse(rawArgs);
 
-		if (inputArg != null)
+		if (options.SkyrimGameDirectory is not null)
 		{
-			var argArr = inputArg.AsSpan();
-			var pathArr = argArr.Slice(6);
-			var path = pathArr.Trim().ToString();
-
-			SkyrimGameDirectory = new DirectoryInfo(Path.Join(path, "Data"));
+			SkyrimGameDirectory = new DirectoryInfo(Path.Join(options.SkyrimGameDirectory.FullName, "Data"));
 		}
 	}
 
