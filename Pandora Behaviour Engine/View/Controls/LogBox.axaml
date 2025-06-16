@@ -13,7 +13,8 @@
              FontFamily="Consolas"
              FontSize="13"
              Text="{Binding LogText}"
-             TextWrapping="WrapWithOverflow" />
+             TextWrapping="WrapWithOverflow"
+             TextChanged="TextBox_TextChanged" />
     <Border Background="Transparent" ToolTip.Tip="Preloading..." ToolTip.Placement="Bottom" Width="24" Height="24" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="8" >
       <ui:ProgressRing IsActive="{Binding IsPreloading}" IsEnabled="{Binding IsPreloading}" />
     </Border>
