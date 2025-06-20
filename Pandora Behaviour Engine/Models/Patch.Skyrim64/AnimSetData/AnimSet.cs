@@ -54,27 +54,27 @@ public class AnimSet
 		}
 
 		if (!int.TryParse(reader.ReadLineOrEmpty(), out int numConditions)) { return false; }
-		SetCondition[] conditions = new SetCondition[numConditions];
+		List<SetCondition> conditions = new(numConditions);
 		for (int i = 0; i < numConditions; i++)
 		{
 			if (!SetCondition.TryRead(reader, out var value)) { return false; }
-			conditions[i] = value;
+			conditions.Add(value);
 		}
 
 		if (!int.TryParse(reader.ReadLineOrEmpty(), out int numAttacks)) { return false; }
-		SetAttackEntry[] attacks = new SetAttackEntry[numAttacks];
+		List<SetAttackEntry> attacks = new(numAttacks);
 		for (int i = 0; i < numAttacks; i++)
 		{
 			if (!SetAttackEntry.TryRead(reader, out var value)) { return false; }
-			attacks[i] = value;
+			attacks.Add(value);
 		}
 
 		if (!int.TryParse(reader.ReadLineOrEmpty(), out int numAnimationInfos)) { return false; }
-		SetCachedAnimInfo[] animationInfos = new SetCachedAnimInfo[numAnimationInfos];
+		List<SetCachedAnimInfo> animationInfos = new(numAnimationInfos);
 		for (int i = 0; i < numAnimationInfos; i++)
 		{
 			if (!SetCachedAnimInfo.TryRead(reader, out var value)) { return false; }
-			animationInfos[i] = value;
+			animationInfos.Add(value);
 		}
 
 		animSet = new(versionName, numTriggers, numConditions, numAttacks, numAnimationInfos, triggers, conditions, attacks, animationInfos);

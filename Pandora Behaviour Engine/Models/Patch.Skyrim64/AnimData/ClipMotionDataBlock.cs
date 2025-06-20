@@ -1,5 +1,6 @@
 using Pandora.API.Patch.Engine.Skyrim64.AnimData;
 using Pandora.Models.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -36,18 +37,24 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 				return false;
 			}
 
-			var translations = new string[numTranslations];
-			for (int i = 0; i < numTranslations; i++)
+			var translations = new string[Math.Max(numTranslations, 1)];
+			for (int i = 0; i < translations.Length; i++)
 			{
-				if (!reader.TryReadLine(out var value)) { return false; }
+				if (!reader.TryReadNotEmptyLine(out var value))
+				{
+					value = "0.0 0 0 0";
+				}
 				translations[i] = value;
 			}
 
 			if (!int.TryParse(reader.ReadLine(), out var numRotations)) { return false; }
-			var rotations = new string[numRotations];
-			for (int i = 0; i < numRotations; i++)
+			var rotations = new string[Math.Max(numRotations, 1)];
+			for (int i = 0; i < rotations.Length; i++)
 			{
-				if (!reader.TryReadLine(out var value)) { return false; }
+				if (!reader.TryReadNotEmptyLine(out var value))
+				{
+					value = "0.0 0 0 0 1"; // default rotation
+				}
 				rotations[i] = value;
 			}
 			block = new()
