@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Platform;
 using Avalonia.Styling;
 using DynamicData;
 using DynamicData.Binding;
@@ -56,7 +57,14 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 	[Reactive] private bool _isCompactRowHeight = Properties.GUISettings.Default.IsCompactRowHeight;
 	[Reactive] private bool _isOutputFolderCustomSet;
 	[Reactive] private bool _isPreloading;
-	[Reactive] private bool? _themeToggleState = Properties.GUISettings.Default.AppTheme switch { 0 => true, 1 => false, _ => true };
+
+	[Reactive]
+	private bool? _themeToggleState = (PlatformThemeVariant)Properties.GUISettings.Default.AppTheme switch
+	{
+		PlatformThemeVariant.Light => true,
+		PlatformThemeVariant.Dark => false,
+		_ => true
+	};
 
 	[ObservableAsProperty(ReadOnly = false)] private bool? _allSelected;
 	[ObservableAsProperty(ReadOnly = false)] private bool _engineRunning;
@@ -302,17 +310,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 	{
 		ThemeToggleState = isChecked;
 
-		switch (isChecked)
-		{
-			case true:
-				Application.Current!.RequestedThemeVariant = ThemeVariant.Light;
-				Properties.GUISettings.Default.AppTheme = 0;
-				break;
-			case false:
-				Application.Current!.RequestedThemeVariant = ThemeVariant.Dark;
-				Properties.GUISettings.Default.AppTheme = 1;
-				break;
-		}
-		Properties.GUISettings.Default.Save();
+		if (isChecked is bool checkedValue)
+			AvaloniaServices.ApplyTheme(checkedValue ? PlatformThemeVariant.Light : PlatformThemeVariant.Dark);
 	}
 }
