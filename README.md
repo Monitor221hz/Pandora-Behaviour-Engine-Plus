@@ -130,8 +130,8 @@ Pandora has a variety of startup arguments to support customizability.
 - `--auto_run`: runs the engine using the same active mods as cached from the last successful run.
 - `--auto_close`: closes the engine automatically upon finishing a single launch.
 - `--skyrim_debug64`: produces debug `.xml` files alongside normal `.hkx` output. Only for authors that know what they're doing.
-- `--o:{output path}`: sets a custom output path.
-- `--tesv:{game path}`: sets the path to the game directory (the root folder containing the exe, not the data folder!). Intended for users with Wabbajack "[Stock Game](https://github.com/LivelyDismay/Learn-To-Mod/blob/main/lessons/Setting%20up%20Stock%20Game%20for%20Skyrim%20SE.md)" setup or with multiple installations.
+- `--output {output path} or -o {output path}`: sets a custom output path.
+- `--tesv {game path}`: sets the path to the game directory (the root folder containing the exe, not the data folder!). Intended for users with Wabbajack "[Stock Game](https://github.com/LivelyDismay/Learn-To-Mod/blob/main/lessons/Setting%20up%20Stock%20Game%20for%20Skyrim%20SE.md)" setup or with multiple installations.
 
 ## For Mod Authors
 This section exists to inform current behavior authors of the key differences and features of Pandora, it's not a guide for making behavior mods.
