@@ -71,13 +71,12 @@ Built with backwards compatibility in mind for [Nemesis Unlimited Behavior Engin
 <summary>Vortex Users</summary>
 <br/>
 
-1. Install Pandora Behaviour Engine outside of the mods folder.
-2. Add it to the tools dashboard.
-  2.a) It is highly recommended you set a custom output mod folder using `--output:{path}` in the 'Command Line' field.
-  2.b) Ensure that the 'Start In' field is set to the Skyrim data directory.
-4. Run the program either manually or after adding it to the tools dashboard.
-5. Tick the patches you want and click Launch. 
-
+1. Install Pandora Behaviour Engine outside of the mods folder.  
+2. Add it to the tools dashboard  
+   a) It is highly recommended you set a custom output mod folder using `--output "path"` in the 'Command Line' field  
+   b) Ensure that the 'Start In' field is set to the Skyrim data directory.  
+3. Run the program either manually or after adding it to the tools dashboard.
+4. Tick the patches you want and click Launch.
 </details>
 
 <br/>
@@ -87,7 +86,7 @@ Pandora has a drag and drop priority system. Higher priority mods will overwrite
 
 
 ### Mod Cache
-Pandora saves the active mods to an external cache file after the engine successfully finishes its patching process. When the cache is loaded, all active mods are shown at the top with relative priority preserved, for better readability. To clear the cache, delete `Pandora_Engine/ActiveMods.txt`. 
+Pandora saves the active mods to an external cache file after the engine successfully finishes its patching process. When the cache is loaded, all active mods are shown at the top with relative priority preserved, for better readability. To clear the cache, delete `Pandora_Engine/ActiveMods.json`. 
 
 
 
@@ -119,7 +118,7 @@ Warnings are not a major issue unless they noticeably interfere with the in-game
 
 **Pandora doesn't read FNIS mods!***
 
-Use the `-tesv:` argument if your game path is different from the registry path, or if you have multiple installs. Otherwise, ensure your registry path is correct. Read the [startup arguments](#startup-arguments) section for more information.
+Use the `--tesv` argument if your game path is different from the registry path, or if you have multiple installs. Otherwise, ensure your registry path is correct. Read the [startup arguments](#startup-arguments) section for more information.
 
 <br/>
 <br/>
