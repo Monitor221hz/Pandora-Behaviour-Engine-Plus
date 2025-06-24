@@ -125,13 +125,37 @@ Use the `-tesv:` argument if your game path is different from the registry path,
 <br/>
 
 ## Startup Arguments
-Pandora has a variety of startup arguments to support customizability. 
-
-- `--auto_run`: runs the engine using the same active mods as cached from the last successful run.
-- `--auto_close`: closes the engine automatically upon finishing a single launch.
-- `--skyrim_debug64`: produces debug `.xml` files alongside normal `.hkx` output. Only for authors that know what they're doing.
-- `--output {output path} or -o {output path}`: sets a custom output path.
-- `--tesv {game path}`: sets the path to the game directory (the root folder containing the exe, not the data folder!). Intended for users with Wabbajack "[Stock Game](https://github.com/LivelyDismay/Learn-To-Mod/blob/main/lessons/Setting%20up%20Stock%20Game%20for%20Skyrim%20SE.md)" setup or with multiple installations.
+Pandora has a variety of startup arguments to support customizability.
+<table>
+    <thead>
+        <tr>
+            <th width="20%">Option</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>--auto_run</code></td>
+            <td>Runs the engine using the same active mods as cached from the last successful run.</td>
+        </tr>
+        <tr>
+            <td><code>--auto_close</code></td>
+            <td>Closes the engine automatically upon finishing a single launch.</td>
+        </tr>
+        <tr>
+            <td><code>--skyrim_debug64</code></td>
+            <td>Produces debug <code>.xml</code> files alongside normal <code>.hkx</code> output. Only for authors that know what they're doing.</td>
+        </tr>
+        <tr>
+            <td><code>--output</code>(or <code>-o</code>)</td>
+            <td>Sets a custom output path. Example: <code>-o "C:\path\Pandora Output"</code></td>
+        </tr>
+        <tr>
+            <td><code>--tesv</code></td>
+            <td>Sets the path to the game directory (the root folder containing the .exe, not the data folder!). Intended for users with Wabbajack "<a href="https://github.com/LivelyDismay/Learn-To-Mod/blob/main/lessons/Setting%20up%20Stock%20Game%20for%20Skyrim%20SE.md">Stock Game</a>" setup or with multiple installations.</td>
+        </tr>
+    </tbody>
+</table>
 
 ## For Mod Authors
 This section exists to inform current behavior authors of the key differences and features of Pandora, it's not a guide for making behavior mods.
