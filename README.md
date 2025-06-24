@@ -144,11 +144,11 @@ Pandora has a variety of startup arguments to support customizability.
         </tr>
         <tr>
             <td><code>--skyrim_debug64</code></td>
-            <td>Produces debug `.xml` files alongside normal `.hkx` output. Only for authors that know what they're doing.</td>
+            <td>Produces debug <code>.xml</code> files alongside normal <code>.hkx</code> output. Only for authors that know what they're doing.</td>
         </tr>
         <tr>
             <td><code>--output</code>(or <code>-o</code>)</td>
-            <td>Sets a custom output path. Example: `-o "C:\path\Pandora Output"`</td>
+            <td>Sets a custom output path. Example: <code>-o "C:\path\Pandora Output"</code></td>
         </tr>
         <tr>
             <td><code>--tesv</code></td>
