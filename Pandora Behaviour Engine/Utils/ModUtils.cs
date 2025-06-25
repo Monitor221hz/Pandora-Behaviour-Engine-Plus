@@ -39,14 +39,15 @@ public static class ModUtils
 		}
 	}
 
-	public static void AssignPrioritiesAlphanumerically(IEnumerable<ModInfoViewModel> mods)
+	public static void AssignPrioritiesAlphanumerically(List<ModInfoViewModel> mods)
 	{
-		var nonPandoraMods = mods.Where(m => !IsPandora(m))
-			.OrderBy(m => m.Name, StringComparer.OrdinalIgnoreCase);
+		var ordered = mods
+			.Where(m => !IsPandora(m))
+			.OrderBy(m => m.Name, StringComparer.OrdinalIgnoreCase)
+			.ToList();
 
 		uint priority = 1;
-
-		foreach (var mod in nonPandoraMods)
+		foreach (var mod in ordered)
 		{
 			mod.Active = true;
 			mod.Priority = priority++;
