@@ -10,7 +10,7 @@
             Grid.Row="1"
             ItemsSource="{Binding ModViewModels}"
             RowHeight="26"
-            GridLinesVisibility="{Binding GridLinesVisibility}"
+            GridLinesVisibility="{Binding UIOptions.GridLinesVisibility, Mode=TwoWay}"
             HeadersVisibility="All"
             CanUserSortColumns="True"
             CanUserResizeColumns="True"

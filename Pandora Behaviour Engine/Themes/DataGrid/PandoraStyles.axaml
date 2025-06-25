@@ -67,10 +67,10 @@
     <Setter Property="(Interaction.Behaviors)">
       <BehaviorCollectionTemplate>
         <BehaviorCollection>
-          <DataTrigger Binding="{Binding $parent[DataGrid].((vm:EngineViewModel)DataContext).IsCompactRowHeight}" ComparisonCondition="Equal" Value="True">
+          <DataTrigger Binding="{Binding $parent[DataGrid].((vm:EngineViewModel)DataContext).UIOptions.IsCompactRowHeight, Mode=TwoWay}" ComparisonCondition="Equal" Value="True">
             <ChangePropertyAction TargetObject="ModInfoDataGrid" PropertyName="RowHeight" Value="20" />
           </DataTrigger>
-          <DataTrigger Binding="{Binding $parent[DataGrid].((vm:EngineViewModel)DataContext).IsCompactRowHeight}" ComparisonCondition="NotEqual" Value="True">
+          <DataTrigger Binding="{Binding $parent[DataGrid].((vm:EngineViewModel)DataContext).UIOptions.IsCompactRowHeight, Mode=TwoWay}" ComparisonCondition="NotEqual" Value="True">
             <ChangePropertyAction TargetObject="ModInfoDataGrid" PropertyName="RowHeight" Value="26" />
           </DataTrigger>
           <ContextDropBehavior Handler="{StaticResource ModsDataGridDropHandler}" />

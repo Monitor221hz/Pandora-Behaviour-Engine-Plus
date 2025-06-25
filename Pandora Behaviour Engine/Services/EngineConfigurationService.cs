@@ -23,6 +23,8 @@ public class EngineConfigurationService
 
 	public IReadOnlyCollection<IEngineConfigurationViewModel> GetInitialConfigurations(ReactiveCommand<IEngineConfigurationFactory, Unit> setCommand)
 	{
+		_configurations.Clear();
+
 		var root = new EngineConfigurationViewModelContainer("Skyrim 64",
 			new EngineConfigurationViewModelContainer("Behavior",
 				new EngineConfigurationViewModelContainer("Patch",
@@ -70,6 +72,14 @@ public class EngineConfigurationService
 		}
 
 		currentContainer?.NestedViewModels.Add(new EngineConfigurationViewModel(plugin.Factory, setCommand));
+	}
+
+	public IEngineConfigurationFactory? GetFactoryByType<T>() where T : IEngineConfiguration
+	{
+		return FlattenConfigurations(_configurations)
+			.OfType<EngineConfigurationViewModel>()
+			.Select(vm => vm.Factory)
+			.FirstOrDefault(factory => factory.Config is T);
 	}
 
 	public static IEnumerable<IEngineConfigurationViewModel> FlattenConfigurations(IEnumerable<IEngineConfigurationViewModel> configs)
