@@ -1,6 +1,7 @@
 ﻿using Pandora.API.Patch;
 using Pandora.Models.Patch.Mod;
-using System.Collections.Generic;
+using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Xml;
@@ -8,36 +9,31 @@ using System.Xml.Serialization;
 
 namespace Pandora.Data;
 
-public class PandoraModInfoProvider : IModInfoProvider
+public class PandoraModInfoProvider : FileBasedModInfoProvider
 {
-	public async Task<List<IModInfo>> GetInstalledMods(string folderPath) => await Task.Run(() => GetInstalledMods(new DirectoryInfo(folderPath)));
+	protected override string InfoFileName => "info.xml";
 
-	private static readonly XmlSerializer xmlSerializer = new(typeof(PandoraModInfo));
-	private static List<IModInfo> GetInstalledMods(DirectoryInfo folder)
+	public override string SingleRelativePath => Path.Join("Pandora_Engine", "mod");
+
+	protected override async Task<IModInfo?> TryParseAsync(FileInfo infoFile)
 	{
-		List<IModInfo> infoList = [];
-		if (!folder.Exists) { return infoList; }
-
-		var modFolders = folder.GetDirectories();
-
-		foreach (var modFolder in modFolders)
+		try
 		{
-			//var files = modFolder.GetFiles("info.xml");
-			var infoFile = new FileInfo(Path.Join(modFolder.FullName, "info.xml"));
-			if (!infoFile.Exists || infoFile.Directory is null) { continue; }
-			using (var readStream = infoFile.OpenRead())
+			await using var stream = infoFile.OpenRead();
+			using var reader = XmlReader.Create(stream);
+			if (serializer.Deserialize(reader) is PandoraModInfo modInfo)
 			{
-				using (var xmlReader = XmlReader.Create(readStream))
-				{
-					var modInfoObj = xmlSerializer.Deserialize(xmlReader);
-					if (modInfoObj == null) { continue; }
-
-					var modInfo = (PandoraModInfo)modInfoObj;
-					modInfo.FillData(infoFile.Directory);
-					infoList.Add(modInfo);
-				}
+				modInfo.FillData(infoFile.Directory!);
+				return modInfo;
 			}
 		}
-		return infoList;
+		catch (Exception ex)
+		{
+			Debug.Write($"Error: {ex}");
+		}
+		return null;
 	}
+
+
+	private static readonly XmlSerializer serializer = new(typeof(PandoraModInfo));
 }

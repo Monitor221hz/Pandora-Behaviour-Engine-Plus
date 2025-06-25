@@ -1,5 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Platform;
+using Avalonia.Styling;
 using System;
 using System.Threading.Tasks;
 
@@ -23,5 +25,15 @@ public static class AvaloniaServices
 			throw new NullReferenceException("Missing Launcher instance.");
 
 		await provider.LaunchUriAsync(new Uri(uri));
+	}
+
+	public static void ApplyTheme(PlatformThemeVariant variant)
+	{
+		Application.Current!.RequestedThemeVariant = variant == PlatformThemeVariant.Light
+			? ThemeVariant.Light
+			: ThemeVariant.Dark;
+
+		Properties.GUISettings.Default.AppTheme = (int)variant;
+		Properties.GUISettings.Default.Save();
 	}
 }

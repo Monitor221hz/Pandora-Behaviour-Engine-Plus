@@ -1,10 +1,12 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Platform;
 using Avalonia.Styling;
 using DynamicData;
 using DynamicData.Binding;
 using Pandora.API.Patch.Engine.Config;
+using Pandora.Data;
 using Pandora.Models;
 using Pandora.Models.Patch.Configs;
 using Pandora.Services;
@@ -30,45 +32,55 @@ namespace Pandora.ViewModels;
 public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 {
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+	private static readonly IReadOnlyList<IModInfoProvider> DefaultModProviders = new List<IModInfoProvider>
+	{
+		new NemesisModInfoProvider(),
+		new PandoraModInfoProvider()
+	}.AsReadOnly();
 
-	public BehaviourEngine Engine { get; private set; } = new();
-	public ViewModelActivator Activator { get; } = new();
-	public Interaction<AboutDialogViewModel, Unit> ShowAboutDialog { get; } = new();
-	public ObservableCollectionExtended<ModInfoViewModel> SourceMods { get; } = [];
-	public ObservableCollection<IEngineConfigurationViewModel> EngineConfigurationViewModels { get; } = [];
-
+	private readonly JsonModSettingsStore _settingsStore;
 	private readonly ModService _modService;
 	private readonly EngineConfigurationService _configService;
-
 	private readonly DirectoryInfo launchDirectory = BehaviourEngine.AssemblyDirectory;
-	private DirectoryInfo currentDirectory = BehaviourEngine.SkyrimGameDirectory ?? BehaviourEngine.CurrentDirectory;
-
-	public string CurrentDirectoryInfo => currentDirectory.ToString();
-
-	private Task preloadTask;
 
 	private bool closeOnFinish = false;
 	private bool autoRun = false;
+	private string ActiveModsSavePath => Path.Combine(launchDirectory.FullName, "Pandora_Engine", "ActiveMods.json");
+	private Task preloadTask;
+	private DirectoryInfo currentDirectory = BehaviourEngine.SkyrimGameDirectory ?? BehaviourEngine.CurrentDirectory;
 
-	[Reactive] private string _logText = string.Empty;
-	[Reactive] private string _searchTerm = string.Empty;
-	[Reactive] private DataGridGridLinesVisibility _gridLinesVisibility = (DataGridGridLinesVisibility)Properties.GUISettings.Default.GridLinesVisibility;
 	[Reactive] private bool _isCompactRowHeight = Properties.GUISettings.Default.IsCompactRowHeight;
 	[Reactive] private bool _isOutputFolderCustomSet;
 	[Reactive] private bool _isPreloading;
-	[Reactive] private bool? _themeToggleState = Properties.GUISettings.Default.AppTheme switch { 0 => true, 1 => false, _ => true };
+	[Reactive] private bool? _themeToggleState = (PlatformThemeVariant)Properties.GUISettings.Default.AppTheme switch
+	{
+		PlatformThemeVariant.Light => true,
+		PlatformThemeVariant.Dark => false,
+		_ => true
+	};
+	[Reactive] private string _logText = string.Empty;
+	[Reactive] private string _searchTerm = string.Empty;
+	[Reactive] private DataGridGridLinesVisibility _gridLinesVisibility = (DataGridGridLinesVisibility)Properties.GUISettings.Default.GridLinesVisibility;
 
 	[ObservableAsProperty(ReadOnly = false)] private bool? _allSelected;
 	[ObservableAsProperty(ReadOnly = false)] private bool _engineRunning;
 
 	[BindableDerivedList] private readonly ReadOnlyObservableCollection<ModInfoViewModel> _modViewModels;
 
+	public string CurrentDirectoryInfo => currentDirectory.ToString();
+	public BehaviourEngine Engine { get; private set; } = new();
+	public ViewModelActivator Activator { get; } = new();
+	public Interaction<AboutDialogViewModel, Unit> ShowAboutDialog { get; } = new();
+	public ObservableCollectionExtended<ModInfoViewModel> SourceMods { get; } = [];
+	public ObservableCollection<IEngineConfigurationViewModel> EngineConfigurationViewModels { get; } = [];
+
 	public EngineViewModel()
 	{
 		var rawArgs = Environment.GetCommandLineArgs().Skip(1).ToArray();
 		var options = LaunchOptions.Parse(rawArgs);
 
-		_modService = new ModService(Path.Combine(launchDirectory.FullName, "Pandora_Engine", "ActiveMods.json"));
+		_settingsStore = new JsonModSettingsStore(ActiveModsSavePath);
+		_modService = new ModService(_settingsStore, DefaultModProviders);
 		_configService = new EngineConfigurationService();
 
 		EngineConfigurationViewModels = new ObservableCollection<IEngineConfigurationViewModel>(
@@ -94,7 +106,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 			{
 				try
 				{
-					await LoadAsync();
+					await LoadModsAsync();
 					EngineLogger.AppendLine("Mods loaded.\n\nWaiting for preload to finish...");
 					await preloadTask;
 					EngineLogger.AppendLine("Preload finished.");
@@ -146,6 +158,11 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 				LaunchEngineCommand.Execute().Subscribe().DisposeWith(disposables));
 
 		});
+
+		if (BehaviourEngine.EngineConfigurations.Count > 0)
+		{
+			EngineLogger.AppendLine("Plugins loaded.");
+		}
 	}
 	private void PreloadEngine()
 	{
@@ -199,25 +216,22 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		}
 	}
 
-	private async Task LoadAsync()
+	private async Task LoadModsAsync()
 	{
 		SourceMods.Clear();
 
-		var searchDirectories = new List<DirectoryInfo>
-		{
+		List<DirectoryInfo> searchDirectories =
+		[
 			launchDirectory,
 			BehaviourEngine.CurrentDirectory,
 			currentDirectory
-		};
+		];
+		DirectoryInfo[] uniqueDirectories = [.. searchDirectories
+			.Where(d => d != null)
+			.DistinctBy(d => d.FullName, StringComparer.OrdinalIgnoreCase)];
+		var mods = await _modService.LoadModsAsync([.. uniqueDirectories]);
 
-		var mods = await _modService.LoadModsAsync(searchDirectories.ToArray());
-		var viewModelsMods = await _modService.PrepareModViewModelsAsync(mods);
-		SourceMods.AddRange(viewModelsMods);
-
-		if (BehaviourEngine.EngineConfigurations.Count > 0)
-		{
-			EngineLogger.AppendLine("Plugins loaded.");
-		}
+		SourceMods.AddRange(mods);
 	}
 
 	[ReactiveCommand]
@@ -302,17 +316,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 	{
 		ThemeToggleState = isChecked;
 
-		switch (isChecked)
-		{
-			case true:
-				Application.Current!.RequestedThemeVariant = ThemeVariant.Light;
-				Properties.GUISettings.Default.AppTheme = 0;
-				break;
-			case false:
-				Application.Current!.RequestedThemeVariant = ThemeVariant.Dark;
-				Properties.GUISettings.Default.AppTheme = 1;
-				break;
-		}
-		Properties.GUISettings.Default.Save();
+		if (isChecked is bool checkedValue)
+			AvaloniaServices.ApplyTheme(checkedValue ? PlatformThemeVariant.Light : PlatformThemeVariant.Dark);
 	}
 }
