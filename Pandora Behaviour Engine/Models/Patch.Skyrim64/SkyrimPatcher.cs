@@ -130,7 +130,7 @@ public class SkyrimPatcher : IPatcher
 			var FNISPlugin = new FileInfo(Path.Combine(BehaviourEngine.AssemblyDirectory.FullName, "FNIS.esp"));
 			var outputFNISPlugin = new FileInfo(Path.Combine(directoryInfo.FullName, "FNIS.esp"));
 
-			if (!outputFNISPlugin.Exists)
+			if (FNISPlugin.Exists && !outputFNISPlugin.Exists)
 			{
 				FNISPlugin.CopyTo(outputFNISPlugin.FullName);
 			}
