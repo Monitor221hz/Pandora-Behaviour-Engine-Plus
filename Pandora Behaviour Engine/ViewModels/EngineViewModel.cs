@@ -48,8 +48,10 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 
 	[Reactive] private bool _isPreloading;
 	[Reactive] private bool _isOutputFolderCustomSet;
+	[Reactive] private bool _isVisibleLinkOutputDirectory;
 	[Reactive] private string _logText = string.Empty;
 	[Reactive] private string _searchTerm = string.Empty;
+	[Reactive] private string _outputDirectoryMessage = string.Empty;
 
 	[ObservableAsProperty(ReadOnly = false)] private bool? _allSelected;
 	[ObservableAsProperty(ReadOnly = false)] private bool _engineRunning;
@@ -112,6 +114,15 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		{
 			currentDirectory = options.OutputDirectory;
 			IsOutputFolderCustomSet = true;
+		}
+		else
+		{
+			bool fromMO2 = ProcessUtils.IsLaunchedFromModOrganizer();
+
+			IsVisibleLinkOutputDirectory = fromMO2;
+			OutputDirectoryMessage = fromMO2
+				? "Output folder not set via command line arguments (-o). If you use configured output folder via MO2 (Create files in mod ...), then ignore this."
+				: "Output folder is not set. Set it either via argument (-o). While the files will be generated in:";
 		}
 
 		autoRun = options.AutoRun;
