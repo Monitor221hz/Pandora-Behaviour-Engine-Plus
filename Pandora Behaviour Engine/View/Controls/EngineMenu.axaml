@@ -71,11 +71,11 @@
     <ToggleButton Name="ThemeToggle" 
                   Grid.Column="3" 
                   Height="30"
-                  IsChecked="{Binding ThemeToggleState}" 
+                  IsChecked="{Binding UIOptions.ThemeToggleState}" 
                   VerticalAlignment="Center" 
                   Theme="{DynamicResource TransparentToggleButtonPandora}" 
                   Background="Transparent" 
-                  Command="{Binding ToggleThemeCommand}"
+                  Command="{Binding UIOptions.ToggleThemeCommand}"
                   CommandParameter="{Binding $self.IsChecked}">
       <Viewbox>
         <Panel>

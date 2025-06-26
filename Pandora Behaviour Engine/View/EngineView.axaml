@@ -22,7 +22,7 @@
     <vws:PatchBox Grid.Row="1" Margin="0 6 0 0" />
     <GridSplitter Grid.Row="2" Classes="innerStyle" CornerRadius="6" ResizeDirection="Rows" Width="90" />
     <vws:LogBox Grid.Row="3" Margin="0 0 0 10" />
-    <ui:InfoBar Grid.Row="4" Severity="Informational" Title="Info" Message="Output folder not set via command line arguments -o:'{path}'. Files will be generated in the:" IsOpen="{Binding !IsOutputFolderCustomSet}" IsVisible="{Binding $self.IsOpen}" Margin="0 0 0 10">
+    <ui:InfoBar Grid.Row="4" Severity="Informational" Title="Info" Message="Output folder not set via command line arguments -o '{path}'. Files will be generated in the:" IsOpen="{Binding !IsOutputFolderCustomSet}" IsVisible="{Binding $self.IsOpen}" Margin="0 0 0 10">
       <ui:InfoBar.ActionButton>
         <HyperlinkButton Content="{Binding CurrentDirectoryInfo}" NavigateUri="{Binding CurrentDirectoryInfo}" />
       </ui:InfoBar.ActionButton>

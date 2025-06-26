@@ -1,9 +1,9 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:controls="using:Avalonia.Controls"
-                    xmlns:conv="clr-namespace:Pandora.Converters"
                     xmlns:vm="using:Pandora.ViewModels"
-                    xmlns:ui="using:FluentAvalonia.UI.Controls">
+                    xmlns:ui="using:FluentAvalonia.UI.Controls"
+                    xmlns:conv="clr-namespace:Pandora.Converters"
+                    xmlns:controls="using:Avalonia.Controls">
   <ResourceDictionary.MergedDictionaries>
     <ResourceInclude Source="avares://Pandora Behaviour Engine+/Themes/DataGrid/DataGridColumnHeaderStyles.axaml" />
     <ResourceInclude Source="avares://Pandora Behaviour Engine+/Themes/DataGrid/DataGridRowStyles.axaml" />
@@ -14,7 +14,7 @@
   <conv:PandoraCodeToEnabledConverter x:Key="PandoraCodeToEnabledConverter" />
   <conv:FilterConfigurableColumnsConverter x:Key="FilterConfigurableColumnsConverter" />
   <conv:GridLinesEnumMatchConverter x:Key="GridLinesEnumConverter" />
-  
+
   <x:Double x:Key="DataGridRowHeightCompact">20</x:Double>
 
   <DataTemplate x:Key="DataGridColumnsVisibilityDataTemplate">
@@ -54,7 +54,7 @@
                 CornerRadius="{TemplateBinding CornerRadius}">
           <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,*,Auto,Auto">
             <DataGridColumnHeader Name="PART_TopLeftCornerHeader"
-                                  Theme="{StaticResource DataGridTopLeftColumnHeader}" 
+                                  Theme="{StaticResource DataGridTopLeftColumnHeader}"
                                   SeparatorBrush="{TemplateBinding VerticalGridLinesBrush}"
                                   CornerRadius="4 0 0 0" />
             <DataGridColumnHeadersPresenter Name="PART_ColumnHeadersPresenter"
@@ -87,23 +87,23 @@
                     <Separator />
                     <StackPanel Orientation="Horizontal">
                       <TextBlock Text="Compact Row" VerticalAlignment="Center" Margin="0 0 10 0" />
-                      <ToggleSwitch VerticalAlignment="Center" IsChecked="{Binding $parent[DataGrid].((vm:EngineViewModel)DataContext).IsCompactRowHeight}" />
+                      <ToggleSwitch VerticalAlignment="Center" IsChecked="{Binding $parent[DataGrid].((vm:EngineViewModel)DataContext).UIOptions.IsCompactRowHeight}" />
                     </StackPanel>
                     <Separator />
                     <TextBlock Text="Grid Lines Style" Margin="0 0 0 4" />
                     <StackPanel Orientation="Horizontal" Spacing="10">
                       <RadioButton Content="None"
                                    GroupName="GridLinesGroup"
-                                   IsChecked="{Binding $parent[DataGrid].((vm:EngineViewModel)DataContext).GridLinesVisibility, Converter={StaticResource GridLinesEnumConverter}, ConverterParameter=None}" />
+                                   IsChecked="{Binding $parent[DataGrid].((vm:EngineViewModel)DataContext).UIOptions.GridLinesVisibility, Converter={StaticResource GridLinesEnumConverter}, ConverterParameter=None}" />
                       <RadioButton Content="Horizontal"
                                    GroupName="GridLinesGroup"
-                                   IsChecked="{Binding $parent[DataGrid].((vm:EngineViewModel)DataContext).GridLinesVisibility, Converter={StaticResource GridLinesEnumConverter}, ConverterParameter=Horizontal}" />
+                                   IsChecked="{Binding $parent[DataGrid].((vm:EngineViewModel)DataContext).UIOptions.GridLinesVisibility, Converter={StaticResource GridLinesEnumConverter}, ConverterParameter=Horizontal}" />
                       <RadioButton Content="Vertical"
                                    GroupName="GridLinesGroup"
-                                   IsChecked="{Binding $parent[DataGrid].((vm:EngineViewModel)DataContext).GridLinesVisibility, Converter={StaticResource GridLinesEnumConverter}, ConverterParameter=Vertical}" />
+                                   IsChecked="{Binding $parent[DataGrid].((vm:EngineViewModel)DataContext).UIOptions.GridLinesVisibility, Converter={StaticResource GridLinesEnumConverter}, ConverterParameter=Vertical}" />
                       <RadioButton Content="All"
                                    GroupName="GridLinesGroup"
-                                   IsChecked="{Binding $parent[DataGrid].((vm:EngineViewModel)DataContext).GridLinesVisibility, Converter={StaticResource GridLinesEnumConverter}, ConverterParameter=All}" />
+                                   IsChecked="{Binding $parent[DataGrid].((vm:EngineViewModel)DataContext).UIOptions.GridLinesVisibility, Converter={StaticResource GridLinesEnumConverter}, ConverterParameter=All}" />
                     </StackPanel>
 
                   </StackPanel>
@@ -114,7 +114,7 @@
                        Grid.Row="0" Grid.ColumnSpan="3" Grid.Column="0"
                        VerticalAlignment="Bottom"
                        Height="1"
-                       Fill="{DynamicResource DataGridGridLinesBrush}" /> 
+                       Fill="{DynamicResource DataGridGridLinesBrush}" />
 
             <DataGridRowsPresenter Name="PART_RowsPresenter"
                                    Grid.Row="1"
@@ -168,6 +168,6 @@
         <Setter Property="IsVisible" Value="False" />
       </Style>
     </Style>
-    
+
   </ControlTheme>
 </ResourceDictionary>

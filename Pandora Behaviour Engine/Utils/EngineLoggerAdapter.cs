@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Pandora.Utils;
 
-public static class EngineLogger
+public static class EngineLoggerAdapter
 {
 	private static readonly StringBuilder _logBuilder = new();
 	private static readonly Subject<string> _logSubject = new();
