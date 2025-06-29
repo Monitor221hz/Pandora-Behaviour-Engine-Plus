@@ -10,9 +10,15 @@
 
 <br/>
 
-A modular and lightweight behavior engine for TES Skyrim SE, for creatures and humanoids.  
+A modular and lightweight behavior patching engine for Havok Behavior and Animation 2010-x64, including creatures and humanoids.  
 
-Built with backwards compatibility in mind for [Nemesis Unlimited Behavior Engine](https://github.com/ShikyoKira/Project-New-Reign---Nemesis-Main) and FNIS, Pandora is an alternative engine streamlines both the author and user experience through a simplified UI, robust logging, intuitive formats, and fast patching times. Pandora runs on Windows, Linux, and MacOS.
+Havok Behavior (`hkb`) and Havok Animation (`hka`) consist of multiple non-deterministic finite state machines, serialized in xml before being converted to "packed" binary files (`.hkx`). This program parses changes to nodes in xml, serializes them into the FSMs using native DTOs, validates nodes, and then outputs the files in a game-ready binary format. 
+
+It supports the patch formats of both Nemesis Behavior Engine and FNIS, two prior behavior engines, but also has its own standard format for making changes to files. It introduces an overall performance boost compared to its predecessors due to its [program architecture](https://github.com/Monitor221hz/Pandora-Behaviour-Engine-Plus/wiki/Performance-Notes), and also comes with a simplified, accessible graphical user interface. The program is also error-tolerant and any nodes that are not valid in layout after changes are made will simply be reverted to its original state in the final output.
+
+Pandora runs on Windows, Linux, and MacOS, but only Windows is extensively tested. Linux users on SteamOS or similar may want to use Proton to wrap the self-contained windows build. 
+
+[Download the latest release here.](https://github.com/Monitor221hz/Pandora-Behaviour-Engine-Plus/releases/latest)
 
 <br/>
 <br/>
