@@ -9,7 +9,7 @@
 </div>
 
 ### Download the [latest release here.](https://github.com/Monitor221hz/Pandora-Behaviour-Engine-Plus/releases/latest)
-### Or check out the [Nexus page for mod manager downloads.](https://www.nexusmods.com/skyrimspecialedition/mods/133232)
+### Or check out the [Nexus page to download with mod manager](https://www.nexusmods.com/skyrimspecialedition/mods/133232)
 
 <br/>
 
