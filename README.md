@@ -8,6 +8,9 @@
     </a>
 </div>
 
+### Download the [latest release here.](https://github.com/Monitor221hz/Pandora-Behaviour-Engine-Plus/releases/latest)
+### Or check out the [Nexus page for mod manager downloads.](https://www.nexusmods.com/skyrimspecialedition/mods/133232)
+
 <br/>
 
 A modular and lightweight behavior patching engine for Havok Behavior and Animation 2010-x64, including creatures and humanoids.  
@@ -18,8 +21,7 @@ It supports the patch formats of both Nemesis Behavior Engine and FNIS, two prio
 
 Pandora runs on Windows, Linux, and MacOS, but only Windows is extensively tested. Linux users on SteamOS or similar may want to use Proton to wrap the self-contained windows build. 
 
-### Download the [latest release here.](https://github.com/Monitor221hz/Pandora-Behaviour-Engine-Plus/releases/latest)
-### Or check out the [Nexus page for mod manager downloads.](https://www.nexusmods.com/skyrimspecialedition/mods/133232)
+
 <br/>
 
 ## Navigation
