@@ -13,8 +13,8 @@ public static class ModUtils
 
 	public static List<IModInfo> GetActiveModsByPriority(IEnumerable<ModInfoViewModel> sourceMods) =>
 		sourceMods.Where(m => m.Active)
-			.Select(m => m.ModInfo)
 			.OrderBy(m => m.Priority)
+			.Select(m => m.ModInfo)
 			.ToList();
 
 	public static Func<ModInfoViewModel, bool> BuildFilter(string searchText) =>
