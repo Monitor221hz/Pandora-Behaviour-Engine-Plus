@@ -9,6 +9,7 @@ using Pandora.Models;
 using Pandora.Models.Patch.Configs;
 using Pandora.Services;
 using Pandora.Utils;
+using Pandora.Views;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using Splat;
@@ -36,6 +37,8 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		new PandoraModInfoProvider()
 	}.AsReadOnly();
 
+	[BindableDerivedList]
+	private readonly ReadOnlyObservableCollection<ModInfoViewModel> _modViewModels;
 	private readonly ModService _modService;
 	private readonly JsonModSettingsStore _settingsStore;
 	private readonly EngineConfigurationService _configService;
@@ -55,8 +58,6 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 
 	[ObservableAsProperty(ReadOnly = false)] private bool? _allSelected;
 	[ObservableAsProperty(ReadOnly = false)] private bool _engineRunning;
-
-	[BindableDerivedList] private readonly ReadOnlyObservableCollection<ModInfoViewModel> _modViewModels;
 
 	public string CurrentDirectoryInfo => currentDirectory.ToString();
 	public UIOptionsViewModel UIOptions { get; } = new();
@@ -94,12 +95,12 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 			InitializeSubscriptions(disposables);
 
 			RxApp.MainThreadScheduler.Schedule(async () =>
-            {
-                await LoadModsAsync();
-                await PreloadEngineAsync();
+			{
+				await LoadModsAsync();
+				await PreloadEngineAsync();
 
-                if (autoRun) await LaunchEngineCommand.Execute();
-            });
+				if (autoRun) await LaunchEngineCommand.Execute();
+			});
 		});
 
 		if (BehaviourEngine.EngineConfigurations.Count > 0)
@@ -229,10 +230,11 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		return success;
 	}
 
-	private async Task HandleLaunchResultAsync(bool success)
+	private async Task HandleLaunchResultAsync(bool success, MainWindow? mainWindow)
 	{
 		if (success)
 		{
+			mainWindow?.SetTaskbarProgress(false);
 			await _modService.SaveActiveModsAsync(SourceMods);
 			if (closeOnFinish && Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime lifetime)
 			{
@@ -241,6 +243,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		}
 		else
 		{
+			mainWindow?.SetTaskbarProgressError();
 			EngineLoggerAdapter.AppendLine("Launch aborted. Existing output was not cleared, and current patch list will not be saved.");
 		}
 	}
@@ -249,12 +252,14 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 	private async Task LaunchEngine()
 	{
 		var timer = Stopwatch.StartNew();
+		var mainWindow = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow as MainWindow;
+		mainWindow?.SetTaskbarProgress(true);
 		await WaitForPreloadAsync();
 		var success = await ExecuteEngineAsync();
 		timer.Stop();
 		EngineLoggerAdapter.AppendLine(Engine.GetMessages(success));
 		EngineLoggerAdapter.AppendLine($"Launch finished in {timer.Elapsed.TotalSeconds:F2} seconds.");
-		await HandleLaunchResultAsync(success);
+		await HandleLaunchResultAsync(success, mainWindow);
 		_ = PreloadEngineAsync();
 	}
 

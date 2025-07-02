@@ -5,6 +5,7 @@ using Pandora.Utils;
 using Pandora.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -55,7 +56,7 @@ public class ModService
 
 	private async Task<HashSet<IModInfo>> LoadModInfosAsync(IEnumerable<DirectoryInfo> directories)
 	{
-		var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+		var stopwatch = Stopwatch.StartNew();
 		var modInfos = new HashSet<IModInfo>();
 
 		var pathsToScan = GetModPaths(directories)

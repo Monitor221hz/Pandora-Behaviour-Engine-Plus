@@ -57,16 +57,17 @@ public class JsonModSettingsStore : IModSettingsStore
 	{
 		try
 		{
-			var settings = await LoadSettingsAsync();
-
-			foreach (var mod in mods.Where(m => !ModUtils.IsPandora(m)))
-			{
-				settings[mod.Code] = new ModSaveEntry
-				{
-					Active = mod.Active,
-					Priority = mod.Priority
-				};
-			}
+			var settings = mods
+				.Where(m => !ModUtils.IsPandora(m))
+				.ToDictionary(
+					m => m.Code,
+					m => new ModSaveEntry
+					{
+						Active = m.Active,
+						Priority = m.Priority
+					},
+					StringComparer.OrdinalIgnoreCase
+				);
 
 			var json = JsonSerializer.Serialize(settings, jsonOptions);
 			await File.WriteAllTextAsync(_settingsPath, json);
@@ -87,8 +88,10 @@ public class JsonModSettingsStore : IModSettingsStore
 		try
 		{
 			var json = await File.ReadAllTextAsync(_settingsPath);
-			return JsonSerializer.Deserialize<Dictionary<string, ModSaveEntry>>(json, jsonOptions)
-				   ?? new(StringComparer.OrdinalIgnoreCase);
+			var data = JsonSerializer.Deserialize<Dictionary<string, ModSaveEntry>>(json, jsonOptions);
+			return data?.Where(kvp => kvp.Value is not null)
+				.ToDictionary(kvp => kvp.Key, kvp => kvp.Value!, StringComparer.OrdinalIgnoreCase)
+				?? new(StringComparer.OrdinalIgnoreCase);
 		}
 		catch (Exception ex) when (ex is IOException or JsonException)
 		{
