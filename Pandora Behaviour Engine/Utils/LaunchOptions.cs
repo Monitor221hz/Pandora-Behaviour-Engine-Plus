@@ -45,7 +45,7 @@ public class LaunchOptions
 			skyrimDebug64Option
 		};
 
-		rootCommand.SetHandler((DirectoryInfo? output, DirectoryInfo? tesv, bool autorun, bool autoclose, bool useskyrimdebug64) =>
+		rootCommand.SetHandler((output, tesv, autorun, autoclose, useskyrimdebug64) =>
 		{
 			options.OutputDirectory = output;
 			options.AutoRun = autorun;
