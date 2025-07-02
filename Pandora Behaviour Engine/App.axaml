@@ -1,15 +1,14 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="Pandora.App"
-             xmlns:local="using:Pandora"
-             xmlns:sty="using:FluentAvalonia.Styling"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:sty="using:FluentAvalonia.Styling"
+             x:Class="Pandora.App"
              RequestedThemeVariant="Default">
   <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
   <Application.Styles>
     <sty:FluentAvaloniaTheme PreferUserAccentColor="False" />
-    <StyleInclude Source="avares://Pandora Behaviour Engine+/Themes/DataGrid/PandoraStyles.axaml" />
+    <StyleInclude Source="avares://Pandora Behaviour Engine+/Themes/PandoraStyles.axaml" />
   </Application.Styles>
   <Application.Resources>
     <ResourceDictionary>
