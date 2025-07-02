@@ -45,7 +45,7 @@ public partial class EngineMenu : ReactiveUserControl<EngineViewModel>
                     });
                     aboutDialog.Commands.Add(new TaskDialogCommand
                     {
-                        Text = "Github",
+                        Text = "GitHub",
                         Description = "Visit GitHub page",
                         IsEnabled = true,
                         Command = ViewModel!.OpenUrlCommand,
