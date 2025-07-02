@@ -235,11 +235,14 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		if (success)
 		{
 			mainWindow?.SetTaskbarProgress(false);
+
+			if (mainWindow is not null && !mainWindow.IsActive)
+				TaskbarFlasher.FlashUntilFocused(mainWindow);
+
 			await _modService.SaveActiveModsAsync(SourceMods);
-			if (closeOnFinish && Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime lifetime)
-			{
+			
+			if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime lifetime && closeOnFinish)
 				lifetime.Shutdown();
-			}
 		}
 		else
 		{
@@ -253,6 +256,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 	{
 		var timer = Stopwatch.StartNew();
 		var mainWindow = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow as MainWindow;
+
 		mainWindow?.SetTaskbarProgress(true);
 		await WaitForPreloadAsync();
 		var success = await ExecuteEngineAsync();
