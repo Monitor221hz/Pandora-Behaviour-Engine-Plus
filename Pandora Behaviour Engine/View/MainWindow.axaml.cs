@@ -20,7 +20,7 @@ public partial class MainWindow : AppWindow
 		TitleBar.TitleBarHitTestType = TitleBarHitTestType.Complex;
 		TitleBar.Height = 42;
 
-        var savedWindowHeight = Properties.GUISettings.Default.WindowHeight;
+		var savedWindowHeight = Properties.GUISettings.Default.WindowHeight;
 		var savedWindowWidth = Properties.GUISettings.Default.WindowWidth;
 		Height = savedWindowHeight > 1 ? savedWindowHeight : Height;
 		Width = savedWindowWidth > 1 ? savedWindowWidth : Width;
@@ -32,4 +32,23 @@ public partial class MainWindow : AppWindow
 		Properties.GUISettings.Default.WindowWidth = Width;
 		Properties.GUISettings.Default.Save();
 	}
+	public void SetTaskbarProgress(bool isRunning)
+	{
+		if (!IsWindows) return;
+
+		if (isRunning)
+		{
+			PlatformFeatures.SetTaskBarProgressBarState(TaskBarProgressBarState.Indeterminate);
+		}
+		else
+		{
+			PlatformFeatures.SetTaskBarProgressBarState(TaskBarProgressBarState.None);
+		}
+	}
+	public void SetTaskbarProgressError()
+	{
+		if (!IsWindows) return;
+		PlatformFeatures.SetTaskBarProgressBarState(TaskBarProgressBarState.Error);
+	}
+
 }
