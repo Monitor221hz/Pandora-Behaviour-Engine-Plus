@@ -132,6 +132,7 @@ public class SkyrimPatcher : IPatcher
 
 			if (FNISPlugin.Exists && !outputFNISPlugin.Exists)
 			{
+				outputFNISPlugin.Directory?.Create();
 				FNISPlugin.CopyTo(outputFNISPlugin.FullName);
 			}
 		}
