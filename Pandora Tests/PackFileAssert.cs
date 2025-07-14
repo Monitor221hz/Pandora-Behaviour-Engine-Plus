@@ -11,18 +11,13 @@ public class PackFileAssert
 	/// <param name="character"></param>
 	/// <param name="sibling"></param>
 	/// <returns></returns>
-	public static bool ValidSiblingAnimations(PackFileCharacter character, PackFileCharacter sibling)
+	public static void ValidSiblingAnimations(PackFileCharacter character, PackFileCharacter sibling)
 	{
 		for (int i = 0; i < character.AnimationNames.Count; i++)
 		{
-			if (!character.AnimationNames[i].Equals(sibling.AnimationNames[i], System.StringComparison.OrdinalIgnoreCase))
-			{
-				return false;
-			}
+			Assert.Equal(Path.GetFileName(character.AnimationNames[i]), Path.GetFileName(sibling.AnimationNames[i]), StringComparer.OrdinalIgnoreCase);
 		}
-		return true;
 	}
-
 	public static void ValidPackFile(PackFileGraph graph)
 	{
 		Assert.NotEmpty(graph.Container.namedVariants);
