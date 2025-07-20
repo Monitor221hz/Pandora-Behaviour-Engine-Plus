@@ -33,7 +33,7 @@ runs:
         # NOTE: If we don't create a dir, we'll get an error when using `Compress-Archive`.
         $zipDir = Split-Path -Path $zipPath -Parent
         New-Item -ItemType Directory -Force -Path $zipDir | Out-Null
-        Compress-Archive -Path "$outputDir\*" -DestinationPath "$zipPath"
+        Compress-Archive -Path "$outputDir/*" -DestinationPath "$zipPath"
 
     - name: Create Release & Upload
       shell: pwsh
@@ -45,7 +45,7 @@ runs:
         $title = '${{ inputs.title }}'
 
         if ([string]::IsNullOrEmpty($title)) {
-          Write-Host "Uploading to existing release $tag: $zip"
+          Write-Host "Uploading to existing release ${tag}: $zip"
           gh release upload $tag $zip
         } else {
           Write-Host "Creating new release $tag with title '$title' and uploading $zip"
