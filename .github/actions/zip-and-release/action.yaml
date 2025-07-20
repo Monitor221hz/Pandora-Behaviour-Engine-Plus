@@ -28,8 +28,11 @@ runs:
         $outputDir = Resolve-Path '${{ inputs.output-dir }}'
         $zipPath = '${{ inputs.zip-path }}'
 
-        Write-Host "Zipping from $outputDir to $zipPath"
+        Write-Host "Zipping from $outputDir => $zipPath"
 
+        # NOTE: If we don't create a dir, we'll get an error when using `Compress-Archive`.
+        $zipDir = Split-Path -Path $zipPath -Parent
+        New-Item -ItemType Directory -Force -Path $zipDir | Out-Null
         Compress-Archive -Path "$outputDir\*" -DestinationPath "$zipPath"
 
     - name: Create Release & Upload
