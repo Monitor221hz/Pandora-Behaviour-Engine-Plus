@@ -29,6 +29,7 @@ jobs:
           $zip_path='./Output/Pandora_Behaviour_Engine_${{ env.PROFILE }}.zip'
 
           echo "output_dir=$output_dir" >> $env:GITHUB_OUTPUT
+          mkdir -p ./Output/ # NOTE: If we don't create a dir, we'll get an error when using `Compress-Archive`.
           echo "zip_path=$zip_path" >> $env:GITHUB_OUTPUT
 
       - name: Build & Test -> Upload a Build Artifact
