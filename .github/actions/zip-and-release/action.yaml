@@ -41,7 +41,7 @@ runs:
     - name: Create Release & Upload
       shell: pwsh
       env:
-        GITHUB_TOKEN: ${{ inputs.github-token }}
+        GH_TOKEN: ${{ inputs.github-token }}
       run: |
         $tag = '${{ inputs.tag }}'
         $zip = '${{ inputs.zip-path }}'
