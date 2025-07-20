@@ -18,6 +18,9 @@ inputs:
   zip-path:
     description: Full path of the zip file to create
     required: true
+  github-token:
+    description: GitHub Token (usually from secrets.GITHUB_TOKEN)
+    required: true
 
 runs:
   using: "composite"
@@ -38,7 +41,7 @@ runs:
     - name: Create Release & Upload
       shell: pwsh
       env:
-        GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
       run: |
         $tag = '${{ inputs.tag }}'
         $zip = '${{ inputs.zip-path }}'
