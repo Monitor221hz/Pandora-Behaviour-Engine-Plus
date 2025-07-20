@@ -23,7 +23,7 @@ jobs:
         run: |
           $output_dir='./Pandora Behaviour Engine/bin/${{ env.PROFILE }}/net9.0'
 
-          echo "output_dir=$output_dir" >> $GITHUB_OUTPUT
+          echo "output_dir=$output_dir" >> $env:GITHUB_OUTPUT
 
       - name: Build & Test
         uses: ./.github/actions/build-and-test
