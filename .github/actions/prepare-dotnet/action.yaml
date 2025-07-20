@@ -27,6 +27,6 @@ runs:
           ${{ github.workspace }}/XML.Cake.NET/XML Cake/obj
           ${{ github.workspace }}/Pandora Tests/bin
           ${{ github.workspace }}/Pandora Tests/obj
-        key: nuget-${{ runner.os }}-${{ inputs.dotnet-version }}${{ inputs.cache-key-suffix && format('-{0}', inputs.cache-key-suffix) || '' }}
+        key: nuget-${{ runner.os }}-${{ inputs.dotnet-version }}-${{ inputs.cache-key-suffix }}
         restore-keys: |
           nuget-${{ runner.os }}-
