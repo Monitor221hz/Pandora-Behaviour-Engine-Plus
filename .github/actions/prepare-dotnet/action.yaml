@@ -1,5 +1,7 @@
 name: Setup .NET & Cache Dependencies
-description: Caches NuGet and build outputs for faster .NET builds.
+description: |
+  Caches NuGet and build outputs for faster .NET builds.
+  NOTE: When using this, please specify `env.NUGET_PACKAGES` in each workflows/*.yaml.
 
 inputs:
   dotnet-version:
@@ -11,6 +13,7 @@ inputs:
     required: false
     default: ""
 
+# NOTE: Please do not attempt to reuse `actions/checkout` in composite action, as it will have no effect.
 runs:
   using: "composite"
   steps:
