@@ -25,7 +25,12 @@ runs:
     - name: Create Zip
       shell: pwsh
       run: |
-        Compress-Archive -Path '${{ inputs.output-dir }}/*' -DestinationPath '${{ inputs.zip-path }}'
+        $outputDir = Resolve-Path '${{ inputs.output-dir }}'
+        $zipPath = '${{ inputs.zip-path }}'
+
+        Write-Host "Zipping from $outputDir to $zipPath"
+
+        Compress-Archive -Path "$outputDir\*" -DestinationPath "$zipPath"
 
     - name: Create Release & Upload
       shell: pwsh
