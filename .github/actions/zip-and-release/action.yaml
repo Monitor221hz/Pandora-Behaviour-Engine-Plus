@@ -1,0 +1,45 @@
+name: Zip & Release
+description: |
+  Zips build output and uploads it to GitHub Releases.
+  - If `title` is provided => For new release. (With generated notes)
+  - If `title` is none => Append release.
+
+inputs:
+  title:
+    description: Release title (optional; include only for initial release)
+    required: false
+  tag:
+    description: Git tag (e.g. v1.0.0)
+    required: true
+
+  output-dir:
+    description: Directory containing build output (Src To zip)
+    required: true
+  zip-path:
+    description: Full path of the zip file to create
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Create Zip
+      shell: pwsh
+      run: |
+        Compress-Archive -Path '${{ inputs.output-dir }}/*' -DestinationPath '${{ inputs.zip-path }}'
+
+    - name: Create Release & Upload
+      shell: pwsh
+      env:
+        GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+      run: |
+        $tag = '${{ inputs.tag }}'
+        $zip = '${{ inputs.zip-path }}'
+        $title = '${{ inputs.title }}'
+
+        if ([string]::IsNullOrEmpty($title)) {
+          Write-Host "Uploading to existing release $tag: $zip"
+          gh release upload $tag $zip
+        } else {
+          Write-Host "Creating new release $tag with title '$title' and uploading $zip"
+          gh release create $tag $zip --title $title --generate-notes
+        }

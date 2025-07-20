@@ -3,75 +3,42 @@ name: build & tests & release
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - "v*.*.*"
 
 env:
-  build-mode: Release # Release | Debug
-  # Explicit cache location to cache only nuget dependencies for this project.
-  NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
+  DOTNET_VERSION: "9.0.x"
+  PROFILE: Release # Release | Debug
+  NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages # Since env cannot be specified in composite action, specify cache dir individually.
 
 jobs:
   build:
     runs-on: windows-latest
-    strategy:
-      matrix:
-        dotnet-version: ["9.0.x"]
 
     steps:
       # Ref: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net#building-and-testing-your-code
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ matrix.dotnet-version }}
+          fetch-depth: 1
 
-      - name: .NET Cache
-        # If there is a cache here, it is restored, otherwise it is cached at the end.
-        uses: actions/cache@v4
-        with:
-          # - Specify the same as `NUGET_PACKAGES`
-          path: |
-            ${{ github.workspace }}/.nuget/packages
-            ${{ github.workspace }}/Pandora Behaviour Engine/bin
-            ${{ github.workspace }}/Pandora Behaviour Engine/obj
-            ${{ github.workspace }}/Pandora API/HKX2-Enhanced-Library/HKX2/bin
-            ${{ github.workspace }}/Pandora API/HKX2-Enhanced-Library/HKX2/obj
-            ${{ github.workspace }}/XML.Cake.NET/XML Cake/bin
-            ${{ github.workspace }}/XML.Cake.NET/XML Cake/obj
-            ${{ github.workspace }}/Pandora Tests/bin
-            ${{ github.workspace }}/Pandora Tests/obj
-          key: nuget-${{ runner.os }}-${{ matrix.dotnet-version }}
-          restore-keys: |
-            nuget-${{ runner.os }}-
+      - name: Set output paths
+        id: set_paths
+        run: |
+          echo "output_dir=./Pandora Behaviour Engine/bin/${{ env.PROFILE }}/net9.0" >> $GITHUB_OUTPUT
+          echo "zip_path=./Output/Pandora_Behaviour_Engine_${{ env.PROFILE }}.zip" >> $GITHUB_OUTPUT
 
-      - name: Build
-        run: dotnet test "./Pandora+.sln" --configuration ${{ env.build-mode }} --logger GitHubActions
-      
-      - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v4
+      - name: Build & Test
+        uses: ./.github/actions/build-and-test
         with:
-          name: Pandora.Behaviour.Engine
-          path: |
-            ./Pandora Behaviour Engine/bin/${{ env.build-mode }}/net9.0
-            
-      - name: Download
-        uses: actions/download-artifact@v4
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+          configuration: ${{ env.PROFILE }}
+          solution-path: "./Pandora+.sln"
+          output-dir: ${{ steps.set_paths.outputs.output_dir }}
+
+      - name: Zip and Release
+        uses: ./.github/actions/zip-and-release
         with:
-         name: Pandora.Behaviour.Engine
-         path: ./Output
-         merge-multiple: true
-         
-      - name: Zip Artifact For Deployment
-        run: Compress-Archive -Path ./Output/* -Destination "./Output/Pandora_Behaviour_Engine_${{ github.ref_name }}.zip"
-         
-      - name: Create Release
-        env:
-         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: >-
-         gh release create "${{ github.ref_name }}"
-         "./Output/Pandora_Behaviour_Engine_${{ github.ref_name }}.zip"
-         --generate-notes
-         --title "Pandora Behaviour Engine ${{ github.ref_name }}"
-    
+          title: Pandora Behaviour Engine ${{ github.ref_name }}
+          tag: ${{ github.ref_name }}
+          output-dir: ${{ steps.set_paths.outputs.output_dir }}
+          zip-path: ${{ steps.set_paths.outputs.zip_path }}
