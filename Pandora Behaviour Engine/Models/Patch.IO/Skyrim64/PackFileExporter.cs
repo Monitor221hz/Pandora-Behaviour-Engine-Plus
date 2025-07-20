@@ -10,7 +10,7 @@ namespace Pandora.Models.Patch.IO.Skyrim64;
 
 public class PackFileExporter : IMetaDataExporter<PackFile>
 {
-	private static readonly FileInfo PreviousOutputFile = new(Path.Combine(BehaviourEngine.AssemblyDirectory.FullName, "Pandora_Engine\\PreviousOutput.txt"));
+	private static readonly FileInfo PreviousOutputFile = new(Path.Combine(Environment.CurrentDirectory, "Pandora_Engine\\PreviousOutput.txt"));
 	public DirectoryInfo ExportDirectory { get; set; }
 
 
@@ -18,12 +18,12 @@ public class PackFileExporter : IMetaDataExporter<PackFile>
 
 	public PackFileExporter()
 	{
-		ExportDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
+		ExportDirectory = new DirectoryInfo(Environment.CurrentDirectory);
 	}
 
 	public bool Export(PackFile packFile)
 	{
-		var launchDirectory = BehaviourEngine.AssemblyDirectory.FullName;
+		var launchDirectory = Environment.CurrentDirectory;
 
 		var outputHandle = packFile.RebaseOutput(ExportDirectory);
 		if (outputHandle.Directory == null) return false;

@@ -359,13 +359,13 @@ public class ProjectManager : IProjectManager
 		Parallel.ForEach(ActivePackFiles, packFile =>
 		{
 			packFile.ApplyChanges();
-			//packFile.Map.Save(Path.Join(Directory.GetCurrentDirectory(), packFile.InputHandle.Name));
+			//packFile.Map.Save(Path.Join(Environment.CurrentDirectory, packFile.InputHandle.Name));
 
 		});
 		//foreach (PackFile packFile in ActivePackFiles)
 		//{
 		//	packFile.ApplyChanges();
-		//	packFile.Map.Save(Path.Join(Directory.GetCurrentDirectory(), packFile.InputHandle.Name));
+		//	packFile.Map.Save(Path.Join(Environment.CurrentDirectory, packFile.InputHandle.Name));
 		//	packFile.Export();
 		//}
 		return true;

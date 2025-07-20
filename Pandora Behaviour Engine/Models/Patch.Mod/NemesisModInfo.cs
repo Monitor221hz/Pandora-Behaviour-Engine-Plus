@@ -1,7 +1,7 @@
-﻿using Pandora.API.Patch;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Pandora.API.Patch;
 
 namespace Pandora.Models.Patch.Mod;
 
@@ -44,7 +44,7 @@ public class NemesisModInfo : IModInfo
 	public NemesisModInfo()
 	{
 		Valid = false;
-		Folder = new DirectoryInfo(Directory.GetCurrentDirectory());
+		Folder = new DirectoryInfo(Environment.CurrentDirectory);
 	}
 	public NemesisModInfo(DirectoryInfo folder, string name, string author, string url, bool active, Dictionary<string, string> properties)
 	{
@@ -91,4 +91,3 @@ public class NemesisModInfo : IModInfo
 		//add metadata later
 	}
 }
-

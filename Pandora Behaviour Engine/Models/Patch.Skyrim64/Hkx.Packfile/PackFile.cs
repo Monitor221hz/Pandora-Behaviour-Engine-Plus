@@ -83,7 +83,7 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 	{
 		InputHandle = file;
 		OutputHandle = file;
-		relativeOutputFilePath = Path.GetRelativePath(BehaviourEngine.AssemblyDirectory.FullName, file.FullName.Replace("Pandora_Engine\\Skyrim\\Template", "meshes", StringComparison.OrdinalIgnoreCase));
+		relativeOutputFilePath = Path.GetRelativePath(Environment.CurrentDirectory, file.FullName.Replace("Pandora_Engine\\Skyrim\\Template", "meshes", StringComparison.OrdinalIgnoreCase));
 		RelativeOutputDirectoryPath = Path.GetDirectoryName(relativeOutputFilePath)!;
 		using (var stream = file.OpenRead())
 		{

@@ -28,13 +28,13 @@ public class NemesisAssembler
 
 	List<PackFile> packFiles = [];
 
-	private static readonly DirectoryInfo engineFolder = new(Directory.GetCurrentDirectory() + "\\Pandora_Engine");
+	private static readonly DirectoryInfo engineFolder = new(Environment.CurrentDirectory + "\\Pandora_Engine");
 
-	private static readonly DirectoryInfo templateFolder = new(Path.Combine(BehaviourEngine.AssemblyDirectory.FullName, "Pandora_Engine\\Skyrim\\Template"));
+	private static readonly DirectoryInfo templateFolder = new(Path.Combine(Environment.CurrentDirectory, "Pandora_Engine\\Skyrim\\Template"));
 
-	private static readonly DirectoryInfo defaultOutputMeshFolder = new(Path.Join(Directory.GetCurrentDirectory(), "meshes"));
+	private static readonly DirectoryInfo defaultOutputMeshFolder = new(Path.Join(Environment.CurrentDirectory, "meshes"));
 
-	private static readonly DirectoryInfo currentDirectory = new(Directory.GetCurrentDirectory());
+	private static readonly DirectoryInfo currentDirectory = new(Environment.CurrentDirectory);
 	public ProjectManager ProjectManager { get; private set; }
 	public AnimDataManager AnimDataManager { get; private set; }
 	public AnimSetDataManager AnimSetDataManager { get; private set; }
@@ -248,7 +248,7 @@ public class NemesisAssembler
 		List<(FileInfo inFile, FileInfo outFile)> exportFiles = [];
 		foreach (PackFile packFile in ProjectManager.ActivePackFiles)
 		{
-			exportFiles.Add((packFile.InputHandle, new FileInfo(Path.Join(Directory.GetCurrentDirectory(), packFile.InputHandle.Name))));
+			exportFiles.Add((packFile.InputHandle, new FileInfo(Path.Join(Environment.CurrentDirectory, packFile.InputHandle.Name))));
 		}
 		return exportFiles;
 	}

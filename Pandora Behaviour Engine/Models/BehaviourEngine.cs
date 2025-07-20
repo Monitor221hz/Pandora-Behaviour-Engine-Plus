@@ -25,7 +25,7 @@ public class BehaviourEngine
 
 	//public static readonly DirectoryInfo AssemblyDirectory = new(AppContext.BaseDirectory);
 
-	public static readonly DirectoryInfo CurrentDirectory = new(Directory.GetCurrentDirectory()!);
+	public static readonly DirectoryInfo CurrentDirectory = new(Environment.CurrentDirectory!);
 
 	public static readonly List<IEngineConfigurationPlugin> EngineConfigurations = [];
 
@@ -57,7 +57,7 @@ public class BehaviourEngine
 		foreach (DirectoryInfo pluginDirectory in subDirectories)
 		{
 #if DEBUG
-			// only for debug. DO NOT introduce json field plugin loading to release builds 
+			// only for debug. DO NOT introduce json field plugin loading to release builds
 			IMetaPluginLoader metaPluginLoader = new JsonPluginLoader();
 
 			if (!metaPluginLoader.TryLoadMetadata(pluginDirectory, out var pluginInfo))
@@ -108,7 +108,7 @@ public class BehaviourEngine
 
 	public IEngineConfiguration Configuration { get; private set; } = new SkyrimConfiguration();
 	public bool IsExternalOutput = false;
-	public DirectoryInfo OutputPath { get; private set; } = new DirectoryInfo(Directory.GetCurrentDirectory());
+	public DirectoryInfo OutputPath { get; private set; } = new DirectoryInfo(Environment.CurrentDirectory);
 	public void SetOutputPath(DirectoryInfo outputPath)
 	{
 		OutputPath = outputPath!;
