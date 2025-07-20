@@ -31,7 +31,7 @@ jobs:
           echo "output_dir=$output_dir" >> $env:GITHUB_OUTPUT
           echo "zip_path=$zip_path" >> $env:GITHUB_OUTPUT
 
-      - name: Build & Test
+      - name: Build & Test -> Upload a Build Artifact
         uses: ./.github/actions/build-and-test
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}

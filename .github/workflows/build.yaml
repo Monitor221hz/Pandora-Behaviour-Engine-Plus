@@ -25,16 +25,10 @@ jobs:
 
           echo "output_dir=$output_dir" >> $env:GITHUB_OUTPUT
 
-      - name: Build & Test
+      - name: Build & Test -> Upload a Build Artifact
         uses: ./.github/actions/build-and-test
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
           configuration: ${{ env.PROFILE }}
           solution-path: "./Pandora+.sln"
           output-dir: ${{ steps.set-paths.outputs.output_dir }}
-
-      - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: Pandora.Behaviour.Engine
-          path: ${{ steps.set-paths.outputs.output_dir }}
