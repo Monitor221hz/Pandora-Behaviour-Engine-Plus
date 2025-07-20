@@ -18,8 +18,12 @@ jobs:
 
       # `GITHUB_OUTPUT` ref: https://docs.github.com/actions/reference/workflow-commands-for-github-actions#setting-an-output-parameter
       - name: Set output paths
-        id: set_paths
-        run: echo "output_dir=./Pandora Behaviour Engine/bin/${{ env.PROFILE }}/net9.0" >> $GITHUB_OUTPUT
+        id: set-paths
+        shell: pwsh
+        run: |
+          $output_dir='./Pandora Behaviour Engine/bin/${{ env.PROFILE }}/net9.0'
+
+          echo "output_dir=$output_dir" >> $GITHUB_OUTPUT
 
       - name: Build & Test
         uses: ./.github/actions/build-and-test
@@ -27,10 +31,10 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
           configuration: ${{ env.PROFILE }}
           solution-path: "./Pandora+.sln"
-          output-dir: ${{ steps.set_paths.outputs.output_dir }}
+          output-dir: ${{ steps.set-paths.outputs.output_dir }}
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Pandora.Behaviour.Engine
-          path: ${{ steps.set_paths.outputs.output_dir }}
+          path: ${{ steps.set-paths.outputs.output_dir }}

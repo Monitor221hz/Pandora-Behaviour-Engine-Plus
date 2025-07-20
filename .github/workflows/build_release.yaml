@@ -23,9 +23,13 @@ jobs:
 
       - name: Set output paths
         id: set_paths
+        shell: pwsh
         run: |
-          echo "output_dir=./Pandora Behaviour Engine/bin/${{ env.PROFILE }}/net9.0" >> $GITHUB_OUTPUT
-          echo "zip_path=./Output/Pandora_Behaviour_Engine_${{ env.PROFILE }}.zip" >> $GITHUB_OUTPUT
+          $output_dir='./Pandora Behaviour Engine/bin/${{ env.PROFILE }}/net9.0'
+          $zip_path='./Output/Pandora_Behaviour_Engine_${{ env.PROFILE }}.zip'
+
+          echo "output_dir=$output_dir" >> $GITHUB_OUTPUT
+          echo "zip_path=$zip_path" >> $GITHUB_OUTPUT
 
       - name: Build & Test
         uses: ./.github/actions/build-and-test
