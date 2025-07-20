@@ -9,6 +9,8 @@ env:
 
 jobs:
   build:
+    permissions:
+      contents: read
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4

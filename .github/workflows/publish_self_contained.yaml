@@ -11,6 +11,8 @@ env:
 
 jobs:
   publish:
+    permissions:
+      contents: write # Required for creating releases
     runs-on: ${{ matrix.runner }}
     strategy:
       matrix:

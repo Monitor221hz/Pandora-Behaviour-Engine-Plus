@@ -12,6 +12,8 @@ env:
 
 jobs:
   build:
+    permissions:
+      contents: write # Required for creating releases
     runs-on: windows-latest
 
     steps:
@@ -48,3 +50,4 @@ jobs:
           tag: ${{ github.ref_name }}
           output-dir: ${{ steps.set_paths.outputs.output_dir }}
           zip-path: ${{ steps.set_paths.outputs.zip_path }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
