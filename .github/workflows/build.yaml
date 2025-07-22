@@ -3,52 +3,34 @@ name: build & tests
 on: [push, pull_request]
 
 env:
-  build-mode: Debug # Release | Debug
-  # Explicit cache location to cache only nuget dependencies for this project.
-  NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
+  DOTNET_VERSION: "9.0.x"
+  PROFILE: Debug # Release | Debug
+  NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages # Since env cannot be specified in composite action, specify cache dir individually.
 
 jobs:
   build:
+    permissions:
+      contents: read
     runs-on: windows-latest
-    strategy:
-      matrix:
-        dotnet-version: ["9.0.x"]
-
     steps:
-      # Ref: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net#building-and-testing-your-code
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ matrix.dotnet-version }}
+          fetch-depth: 1
 
-      - name: .NET Cache
-        # If there is a cache here, it is restored, otherwise it is cached at the end.
-        uses: actions/cache@v4
-        with:
-          # - Specify the same as `NUGET_PACKAGES`
-          path: |
-            ${{ github.workspace }}/.nuget/packages
-            ${{ github.workspace }}/Pandora Behaviour Engine/bin
-            ${{ github.workspace }}/Pandora Behaviour Engine/obj
-            ${{ github.workspace }}/Pandora API/HKX2-Enhanced-Library/HKX2/bin
-            ${{ github.workspace }}/Pandora API/HKX2-Enhanced-Library/HKX2/obj
-            ${{ github.workspace }}/XML.Cake.NET/XML Cake/bin
-            ${{ github.workspace }}/XML.Cake.NET/XML Cake/obj
-            ${{ github.workspace }}/Pandora Tests/bin
-            ${{ github.workspace }}/Pandora Tests/obj
-          key: nuget-${{ runner.os }}-${{ matrix.dotnet-version }}
-          restore-keys: |
-            nuget-${{ runner.os }}-
+      # `GITHUB_OUTPUT` ref: https://docs.github.com/actions/reference/workflow-commands-for-github-actions#setting-an-output-parameter
+      - name: Set output paths
+        id: set-paths
+        shell: pwsh
+        run: |
+          $output_dir='./Pandora Behaviour Engine/bin/${{ env.PROFILE }}/net9.0'
 
-      - name: Build and Test
-        run: dotnet test "./Pandora+.sln" --configuration ${{ env.build-mode }} --logger GitHubActions
-      
-      - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v4
+          echo "output_dir=$output_dir" >> $env:GITHUB_OUTPUT
+
+      - name: Build & Test -> Upload a Build Artifact
+        uses: ./.github/actions/build-and-test
         with:
-          name: Pandora.Behaviour.Engine
-          path: |
-            ./Pandora Behaviour Engine/bin/${{ env.build-mode }}/net9.0
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+          configuration: ${{ env.PROFILE }}
+          solution-path: "./Pandora+.sln"
+          output-dir: ${{ steps.set-paths.outputs.output_dir }}

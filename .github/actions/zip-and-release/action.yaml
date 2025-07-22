@@ -1,0 +1,56 @@
+name: Zip & Release
+description: |
+  Zips build output and uploads it to GitHub Releases.
+  - If `title` is provided => For new release. (With generated notes)
+  - If `title` is none => Append release.
+
+inputs:
+  title:
+    description: Release title (optional; include only for initial release)
+    required: false
+  tag:
+    description: Git tag (e.g. v1.0.0)
+    required: true
+
+  output-dir:
+    description: Directory containing build output (Src To zip)
+    required: true
+  zip-path:
+    description: Full path of the zip file to create
+    required: true
+  github-token:
+    description: GitHub Token (usually from secrets.GITHUB_TOKEN)
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Create Zip
+      shell: pwsh
+      run: |
+        $outputDir = Resolve-Path '${{ inputs.output-dir }}'
+        $zipPath = '${{ inputs.zip-path }}'
+
+        Write-Host "Zipping from $outputDir => $zipPath"
+
+        # NOTE: If we don't create a dir, we'll get an error when using `Compress-Archive`.
+        $zipDir = Split-Path -Path $zipPath -Parent
+        New-Item -ItemType Directory -Force -Path $zipDir | Out-Null
+        Compress-Archive -Path "$outputDir/*" -DestinationPath "$zipPath"
+
+    - name: Create Release & Upload
+      shell: pwsh
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+      run: |
+        $tag = '${{ inputs.tag }}'
+        $zip = '${{ inputs.zip-path }}'
+        $title = '${{ inputs.title }}'
+
+        if ([string]::IsNullOrEmpty($title)) {
+          Write-Host "Uploading to existing release ${tag}: $zip"
+          gh release upload $tag $zip
+        } else {
+          Write-Host "Creating new release $tag with title '$title' and uploading $zip"
+          gh release create $tag $zip --title $title --generate-notes
+        }

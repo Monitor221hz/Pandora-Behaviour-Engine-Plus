@@ -1,0 +1,35 @@
+name: Build and Test
+description: Build, test, and upload .NET project artifact with caching and setup.
+
+inputs:
+  dotnet-version:
+    description: ".NET SDK version (e.g. `9.0.x`)"
+    required: true
+  configuration:
+    description: "Build configuration (`Release` or `Debug`)"
+    required: true
+  solution-path:
+    description: "Path to the solution file. (e.g. `./Pandora+.sln`)"
+    required: true
+  output-dir:
+    description: "Output directory path. (e.g. `./Pandora Behaviour Engine/bin/net9.0`)"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup .NET & Cache Dependencies
+      uses: ./.github/actions/prepare-dotnet
+      with:
+        dotnet-version: ${{ inputs.dotnet-version }}
+        cache-key-suffix: ${{ inputs.configuration }}
+
+    - name: Build and Test
+      shell: pwsh
+      run: dotnet test "${{ inputs.solution-path }}" --configuration ${{ inputs.configuration }} --logger GitHubActions -o "${{ inputs.output-dir }}"
+
+    - name: Upload build artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: "Pandora.Behaviour.Engine"
+        path: ${{ inputs.output-dir }}

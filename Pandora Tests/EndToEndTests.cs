@@ -16,10 +16,10 @@ public class EndToEndTests
 			new NemesisModInfoProvider(),
 			new PandoraModInfoProvider()
 		};
-		var activeModsFilePath = Path.Combine(BehaviourEngine.AssemblyDirectory.FullName, "Pandora_Engine", "ActiveMods.json");
+		var activeModsFilePath = Path.Combine(Environment.CurrentDirectory, "Pandora_Engine", "ActiveMods.json");
 		JsonModSettingsStore settingsStore = new JsonModSettingsStore(activeModsFilePath);
 		ModService service = new ModService(settingsStore, modInfoProviders);
-		var mods = await service.LoadModsAsync(BehaviourEngine.AssemblyDirectory, new DirectoryInfo(Path.Combine(Directory.GetCurrentDirectory(), "Data")));
+		var mods = await service.LoadModsAsync(BehaviourEngine.AssemblyDirectory, new DirectoryInfo(Path.Combine(Environment.CurrentDirectory, "Data")));
 		BehaviourEngine engine = new BehaviourEngine(new SkyrimDebugConfiguration());
 		engine.SetOutputPath(Resources.OutputDirectory);
 		await engine.PreloadAsync();

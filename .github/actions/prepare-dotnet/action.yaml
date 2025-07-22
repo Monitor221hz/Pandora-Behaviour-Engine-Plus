@@ -1,0 +1,35 @@
+name: Setup .NET & Cache Dependencies
+description: |
+  Caches NuGet and build outputs for faster .NET builds.
+  NOTE: When using this, please specify `env.NUGET_PACKAGES` in each workflows/*.yaml.
+
+inputs:
+  dotnet-version:
+    description: The version of .NET to use (e.g., `9.0.x`)
+    required: true
+
+  cache-key-suffix:
+    description: Suffix appended to the cache key to distinguish build variants (e.g., `Debug` or `Release`)
+    required: false
+    default: ""
+
+# NOTE: Please do not attempt to reuse `actions/checkout` in composite action, as it will have no effect.
+runs:
+  using: "composite"
+  steps:
+    - name: Cache NuGet and Build Outputs
+      uses: actions/cache@v4 # https://github.com/actions/cache
+      with:
+        path: |
+          ${{ github.workspace }}/.nuget/packages
+          ${{ github.workspace }}/Pandora Behaviour Engine/bin
+          ${{ github.workspace }}/Pandora Behaviour Engine/obj
+          ${{ github.workspace }}/Pandora API/HKX2-Enhanced-Library/HKX2/bin
+          ${{ github.workspace }}/Pandora API/HKX2-Enhanced-Library/HKX2/obj
+          ${{ github.workspace }}/XML.Cake.NET/XML Cake/bin
+          ${{ github.workspace }}/XML.Cake.NET/XML Cake/obj
+          ${{ github.workspace }}/Pandora Tests/bin
+          ${{ github.workspace }}/Pandora Tests/obj
+        key: nuget-${{ runner.os }}-${{ inputs.dotnet-version }}-${{ inputs.cache-key-suffix }}
+        restore-keys: |
+          nuget-${{ runner.os }}-
