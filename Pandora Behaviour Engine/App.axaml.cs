@@ -27,15 +27,7 @@ public partial class App : Application
 	public override void OnFrameworkInitializationCompleted()
 	{
 		SetupCultureInfo();
-
-		var themeName = Properties.GUISettings.Default.AppTheme;
-
-		Application.Current!.RequestedThemeVariant = themeName switch
-		{
-			0 => ThemeVariant.Light,
-			1 => ThemeVariant.Dark,
-			_ => ThemeVariant.Default,
-		};
+		SetupAppTheme();
 
 		if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
 		{
@@ -57,6 +49,17 @@ public partial class App : Application
 		CultureInfo.DefaultThreadCurrentCulture = culture;
 		CultureInfo.DefaultThreadCurrentUICulture = culture;
 		CultureInfo.CurrentCulture = culture;
+	}
+	private static void SetupAppTheme()
+	{
+		var themeName = Properties.GUISettings.Default.AppTheme;
+
+		Application.Current!.RequestedThemeVariant = themeName switch
+		{
+			0 => ThemeVariant.Light,
+			1 => ThemeVariant.Dark,
+			_ => ThemeVariant.Default,
+		};
 	}
 
 	/// <summary>
