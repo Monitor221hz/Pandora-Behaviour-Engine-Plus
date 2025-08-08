@@ -20,7 +20,6 @@ public class EngineConfigurationService
 	public IEngineConfigurationFactory CurrentFactory => _currentFactory;
 
 	public void SetCurrentFactory(IEngineConfigurationFactory factory) => _currentFactory = factory;
-	public IEngineConfigurationFactory GetCurrentFactory() => _currentFactory;
 
 	public IReadOnlyCollection<IEngineConfigurationViewModel> GetInitialConfigurations(ReactiveCommand<IEngineConfigurationFactory, Unit> setCommand)
 	{
