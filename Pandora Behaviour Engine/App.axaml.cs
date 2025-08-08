@@ -3,6 +3,8 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
+using Pandora.Logging;
+using Pandora.Utils;
 using Pandora.ViewModels;
 using Pandora.Views;
 using System;
@@ -17,10 +19,7 @@ public partial class App : Application
 {
 	public override void Initialize()
 	{
-		// Register the custom exception handlers to log unhandled exceptions.
-		AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-		TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
-
+		AppExceptionHandler.Register();
 		AvaloniaXamlLoader.Load(this);
 	}
 
