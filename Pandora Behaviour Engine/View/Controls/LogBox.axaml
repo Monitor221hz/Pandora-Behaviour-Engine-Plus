@@ -21,6 +21,7 @@
     <StackPanel Orientation="Horizontal" Spacing="4" Margin="8" HorizontalAlignment="Right">
       <Button Name="OpenOutputFolderButton"
               IsVisible="True"
+              IsEnabled="{Binding IsOutputFolderCustomSet}"
               Padding="4"
               HorizontalAlignment="Right" VerticalAlignment="Bottom"
               ToolTip.Tip="Open Output Folder">
