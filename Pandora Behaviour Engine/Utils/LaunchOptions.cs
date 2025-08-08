@@ -11,15 +11,17 @@ namespace Pandora.Utils;
 
 public class LaunchOptions
 {
+	private static readonly bool CaseInsensitive = true;
+
 	public DirectoryInfo? OutputDirectory { get; private set; }
 	public DirectoryInfo? SkyrimGameDirectory { get; private set; }
 	public bool AutoRun { get; private set; }
 	public bool AutoClose { get; private set; }
 	public bool UseSkyrimDebug64 { get; private set; }
 
-	private static readonly bool CaseInsensitive = true;
+	public static LaunchOptions Current { get; set; }
 
-	public static LaunchOptions Parse(string[] args)
+	public static LaunchOptions Parse(string[]? args)
 	{
 		var options = new LaunchOptions();
 
