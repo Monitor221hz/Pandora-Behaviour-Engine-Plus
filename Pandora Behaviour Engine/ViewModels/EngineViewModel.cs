@@ -62,6 +62,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 	public string CurrentDirectoryInfo => currentDirectory.ToString();
 	public UIOptionsViewModel UIOptions { get; } = new();
 	public ViewModelActivator Activator { get; } = new();
+	public DataGridOptionsViewModel DataGridOptions { get; } = new();
 	public Interaction<AboutDialogViewModel, Unit> ShowAboutDialog { get; } = new();
 	public ObservableCollectionExtended<ModInfoViewModel> SourceMods { get; } = [];
 	public ObservableCollection<IEngineConfigurationViewModel> EngineConfigurationViewModels { get; } = [];
