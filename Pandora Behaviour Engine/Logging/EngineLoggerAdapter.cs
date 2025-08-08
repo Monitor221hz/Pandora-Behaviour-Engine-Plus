@@ -1,15 +1,16 @@
 ﻿using System;
+using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Text;
 
-namespace Pandora.Utils;
+namespace Pandora.Logging;
 
 public static class EngineLoggerAdapter
 {
 	private static readonly StringBuilder _logBuilder = new();
-	private static readonly Subject<string> _logSubject = new();
+	private static readonly BehaviorSubject<string> _logSubject = new(string.Empty);
 
-	public static IObservable<string> LogObservable => _logSubject;
+	public static IObservable<string> LogObservable => _logSubject.AsObservable();
 
 	public static void AppendLine(string message)
 	{
