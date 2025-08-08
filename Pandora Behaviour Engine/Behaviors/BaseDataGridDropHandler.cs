@@ -5,11 +5,11 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 using Avalonia.Xaml.Interactions.DragAndDrop;
-using Pandora.Services;
+using Pandora.Utils;
 using Pandora.ViewModels;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Pandora.Behaviors;
 
@@ -20,14 +20,24 @@ public abstract class BaseDataGridDropHandler<T>(Action<T, uint> setPriority) : 
     private const string rowDraggingDownStyleClass = "DraggingDown";
 
 	private readonly Action<T, uint> _setPriority = setPriority ?? throw new ArgumentNullException(nameof(setPriority));
-	
-	protected void AssignPriorities(IEnumerable<T> items)
+
+	protected void AssignPriorities(ObservableCollection<T> items)
 	{
-		uint priority = 0;
+		uint priority = 1;
+
 		foreach (var item in items)
 		{
-			priority++;
-			_setPriority(item, priority);
+			if (item is ModInfoViewModel mod && ModUtils.IsPandoraMod(mod))
+				continue;
+
+			_setPriority(item, priority++);
+		}
+
+		if (items.FirstOrDefault(i => i is ModInfoViewModel mod && ModUtils.IsPandoraMod(mod)) is T pandora)
+		{
+			items.Remove(pandora);
+			items.Add(pandora);
+			_setPriority(pandora, priority);
 		}
 	}
 
