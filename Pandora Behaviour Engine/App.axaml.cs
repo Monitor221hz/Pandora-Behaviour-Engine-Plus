@@ -52,13 +52,13 @@ public partial class App : Application
 	}
 	private static void SetupAppTheme()
 	{
-		var themeName = Properties.GUISettings.Default.AppTheme;
+		var theme = Properties.GUISettings.Default.AppTheme;
 
-		Application.Current!.RequestedThemeVariant = themeName switch
+		Application.Current!.RequestedThemeVariant = theme switch
 		{
 			0 => ThemeVariant.Light,
 			1 => ThemeVariant.Dark,
-			_ => ThemeVariant.Default,
+			_ => ThemeVariant.Default
 		};
 	}
 
