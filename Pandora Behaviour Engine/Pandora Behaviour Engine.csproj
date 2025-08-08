@@ -36,7 +36,7 @@
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.1" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
     <PackageReference Include="System.Management" Version="9.0.6" />
-    <PackageReference Include="Xaml.Behaviors.Avalonia" Version="11.3.0.10" />
+    <PackageReference Include="Xaml.Behaviors.Avalonia" Version="11.3.2" />
     <PackageReference Include="DynamicData" Version="9.4.1" />
     <PackageReference Include="FluentAvaloniaUI" Version="2.3.0" />
     <PackageReference Include="Nito.HashAlgorithms" Version="1.0.1" />
@@ -111,6 +111,9 @@
     <None Update="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </None>
+    <None Update="*.log">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </None>
     <!--<None Update="Plugins\Test Plugin\plugin.json">
