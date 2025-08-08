@@ -1,8 +1,6 @@
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.ReactiveUI;
-using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Windowing;
 using Pandora.ViewModels;
 using ReactiveUI;
@@ -24,9 +22,9 @@ public partial class EngineMenu : ReactiveUserControl<EngineViewModel>
                 async context =>
                 {
 					await AboutDialog.ShowAsync(true);
-                    context.SetOutput(Unit.Default);
-                });
-        });
+					context.SetOutput(Unit.Default);
+				});
+		});
     }
     protected override void OnLoaded(RoutedEventArgs e)
     {
