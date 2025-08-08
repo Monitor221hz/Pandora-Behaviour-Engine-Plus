@@ -42,7 +42,8 @@
     <ToggleButton Name="ThemeToggle" 
                   Grid.Column="3" 
                   Height="30"
-                  IsChecked="{Binding UIOptions.ThemeToggleState}" 
+                  IsThreeState="False"
+                  IsChecked="{Binding SettingsApp.ThemeToggleState}" 
                   VerticalAlignment="Center" 
                   Theme="{StaticResource TransparentButton}">
       <Interaction.Behaviors>
