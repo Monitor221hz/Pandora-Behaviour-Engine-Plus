@@ -7,11 +7,7 @@ using Pandora.Logging;
 using Pandora.Utils;
 using Pandora.ViewModels;
 using Pandora.Views;
-using System;
 using System.Globalization;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Pandora;
 
@@ -60,56 +56,5 @@ public partial class App : Application
 			1 => ThemeVariant.Dark,
 			_ => ThemeVariant.Default
 		};
-	}
-
-	/// <summary>
-	/// Write unspecified crashes to the log.
-	///
-	/// Without this, if, for example, a file inside `Pandora_Engine` is missing for some reason, it will crash without even writing to the log.
-	/// </summary>
-	/// <param name="sender"></param>
-	/// <param name="e"></param>
-
-	private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-	{
-		var ex = e.ExceptionObject as Exception;
-		// NOTE:
-		// When using /p:IncludeAllContentForSelfExtract=true -> EXE runs from temp dir
-		// => Use `Environment.CurrentDirectory`:  Current exe dir
-		// => Use `Directory.GetCurrentDirectory()`: Tmp dir! -> template read fails!
-		var currentDir = Environment.CurrentDirectory;
-		var exePath = System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName ?? "unknown";
-
-		var log = new StringBuilder();
-		log.AppendLine("[ Pandora Critical Crash Log ]");
-		log.AppendLine("=======================================");
-		log.AppendLine($"Environment.CurrentDirectory: {currentDir}");
-		log.AppendLine($"Process Executable Path: {exePath}");
-		log.AppendLine();
-		log.AppendLine("UnhandledException:");
-		log.AppendLine(ex?.ToString() ?? "ExceptionObject is null");
-		log.AppendLine("=======================================");
-
-		var fileName = "Pandora_CriticalCrash_UnhandledException.log";
-		File.WriteAllText(fileName, log.ToString());
-	}
-
-	/// <summary>
-	/// Catches exceptions when unhandled exceptions occur in async fn.
-	/// </summary>
-	/// <param name="sender"></param>
-	/// <param name="e"></param>
-	private static void TaskScheduler_UnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
-	{
-		var log = new StringBuilder();
-		log.AppendLine("[ Pandora Critical Crash Log ]");
-		log.AppendLine("=======================================");
-		log.AppendLine("UnobservedTaskException:");
-		log.AppendLine(e.Exception.ToString());
-		log.AppendLine("=======================================");
-
-		var fileName = "Pandora_Critical_Crash_UnobservedTaskException.log";
-		File.WriteAllText(fileName, log.ToString());
-		e.SetObserved();
 	}
 }
