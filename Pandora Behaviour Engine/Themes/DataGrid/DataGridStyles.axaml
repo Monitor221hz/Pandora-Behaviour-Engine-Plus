@@ -60,21 +60,16 @@
             <DataGridColumnHeadersPresenter Name="PART_ColumnHeadersPresenter"
                                             Grid.Column="1"
                                             Grid.Row="0" Grid.ColumnSpan="2" />
-            <Button VerticalAlignment="Stretch"
+            <DropDownButton VerticalAlignment="Stretch"
                     HorizontalAlignment="Stretch"
                     Padding="0"
                     Margin="0"
                     IsTabStop="False"
-                    BorderThickness="0"
-                    Theme="{DynamicResource TransparentButton}">
-              <ui:FontIcon Name="OptionsIcon"
-                           FontSize="14"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Center"
-                           Foreground="{DynamicResource DataGridColumnHeaderForegroundBrush}"
+                            Padding="0"
+                            Theme="{StaticResource TransparentButton}"
                            FontFamily="{StaticResource SymbolThemeFontFamily}"
-                           Glyph="&#xF809E;" />
-              <Button.Flyout>
+                            Content="&#xF809E;">
+              <DropDownButton.Flyout>
                 <Flyout Placement="LeftEdgeAlignedTop">
                   <StackPanel Orientation="Vertical">
                     <TextBlock Text="DataGrid Settings" FontSize="16" FontWeight="Bold" Margin="0 0 0 4" />
@@ -108,8 +103,8 @@
 
                   </StackPanel>
                 </Flyout>
-              </Button.Flyout>
-            </Button>
+              </DropDownButton.Flyout>
+            </DropDownButton >
             <Rectangle Name="PART_ColumnHeadersAndRowsSeparator"
                        Grid.Row="0" Grid.ColumnSpan="3" Grid.Column="0"
                        VerticalAlignment="Bottom"
