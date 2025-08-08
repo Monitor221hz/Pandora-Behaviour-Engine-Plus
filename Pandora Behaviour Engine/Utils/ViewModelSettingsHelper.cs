@@ -17,7 +17,6 @@ public static class ViewModelSettingsHelper
 		{
 			assignToSetting(value);
 			Properties.GUISettings.Default.Save();
-			Debug.WriteLine($"[Save] {assignToSetting.Method.Name}: {value}");
 		});
 	}
 }
