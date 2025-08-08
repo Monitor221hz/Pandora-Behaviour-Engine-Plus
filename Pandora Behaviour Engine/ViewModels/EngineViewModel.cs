@@ -119,7 +119,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		}
 		else
 		{
-			bool fromMO2 = ProcessUtils.IsLaunchedFromModOrganizer();
+				var factory = _configService.CurrentFactory;
 
 			IsVisibleLinkOutputDirectory = fromMO2;
 			OutputDirectoryMessage = fromMO2
@@ -271,7 +271,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 	[ReactiveCommand]
 	private async Task SetEngineConfig(IEngineConfigurationFactory? factory)
 	{
-		if (factory is null || factory == _configService.GetCurrentFactory()) return;
+		if (factory is null || factory == _configService.CurrentFactory) return;
 
 		await _preloadTask;
 		_configService.SetCurrentFactory(factory);
