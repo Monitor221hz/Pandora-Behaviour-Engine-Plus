@@ -184,25 +184,6 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 			IsPreloading = false;
 		}
 	}
-	private async Task LoadModsAsync()
-	{
-		List<DirectoryInfo> searchDirectories =
-		[
-			launchDirectory,
-			BehaviourEngine.CurrentDirectory,
-			currentDirectory
-		];
-		DirectoryInfo[] uniqueDirectories = [.. searchDirectories
-			.Where(d => d != null)
-			.DistinctBy(d => d.FullName, StringComparer.OrdinalIgnoreCase)];
-		var mods = await _modService.LoadModsAsync([.. uniqueDirectories]);
-
-		RxApp.MainThreadScheduler.Schedule(() =>
-		{
-			SourceMods.Clear();
-			SourceMods.AddRange(mods);
-			EngineLoggerAdapter.AppendLine($"Mods loaded.");
-		});
 	}
 
 	private async Task WaitForPreloadAsync()
