@@ -28,7 +28,7 @@
         <ui:SymbolIcon Symbol="Folder" FontSize="20" />
         <Interaction.Behaviors>
           <EventTriggerBehavior EventName="Click">
-            <LaunchUriOrFileAction Path="{Binding CurrentDirectoryInfo}" />
+            <LaunchUriOrFileAction Path="{Binding OutputFolderUri}" />
           </EventTriggerBehavior>
         </Interaction.Behaviors>
       </Button>

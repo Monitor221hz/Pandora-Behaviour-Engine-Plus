@@ -34,6 +34,8 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 
 	private static readonly EngineConfigurationService _configService = new();
 
+	private static DirectoryInfo DataOrCurrentDirectory => BehaviourEngine.SkyrimGameDirectory ?? BehaviourEngine.CurrentDirectory;
+
 	[BindableDerivedList] 
 	private readonly ReadOnlyObservableCollection<ModInfoViewModel> _modViewModels;
 
@@ -53,8 +55,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 	[ObservableAsProperty(ReadOnly = false)] private bool? _allSelected;
 	[ObservableAsProperty(ReadOnly = false)] private bool _engineRunning;
 
-	private readonly DirectoryInfo _currentDirectory;
-	public string CurrentDirectoryInfo => _currentDirectory.ToString();
+	public static string OutputFolderUri => PandoraPaths.OutputPath.FullName;
 
 	public BehaviourEngine Engine { get; private set; } = new BehaviourEngine();
 	public DataGridOptionsViewModel DataGridOptions { get; } = new();
@@ -73,7 +74,6 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		_autoClose = startup.AutoClose;
 		_isOutputFolderCustomSet = startup.IsCustomSet;
 		_outputDirectoryMessage = startup.Message;
-		_currentDirectory = startup.OutputDir;
 
 		EngineConfigurationViewModels = new ObservableCollection<IEngineConfigurationViewModel>(
 			_configService.GetInitialConfigurations(SetEngineConfigCommand));
@@ -127,7 +127,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 
 				Engine = new BehaviourEngine()
 					.SetConfiguration(factory.Config)
-					.SetOutputPath(_currentDirectory);
+					.SetOutputPath(PandoraPaths.OutputPath);
 
 				_preloadTask = Engine.PreloadAsync();
 				await _preloadTask.ConfigureAwait(false);
@@ -160,7 +160,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 			{
 				BehaviourEngine.AssemblyDirectory,
 				BehaviourEngine.CurrentDirectory,
-				_currentDirectory,
+				DataOrCurrentDirectory,
 			};
 
 			var loadModsTask = ModLoader.LoadModsVMAsync(SourceMods, uniqueDirectories, modProviders);

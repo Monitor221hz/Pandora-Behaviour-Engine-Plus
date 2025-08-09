@@ -3,13 +3,12 @@ using Pandora.Logging;
 using Pandora.Models;
 using Pandora.Models.Patch.Plugins;
 using Pandora.Utils;
-using System.IO;
 
 namespace Pandora.Services;
 
 public class StartupService
 {
-	public record StartupInfo(DirectoryInfo OutputDir, bool IsCustomSet, bool AutoRun, bool AutoClose, string Message);
+	public record StartupInfo(bool IsCustomSet, bool AutoRun, bool AutoClose, string Message);
 
 	public static StartupInfo Handle(LaunchOptions? options)
 	{
@@ -28,9 +27,7 @@ public class StartupService
 			};
 		}
 
-		var effectiveOutputDir = outputDir ?? BehaviourEngine.CurrentDirectory;
-
-		return new StartupInfo(effectiveOutputDir, isCustom, options?.AutoRun ?? false, options?.AutoClose ?? false, message);
+		return new StartupInfo(isCustom, options?.AutoRun ?? false, options?.AutoClose ?? false, message);
 	}
 
 	public static void LogPlugins()

@@ -1,4 +1,4 @@
-﻿using Pandora.Logging;
+﻿using Pandora.Models;
 using System;
 using System.IO;
 
@@ -6,15 +6,16 @@ namespace Pandora.Utils;
 
 public static class PandoraPaths
 {
-	public static DirectoryInfo Root => _root.Value;
-	private static readonly Lazy<DirectoryInfo> _root = new(() =>
+	public static DirectoryInfo OutputPath => LaunchOptions.Current?.OutputDirectory ?? BehaviourEngine.SkyrimGameDirectory ?? BehaviourEngine.CurrentDirectory;
+
+	public static DirectoryInfo PandoraEngine => _pandoraEngine.Value;
+	private static readonly Lazy<DirectoryInfo> _pandoraEngine = new(() =>
 	{
-		var outputDir = LaunchOptions.Current?.OutputDirectory?.FullName ?? Environment.CurrentDirectory;
-		var dir = new DirectoryInfo(Path.Combine(outputDir, "Pandora_Engine"));
+		var dir = new DirectoryInfo(Path.Combine(OutputPath.FullName, "Pandora_Engine"));
 		dir.Create();
 		return dir;
 	});
 
-	public static FileInfo ActiveModsFile => new(Path.Combine(Root.FullName, "ActiveMods.json"));
-	public static FileInfo PreviousOutputFile => new(Path.Combine(Root.FullName, "PreviousOutput.txt"));
+	public static FileInfo ActiveModsFile => new(Path.Combine(PandoraEngine.FullName, "ActiveMods.json"));
+	public static FileInfo PreviousOutputFile => new(Path.Combine(PandoraEngine.FullName, "PreviousOutput.txt"));
 }
