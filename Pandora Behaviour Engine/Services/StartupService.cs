@@ -13,22 +13,13 @@ public class StartupService
 
 	public static StartupInfo Handle(LaunchOptions? options)
 	{
-		var outputDir = BehaviourEngine.SkyrimGameDirectory ?? BehaviourEngine.CurrentDirectory;
-		var isCustom = false;
+		var outputDir = options?.OutputDirectory;
+		var manager = ProcessUtils.GetModManagerSource();
+
+		bool isCustom = outputDir is not null || manager == ModManager.ModOrganizer;
+
 		string message = string.Empty;
-
-		ModManager manager = ProcessUtils.GetModManagerSource();
-
-		if (options?.OutputDirectory != null)
-		{
-			outputDir = options.OutputDirectory;
-			isCustom = true;
-		}
-		else if (manager == ModManager.ModOrganizer)
-		{
-			isCustom = true;
-		}
-		else
+		if (!isCustom)
 		{
 			message = manager switch
 			{
@@ -37,7 +28,9 @@ public class StartupService
 			};
 		}
 
-		return new StartupInfo(outputDir, isCustom, options?.AutoRun ?? false, options?.AutoClose ?? false, message);
+		var effectiveOutputDir = outputDir ?? BehaviourEngine.CurrentDirectory;
+
+		return new StartupInfo(effectiveOutputDir, isCustom, options?.AutoRun ?? false, options?.AutoClose ?? false, message);
 	}
 
 	public static void LogPlugins()

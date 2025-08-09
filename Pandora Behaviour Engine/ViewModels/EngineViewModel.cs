@@ -53,7 +53,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 	[ObservableAsProperty(ReadOnly = false)] private bool? _allSelected;
 	[ObservableAsProperty(ReadOnly = false)] private bool _engineRunning;
 
-	private readonly DirectoryInfo _currentDirectory = BehaviourEngine.SkyrimGameDirectory ?? BehaviourEngine.CurrentDirectory;
+	private readonly DirectoryInfo _currentDirectory;
 	public string CurrentDirectoryInfo => _currentDirectory.ToString();
 
 	public BehaviourEngine Engine { get; private set; } = new BehaviourEngine();
@@ -67,12 +67,13 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 
 	public EngineViewModel()
 	{
-var startup = StartupService.Handle(LaunchOptions.Current);
+		var startup = StartupService.Handle(LaunchOptions.Current);
 
 		_autoRun = startup.AutoRun;
 		_autoClose = startup.AutoClose;
 		_isOutputFolderCustomSet = startup.IsCustomSet;
 		_outputDirectoryMessage = startup.Message;
+		_currentDirectory = startup.OutputDir;
 
 		EngineConfigurationViewModels = new ObservableCollection<IEngineConfigurationViewModel>(
 			_configService.GetInitialConfigurations(SetEngineConfigCommand));
