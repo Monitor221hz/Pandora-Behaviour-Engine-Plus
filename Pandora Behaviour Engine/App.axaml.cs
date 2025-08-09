@@ -7,7 +7,9 @@ using Pandora.Logging;
 using Pandora.Utils;
 using Pandora.ViewModels;
 using Pandora.Views;
+using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 
 namespace Pandora;
 
@@ -27,6 +29,7 @@ public partial class App : Application
 		if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
 		{
 			LaunchOptions.Current = LaunchOptions.Parse(desktop.Args);
+			SetupNLogConfigForSingleFilePublish();
 			// Line below is needed to remove Avalonia data validation.
 			// Without this line you will get duplicate validations from both Avalonia and CT
 			BindingPlugins.DataValidators.RemoveAt(0);
@@ -56,5 +59,19 @@ public partial class App : Application
 			1 => ThemeVariant.Dark,
 			_ => ThemeVariant.Default
 		};
+	}
+	private static void SetupNLogConfigForSingleFilePublish()
+	{
+		var configPath = Path.Combine(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName), "NLog.config");
+		var config = new NLog.Config.XmlLoggingConfiguration(configPath);
+
+		var fileTarget = config.FindTargetByName<NLog.Targets.FileTarget>("Engine Log");
+		if (fileTarget != null)
+		{
+			fileTarget.FileName = NLog.Layouts.Layout.FromString(Path.Combine(PandoraPaths.OutputPath.FullName, "Engine.log"));
+		}
+
+		NLog.LogManager.Configuration = config;
+
 	}
 }
