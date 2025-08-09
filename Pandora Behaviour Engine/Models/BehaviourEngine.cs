@@ -30,10 +30,10 @@ public class BehaviourEngine
 	public DirectoryInfo OutputPath { get; private set; } = new(Environment.CurrentDirectory);
 
 	static BehaviourEngine()
-		{
+	{
 		PluginManager.LoadAllPlugins(AssemblyDirectory);
 		SkyrimGameDirectory = SkyrimPathResolver.Resolve();
-		}
+	}
 
 	public BehaviourEngine()
 	{

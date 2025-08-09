@@ -66,7 +66,7 @@ public static class SkyrimPathResolver
 	/// </returns>
 	private static DirectoryInfo? TryReadSkyrimPathFromCommandLineArgs()
 	{
-		var optionSkyrimGameDir = LaunchOptions.Current.SkyrimGameDirectory;
+		var optionSkyrimGameDir = LaunchOptions.Current?.SkyrimGameDirectory;
 
 		if (optionSkyrimGameDir is not null)
 			return new DirectoryInfo(Path.Combine(optionSkyrimGameDir.FullName, "Data"));
