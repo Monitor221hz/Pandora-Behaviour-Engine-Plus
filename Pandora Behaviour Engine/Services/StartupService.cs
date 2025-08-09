@@ -24,6 +24,10 @@ public class StartupService
 			outputDir = options.OutputDirectory;
 			isCustom = true;
 		}
+		else if (manager == ModManager.ModOrganizer)
+		{
+			isCustom = true;
+		}
 		else
 		{
 			message = manager switch
