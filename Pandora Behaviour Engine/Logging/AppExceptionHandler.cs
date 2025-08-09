@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Pandora.Utils;
+using System;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace Pandora.Logging;
 
@@ -28,8 +30,7 @@ public static class AppExceptionHandler
 		// => Use `Environment.CurrentDirectory`:  Current exe dir
 		// => Use `Directory.GetCurrentDirectory()`: Tmp dir! -> template read fails!
 		var log = BuildLog("UnhandledException", ex?.ToString() ?? "ExceptionObject is null");
-
-		File.WriteAllText("Pandora_CriticalCrash_UnhandledException.log", log);
+		WriteCrashLog("Pandora_CriticalCrash_UnhandledException", log);
 	}
 
 	/// <summary>
@@ -40,9 +41,25 @@ public static class AppExceptionHandler
 	private static void TaskScheduler_UnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
 	{
 		var log = BuildLog("UnobservedTaskException", e.Exception.ToString());
-
-		File.WriteAllText("Pandora_CriticalCrash_UnobservedTaskException.log", log);
+		WriteCrashLog("Pandora_CriticalCrash_UnobservedTaskException", log);
 		e.SetObserved();
+	}
+	private static void WriteCrashLog(string fileName, string log)
+	{
+		try
+		{
+			var dir = PandoraPaths.OutputPath.Exists
+				? PandoraPaths.OutputPath.FullName
+				: Path.GetDirectoryName(Process.GetCurrentProcess().MainModule?.FileName)!;
+
+			Directory.CreateDirectory(dir);
+			var outputLogPath = Path.Combine(dir, fileName);
+			File.WriteAllText(outputLogPath, log, Encoding.UTF8);
+		}
+		catch (Exception ex)
+		{
+			EngineLoggerAdapter.AppendLine($"Failed to write crash log: {ex}");
+		}
 	}
 
 	private static string BuildLog(string type, string content)
@@ -52,7 +69,7 @@ public static class AppExceptionHandler
 		sb.AppendLine("=======================================");
 		sb.AppendLine($"Type: {type}");
 		sb.AppendLine($"Environment.CurrentDirectory: {Environment.CurrentDirectory}");
-		sb.AppendLine($"Executable Path: {System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName ?? "unknown"}");
+		sb.AppendLine($"Executable Path: {Process.GetCurrentProcess().MainModule?.FileName ?? "unknown"}");
 		sb.AppendLine();
 		sb.AppendLine(content);
 		sb.AppendLine("=======================================");
