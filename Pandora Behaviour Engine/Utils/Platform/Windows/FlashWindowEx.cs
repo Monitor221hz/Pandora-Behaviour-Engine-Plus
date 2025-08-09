@@ -6,7 +6,7 @@ namespace Pandora.Utils;
 
 public static partial class TaskbarFlasher
 {
-	private static IntPtr? _lastFlashingHandle;
+	private static nint? _lastFlashingHandle;
 
 	public static void FlashUntilFocused(Window window)
 	{
@@ -14,7 +14,7 @@ public static partial class TaskbarFlasher
 			return;
 
 		var handle = GetWindowHandle(window);
-		if (handle == IntPtr.Zero)
+		if (handle == nint.Zero)
 			return;
 
 		_lastFlashingHandle = handle;
@@ -40,7 +40,7 @@ public static partial class TaskbarFlasher
 			return;
 
 		var handle = GetWindowHandle(window);
-		if (handle == IntPtr.Zero || _lastFlashingHandle != handle)
+		if (handle == nint.Zero || _lastFlashingHandle != handle)
 			return;
 
 		var fw = new FLASHWINFO
@@ -66,9 +66,9 @@ public static partial class TaskbarFlasher
 		}
 	}
 
-	private static IntPtr GetWindowHandle(Window window)
+	private static nint GetWindowHandle(Window window)
 	{
-		return window.TryGetPlatformHandle()?.Handle ?? IntPtr.Zero;
+		return window.TryGetPlatformHandle()?.Handle ?? nint.Zero;
 	}
 
 	#region WinAPI
@@ -81,7 +81,7 @@ public static partial class TaskbarFlasher
 	private struct FLASHWINFO
 	{
 		public uint cbSize;
-		public IntPtr hwnd;
+		public nint hwnd;
 		public uint dwFlags;
 		public uint uCount;
 		public uint dwTimeout;

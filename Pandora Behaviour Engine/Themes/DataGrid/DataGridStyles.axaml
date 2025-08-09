@@ -31,7 +31,7 @@
   </DataTemplate>
 
   <!-- Add Resources Here -->
-  <ControlTheme x:Key="{x:Type DataGrid}" TargetType="DataGrid">
+  <ControlTheme x:Key="{x:Type DataGrid}" TargetType="DataGrid" x:DataType="vm:EngineViewModel">
     <Setter Property="RowBackground" Value="Transparent" />
     <Setter Property="HeadersVisibility" Value="Column" />
     <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />
@@ -60,21 +60,14 @@
             <DataGridColumnHeadersPresenter Name="PART_ColumnHeadersPresenter"
                                             Grid.Column="1"
                                             Grid.Row="0" Grid.ColumnSpan="2" />
-            <Button VerticalAlignment="Stretch"
-                    HorizontalAlignment="Stretch"
-                    Padding="0"
-                    Margin="0"
-                    IsTabStop="False"
-                    BorderThickness="0"
-                    Theme="{DynamicResource TransparentButton}">
-              <ui:FontIcon Name="OptionsIcon"
-                           FontSize="14"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Center"
-                           Foreground="{DynamicResource DataGridColumnHeaderForegroundBrush}"
-                           FontFamily="{StaticResource SymbolThemeFontFamily}"
-                           Glyph="&#xF809E;" />
-              <Button.Flyout>
+            <DropDownButton VerticalAlignment="Stretch"
+                            HorizontalAlignment="Stretch"
+                            IsTabStop="False"
+                            Padding="0"
+                            Theme="{StaticResource TransparentButton}"
+                            FontFamily="{StaticResource SymbolThemeFontFamily}"
+                            Content="&#xF809E;">
+              <DropDownButton.Flyout>
                 <Flyout Placement="LeftEdgeAlignedTop">
                   <StackPanel Orientation="Vertical">
                     <TextBlock Text="DataGrid Settings" FontSize="16" FontWeight="Bold" Margin="0 0 0 4" />
@@ -87,29 +80,29 @@
                     <Separator />
                     <StackPanel Orientation="Horizontal">
                       <TextBlock Text="Compact Row" VerticalAlignment="Center" Margin="0 0 10 0" />
-                      <ToggleSwitch VerticalAlignment="Center" IsChecked="{Binding $parent[DataGrid].((vm:EngineViewModel)DataContext).UIOptions.IsCompactRowHeight}" />
+                      <ToggleSwitch VerticalAlignment="Center" IsChecked="{Binding DataGridOptions.IsCompactRowHeight}" />
                     </StackPanel>
                     <Separator />
                     <TextBlock Text="Grid Lines Style" Margin="0 0 0 4" />
                     <StackPanel Orientation="Horizontal" Spacing="10">
                       <RadioButton Content="None"
                                    GroupName="GridLinesGroup"
-                                   IsChecked="{Binding $parent[DataGrid].((vm:EngineViewModel)DataContext).UIOptions.GridLinesVisibility, Converter={StaticResource GridLinesEnumConverter}, ConverterParameter=None}" />
+                                   IsChecked="{Binding DataGridOptions.GridLinesVisibility, Converter={StaticResource GridLinesEnumConverter}, ConverterParameter=None}" />
                       <RadioButton Content="Horizontal"
                                    GroupName="GridLinesGroup"
-                                   IsChecked="{Binding $parent[DataGrid].((vm:EngineViewModel)DataContext).UIOptions.GridLinesVisibility, Converter={StaticResource GridLinesEnumConverter}, ConverterParameter=Horizontal}" />
+                                   IsChecked="{Binding DataGridOptions.GridLinesVisibility, Converter={StaticResource GridLinesEnumConverter}, ConverterParameter=Horizontal}" />
                       <RadioButton Content="Vertical"
                                    GroupName="GridLinesGroup"
-                                   IsChecked="{Binding $parent[DataGrid].((vm:EngineViewModel)DataContext).UIOptions.GridLinesVisibility, Converter={StaticResource GridLinesEnumConverter}, ConverterParameter=Vertical}" />
+                                   IsChecked="{Binding DataGridOptions.GridLinesVisibility, Converter={StaticResource GridLinesEnumConverter}, ConverterParameter=Vertical}" />
                       <RadioButton Content="All"
                                    GroupName="GridLinesGroup"
-                                   IsChecked="{Binding $parent[DataGrid].((vm:EngineViewModel)DataContext).UIOptions.GridLinesVisibility, Converter={StaticResource GridLinesEnumConverter}, ConverterParameter=All}" />
+                                   IsChecked="{Binding DataGridOptions.GridLinesVisibility, Converter={StaticResource GridLinesEnumConverter}, ConverterParameter=All}" />
                     </StackPanel>
 
                   </StackPanel>
                 </Flyout>
-              </Button.Flyout>
-            </Button>
+              </DropDownButton.Flyout>
+            </DropDownButton >
             <Rectangle Name="PART_ColumnHeadersAndRowsSeparator"
                        Grid.Row="0" Grid.ColumnSpan="3" Grid.Column="0"
                        VerticalAlignment="Bottom"

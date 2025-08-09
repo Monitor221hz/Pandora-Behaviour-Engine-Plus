@@ -20,22 +20,29 @@
     </Border>
     <StackPanel Orientation="Horizontal" Spacing="4" Margin="8" HorizontalAlignment="Right">
       <Button Name="OpenOutputFolderButton"
-              Command="{Binding OpenUrlCommand}"
-              CommandParameter="{Binding CurrentDirectoryInfo}"
               IsVisible="True"
+              IsEnabled="{Binding IsOutputFolderCustomSet}"
               Padding="4"
               HorizontalAlignment="Right" VerticalAlignment="Bottom"
               ToolTip.Tip="Open Output Folder">
         <ui:SymbolIcon Symbol="Folder" FontSize="20" />
+        <Interaction.Behaviors>
+          <EventTriggerBehavior EventName="Click">
+            <LaunchUriOrFileAction Path="{Binding OutputFolderUri}" />
+          </EventTriggerBehavior>
+        </Interaction.Behaviors>
       </Button>
       <Button Name="CopyCodeButton"
-              Command="{Binding CopyTextCommand}"
-              CommandParameter="{Binding LogText}"
               IsVisible="True"
               Padding="4"
               HorizontalAlignment="Right" VerticalAlignment="Bottom"
               ToolTip.Tip="Copy text">
         <ui:SymbolIcon Symbol="ClipboardCode" FontSize="20" />
+        <Interaction.Behaviors>
+          <EventTriggerBehavior EventName="Click" SourceObject="CopyCodeButton">
+            <SetClipboardTextAction Text="{Binding LogText}" />
+          </EventTriggerBehavior>
+        </Interaction.Behaviors>
       </Button>
     </StackPanel>
   </Grid>

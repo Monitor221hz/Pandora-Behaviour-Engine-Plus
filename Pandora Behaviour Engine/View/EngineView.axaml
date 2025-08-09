@@ -24,7 +24,7 @@
     <vws:LogBox Grid.Row="3" Margin="0 0 0 10" />
     <ui:InfoBar Grid.Row="4" Severity="Informational" Title="Info" Message="{Binding OutputDirectoryMessage}" IsOpen="{Binding !IsOutputFolderCustomSet}" IsVisible="{Binding $self.IsOpen}" Margin="0 0 0 10">
       <ui:InfoBar.ActionButton>
-        <HyperlinkButton Content="here" NavigateUri="{Binding CurrentDirectoryInfo}" IsVisible="{Binding !IsVisibleLinkOutputDirectory}" />
+        <HyperlinkButton Content="here" NavigateUri="{Binding OutputFolderUri}" IsVisible="{Binding !IsVisibleLinkOutputDirectory}" />
       </ui:InfoBar.ActionButton>
     </ui:InfoBar>
     <vws:LaunchElement Grid.Row="5" />

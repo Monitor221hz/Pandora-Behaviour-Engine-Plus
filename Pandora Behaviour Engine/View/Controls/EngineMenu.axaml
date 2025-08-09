@@ -7,35 +7,6 @@
              x:Class="Pandora.Views.EngineMenu"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              x:DataType="vm:EngineViewModel">
-  <UserControl.Styles>
-    <Style Selector="ToggleButton PathIcon.theme-light">
-      <Setter Property="IsVisible" Value="False"/>
-    </Style>
-    <Style Selector="ToggleButton:checked PathIcon.theme-light">
-      <Setter Property="IsVisible" Value="True"/>
-    </Style>
-    <Style Selector="ToggleButton PathIcon.theme-dark">
-      <Setter Property="IsVisible" Value="True"/>
-    </Style>
-    <Style Selector="ToggleButton:checked PathIcon.theme-dark">
-      <Setter Property="IsVisible" Value="False"/>
-    </Style>
-  </UserControl.Styles>
-  <UserControl.Resources>
-    <ControlTheme TargetType="ToggleButton" BasedOn="{StaticResource TransparentToggleButton}" x:Key="TransparentToggleButtonPandora">
-      <Style Selector="^:checked">
-        <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
-          <Setter Property="Background" Value="{DynamicResource SubtleFillColorTransparentBrush}" />
-        </Style>
-        <Style Selector="^:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-          <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
-        </Style>
-        <Style Selector="^:pressed /template/ ContentPresenter#PART_ContentPresenter">
-          <Setter Property="Background" Value="{DynamicResource SubtleFillColorTertiaryBrush}" />
-        </Style>
-      </Style>
-    </ControlTheme>
-  </UserControl.Resources>
   <Grid Name="TitleBarHost" ColumnDefinitions="Auto,Auto,*,Auto,Auto" Background="Transparent">
     <ui:IconSourceElement Name="WindowIcon"
                           IconSource="{StaticResource IconPandora}"
@@ -71,21 +42,75 @@
     <ToggleButton Name="ThemeToggle" 
                   Grid.Column="3" 
                   Height="30"
-                  IsChecked="{Binding UIOptions.ThemeToggleState}" 
-                  VerticalAlignment="Center" 
-                  Theme="{DynamicResource TransparentToggleButtonPandora}" 
-                  Background="Transparent" 
-                  Command="{Binding UIOptions.ToggleThemeCommand}"
-                  CommandParameter="{Binding $self.IsChecked}">
+                  IsThreeState="False"
+                  IsChecked="{Binding SettingsApp.ThemeToggleState}" 
+                  VerticalAlignment="Center"
+                  Theme="{StaticResource TransparentButton}">
+      <Interaction.Behaviors>
+        <EventTriggerBehavior EventName="Click">
+          <ToggleViewModelBooleanAction PropertyName="SettingsApp.ThemeToggleState" />
+        </EventTriggerBehavior>
+        <DataTriggerBehavior Binding="{Binding #ThemeToggle.IsChecked}" Value="True">
+          <SetPathIconDataAction PathIcon="ThemeIcon" Data="{StaticResource IconThemeDark}" />
+        </DataTriggerBehavior>
+        <DataTriggerBehavior Binding="{Binding #ThemeToggle.IsChecked}" Value="False">
+          <SetPathIconDataAction PathIcon="ThemeIcon" Data="{StaticResource IconThemeLight}" />
+        </DataTriggerBehavior>
+      </Interaction.Behaviors>
       <Viewbox>
-        <Panel>
-          <PathIcon Classes="theme-light"
-                    Data="{StaticResource IconThemeLight}" />
-          <PathIcon Classes="theme-dark"
-                    Data="{StaticResource IconThemeDark}" />
-        </Panel>
+        <PathIcon Name="ThemeIcon" Data="{StaticResource IconThemeLight}" Foreground="{Binding #ThemeToggle.Foreground}" />
       </Viewbox>
     </ToggleButton>
     <Rectangle Grid.Column="4" Height="24" Width="1" Fill="{DynamicResource MenuFlyoutSeparatorBackground}" HorizontalAlignment="Left" Margin="4 0 0 0" />
+
+    <ui:TaskDialog Name="AboutDialog"
+                   Header="{x:Static vm:AboutDialogViewModel.Header}"
+                   SubHeader="{x:Static vm:AboutDialogViewModel.SubHeader}"
+                   Content="{x:Static vm:AboutDialogViewModel.Content}"
+                   FooterVisibility="Never"
+                   IsFooterExpanded="False"
+                   ShowProgressBar="False"
+                   IconSource="{DynamicResource IconPandora}">
+      <ui:TaskDialog.Commands>
+        <ui:TaskDialogCommand Text="Check Update"
+                              Description="Check for a new version"
+                              IsEnabled="False"
+                              ClosesOnInvoked="False">
+          <ui:TaskDialogCommand.IconSource>
+            <ui:SymbolIconSource Symbol="Refresh" />
+          </ui:TaskDialogCommand.IconSource>
+        </ui:TaskDialogCommand>
+
+        <ui:TaskDialogCommand Text="GitHub"
+                              Description="Visit GitHub page"
+                              IsEnabled="True"
+                              ClosesOnInvoked="False"
+                              IconSource="{DynamicResource IconGithub}">
+          <Interaction.Behaviors>
+            <EventTriggerBehavior EventName="Click">
+              <LaunchUriOrFileAction Path="https://github.com/Monitor221hz/Pandora-Behaviour-Engine-Plus" />
+            </EventTriggerBehavior>
+          </Interaction.Behaviors>
+        </ui:TaskDialogCommand>
+
+        <ui:TaskDialogCommand Text="Discord"
+                              Description="Join the Discord group"
+                              IsEnabled="True"
+                              ClosesOnInvoked="False"
+                              IconSource="{DynamicResource IconDiscord}">
+          <Interaction.Behaviors>
+            <EventTriggerBehavior EventName="Click">
+              <LaunchUriOrFileAction Path="https://discord.gg/8nUQCWMn3w" />
+            </EventTriggerBehavior>
+          </Interaction.Behaviors>
+        </ui:TaskDialogCommand>
+      </ui:TaskDialog.Commands>
+
+      <ui:TaskDialog.Buttons>
+        <ui:TaskDialogButton Text="Close" DialogResult="Close" />
+      </ui:TaskDialog.Buttons>
+    </ui:TaskDialog>
+
   </Grid>
+  
 </UserControl>

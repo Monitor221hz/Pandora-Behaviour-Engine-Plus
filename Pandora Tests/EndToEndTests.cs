@@ -16,14 +16,17 @@ public class EndToEndTests
 			new NemesisModInfoProvider(),
 			new PandoraModInfoProvider()
 		};
+		var directories = new List<DirectoryInfo>
+		{
+            BehaviourEngine.AssemblyDirectory, 
+			new DirectoryInfo(Path.Combine(Environment.CurrentDirectory, "Data"))
+
+        };
 		var activeModsFilePath = Path.Combine(Environment.CurrentDirectory, "Pandora_Engine", "ActiveMods.json");
-		JsonModSettingsStore settingsStore = new JsonModSettingsStore(activeModsFilePath);
-		ModService service = new ModService(settingsStore, modInfoProviders);
-		var mods = await service.LoadModsAsync(BehaviourEngine.AssemblyDirectory, new DirectoryInfo(Path.Combine(Environment.CurrentDirectory, "Data")));
-		BehaviourEngine engine = new BehaviourEngine(new SkyrimDebugConfiguration());
-		engine.SetOutputPath(Resources.OutputDirectory);
+		var mods = await ModLoader.LoadModsAsync(modInfoProviders, directories);
+		BehaviourEngine engine = new BehaviourEngine().SetOutputPath(Resources.OutputDirectory).SetConfiguration(new SkyrimDebugConfiguration());
 		await engine.PreloadAsync();
-		Assert.True(await engine.LaunchAsync(mods.Select(m => m.ModInfo).ToList()));
+		Assert.True(await engine.LaunchAsync(mods.ToList()));
 		var skyrimPatcher = engine.Configuration.Patcher as SkyrimPatcher;
 		Assert.NotNull(skyrimPatcher);
 

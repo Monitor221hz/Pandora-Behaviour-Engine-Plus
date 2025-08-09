@@ -1,13 +1,10 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.Styling;
 using Avalonia.VisualTree;
-using Pandora.Services;
 using Pandora.Utils;
 using Pandora.ViewModels;
 using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 
 namespace Pandora.Behaviors;
 
@@ -29,21 +26,17 @@ public sealed class ModsDataGridDropHandler : BaseDataGridDropHandler<ModInfoVie
             return false;
         }
 
-		if (ModUtils.IsPandora(sourceItem) || ModUtils.IsPandora(targetItem))
+		if (ModUtils.IsPandoraMod(sourceItem) || ModUtils.IsPandoraMod(targetItem))
 			return false;
 
         var items = vm.SourceMods;
-		int targetIndex = items.IndexOf(targetItem);
-
-		if (targetIndex == items.Count - 1)
-			return false;
 
 		return RunDropAction(dg, e, bExecute, sourceItem, targetItem, items);
     }
 
 	public void MoveUp(DataGrid grid, EngineViewModel vm)
 	{
-		if (grid.SelectedItem is not ModInfoViewModel selected || ModUtils.IsPandora(selected))
+		if (grid.SelectedItem is not ModInfoViewModel selected || ModUtils.IsPandoraMod(selected))
 			return;
 
 		var items = vm.SourceMods;
@@ -58,7 +51,7 @@ public sealed class ModsDataGridDropHandler : BaseDataGridDropHandler<ModInfoVie
 
 	public void MoveDown(DataGrid grid, EngineViewModel vm)
 	{
-		if (grid.SelectedItem is not ModInfoViewModel selected || ModUtils.IsPandora(selected))
+		if (grid.SelectedItem is not ModInfoViewModel selected || ModUtils.IsPandoraMod(selected))
 			return;
 
 		var items = vm.SourceMods;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pandora.API.ModManager;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -8,73 +9,111 @@ namespace Pandora.Utils;
 
 public static class ProcessUtils
 {
-	public static bool IsLaunchedFromModOrganizer()
+	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
+	public static ModManager GetModManagerSource()
 	{
 		try
 		{
 			using var process = Process.GetCurrentProcess();
 			int parentPid = GetParentProcessId(process.Id);
-			if (parentPid == 0) return false;
+			if (parentPid == 0) return ModManager.None;
 
 			using var parent = Process.GetProcessById(parentPid);
-			var parentName = parent.ProcessName.ToLowerInvariant();
+			string parentName = parent.ProcessName.ToLowerInvariant();
 
 			if (parentName.Contains("modorganizer") || parentName.Contains("mo2"))
-				return true;
+			{
+				Logger.Info("Detected launcher: Mod Organizer (MO2)");
+				return ModManager.ModOrganizer;
+			}
+
+			if (parentName.Contains("vortex"))
+			{
+				Logger.Info("Detected launcher: Vortex");
+				return ModManager.Vortex;
+			}
 
 			if (parentName.Contains("wine"))
-				return TryDetectModOrganizerViaWine(parentPid);
+			{
+				if (TryDetectModOrganizerViaWine(parentPid))
+				{
+					Logger.Info("Detected launcher: Mod Organizer (Wine)");
+					return ModManager.ModOrganizer;
+				}
 
-			return false;
+				if (TryDetectVortexViaWine(parentPid))
+				{
+					Logger.Info("Detected launcher: Vortex (Wine)");
+					return ModManager.Vortex;
+				}
+
+				Logger.Info("Wine detected, but no known mod manager found");
+			}
+
+			Logger.Info("No known mod manager detected.");
 		}
-		catch
+		catch (Exception ex)
 		{
-			return false;
+			Logger.Warn(ex, "Failed to detect parent process.");
 		}
+
+		return ModManager.None;
 	}
+
 
 	private static int GetParentProcessId(int pid)
 	{
-		if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+		try
 		{
-			using var searcher = new System.Management.ManagementObjectSearcher(
-				$"SELECT ParentProcessId FROM Win32_Process WHERE ProcessId = {pid}");
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+			{
+				using var searcher = new System.Management.ManagementObjectSearcher(
+					$"SELECT ParentProcessId FROM Win32_Process WHERE ProcessId = {pid}");
 
-			foreach (var obj in searcher.Get())
-			{
-				return Convert.ToInt32(obj["ParentProcessId"]);
+				foreach (var obj in searcher.Get())
+					return Convert.ToInt32(obj["ParentProcessId"]);
 			}
-		}
-		else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-		{
-			var statusPath = $"/proc/{pid}/status";
-			if (File.Exists(statusPath))
+			else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
 			{
-				var lines = File.ReadAllLines(statusPath);
-				var ppidLine = lines.FirstOrDefault(l => l.StartsWith("PPid:"));
-				if (ppidLine != null && int.TryParse(ppidLine.Split(':')[1].Trim(), out int ppid))
+				var statusPath = $"/proc/{pid}/status";
+				if (File.Exists(statusPath))
 				{
-					return ppid;
+					var lines = File.ReadAllLines(statusPath);
+					var ppidLine = lines.FirstOrDefault(l => l.StartsWith("PPid:"));
+					if (ppidLine != null && int.TryParse(ppidLine.Split(':')[1].Trim(), out int ppid))
+						return ppid;
 				}
 			}
+		}
+		catch (Exception ex)
+		{
+			Logger.Warn(ex, $"Failed to get parent PID for PID {pid}");
 		}
 
 		return 0;
 	}
 
-	private static bool TryDetectModOrganizerViaWine(int winePid)
+	private static bool TryDetectModOrganizerViaWine(int winePid) =>
+		CheckCmdlineForPatterns(winePid, ["modorganizer", "mo2"]);
+
+	private static bool TryDetectVortexViaWine(int winePid) =>
+		CheckCmdlineForPatterns(winePid, ["vortex"]);
+
+	private static bool CheckCmdlineForPatterns(int pid, string[] patterns)
 	{
 		try
 		{
-			string cmdlinePath = $"/proc/{winePid}/cmdline";
-			if (File.Exists(cmdlinePath))
-			{
-				var cmdline = File.ReadAllText(cmdlinePath).ToLowerInvariant();
-				return cmdline.Contains("modorganizer") || cmdline.Contains("mo2");
-			}
-		}
-		catch { }
+			string cmdlinePath = $"/proc/{pid}/cmdline";
+			if (!File.Exists(cmdlinePath)) return false;
 
-		return false;
+			var cmdline = File.ReadAllText(cmdlinePath).ToLowerInvariant();
+			return patterns.Any(p => cmdline.Contains(p));
+		}
+		catch (Exception ex)
+		{
+			Logger.Warn(ex, $"Failed to inspect cmdline for PID {pid}");
+			return false;
+		}
 	}
 }
