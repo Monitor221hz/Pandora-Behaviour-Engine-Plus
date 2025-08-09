@@ -31,7 +31,7 @@
   </DataTemplate>
 
   <!-- Add Resources Here -->
-  <ControlTheme x:Key="{x:Type DataGrid}" TargetType="DataGrid">
+  <ControlTheme x:Key="{x:Type DataGrid}" TargetType="DataGrid" x:DataType="vm:EngineViewModel">
     <Setter Property="RowBackground" Value="Transparent" />
     <Setter Property="HeadersVisibility" Value="Column" />
     <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />
@@ -80,23 +80,23 @@
                     <Separator />
                     <StackPanel Orientation="Horizontal">
                       <TextBlock Text="Compact Row" VerticalAlignment="Center" Margin="0 0 10 0" />
-                      <ToggleSwitch VerticalAlignment="Center" IsChecked="{Binding $parent[DataGrid].((vm:EngineViewModel)DataContext).DataGridOptions.IsCompactRowHeight}" />
+                      <ToggleSwitch VerticalAlignment="Center" IsChecked="{Binding DataGridOptions.IsCompactRowHeight}" />
                     </StackPanel>
                     <Separator />
                     <TextBlock Text="Grid Lines Style" Margin="0 0 0 4" />
                     <StackPanel Orientation="Horizontal" Spacing="10">
                       <RadioButton Content="None"
                                    GroupName="GridLinesGroup"
-                                   IsChecked="{Binding $parent[DataGrid].((vm:EngineViewModel)DataContext).DataGridOptions.GridLinesVisibility, Converter={StaticResource GridLinesEnumConverter}, ConverterParameter=None}" />
+                                   IsChecked="{Binding DataGridOptions.GridLinesVisibility, Converter={StaticResource GridLinesEnumConverter}, ConverterParameter=None}" />
                       <RadioButton Content="Horizontal"
                                    GroupName="GridLinesGroup"
-                                   IsChecked="{Binding $parent[DataGrid].((vm:EngineViewModel)DataContext).DataGridOptions.GridLinesVisibility, Converter={StaticResource GridLinesEnumConverter}, ConverterParameter=Horizontal}" />
+                                   IsChecked="{Binding DataGridOptions.GridLinesVisibility, Converter={StaticResource GridLinesEnumConverter}, ConverterParameter=Horizontal}" />
                       <RadioButton Content="Vertical"
                                    GroupName="GridLinesGroup"
-                                   IsChecked="{Binding $parent[DataGrid].((vm:EngineViewModel)DataContext).DataGridOptions.GridLinesVisibility, Converter={StaticResource GridLinesEnumConverter}, ConverterParameter=Vertical}" />
+                                   IsChecked="{Binding DataGridOptions.GridLinesVisibility, Converter={StaticResource GridLinesEnumConverter}, ConverterParameter=Vertical}" />
                       <RadioButton Content="All"
                                    GroupName="GridLinesGroup"
-                                   IsChecked="{Binding $parent[DataGrid].((vm:EngineViewModel)DataContext).DataGridOptions.GridLinesVisibility, Converter={StaticResource GridLinesEnumConverter}, ConverterParameter=All}" />
+                                   IsChecked="{Binding DataGridOptions.GridLinesVisibility, Converter={StaticResource GridLinesEnumConverter}, ConverterParameter=All}" />
                     </StackPanel>
 
                   </StackPanel>
