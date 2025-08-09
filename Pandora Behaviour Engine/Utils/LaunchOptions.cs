@@ -19,10 +19,11 @@ public class LaunchOptions
 	public bool AutoClose { get; private set; }
 	public bool UseSkyrimDebug64 { get; private set; }
 
-	public static LaunchOptions Current { get; set; }
+	public static LaunchOptions? Current { get; set; }
 
 	public static LaunchOptions Parse(string[]? args)
 	{
+		args ??= [];
 		var options = new LaunchOptions();
 
 		var outputOption = new Option<DirectoryInfo?>(
