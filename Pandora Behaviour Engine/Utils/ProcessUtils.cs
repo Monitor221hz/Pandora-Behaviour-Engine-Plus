@@ -22,8 +22,6 @@ public static class ProcessUtils
 			using var parent = Process.GetProcessById(parentPid);
 			string parentName = parent.ProcessName.ToLowerInvariant();
 
-			Logger.Info($"Parent process detected: {parentName} (PID {parentPid})");
-
 			if (parentName.Contains("modorganizer") || parentName.Contains("mo2"))
 			{
 				Logger.Info("Detected launcher: Mod Organizer (MO2)");
