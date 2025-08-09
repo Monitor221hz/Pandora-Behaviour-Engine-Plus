@@ -30,7 +30,7 @@ public static class AppExceptionHandler
 		// => Use `Environment.CurrentDirectory`:  Current exe dir
 		// => Use `Directory.GetCurrentDirectory()`: Tmp dir! -> template read fails!
 		var log = BuildLog("UnhandledException", ex?.ToString() ?? "ExceptionObject is null");
-		WriteCrashLog("Pandora_CriticalCrash_UnhandledException", log);
+		WriteCrashLog("Pandora_CriticalCrash_UnhandledException.log", log);
 	}
 
 	/// <summary>
@@ -41,7 +41,7 @@ public static class AppExceptionHandler
 	private static void TaskScheduler_UnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
 	{
 		var log = BuildLog("UnobservedTaskException", e.Exception.ToString());
-		WriteCrashLog("Pandora_CriticalCrash_UnobservedTaskException", log);
+		WriteCrashLog("Pandora_CriticalCrash_UnobservedTaskException.log", log);
 		e.SetObserved();
 	}
 	private static void WriteCrashLog(string fileName, string log)
