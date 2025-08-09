@@ -24,7 +24,7 @@ public static class ModUtils
 		sourceMods
 			.Where(m => m.Active)
 			.OrderBy(m => m.Priority)
-			.ThenBy(m => IsPandoraMod(m.Code))
+			.ThenBy(m => !IsPandoraMod(m.Code))
 			.Select(m => m.ModInfo)
 			.ToList();
 
