@@ -1,9 +1,7 @@
-﻿using System;
+﻿using Pandora.Logging;
+using System;
 using System.Collections.Generic;
 using System.CommandLine;
-using System.CommandLine.Builder;
-using System.CommandLine.Invocation;
-using System.CommandLine.Parsing;
 using System.IO;
 using System.Linq;
 
@@ -11,7 +9,7 @@ namespace Pandora.Utils;
 
 public class LaunchOptions
 {
-	private static readonly bool CaseInsensitive = true;
+	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 	public DirectoryInfo? OutputDirectory { get; private set; }
 	public DirectoryInfo? SkyrimGameDirectory { get; private set; }
@@ -21,150 +19,121 @@ public class LaunchOptions
 
 	public static LaunchOptions? Current { get; set; }
 
-	public static LaunchOptions Parse(string[]? args)
+	public static LaunchOptions Parse(string[]? args, bool caseInsensitive = false)
 	{
 		args ??= [];
 		var options = new LaunchOptions();
 
-		var outputOption = new Option<DirectoryInfo?>(
-			aliases: ["--output", "-o"],
-			description: "Output directory");
-
-		var tesvOption = new Option<DirectoryInfo?>(
-			"--tesv",
-			description: "Skyrim directory (TESV), should point to Skyrim root folder");
-
-		var autoRunOption = new Option<bool>(
-			aliases: ["--auto_run", "-ar"],
-			description: "Automatically run after start");
-
-		var autoCloseOption = new Option<bool>(
-			aliases: ["--auto_close", "-ac"],
-			description: "Close app after execution");
-
-		var skyrimDebug64Option = new Option<bool>(
-			"--skyrim_debug64",
-			description: "Use skyrim debug 64-bit mode");
-
-		var rootCommand = new RootCommand
+		Option<DirectoryInfo?> outputOption = new(name: "--output", aliases: ["--output", "-o"])
 		{
-			outputOption,
-			tesvOption,
-			autoRunOption,
-			autoCloseOption,
-			skyrimDebug64Option
+			Description = "Output directory."
 		};
-
-		rootCommand.SetHandler((output, tesv, autorun, autoclose, useskyrimdebug64) =>
+		Option<DirectoryInfo?> tesvOption = new(name: "--tesv", aliases: "--tesv")
 		{
-			options.OutputDirectory = output;
-			options.SkyrimGameDirectory = tesv;
-			options.AutoRun = autorun;
-			options.AutoClose = autoclose;
-			options.UseSkyrimDebug64 = useskyrimdebug64;
-		}, outputOption, tesvOption, autoRunOption, autoCloseOption, skyrimDebug64Option);
-
-		var builder = new CommandLineBuilder(rootCommand)
-			.AddMiddleware(CaseInsensitiveMiddleware, MiddlewareOrder.ExceptionHandler)
-			.UseDefaults();
-
-		var parser = builder.Build();
-		parser.Invoke(args);
-
-		return options;
-	}
-
-	private static void CaseInsensitiveMiddleware(InvocationContext context)
-	{
-		if (!CaseInsensitive) return;
-
-		var commandOptions = context.ParseResult.CommandResult.Command.Options
-			.Concat(context.ParseResult.RootCommandResult.Command.Options);
-
-		var allAliases = commandOptions.SelectMany(option => option.Aliases);
-
-		string[] GetCorrectTokenCase(string[] tokens)
+			Description = "Skyrim directory (TESV), should point to Skyrim root folder."
+		};
+		Option<bool> autoRunOption = new(name: "--auto_run", aliases: ["--auto_run", "-ar"])
 		{
-			var newTokens = new List<string>(tokens.Length);
+			Description = "Automatically run after start."
+		};
+		Option<bool> autoCloseOption = new(name: "--auto_close", aliases: ["--auto_close", "-ac"])
+		{
+			Description = "Close app after execution."
+		};
+		Option<bool> skyrimDebug64Option = new(name: "--skyrim_debug64", aliases: "--skyrim_debug64")
+		{
+			Description = "Use skyrim debug 64-bit mode."
+		};
+		RootCommand rootCommand = new("Pandora command line arguments.");
 
-			for (int i = 0; i < tokens.Length; i++)
-			{
-				var token = tokens[i];
+		rootCommand.Options.Add(outputOption);
+		rootCommand.Options.Add(tesvOption);
+		rootCommand.Options.Add(autoRunOption);
+		rootCommand.Options.Add(autoCloseOption);
+		rootCommand.Options.Add(skyrimDebug64Option);
 
-				var matchingAlias = allAliases.FirstOrDefault(
-					alias => alias.Equals(token, StringComparison.InvariantCultureIgnoreCase));
+		rootCommand.SetAction(parseResult =>
+		{
+			options.OutputDirectory = parseResult.GetValue(outputOption);
+			options.SkyrimGameDirectory = parseResult.GetValue(tesvOption);
+			options.AutoRun = parseResult.GetValue(autoRunOption);
+			options.AutoClose = parseResult.GetValue(autoCloseOption);
+			options.UseSkyrimDebug64 = parseResult.GetValue(skyrimDebug64Option);
+		});
 
-				if (matchingAlias != null)
-				{
-					newTokens.Add(matchingAlias);
-					continue;
-				}
-
-				if (i > 0)
-				{
-					var previousToken = tokens[i - 1];
-
-					var matchingOption = commandOptions.FirstOrDefault(
-						option => option.Aliases.Contains(previousToken, StringComparer.InvariantCultureIgnoreCase));
-
-					if (matchingOption != null)
-					{
-						var completions = matchingOption.GetCompletions()
-							.Select(c => c.InsertText)
-							.ToArray();
-
-						if (completions.Length > 0)
-						{
-							var matchingCompletion = completions.FirstOrDefault(
-								completion => token.Equals(completion, StringComparison.InvariantCultureIgnoreCase));
-							newTokens.Add(matchingCompletion ?? token);
-						}
-						else
-						{
-							newTokens.Add(token);
-						}
-					}
-					else
-					{
-						newTokens.Add(token);
-					}
-				}
-				else
-				{
-					newTokens.Add(token);
-				}
-			}
-
-			return [.. newTokens];
+		string[] normalizedArgs = args;
+		if (caseInsensitive)
+		{
+			normalizedArgs = PreprocessArgumentsForCaseInsensitivity(args, rootCommand);
 		}
 
-		var tokens = context.ParseResult.Tokens.Select(token => token.Value).ToArray();
-		string[] newTokens;
+		var config = new CommandLineConfiguration(rootCommand);
+		var parseResult = config.Parse(normalizedArgs);
 
-		if (tokens.Length == 0)
+		if (parseResult.Errors.Any())
 		{
-			newTokens = [];
-		}
-		else if (tokens.Length == 1)
-		{
-			newTokens = [tokens[0].ToLowerInvariant()];
+			logger.Error($"Command-line parsing errors: {string.Join(", ", parseResult.Errors.Select(e => e.Message))}");
+			EngineLoggerAdapter.AppendLine("ERROR: Command line arguments were not processed, see Engine.log");
 		}
 		else
 		{
-			if (tokens[0].StartsWith('-'))
+			parseResult.Invoke();
+		}
+
+		Current = options;
+		return options;
+	}
+
+	/// <summary>
+	/// Normalizes command-line arguments to ensure case-insensitive parsing of option aliases.
+	/// This method processes input arguments to match option aliases regardless of case and handles
+	/// attached values (e.g., --option:value, --option=value, or --optionvalue). It also removes
+	/// quotes from quoted values if present. This is a workaround for the lack of native case-insensitive
+	/// parsing in System.CommandLine, pending a proposed solution in
+	/// <see href="https://github.com/dotnet/command-line-api/pull/2284">PR #2284</see>.
+	/// </summary>
+	/// <param name="args">The array of command-line arguments to normalize.</param>
+	/// <param name="rootCommand">The command containing the defined options and their aliases.</param>
+	/// <returns>An array of normalized arguments, with option aliases standardized and values separated.</returns>
+	private static string[] PreprocessArgumentsForCaseInsensitivity(string[] args, RootCommand rootCommand)
+	{
+		var canonicalAliases = rootCommand.Options
+			.SelectMany(option => option.Aliases)
+			.OrderByDescending(alias => alias.Length)
+			.ToList();
+
+		var processedArgs = new List<string>(args.Length);
+
+		foreach (var token in args)
+		{
+
+			if (!token.StartsWith('-'))
 			{
-				newTokens = tokens;
+				processedArgs.Add(token);
+				continue;
+			}
+
+			var matchedCanonicalAlias = canonicalAliases.FirstOrDefault(
+				alias => token.StartsWith(alias, StringComparison.OrdinalIgnoreCase));
+
+			if (matchedCanonicalAlias != null)
+			{
+				var valuePart = token[matchedCanonicalAlias.Length..];
+
+				if (matchedCanonicalAlias.StartsWith("--") && valuePart.Length > 0 && !valuePart.StartsWith(':') && !valuePart.StartsWith('='))
+				{
+					processedArgs.Add($"{matchedCanonicalAlias}:{valuePart}");
+				}
+				else
+				{
+					processedArgs.Add(matchedCanonicalAlias + valuePart);
+				}
 			}
 			else
 			{
-				newTokens = [
-						tokens[0].ToLowerInvariant(),
-						tokens[1].ToLowerInvariant(),
-						.. GetCorrectTokenCase([.. tokens.Skip(2)]),
-					];
+				processedArgs.Add(token);
 			}
 		}
-
-		context.ParseResult = context.Parser.Parse(newTokens);
+		return [.. processedArgs];
 	}
 }
