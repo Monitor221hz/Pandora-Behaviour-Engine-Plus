@@ -13,14 +13,14 @@ public class StartupService
 	public static StartupInfo Handle(LaunchOptions? options)
 	{
 		var outputDir = options?.OutputDirectory;
-		var manager = ProcessUtils.GetModManagerSource();
+		var modManager = ProcessUtils.Source;
 
-		bool isCustom = outputDir is not null || manager == ModManager.ModOrganizer;
+		bool isCustom = outputDir is not null || modManager == ModManager.ModOrganizer;
 
 		string message = string.Empty;
 		if (!isCustom)
 		{
-			message = manager switch
+			message = modManager switch
 			{
 				ModManager.Vortex => "Output folder not set via -o. In the Pandora tool settings, add the parameter -o to the Command Line field.",
 				_ => "Output folder is not set. Use the -o argument to define it, or default location will be used."
