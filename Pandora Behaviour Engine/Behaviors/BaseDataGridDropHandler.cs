@@ -8,6 +8,7 @@ using Avalonia.Xaml.Interactions.DragAndDrop;
 using Pandora.Utils;
 using Pandora.ViewModels;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -21,22 +22,19 @@ public abstract class BaseDataGridDropHandler<T>(Action<T, uint> setPriority) : 
 
 	private readonly Action<T, uint> _setPriority = setPriority ?? throw new ArgumentNullException(nameof(setPriority));
 
-	protected void AssignPriorities(ObservableCollection<T> items)
+	protected virtual void AssignPriorities(IEnumerable<T> orderedItems)
 	{
+		var itemsList = orderedItems.ToList();
 		uint priority = 1;
-
-		foreach (var item in items)
+		foreach (var item in itemsList)
 		{
-			if (item is ModInfoViewModel mod && ModUtils.IsPandoraMod(mod))
+			if (item is ModInfoViewModel mod && ModUtils.IsPandoraMod(mod)) 
 				continue;
 
 			_setPriority(item, priority++);
 		}
-
-		if (items.FirstOrDefault(i => i is ModInfoViewModel mod && ModUtils.IsPandoraMod(mod)) is T pandora)
+		if (itemsList.FirstOrDefault(item => item is ModInfoViewModel mod && ModUtils.IsPandoraMod(mod)) is T pandora)
 		{
-			items.Remove(pandora);
-			items.Add(pandora);
 			_setPriority(pandora, priority);
 		}
 	}
@@ -81,51 +79,34 @@ public abstract class BaseDataGridDropHandler<T>(Action<T, uint> setPriority) : 
         ClearDraggingStyleFromAllRows(sender);
     }
 
-    protected bool RunDropAction(DataGrid dg, DragEventArgs e, bool bExecute, T sourceItem, T targetItem, ObservableCollection<T> items)
-    {
-        int sourceIndex = items.IndexOf(sourceItem);
-        int targetIndex = items.IndexOf(targetItem);
+	protected bool RunDropAction(DataGrid dg, DragEventArgs e, bool bExecute, T sourceItem, T targetItem, ObservableCollection<T> items)
+	{
+		// Get the current sorted order
+		var currentOrder = items.OrderBy(item => (item as ModInfoViewModel)?.Priority ?? 0).ToList();
 
-        if (sourceIndex < 0 || targetIndex < 0)
-        {
-            return false;
-        }
+		int sourceIdx = currentOrder.IndexOf(sourceItem);
+		int targetIdx = currentOrder.IndexOf(targetItem);
 
-        switch (e.DragEffects)
-        {
-			//case DragDropEffects.Copy:
-			//    {
-			//        if (bExecute)
-			//        {
-			//            var clone = MakeCopy(items, sourceItem);
-			//            InsertItem(items, clone, targetIndex + 1);
-			//            dg.SelectedIndex = targetIndex + 1;
-			//        }
-			//        return true;
-			//    }
-			case DragDropEffects.Move:
-				{
-					if (bExecute)
-					{
-						MoveItem(items, sourceIndex, targetIndex);
-						AssignPriorities(items);
-						dg.SelectedIndex = targetIndex;
-					}
-					return true;
-				}
-			//case DragDropEffects.Link:
-			//    {
-			//        if (bExecute)
-			//        {
-			//            SwapItem(items, sourceIndex, targetIndex);
-			//            dg.SelectedIndex = targetIndex;
-			//        }
-			//        return true;
-			//    }
-			default:
-                return false;
-        }
-    }
+		if (sourceIdx < 0 || targetIdx < 0) 
+			return false;
+
+		string direction = e.Data.Contains("direction") ? (string)e.Data.Get("direction")! : "down";
+
+		currentOrder.RemoveAt(sourceIdx);
+		int insertIdx = direction == "up" ? targetIdx : targetIdx + 1;
+
+		if (insertIdx > currentOrder.Count) 
+			insertIdx = currentOrder.Count; // Protection from going beyond the limits
+
+		currentOrder.Insert(insertIdx, sourceItem);
+
+		if (bExecute)
+		{
+			AssignPriorities(currentOrder); // Recalculation of priorities based on the new virtual order
+			dg.SelectedItem = sourceItem;
+		}
+		return true;
+	}
 
 	private static DataGridRow? FindDataGridRowFromChildView(StyledElement sourceChild)
     {
