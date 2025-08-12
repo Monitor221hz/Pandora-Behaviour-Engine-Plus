@@ -8,7 +8,7 @@ public static partial class TaskbarFlasher
 {
 	private static nint? _lastFlashingHandle;
 
-	public static void FlashUntilFocused(Window window)
+	public static void FlashUntilFocused(this Window window)
 	{
 		if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
 			return;
@@ -34,7 +34,7 @@ public static partial class TaskbarFlasher
 		window.Activated += OnWindowActivated;
 	}
 
-	public static void StopFlashing(Window window)
+	public static void StopFlashing(this Window window)
 	{
 		if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
 			return;
@@ -61,15 +61,13 @@ public static partial class TaskbarFlasher
 	{
 		if (sender is Window window)
 		{
-			StopFlashing(window);
+			window.StopFlashing();
 			window.Activated -= OnWindowActivated;
 		}
 	}
 
-	private static nint GetWindowHandle(Window window)
-	{
-		return window.TryGetPlatformHandle()?.Handle ?? nint.Zero;
-	}
+	private static nint GetWindowHandle(Window window) =>
+		window.TryGetPlatformHandle()?.Handle ?? nint.Zero;
 
 	#region WinAPI
 

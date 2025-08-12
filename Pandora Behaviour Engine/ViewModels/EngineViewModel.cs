@@ -231,10 +231,8 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 	{
 		if (success)
 		{
-			mainWindow?.SetTaskbarProgress(false);
-
-			if (mainWindow is not null && !mainWindow.IsActive)
-				TaskbarFlasher.FlashUntilFocused(mainWindow);
+			mainWindow?.SetVisualState(WindowVisualState.Idle);
+			mainWindow?.FlashUntilFocused();
 
 			await JsonModSettingsStore.SaveAsync(SourceMods, PandoraPaths.ActiveModsFile.FullName);
 
@@ -243,7 +241,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		}
 		else
 		{
-			mainWindow?.SetTaskbarProgressError();
+			mainWindow?.SetVisualState(WindowVisualState.Error);
 			EngineLoggerAdapter.AppendLine("Launch aborted. Existing output was not cleared, and current patch list will not be saved.");
 		}
 	}
@@ -252,7 +250,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 	private async Task LaunchEngine()
 	{
 		var mainWindow = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow as MainWindow;
-		mainWindow?.SetTaskbarProgress(true);
+		mainWindow?.SetVisualState(WindowVisualState.Running);
 
 		try
 		{
@@ -271,7 +269,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		}
 		finally
 		{
-			mainWindow?.SetTaskbarProgress(false);
+			mainWindow?.SetVisualState(WindowVisualState.Idle);
 		}
 	}
 

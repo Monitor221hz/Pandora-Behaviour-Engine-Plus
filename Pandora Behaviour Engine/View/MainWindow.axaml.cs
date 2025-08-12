@@ -1,5 +1,6 @@
-using Avalonia.Media;
 using FluentAvalonia.UI.Windowing;
+using Pandora.Utils;
+using Pandora.Utils.Platform.Windows;
 using System;
 
 namespace Pandora.Views;
@@ -10,45 +11,37 @@ public partial class MainWindow : AppWindow
 	{
 		InitializeComponent();
 
-		if (IsWindows)
-		{
-			Color color = Color.Parse("#FF9370DB");
-			PlatformFeatures.SetWindowBorderColor(color);
-		}
+		SetVisualState(WindowVisualState.Idle);
 
-		TitleBar.ExtendsContentIntoTitleBar = true;
-		TitleBar.TitleBarHitTestType = TitleBarHitTestType.Complex;
-		TitleBar.Height = 42;
+		ConfigureTitleBar();
+		RestoreWindowSize();
 
-		var savedWindowHeight = Properties.GUISettings.Default.WindowHeight;
-		var savedWindowWidth = Properties.GUISettings.Default.WindowWidth;
-		Height = savedWindowHeight > 1 ? savedWindowHeight : Height;
-		Width = savedWindowWidth > 1 ? savedWindowWidth : Width;
 		Closed += MainWindow_Closed;
 	}
+
 	private void MainWindow_Closed(object? sender, EventArgs e)
 	{
 		Properties.GUISettings.Default.WindowHeight = Height;
 		Properties.GUISettings.Default.WindowWidth = Width;
 		Properties.GUISettings.Default.Save();
 	}
-	public void SetTaskbarProgress(bool isRunning)
+	private void ConfigureTitleBar()
 	{
-		if (!IsWindows) return;
-
-		if (isRunning)
-		{
-			PlatformFeatures.SetTaskBarProgressBarState(TaskBarProgressBarState.Indeterminate);
-		}
-		else
-		{
-			PlatformFeatures.SetTaskBarProgressBarState(TaskBarProgressBarState.None);
-		}
+		TitleBar.ExtendsContentIntoTitleBar = true;
+		TitleBar.TitleBarHitTestType = TitleBarHitTestType.Complex;
+		TitleBar.Height = 42;
 	}
-	public void SetTaskbarProgressError()
+	private void RestoreWindowSize()
 	{
-		if (!IsWindows) return;
-		PlatformFeatures.SetTaskBarProgressBarState(TaskBarProgressBarState.Error);
+		var savedHeight = Properties.GUISettings.Default.WindowHeight;
+		var savedWidth = Properties.GUISettings.Default.WindowWidth;
+
+		if (savedHeight > 100)
+			Height = savedHeight;
+
+		if (savedWidth > 100)
+			Width = savedWidth;
 	}
 
+	public void SetVisualState(WindowVisualState state) => WindowsPlatformHelper.SetVisualWindowState(this, state);
 }
