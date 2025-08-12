@@ -59,9 +59,10 @@ public static class ModLoader
 			.ToList();
 
 		var modInfos = await LoadModsAsync(providers, uniqueDirectories);
-		var modViewModels = modInfos.Select(m => new ModInfoViewModel(m)).OrderBy(m => m.Priority).ToList();
+		var modViewModels = modInfos.Select(m => new ModInfoViewModel(m)).ToList();
 
 		await JsonModSettingsStore.ApplyAsync(modViewModels, PandoraPaths.ActiveModsFile.FullName);
+		EngineLoggerAdapter.AppendLine($"PandoraPaths.ActiveModsFile.FullName: {PandoraPaths.ActiveModsFile.FullName}");
 
 		mods.AddRange(modViewModels);
 		EngineLoggerAdapter.AppendLine($"Mods loaded.");

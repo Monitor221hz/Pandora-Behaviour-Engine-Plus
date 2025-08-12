@@ -5,6 +5,7 @@ using Pandora.Utils;
 using Pandora.ViewModels;
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Pandora.Behaviors;
 
@@ -36,32 +37,39 @@ public sealed class ModsDataGridDropHandler : BaseDataGridDropHandler<ModInfoVie
 
 	public void MoveUp(DataGrid grid, EngineViewModel vm)
 	{
-		if (grid.SelectedItem is not ModInfoViewModel selected || ModUtils.IsPandoraMod(selected))
+		if (grid.SelectedItem is not ModInfoViewModel selected || ModUtils.IsPandoraMod(selected)) 
 			return;
 
 		var items = vm.SourceMods;
-		int index = items.IndexOf(selected);
-		if (index > 0)
-		{
-			MoveItem(items, index, index - 1);
-			AssignPriorities(items);
-			grid.SelectedIndex = index - 1;
-		}
+		var currentOrder = items.OrderBy(m => m.Priority).ToList();
+		int idx = currentOrder.IndexOf(selected);
+
+		if (idx <= 0) 
+			return;
+
+		currentOrder.RemoveAt(idx);
+		currentOrder.Insert(idx - 1, selected);
+
+		AssignPriorities(currentOrder);
+		grid.SelectedItem = selected;
 	}
 
 	public void MoveDown(DataGrid grid, EngineViewModel vm)
 	{
-		if (grid.SelectedItem is not ModInfoViewModel selected || ModUtils.IsPandoraMod(selected))
+		if (grid.SelectedItem is not ModInfoViewModel selected || ModUtils.IsPandoraMod(selected)) 
 			return;
 
 		var items = vm.SourceMods;
-		int index = items.IndexOf(selected);
+		var currentOrder = items.OrderBy(m => m.Priority).ToList();
+		int idx = currentOrder.IndexOf(selected);
 
-		if (index < 0 || index >= items.Count - 2) // -2, Pandora base latest
+		if (idx < 0 || idx >= currentOrder.Count - 2) // -2, Pandora base latest
 			return;
 
-		MoveItem(items, index, index + 1);
-		AssignPriorities(items);
-		grid.SelectedIndex = index + 1;
+		currentOrder.RemoveAt(idx);
+		currentOrder.Insert(idx + 1, selected);
+
+		AssignPriorities(currentOrder);
+		grid.SelectedItem = selected;
 	}
 }
