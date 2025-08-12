@@ -19,17 +19,18 @@ public class PackFileExporter : IMetaDataExporter<PackFile>
 
 	public PackFileExporter()
 	{
-		ExportDirectory = new DirectoryInfo(Environment.CurrentDirectory);
+		ExportDirectory = PandoraPaths.OutputPath;
 	}
 
 	public bool Export(PackFile packFile)
 	{
 		var launchDirectory = Environment.CurrentDirectory;
-
+		Logger.Info($"PackFileExporter.ExportDirectory: {ExportDirectory.FullName}");
 		var outputHandle = packFile.RebaseOutput(ExportDirectory);
 		if (outputHandle.Directory == null) return false;
 		if (!outputHandle.Directory.Exists) { outputHandle.Directory.Create(); }
 		if (outputHandle.Exists) { outputHandle.Delete(); }
+		Logger.Info($"outputHandle.Directory After Create: {outputHandle.Directory?.FullName}");
 		HKXHeader header = HKXHeader.SkyrimSE();
 		IHavokObject rootObject;
 

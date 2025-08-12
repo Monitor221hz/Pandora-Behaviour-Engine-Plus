@@ -6,6 +6,7 @@ using Pandora.Models.Patch.Skyrim64.AnimData;
 using Pandora.Models.Patch.Skyrim64.AnimSetData;
 using Pandora.Models.Patch.Skyrim64.Format.Pandora;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
+using Pandora.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -30,11 +31,11 @@ public class NemesisAssembler
 
 	private static readonly DirectoryInfo engineFolder = new(Environment.CurrentDirectory + "\\Pandora_Engine");
 
-	private static readonly DirectoryInfo templateFolder = new(Path.Combine(Environment.CurrentDirectory, "Pandora_Engine\\Skyrim\\Template"));
+	private static readonly DirectoryInfo templateFolder = new(Path.Combine(BehaviourEngine.AssemblyDirectory.FullName, "Pandora_Engine\\Skyrim\\Template"));
 
-	private static readonly DirectoryInfo defaultOutputMeshFolder = new(Path.Join(Environment.CurrentDirectory, "meshes"));
+	private static readonly DirectoryInfo defaultOutputMeshFolder = new(Path.Join(PandoraPaths.OutputPath.FullName, "meshes"));
 
-	private static readonly DirectoryInfo currentDirectory = new(Environment.CurrentDirectory);
+	private static readonly DirectoryInfo currentDirectory = PandoraPaths.OutputPath;
 	public ProjectManager ProjectManager { get; private set; }
 	public AnimDataManager AnimDataManager { get; private set; }
 	public AnimSetDataManager AnimSetDataManager { get; private set; }
@@ -52,6 +53,8 @@ public class NemesisAssembler
 	}
 	public NemesisAssembler(IMetaDataExporter<PackFile> ioManager)
 	{
+		Logger.Debug($"NemesisAssembler.currentDirectory: {currentDirectory.FullName}");
+		Logger.Debug($"NemesisAssembler.defaultOutputMeshFolder: {defaultOutputMeshFolder.FullName}");
 		exporter = ioManager;
 		ProjectManager = new ProjectManager(templateFolder, currentDirectory);
 		AnimSetDataManager = new AnimSetDataManager(templateFolder, defaultOutputMeshFolder);
@@ -71,6 +74,7 @@ public class NemesisAssembler
 	public void SetOutputPath(DirectoryInfo baseOutputDirectory)
 	{
 		var outputMeshDirectory = new DirectoryInfo(Path.Join(baseOutputDirectory.FullName, "meshes"));
+		Logger.Debug($"NemesisAssembler.outputMeshDirectory: {outputMeshDirectory.FullName}");
 		ProjectManager.SetOutputPath(baseOutputDirectory);
 		AnimDataManager.SetOutputPath(outputMeshDirectory);
 		AnimSetDataManager.SetOutputPath(outputMeshDirectory);

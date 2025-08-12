@@ -27,7 +27,7 @@ public class BehaviourEngine
 	public bool IsExternalOutput = false;
 
 	public IEngineConfiguration Configuration { get; private set; } = new SkyrimConfiguration();
-	public DirectoryInfo OutputPath { get; private set; } = new(Environment.CurrentDirectory);
+	public static DirectoryInfo OutputPath { get; private set; } = new(Environment.CurrentDirectory);
 
 	static BehaviourEngine()
 	{

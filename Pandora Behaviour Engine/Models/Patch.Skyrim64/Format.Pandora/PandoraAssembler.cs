@@ -6,6 +6,7 @@ using Pandora.Models.Patch.Skyrim64.AnimSetData;
 using Pandora.Models.Patch.Skyrim64.Format.Nemesis;
 using Pandora.Models.Patch.Skyrim64.Hkx.Changes;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
+using Pandora.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,9 +18,9 @@ public class PandoraAssembler
 {
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-	private readonly DirectoryInfo templateFolder = new(Environment.CurrentDirectory + "\\Pandora_Engine\\Skyrim\\Template");
+	private readonly DirectoryInfo templateFolder = new(BehaviourEngine.AssemblyDirectory + "\\Pandora_Engine\\Skyrim\\Template");
 
-	private readonly DirectoryInfo defaultOutputMeshFolder = new($"{Environment.CurrentDirectory}\\meshes");
+	private readonly DirectoryInfo defaultOutputMeshFolder = new($"{PandoraPaths.OutputPath.FullName}\\meshes");
 
 	public ProjectManager ProjectManager { get; private set; }
 	public AnimDataManager AnimDataManager { get; private set; }

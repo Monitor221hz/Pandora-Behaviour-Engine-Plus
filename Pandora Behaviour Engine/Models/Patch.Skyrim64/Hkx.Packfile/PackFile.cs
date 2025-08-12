@@ -1,5 +1,6 @@
 ﻿using HKX2E;
 using Pandora.API.Patch.Engine.Skyrim64;
+using Pandora.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -83,8 +84,24 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 	{
 		InputHandle = file;
 		OutputHandle = file;
-		relativeOutputFilePath = Path.GetRelativePath(Environment.CurrentDirectory, file.FullName.Replace("Pandora_Engine\\Skyrim\\Template", "meshes", StringComparison.OrdinalIgnoreCase));
+
+		var templateSegment = Path.Combine("Pandora_Engine", "Skyrim", "Template");
+		Logger.Debug($"PackFile.FullName: {file.FullName}");
+		var transformedPath = file.FullName.Replace(templateSegment, "meshes", StringComparison.OrdinalIgnoreCase);
+
+		int meshesIndex = transformedPath.IndexOf("meshes", StringComparison.OrdinalIgnoreCase);
+		if (meshesIndex >= 0)
+		{
+			relativeOutputFilePath = transformedPath.Substring(meshesIndex);
+		}
+		else
+		{
+			relativeOutputFilePath = Path.GetRelativePath(BehaviourEngine.OutputPath.FullName, transformedPath);
+		}
+
 		RelativeOutputDirectoryPath = Path.GetDirectoryName(relativeOutputFilePath)!;
+		Logger.Debug($"PackFile.RelativeOutputDirectoryPath: {RelativeOutputDirectoryPath}");
+
 		using (var stream = file.OpenRead())
 		{
 			Map = XMap.Load(stream);
