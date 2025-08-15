@@ -7,7 +7,7 @@ public class AnimDataManager
 {
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-	private static readonly string ANIMDATA_FILENAME = "animationdatasinglefile.txt";
+	private const string ANIMDATA_FILENAME = "animationdatasinglefile.txt";
 
 	private HashSet<int> usedClipIDs = [];
 	public int numClipIDs { get; private set; } = 0;
@@ -18,27 +18,23 @@ public class AnimDataManager
 	private List<MotionData> motionDataList { get; set; } = [];
 
 	private DirectoryInfo templateFolder;
-	private DirectoryInfo outputMeshDirectory;
+	private DirectoryInfo outputMeshFolder;
 
-	private FileInfo templateAnimDataSingleFile { get; set; }
-
-	private FileInfo outputAnimDataSingleFile { get; set; }
+	public FileInfo OutputAnimDataSingleFile => new(Path.Join(outputMeshFolder.FullName, ANIMDATA_FILENAME));
+	public FileInfo TemplateAnimDataSingleFile => new(Path.Join(templateFolder.FullName, ANIMDATA_FILENAME));
 
 
 	private int LastID { get; set; } = 32767;
 
-	public AnimDataManager(DirectoryInfo templateFolder, DirectoryInfo meshDirectory)
+	public AnimDataManager(DirectoryInfo templateFolder, DirectoryInfo outputMeshFolder)
 	{
 		this.templateFolder = templateFolder;
-		outputMeshDirectory = meshDirectory;
-		templateAnimDataSingleFile = new FileInfo($"{templateFolder.FullName}\\{ANIMDATA_FILENAME}");
-		outputAnimDataSingleFile = new FileInfo($"{meshDirectory.FullName}\\{ANIMDATA_FILENAME}");
+		this.outputMeshFolder = outputMeshFolder;
 	}
 
-	public void SetOutputPath(DirectoryInfo meshDirectory)
+	public void SetOutputPath(DirectoryInfo outputMeshFolder)
 	{
-		outputMeshDirectory = meshDirectory;
-		outputAnimDataSingleFile = new FileInfo($"{outputMeshDirectory.FullName}\\{ANIMDATA_FILENAME}");
+		this.outputMeshFolder = outputMeshFolder;
 	}
 
 	private void MapProjectAnimData(ProjectAnimData animData)
@@ -74,7 +70,7 @@ public class AnimDataManager
 		int NumProjects;
 
 
-		using (var readStream = templateAnimDataSingleFile.OpenRead())
+		using (var readStream = TemplateAnimDataSingleFile.OpenRead())
 		{
 			using (StreamReader reader = new(readStream))
 			{
@@ -146,8 +142,8 @@ public class AnimDataManager
 
 	public void MergeAnimDataSingleFile()
 	{
-		outputAnimDataSingleFile.Directory?.Create();
-		using (var writeStream = outputAnimDataSingleFile.Create())
+		OutputAnimDataSingleFile.Directory?.Create();
+		using (var writeStream = OutputAnimDataSingleFile.Create())
 		{
 			using (var streamWriter = new StreamWriter(writeStream))
 			{

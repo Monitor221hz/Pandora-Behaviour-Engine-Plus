@@ -18,17 +18,16 @@ public class PandoraAssembler
 {
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-	private readonly DirectoryInfo templateFolder = new(BehaviourEngine.AssemblyDirectory + "\\Pandora_Engine\\Skyrim\\Template");
+	private readonly DirectoryInfo templateFolder = new(Path.Join(BehaviourEngine.AssemblyDirectory.FullName, "Pandora_Engine", "Skyrim", "Template"));
+	private readonly DirectoryInfo defaultOutputMeshFolder = new(Path.Join(PandoraPaths.OutputPath.FullName, "meshes"));
 
-	private readonly DirectoryInfo defaultOutputMeshFolder = new($"{PandoraPaths.OutputPath.FullName}\\meshes");
+	private readonly PandoraNativePatchManager nativeManager = new();
+	private readonly IMetaDataExporter<PackFile> exporter = new PackFileExporter();
 
 	public ProjectManager ProjectManager { get; private set; }
 	public AnimDataManager AnimDataManager { get; private set; }
 	public AnimSetDataManager AnimSetDataManager { get; private set; }
 
-	private PandoraNativePatchManager nativeManager = new();
-
-	private IMetaDataExporter<PackFile> exporter = new PackFileExporter();
 	public PandoraAssembler(IMetaDataExporter<PackFile> exporter)
 	{
 		this.exporter = exporter;

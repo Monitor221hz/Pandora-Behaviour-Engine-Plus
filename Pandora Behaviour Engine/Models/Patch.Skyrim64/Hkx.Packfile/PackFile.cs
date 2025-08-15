@@ -85,22 +85,11 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 		InputHandle = file;
 		OutputHandle = file;
 
-		var templateSegment = Path.Combine("Pandora_Engine", "Skyrim", "Template");
-		Logger.Debug($"PackFile.FullName: {file.FullName}");
-		var transformedPath = file.FullName.Replace(templateSegment, "meshes", StringComparison.OrdinalIgnoreCase);
+		var templateRootPath = Path.Combine(BehaviourEngine.AssemblyDirectory.FullName, "Pandora_Engine", "Skyrim", "Template");
+		var relativePathInsideTemplate = Path.GetRelativePath(templateRootPath, file.FullName);
 
-		int meshesIndex = transformedPath.IndexOf("meshes", StringComparison.OrdinalIgnoreCase);
-		if (meshesIndex >= 0)
-		{
-			relativeOutputFilePath = transformedPath.Substring(meshesIndex);
-		}
-		else
-		{
-			relativeOutputFilePath = Path.GetRelativePath(BehaviourEngine.OutputPath.FullName, transformedPath);
-		}
-
+		relativeOutputFilePath = Path.Combine("meshes", relativePathInsideTemplate);
 		RelativeOutputDirectoryPath = Path.GetDirectoryName(relativeOutputFilePath)!;
-		Logger.Debug($"PackFile.RelativeOutputDirectoryPath: {RelativeOutputDirectoryPath}");
 
 		using (var stream = file.OpenRead())
 		{

@@ -24,13 +24,12 @@ public class PackFileExporter : IMetaDataExporter<PackFile>
 
 	public bool Export(PackFile packFile)
 	{
-		var launchDirectory = Environment.CurrentDirectory;
-		Logger.Info($"PackFileExporter.ExportDirectory: {ExportDirectory.FullName}");
+		//var launchDirectory = Environment.CurrentDirectory;
+
 		var outputHandle = packFile.RebaseOutput(ExportDirectory);
 		if (outputHandle.Directory == null) return false;
 		if (!outputHandle.Directory.Exists) { outputHandle.Directory.Create(); }
 		if (outputHandle.Exists) { outputHandle.Delete(); }
-		Logger.Info($"outputHandle.Directory After Create: {outputHandle.Directory?.FullName}");
 		HKXHeader header = HKXHeader.SkyrimSE();
 		IHavokObject rootObject;
 

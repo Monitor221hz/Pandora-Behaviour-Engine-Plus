@@ -17,18 +17,18 @@ namespace Pandora.Models.Patch.Skyrim64;
 public class ProjectManager : IProjectManager
 {
 	private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
 	private Dictionary<string, Project> projectMap = new Dictionary<string, Project>(StringComparer.OrdinalIgnoreCase);
 	private Dictionary<string, Project> fileProjectMap = new Dictionary<string, Project>(StringComparer.OrdinalIgnoreCase);
 	private Dictionary<string, Project> folderProjectMap = new Dictionary<string, Project>(StringComparer.OrdinalIgnoreCase);
 	private Dictionary<string, List<Project>> linkedProjectMap = new Dictionary<string, List<Project>>(StringComparer.OrdinalIgnoreCase);
 
+	private const string VANILLA_PROJECTPATHS_FILENAME = "vanilla_projectpaths.txt";
+
 	private readonly DirectoryInfo templateFolder;
-
-	private DirectoryInfo baseOutputDirectory;
-
+	private DirectoryInfo baseOutputFolder;
 
 	private IPackFileCache packFileCache = new PackFileCache();
-
 
 	private FNISParser fnisParser;
 
@@ -36,11 +36,11 @@ public class ProjectManager : IProjectManager
 
 	public HashSet<PackFile> ActivePackFiles { get; private set; } = [];
 
-	public ProjectManager(DirectoryInfo templateFolder, DirectoryInfo outputDirectory)
+	public ProjectManager(DirectoryInfo templateFolder, DirectoryInfo outputFolder)
 	{
 		this.templateFolder = templateFolder;
-		baseOutputDirectory = outputDirectory;
-		fnisParser = new FNISParser(this, baseOutputDirectory);
+		baseOutputFolder = outputFolder;
+		fnisParser = new FNISParser(this, baseOutputFolder);
 	}
 
 	public void GetExportInfo(StringBuilder builder)
@@ -93,7 +93,7 @@ public class ProjectManager : IProjectManager
 
 	public void LoadTrackedProjects()
 	{
-		FileInfo projectList = new($"{templateFolder.FullName}\\vanilla_projectpaths.txt");
+		FileInfo projectList = new(Path.Join(templateFolder.FullName, VANILLA_PROJECTPATHS_FILENAME));
 		string? expectedLine = null;
 		List<string> projectPaths = [];
 		using (var readStream = projectList.OpenRead())
@@ -399,8 +399,8 @@ public class ProjectManager : IProjectManager
 
 	public void SetOutputPath(DirectoryInfo baseDirectory)
 	{
-		baseOutputDirectory = baseDirectory;
+		baseOutputFolder = baseDirectory;
 		fnisParser.SetOutputPath(baseDirectory);
 	}
-	public DirectoryInfo GetOutputDirectory() { return baseOutputDirectory; }
+	public DirectoryInfo GetOutputDirectory() => baseOutputFolder;
 }

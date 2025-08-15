@@ -18,7 +18,7 @@ public class DebugPackFileExporter : IMetaDataExporter<PackFile>
 	}
 	public bool Export(PackFile packFile)
 	{
-		var launchDirectory = Environment.CurrentDirectory;
+		//var launchDirectory = Environment.CurrentDirectory;
 
 		var outputHandle = packFile.RebaseOutput(ExportDirectory);
 		if (outputHandle.Directory == null) return false;
