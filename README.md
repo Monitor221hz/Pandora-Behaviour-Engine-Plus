@@ -87,6 +87,8 @@ Pandora runs on Windows, Linux, and MacOS, but only Windows is extensively teste
 ### Patch Order
 Pandora has a drag and drop priority system. Higher priority mods will overwrite conflicting changes from lower priority mods. As patches go further down the list, priority increases. Direct behaviour conflicts are rare, so manual resolving is almost never needed, but the option is there just in case. 
 
+To move a mod, simply select the desired mod in the list, hold it down and drag it to the desired location. There is also a keyboard system for moving mods. Use the `[+]` and `[-]` keys to move the selected mod in the list.
+
 
 ### Mod Cache
 Pandora saves the active mods to an external cache file after the engine successfully finishes its patching process. When the cache is loaded, all active mods are shown at the top with relative priority preserved, for better readability. To clear the cache, delete `Pandora_Engine/ActiveMods.json`. 
