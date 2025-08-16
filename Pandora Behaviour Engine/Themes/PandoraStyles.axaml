@@ -18,7 +18,7 @@
 
     <b:ModsDataGridDropHandler x:Key="ModsDataGridDropHandler" />
   </Styles.Resources>
-  
+
   <Style Selector="DataGrid.DragAndDrop">
     <Setter Property="(Interaction.Behaviors)">
       <BehaviorCollectionTemplate>
@@ -123,22 +123,29 @@
   </Style>
 
 
- 
+
   <!-- Add Styles Here -->
-  
+
   <Style Selector="GridSplitter.innerStyle">
     <Setter Property="Template">
       <ControlTemplate>
-        <Border BorderBrush="{TemplateBinding BorderBrush}"
-                BorderThickness="{TemplateBinding BorderThickness}"
-                CornerRadius="{TemplateBinding CornerRadius}"
-                Background="{TemplateBinding Background}">
-          <Border Width="24" Height="3" CornerRadius="4" Background="{DynamicResource SystemFillColorAttentionBrush}" />
+        <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}" Background="{TemplateBinding Background}">
+          <Border x:Name="Grip" Width="24" Height="3" CornerRadius="4" Background="{DynamicResource SystemFillColorAttentionBrush}">
+            <Interaction.Behaviors>
+              <DataTriggerBehavior Binding="{TemplateBinding ResizeDirection}" ComparisonCondition="Equal" Value="Columns">
+                <ChangePropertyAction TargetObject="{Binding #Grip}" PropertyName="Width" Value="3" />
+                <ChangePropertyAction TargetObject="{Binding #Grip}" PropertyName="Height" Value="24" />
+              </DataTriggerBehavior>
+              <DataTriggerBehavior Binding="{TemplateBinding ResizeDirection}" ComparisonCondition="Equal" Value="Rows">
+                <ChangePropertyAction TargetObject="{Binding #Grip}" PropertyName="Width" Value="24" />
+                <ChangePropertyAction TargetObject="{Binding #Grip}" PropertyName="Height" Value="3" />
+              </DataTriggerBehavior>
+            </Interaction.Behaviors>
+          </Border>
         </Border>
       </ControlTemplate>
     </Setter>
   </Style>
-
 
 
   <Style Selector="AutoCompleteBox.SampleApp /template/ TextBox#PART_TextBox">
@@ -159,5 +166,5 @@
       </Template>
     </Setter>
   </Style>
-  
+
 </Styles>
