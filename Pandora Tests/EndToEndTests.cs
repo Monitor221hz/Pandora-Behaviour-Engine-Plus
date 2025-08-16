@@ -44,6 +44,18 @@ public class EndToEndTests
 		{
 			PackFileAssert.DowncastValidPackFile(activePackFile);
 		}
+        // Checking for meshes with .hkx files
+        var meshesPath = Path.Combine(Resources.OutputDirectory.FullName, "meshes");
+        Assert.True(Directory.Exists(meshesPath), $"Meshes directory does NOT exist: {meshesPath}");
+        logger.Info($"Meshes directory exists: {meshesPath}");
+
+        var meshFiles = Directory.GetFiles(meshesPath, "*.hkx", SearchOption.AllDirectories);
+        logger.Info($"Found {meshFiles.Length} mesh files");
+        Assert.NotEmpty(meshFiles);
+
+        foreach (var file in meshFiles)
+        {
+            logger.Info($"Found mesh file: {file}");
 	}
 
 }
