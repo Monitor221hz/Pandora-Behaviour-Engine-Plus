@@ -8,9 +8,14 @@ namespace PandoraTests;
 
 public class EndToEndTests
 {
+    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
 	[Fact]
 	public async Task EngineOutputTest()
 	{
+        logger.Info($"Starting EngineOutputTest. OutputDirectory: {Resources.OutputDirectory.FullName}");
+
+        // Loading mods
 		var modInfoProviders = new List<IModInfoProvider>
 		{
 			new NemesisModInfoProvider(),
@@ -24,7 +29,11 @@ public class EndToEndTests
         };
 		var activeModsFilePath = Path.Combine(Environment.CurrentDirectory, "Pandora_Engine", "ActiveMods.json");
 		var mods = await ModLoader.LoadModsAsync(modInfoProviders, directories);
-		BehaviourEngine engine = new BehaviourEngine().SetOutputPath(Resources.OutputDirectory).SetConfiguration(new SkyrimDebugConfiguration());
+        logger.Info($"Loaded {mods.Count} mods");
+        // Initialization Engine and Launch
+        BehaviourEngine engine = new BehaviourEngine()
+            .SetConfiguration(new SkyrimDebugConfiguration())
+            .SetOutputPath(Resources.OutputDirectory); // SetOutputPath() must be after configuration initialization
 		await engine.PreloadAsync();
 		Assert.True(await engine.LaunchAsync(mods.ToList()));
 		var skyrimPatcher = engine.Configuration.Patcher as SkyrimPatcher;
