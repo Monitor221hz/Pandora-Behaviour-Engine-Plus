@@ -7,13 +7,15 @@ namespace Pandora.Models.Patch.Skyrim64.AnimSetData;
 
 public class AnimSetDataManager
 {
-	private static readonly string ANIMSETDATA_FILENAME = "animationsetdatasinglefile.txt";
+	private const string ANIMSETDATA_FILENAME = "animationsetdatasinglefile.txt";
+	private const string VANILLA_HKXPATHS_FILENAME = "vanilla_hkxpaths.txt";
 
 	private DirectoryInfo templateFolder;
-	private DirectoryInfo outputMeshDirectory;
+	private DirectoryInfo outputMeshFolder;
 
-	private FileInfo templateAnimSetDataSingleFile;
-	private FileInfo outputAnimSetDataSingleFile;
+	public FileInfo TemplateAnimSetDataSingleFile => new(Path.Join(templateFolder.FullName, ANIMSETDATA_FILENAME));
+	public FileInfo OutputAnimSetDataSingleFile => new(Path.Join(outputMeshFolder.FullName, ANIMSETDATA_FILENAME));
+
 	private FileInfo vanillaHkxFiles;
 
 	private HashSet<string> vanillaAnimationPaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -23,25 +25,23 @@ public class AnimSetDataManager
 
 	public Dictionary<string, ProjectAnimSetData> AnimSetDataMap { get; private set; } = [];
 
-	public AnimSetDataManager(DirectoryInfo templateFolder, DirectoryInfo meshDirectory)
+	public AnimSetDataManager(DirectoryInfo templateFolder, DirectoryInfo outputMeshFolder)
 	{
 		this.templateFolder = templateFolder;
-		templateAnimSetDataSingleFile = new FileInfo($"{templateFolder.FullName}\\{ANIMSETDATA_FILENAME}");
-		vanillaHkxFiles = new FileInfo($"{templateFolder.FullName}\\vanilla_hkxpaths.txt");
 
-		outputMeshDirectory = meshDirectory;
-		outputAnimSetDataSingleFile = new FileInfo($"{meshDirectory.FullName}\\{ANIMSETDATA_FILENAME}");
+		vanillaHkxFiles = new FileInfo(Path.Join(templateFolder.FullName, VANILLA_HKXPATHS_FILENAME));
+
+		this.outputMeshFolder = outputMeshFolder;
 	}
 
-	public void SetOutputPath(DirectoryInfo meshDirectory)
+	public void SetOutputPath(DirectoryInfo outputMeshFolder)
 	{
-		outputMeshDirectory = meshDirectory;
-		outputAnimSetDataSingleFile = new FileInfo($"{outputMeshDirectory.FullName}\\{ANIMSETDATA_FILENAME}");
+		this.outputMeshFolder = outputMeshFolder;
 	}
 
 	public bool SplitAnimSetDataSingleFile()
 	{
-		using (var readStream = templateAnimSetDataSingleFile.OpenRead())
+		using (var readStream = TemplateAnimSetDataSingleFile.OpenRead())
 		{
 			using (var reader = new StreamReader(readStream))
 			{
@@ -80,9 +80,10 @@ public class AnimSetDataManager
 
 	public void MergeAnimSetDataSingleFile()
 	{
-		if (outputAnimSetDataSingleFile.Directory != null && !outputAnimSetDataSingleFile.Directory.Exists) { outputAnimSetDataSingleFile.Directory.Create(); }
+		if (OutputAnimSetDataSingleFile.Directory != null && !OutputAnimSetDataSingleFile.Directory.Exists) 
+			OutputAnimSetDataSingleFile.Directory.Create();
 
-		using (var writeStream = outputAnimSetDataSingleFile.Create())
+		using (var writeStream = OutputAnimSetDataSingleFile.Create())
 		{
 			using (var writer = new StreamWriter(writeStream))
 			{

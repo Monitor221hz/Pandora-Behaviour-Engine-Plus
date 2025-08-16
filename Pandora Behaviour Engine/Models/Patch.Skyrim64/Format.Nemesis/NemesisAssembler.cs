@@ -6,6 +6,7 @@ using Pandora.Models.Patch.Skyrim64.AnimData;
 using Pandora.Models.Patch.Skyrim64.AnimSetData;
 using Pandora.Models.Patch.Skyrim64.Format.Pandora;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
+using Pandora.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,7 +21,13 @@ public class NemesisAssembler
 {
 	private static readonly Logger Logger = LogManager.GetCurrentClassLogger(); //to do: move logger into inheritable base class
 
+	private static readonly DirectoryInfo templateFolder = new(Path.Join(BehaviourEngine.AssemblyDirectory.FullName, "Pandora_Engine", "Skyrim", "Template"));
+	private static readonly DirectoryInfo outputFolder = PandoraPaths.OutputPath;
+	private static readonly DirectoryInfo defaultOutputMeshFolder = new(Path.Join(outputFolder.FullName, "meshes"));
 
+	private readonly PandoraBridgedAssembler pandoraConverter;
+	private readonly IMetaDataExporter<PackFile> exporter = new PackFileExporter();
+	
 	private IXExpression replacePattern = new XSkipWrapExpression(new XStep(XmlNodeType.Comment, "CLOSE"), new XStep(XmlNodeType.Comment, "OPEN"), new XStep(XmlNodeType.Comment, "ORIGINAL"), new XStep(XmlNodeType.Comment, "CLOSE"));
 	private IXExpression insertPattern = new XSkipWrapExpression(new XStep(XmlNodeType.Comment, "ORIGINAL"), new XStep(XmlNodeType.Comment, "OPEN"), new XStep(XmlNodeType.Comment, "CLOSE"));
 
@@ -28,23 +35,13 @@ public class NemesisAssembler
 
 	List<PackFile> packFiles = [];
 
-	private static readonly DirectoryInfo engineFolder = new(Environment.CurrentDirectory + "\\Pandora_Engine");
-
-	private static readonly DirectoryInfo templateFolder = new(Path.Combine(Environment.CurrentDirectory, "Pandora_Engine\\Skyrim\\Template"));
-
-	private static readonly DirectoryInfo defaultOutputMeshFolder = new(Path.Join(Environment.CurrentDirectory, "meshes"));
-
-	private static readonly DirectoryInfo currentDirectory = new(Environment.CurrentDirectory);
 	public ProjectManager ProjectManager { get; private set; }
 	public AnimDataManager AnimDataManager { get; private set; }
 	public AnimSetDataManager AnimSetDataManager { get; private set; }
 
-	private readonly PandoraBridgedAssembler pandoraConverter;
-
-	private IMetaDataExporter<PackFile> exporter = new PackFileExporter();
 	public NemesisAssembler()
 	{
-		ProjectManager = new ProjectManager(templateFolder, currentDirectory);
+		ProjectManager = new ProjectManager(templateFolder, outputFolder);
 		AnimSetDataManager = new AnimSetDataManager(templateFolder, defaultOutputMeshFolder);
 		AnimDataManager = new AnimDataManager(templateFolder, defaultOutputMeshFolder);
 
@@ -53,7 +50,7 @@ public class NemesisAssembler
 	public NemesisAssembler(IMetaDataExporter<PackFile> ioManager)
 	{
 		exporter = ioManager;
-		ProjectManager = new ProjectManager(templateFolder, currentDirectory);
+		ProjectManager = new ProjectManager(templateFolder, outputFolder);
 		AnimSetDataManager = new AnimSetDataManager(templateFolder, defaultOutputMeshFolder);
 		AnimDataManager = new AnimDataManager(templateFolder, defaultOutputMeshFolder);
 
@@ -71,6 +68,7 @@ public class NemesisAssembler
 	public void SetOutputPath(DirectoryInfo baseOutputDirectory)
 	{
 		var outputMeshDirectory = new DirectoryInfo(Path.Join(baseOutputDirectory.FullName, "meshes"));
+
 		ProjectManager.SetOutputPath(baseOutputDirectory);
 		AnimDataManager.SetOutputPath(outputMeshDirectory);
 		AnimSetDataManager.SetOutputPath(outputMeshDirectory);

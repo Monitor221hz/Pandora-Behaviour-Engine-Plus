@@ -1,6 +1,7 @@
 ﻿using HKX2E;
 using Pandora.API.Patch.IOManagers;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
+using Pandora.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,15 +10,15 @@ namespace Pandora.Models.Patch.IO.Skyrim64;
 
 public class DebugPackFileExporter : IMetaDataExporter<PackFile>
 {
-	private static readonly FileInfo PreviousOutputFile = new(Path.Combine(Environment.CurrentDirectory, "Pandora_Engine\\PreviousOutput.txt"));
+	private static readonly FileInfo PreviousOutputFile = PandoraPaths.PreviousOutputFile;
 	public DirectoryInfo ExportDirectory { get; set; }
 	public DebugPackFileExporter()
 	{
-		ExportDirectory = new DirectoryInfo(Path.Join(Environment.CurrentDirectory));
+		ExportDirectory = PandoraPaths.OutputPath;
 	}
 	public bool Export(PackFile packFile)
 	{
-		var launchDirectory = Environment.CurrentDirectory;
+		//var launchDirectory = Environment.CurrentDirectory;
 
 		var outputHandle = packFile.RebaseOutput(ExportDirectory);
 		if (outputHandle.Directory == null) return false;

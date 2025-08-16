@@ -17,7 +17,12 @@ public class BehaviourEngine
 
 	private static readonly PluginLoader pluginLoader = new();
 
-	// Always returns the path to the .exe folder where it was launched. Not affected by VFS, always the real path
+	/// <summary>
+	/// Gets the real file system path to the folder containing the running executable.
+	/// 
+	/// Unlike typical assembly path methods, this returns the actual disk path even when 
+	/// running inside virtualized environments like Mod Organizer 2 (MO2), bypassing the VFS.
+	/// </summary>
 	public static readonly DirectoryInfo AssemblyDirectory = new(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule?.FileName)!);
 
 	public static readonly DirectoryInfo CurrentDirectory = new(Environment.CurrentDirectory!);
@@ -27,7 +32,7 @@ public class BehaviourEngine
 	public bool IsExternalOutput = false;
 
 	public IEngineConfiguration Configuration { get; private set; } = new SkyrimConfiguration();
-	public DirectoryInfo OutputPath { get; private set; } = new(Environment.CurrentDirectory);
+	public static DirectoryInfo OutputPath { get; private set; } = new(Environment.CurrentDirectory);
 
 	static BehaviourEngine()
 	{

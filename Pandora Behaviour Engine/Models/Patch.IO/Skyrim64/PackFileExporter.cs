@@ -19,12 +19,12 @@ public class PackFileExporter : IMetaDataExporter<PackFile>
 
 	public PackFileExporter()
 	{
-		ExportDirectory = new DirectoryInfo(Environment.CurrentDirectory);
+		ExportDirectory = PandoraPaths.OutputPath;
 	}
 
 	public bool Export(PackFile packFile)
 	{
-		var launchDirectory = Environment.CurrentDirectory;
+		//var launchDirectory = Environment.CurrentDirectory;
 
 		var outputHandle = packFile.RebaseOutput(ExportDirectory);
 		if (outputHandle.Directory == null) return false;
