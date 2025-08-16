@@ -58,4 +58,17 @@ public class EndToEndTests
             logger.Info($"Found mesh file: {file}");
 	}
 
+
+        // Checking for the presence of an exporter
+        var exporterField = typeof(SkyrimPatcher).GetField("exporter", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        if (exporterField?.GetValue(skyrimPatcher) is IMetaDataExporter<PackFile> exporter)
+        {
+            Assert.NotNull(exporter.ExportDirectory);
+            logger.Info($"Exporter ExportDirectory: {exporter.ExportDirectory.FullName}");
+        }
+        else
+        {
+            Assert.Fail("Exporter is null or inaccessible");
+        }
+    }
 }
