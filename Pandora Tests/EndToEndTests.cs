@@ -1,40 +1,97 @@
-﻿using Pandora.Data;
+﻿using NLog;
+using Pandora.API.Patch.IOManagers;
+using Pandora.Data;
 using Pandora.Models;
 using Pandora.Models.Patch.Configs;
 using Pandora.Models.Patch.Skyrim64;
+using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 using Pandora.Services;
+using Pandora.Utils;
 
 namespace PandoraTests;
 
 public class EndToEndTests
 {
-	[Fact]
-	public async Task EngineOutputTest()
-	{
-		var modInfoProviders = new List<IModInfoProvider>
-		{
-			new NemesisModInfoProvider(),
-			new PandoraModInfoProvider()
-		};
-		var directories = new List<DirectoryInfo>
-		{
-            BehaviourEngine.AssemblyDirectory, 
-			new DirectoryInfo(Path.Combine(Environment.CurrentDirectory, "Data"))
+    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
+    [Fact]
+    public async Task EngineOutputTest()
+    {
+        logger.Info($"Starting EngineOutputTest. OutputDirectory: {Resources.OutputDirectory.FullName}");
+
+        // Loading mods
+        var modInfoProviders = new List<IModInfoProvider>
+        {
+            new NemesisModInfoProvider(),
+            new PandoraModInfoProvider()
         };
-		var activeModsFilePath = Path.Combine(Environment.CurrentDirectory, "Pandora_Engine", "ActiveMods.json");
-		var mods = await ModLoader.LoadModsAsync(modInfoProviders, directories);
-		BehaviourEngine engine = new BehaviourEngine().SetOutputPath(Resources.OutputDirectory).SetConfiguration(new SkyrimDebugConfiguration());
-		await engine.PreloadAsync();
-		Assert.True(await engine.LaunchAsync(mods.ToList()));
-		var skyrimPatcher = engine.Configuration.Patcher as SkyrimPatcher;
-		Assert.NotNull(skyrimPatcher);
+        var directories = new List<DirectoryInfo>
+        {
+            BehaviourEngine.AssemblyDirectory,
+            new(Path.Combine(Environment.CurrentDirectory, "Data"))
+        };
+        var activeModsFilePath = PandoraPaths.ActiveModsFile;
+        logger.Info($"Loading mods from directories: {string.Join(", ", directories.Select(d => d.FullName))}");
+        var mods = await ModLoader.LoadModsAsync(modInfoProviders, directories);
+        logger.Info($"Loaded {mods.Count} mods");
 
-		var activePackFiles = skyrimPatcher.NemesisAssembler.ProjectManager.ActivePackFiles;
-		foreach (var activePackFile in activePackFiles)
-		{
-			PackFileAssert.DowncastValidPackFile(activePackFile);
-		}
-	}
+        Assert.NotEmpty(mods);
 
+
+        // Initialization Engine and Launch
+        BehaviourEngine engine = new BehaviourEngine()
+            .SetConfiguration(new SkyrimDebugConfiguration())
+            .SetOutputPath(Resources.OutputDirectory); // SetOutputPath() must be after configuration initialization
+        logger.Info($"BehaviourEngine configured with OutputPath: {Resources.OutputDirectory.FullName}");
+
+        await engine.PreloadAsync();
+        logger.Info("PreloadAsync completed");
+
+        bool launchSuccess = await engine.LaunchAsync(mods.ToList());
+        Assert.True(launchSuccess, "LaunchAsync failed");
+        logger.Info("LaunchAsync completed successfully");
+
+        var skyrimPatcher = engine.Configuration.Patcher as SkyrimPatcher;
+        Assert.NotNull(skyrimPatcher);
+        logger.Info("SkyrimPatcher retrieved");
+
+        var activePackFiles = skyrimPatcher.NemesisAssembler.ProjectManager.ActivePackFiles;
+        logger.Info($"Found {activePackFiles.Count} ActivePackFiles");
+
+        Assert.NotEmpty(activePackFiles);
+
+        foreach (var activePackFile in activePackFiles)
+        {
+            logger.Info($"PackFile: Name={activePackFile.Name}, InputHandle={activePackFile.InputHandle.FullName}, OutputHandle={activePackFile.OutputHandle.FullName}, RelativeOutputDirectoryPath={activePackFile.RelativeOutputDirectoryPath}");
+            PackFileAssert.DowncastValidPackFile(activePackFile);
+        }
+
+
+        // Checking for meshes with .hkx files
+        var meshesPath = Path.Combine(Resources.OutputDirectory.FullName, "meshes");
+        Assert.True(Directory.Exists(meshesPath), $"Meshes directory does NOT exist: {meshesPath}");
+        logger.Info($"Meshes directory exists: {meshesPath}");
+
+        var meshFiles = Directory.GetFiles(meshesPath, "*.hkx", SearchOption.AllDirectories);
+        logger.Info($"Found {meshFiles.Length} mesh files");
+        Assert.NotEmpty(meshFiles);
+
+        foreach (var file in meshFiles)
+        {
+            logger.Info($"Found mesh file: {file}");
+        }
+
+
+        // Checking for the presence of an exporter
+        var exporterField = typeof(SkyrimPatcher).GetField("exporter", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        if (exporterField?.GetValue(skyrimPatcher) is IMetaDataExporter<PackFile> exporter)
+        {
+            Assert.NotNull(exporter.ExportDirectory);
+            logger.Info($"Exporter ExportDirectory: {exporter.ExportDirectory.FullName}");
+        }
+        else
+        {
+            Assert.Fail("Exporter is null or inaccessible");
+        }
+    }
 }
