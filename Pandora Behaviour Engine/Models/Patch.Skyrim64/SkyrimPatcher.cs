@@ -4,6 +4,7 @@ using Pandora.Models.Patch.IO.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.Format.Nemesis;
 using Pandora.Models.Patch.Skyrim64.Format.Pandora;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
+using Pandora.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -29,7 +30,7 @@ public class SkyrimPatcher : IPatcher
 	public PatcherFlags Flags { get; private set; } = PatcherFlags.None;
 
 	public Version GetVersion() => Assembly.GetEntryAssembly()!.GetName().Version!;
-	public string GetVersionString() => Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion.Split('+')[0] ?? "Unknown";
+	public string GetVersionString() => AppInfo.Version;
 
 	public SkyrimPatcher(IMetaDataExporter<PackFile> manager)
 	{
