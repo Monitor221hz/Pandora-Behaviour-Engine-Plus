@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - "v*.*.*"
+      - "v*.*.*-beta*"
 
 env:
   DOTNET_VERSION: "9.0.x"
@@ -15,12 +16,26 @@ jobs:
     permissions:
       contents: write # Required for creating releases
     runs-on: windows-latest
+    outputs:
+      fullSemVer: ${{ steps.version_step.outputs.fullSemVer }}
+      assemblySemVer: ${{ steps.version_step.outputs.assemblySemVer }}
+      assemblySemFileVer: ${{ steps.version_step.outputs.assemblySemFileVer }}
+      informationalVersion: ${{ steps.version_step.outputs.informationalVersion }}
 
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-          fetch-depth: 1
+          fetch-depth: 0 # 0 need for GitVersion
+          
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v4.1.0
+        with:
+          versionSpec: '6.3.x'
+
+      - name: Determine Version
+        id: version_step
+        uses: gittools/actions/gitversion/execute@v4.1.0
 
       - name: Set output paths
         id: set_paths
@@ -100,7 +115,11 @@ jobs:
             -o "${{ github.workspace }}/${{ matrix.output-dir }}" `
             --self-contained true `
             /p:PublishSingleFile=true `
-            /p:IncludeAllContentForSelfExtract=true
+            /p:IncludeAllContentForSelfExtract=true `
+            /p:Version=${{ needs.build.outputs.fullSemVer }} `
+            /p:AssemblyVersion=${{ needs.build.outputs.assemblySemVer }} `
+            /p:FileVersion=${{ needs.build.outputs.assemblySemFileVer }} `
+            /p:InformationalVersion=${{ needs.build.outputs.informationalVersion }}
 
       - name: Zip and Release
         uses: ./.github/actions/zip-and-release
