@@ -81,28 +81,29 @@ public abstract class BaseDataGridDropHandler<T>(Action<T, uint> setPriority) : 
 
 	protected bool RunDropAction(DataGrid dg, DragEventArgs e, bool bExecute, T sourceItem, T targetItem, ObservableCollection<T> items)
 	{
-		// Get the current sorted order
+		if (sourceItem.Equals(targetItem))
+			return false;
+
 		var currentOrder = items.OrderBy(item => (item as ModInfoViewModel)?.Priority ?? 0).ToList();
 
-		int sourceIdx = currentOrder.IndexOf(sourceItem);
-		int targetIdx = currentOrder.IndexOf(targetItem);
+		currentOrder.Remove(sourceItem);
 
-		if (sourceIdx < 0 || targetIdx < 0) 
-			return false;
+		int newTargetIndex = currentOrder.IndexOf(targetItem);
 
 		string direction = e.Data.Contains("direction") ? (string)e.Data.Get("direction")! : "down";
 
-		currentOrder.RemoveAt(sourceIdx);
-		int insertIdx = direction == "up" ? targetIdx : targetIdx + 1;
-
-		if (insertIdx > currentOrder.Count) 
-			insertIdx = currentOrder.Count; // Protection from going beyond the limits
-
-		currentOrder.Insert(insertIdx, sourceItem);
+		if (direction == "up")
+		{
+			currentOrder.Insert(newTargetIndex, sourceItem);
+		}
+		else // "down"
+		{
+			currentOrder.Insert(newTargetIndex + 1, sourceItem);
+		}
 
 		if (bExecute)
 		{
-			AssignPriorities(currentOrder); // Recalculation of priorities based on the new virtual order
+			AssignPriorities(currentOrder);
 			dg.SelectedItem = sourceItem;
 		}
 		return true;
