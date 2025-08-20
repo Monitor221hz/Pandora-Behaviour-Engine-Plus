@@ -72,8 +72,31 @@ public class LaunchOptions
 
 		if (parseResult.Errors.Any())
 		{
-			logger.Error($"Command-line parsing errors: {string.Join(", ", parseResult.Errors.Select(e => e.Message))}");
-			EngineLoggerAdapter.AppendLine("ERROR: Command line arguments were not processed, see Engine.log");
+			var unmatchedTokens = parseResult.UnmatchedTokens;
+			if (unmatchedTokens.Any())
+			{
+				string unrecognizedArgs = string.Join(", ", unmatchedTokens.Select(token => $"'{token}'"));
+				string errorArgsMsg = $"Unrecognized command-line argument(s) provided: {unrecognizedArgs}.";
+				string infoArgsMsg = "Please check the spelling and prefixes ('-' for short aliases, '--' for full names).";
+				logger.Error(errorArgsMsg);
+				logger.Info(infoArgsMsg);
+				EngineLoggerAdapter.AppendLine($"ERROR: {errorArgsMsg}");
+				EngineLoggerAdapter.AppendLine(infoArgsMsg);
+			}
+
+			var otherErrors = parseResult.Errors
+				.Where(e => !e.Message.StartsWith("Unrecognized command or argument"))
+				.ToList();
+
+			if (otherErrors.Any())
+			{
+				logger.Error("Additional command-line parsing errors found:");
+				foreach (var error in otherErrors)
+				{
+					logger.Error($"- {error.Message}");
+				}
+				EngineLoggerAdapter.AppendLine("ERROR: Command line arguments could not be processed. See Engine.log for details.");
+			}
 		}
 		else
 		{
