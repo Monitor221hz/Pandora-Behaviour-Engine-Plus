@@ -11,6 +11,13 @@ public class LaunchOptions
 {
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
+	private static readonly RootCommand _rootCommand;
+	private static readonly Option<DirectoryInfo?> _outputOption;
+	private static readonly Option<DirectoryInfo?> _tesvOption;
+	private static readonly Option<bool> _autoRunOption;
+	private static readonly Option<bool> _autoCloseOption;
+	private static readonly Option<bool> _skyrimDebug64Option;
+
 	public DirectoryInfo? OutputDirectory { get; private set; }
 	public DirectoryInfo? SkyrimGameDirectory { get; private set; }
 	public bool AutoRun { get; private set; }
@@ -19,55 +26,59 @@ public class LaunchOptions
 
 	public static LaunchOptions? Current { get; set; }
 
+	static LaunchOptions()
+	{
+		_outputOption = new(name: "--output", aliases: ["--output", "-o"])
+		{
+			Description = "Output directory."
+		};
+		_tesvOption = new(name: "--tesv", aliases: "--tesv")
+		{
+			Description = "Skyrim directory (TESV), should point to Skyrim root folder."
+		};
+		_autoRunOption = new(name: "--auto_run", aliases: ["--auto_run", "-ar"])
+		{
+			Description = "Automatically run after start."
+		};
+		_autoCloseOption = new(name: "--auto_close", aliases: ["--auto_close", "-ac"])
+		{
+			Description = "Close app after execution."
+		};
+		_skyrimDebug64Option = new(name: "--skyrim_debug64", aliases: "--skyrim_debug64")
+		{
+			Description = "Use skyrim debug 64-bit mode."
+		};
+
+		_rootCommand = new RootCommand("Pandora command line arguments.");
+		_rootCommand.Options.Add(_outputOption);
+		_rootCommand.Options.Add(_tesvOption);
+		_rootCommand.Options.Add(_autoRunOption);
+		_rootCommand.Options.Add(_autoCloseOption);
+		_rootCommand.Options.Add(_skyrimDebug64Option);
+	}
+
+
 	public static LaunchOptions Parse(string[]? args, bool caseInsensitive = false)
 	{
 		args ??= [];
 		var options = new LaunchOptions();
 
-		Option<DirectoryInfo?> outputOption = new(name: "--output", aliases: ["--output", "-o"])
+		_rootCommand.SetAction(parseResult =>
 		{
-			Description = "Output directory."
-		};
-		Option<DirectoryInfo?> tesvOption = new(name: "--tesv", aliases: "--tesv")
-		{
-			Description = "Skyrim directory (TESV), should point to Skyrim root folder."
-		};
-		Option<bool> autoRunOption = new(name: "--auto_run", aliases: ["--auto_run", "-ar"])
-		{
-			Description = "Automatically run after start."
-		};
-		Option<bool> autoCloseOption = new(name: "--auto_close", aliases: ["--auto_close", "-ac"])
-		{
-			Description = "Close app after execution."
-		};
-		Option<bool> skyrimDebug64Option = new(name: "--skyrim_debug64", aliases: "--skyrim_debug64")
-		{
-			Description = "Use skyrim debug 64-bit mode."
-		};
-		RootCommand rootCommand = new("Pandora command line arguments.");
-
-		rootCommand.Options.Add(outputOption);
-		rootCommand.Options.Add(tesvOption);
-		rootCommand.Options.Add(autoRunOption);
-		rootCommand.Options.Add(autoCloseOption);
-		rootCommand.Options.Add(skyrimDebug64Option);
-
-		rootCommand.SetAction(parseResult =>
-		{
-			options.OutputDirectory = parseResult.GetValue(outputOption);
-			options.SkyrimGameDirectory = parseResult.GetValue(tesvOption);
-			options.AutoRun = parseResult.GetValue(autoRunOption);
-			options.AutoClose = parseResult.GetValue(autoCloseOption);
-			options.UseSkyrimDebug64 = parseResult.GetValue(skyrimDebug64Option);
+			options.OutputDirectory = parseResult.GetValue(_outputOption);
+			options.SkyrimGameDirectory = parseResult.GetValue(_tesvOption);
+			options.AutoRun = parseResult.GetValue(_autoRunOption);
+			options.AutoClose = parseResult.GetValue(_autoCloseOption);
+			options.UseSkyrimDebug64 = parseResult.GetValue(_skyrimDebug64Option);
 		});
 
 		string[] normalizedArgs = args;
 		if (caseInsensitive)
 		{
-			normalizedArgs = PreprocessArgumentsForCaseInsensitivity(args, rootCommand);
+			normalizedArgs = PreprocessArgumentsForCaseInsensitivity(args, _rootCommand);
 		}
 
-		var config = new CommandLineConfiguration(rootCommand);
+		var config = new CommandLineConfiguration(_rootCommand);
 		var parseResult = config.Parse(normalizedArgs);
 
 		if (parseResult.Errors.Any())
