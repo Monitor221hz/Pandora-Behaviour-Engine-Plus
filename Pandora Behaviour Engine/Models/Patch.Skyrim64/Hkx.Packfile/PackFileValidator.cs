@@ -213,13 +213,6 @@ public class PackFileValidator
 			ValidateElementContent(element, eventIndices, variableIndices);
 		}
 	}
-	public void TryValidateClipGenerator(string path, PackFile packFile)
-	{
-		if (!packFile.Map.TryLookup($"{path}/animationName", out XElement element)) return;
-		string clipName = packFile.Map.Lookup($"{path}/name").Value!;
-		packFile.ParentProject?.AnimData?.AddDummyClipData(clipName);
-	}
-
 	public void Validate(PackFile packFile, params ReadOnlySpan<List<IPackFileChange>> changeLists)
 	{
 		//if (!ValidateEventsAndVariables(packFile)) return; 

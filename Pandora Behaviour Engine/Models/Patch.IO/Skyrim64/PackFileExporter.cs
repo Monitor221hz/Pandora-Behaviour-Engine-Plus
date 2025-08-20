@@ -47,7 +47,8 @@ public class PackFileExporter : IMetaDataExporter<PackFile>
 			Logger.Fatal($"Export > {packFile.ParentProject?.Identifier}~{packFile.Name} > FAILED > {ex}");
 			using (var writeStream = outputHandle.Create())
 			{
-				packFile.Map.Save(writeStream);
+				var serializer = new HavokXmlSerializer();
+				serializer.Serialize(packFile.Container, header, writeStream);
 			}
 			return false;
 		}
