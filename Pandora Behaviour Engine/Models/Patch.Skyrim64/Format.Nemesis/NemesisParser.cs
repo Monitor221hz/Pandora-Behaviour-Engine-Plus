@@ -205,16 +205,8 @@ public class NemesisParser
 					//packFile.Editor.QueueInsertElement(lookup.LookupPath(node), (XElement)node);
 					lock (packFile.Dispatcher)
 					{
-						if (packFile.Map.PathExists(nodePath))
-						{
-							changeSet.AddChange(new InsertElementChange(nodeName, nodePath, (XElement)node));
-							//packFile.edits.AddChange(new InsertElementChange(nodePath, (XElement)node, modInfo));
-						}
-						else
-						{
-							changeSet.AddChange(new AppendElementChange(nodeName, nodePath.Substring(0, nodePath.LastIndexOf('/')), (XElement)node));
-							//packFile.edits.AddChange(new AppendElementChange(nodePath.Substring(0, nodePath.LastIndexOf('/')), (XElement)node, modInfo));
-						}
+						changeSet.AddChange(new AppendElementChange(nodeName, nodePath.Substring(0, nodePath.LastIndexOf('/')), (XElement)node));
+						//packFile.edits.AddChange(new AppendElementChange(nodePath.Substring(0, nodePath.LastIndexOf('/')), (XElement)node, modInfo));
 					}
 					break;
 				default:
