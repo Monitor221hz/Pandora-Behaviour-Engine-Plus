@@ -14,8 +14,6 @@ namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 public class PackFile : IEquatable<PackFile>, IPackFile
 {
 	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-
-	public XMap Map { get; private set; }
 	public HavokReferenceXmlDeserializer Deserializer { get; private set; } = new();
 	public HavokXmlPartialDeserializer PartialDeserializer { get; private set; } = new();
 	public HavokXmlPartialSerializer PartialSerializer { get; private set; } = new();
@@ -49,8 +47,6 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 
 	public PackFileEditor Editor { get; private set; } = new PackFileEditor();
 
-	public XElement ContainerNode { get; private set; }
-
 	public PackFileDispatcher Dispatcher { get; private set; } = new PackFileDispatcher();
 
 	public bool ExportSuccess { get; private set; } = true;
@@ -74,7 +70,7 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 	public IProject GetProject() => ParentProject as IProject;
 
 	protected ILookup<string, XElement>? classLookup = null;
-	public int NodeCount => classLookup == null ? Map.NavigateTo(ROOT_CONTAINER_NAME).Elements().Count() : classLookup.Count;
+	public int NodeCount => classLookup == null ? 0 : classLookup.Count;
 
 	private bool active = false;
 	private Project? parentProject;
@@ -93,17 +89,12 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 
 		using (var stream = file.OpenRead())
 		{
-			Map = XMap.Load(stream);
-		}
-		using (var stream = file.OpenRead())
-		{
 			Container = (hkRootLevelContainer)Deserializer.Deserialize(stream, HKXHeader.SkyrimSE());
 		}
 		PartialSerializer.ShareContext(Deserializer.Context);
 		PartialDeserializer.ShareContext(Deserializer.Context);
 		Serializer.ShareContext(Deserializer.Context);
 		ParentProject = project;
-		ContainerNode = Map.NavigateTo(ROOT_CONTAINER_NAME);
 		Name = Path.GetFileNameWithoutExtension(InputHandle.Name).ToLower();
 
 		UniqueName = $"{ParentProject?.Identifier}~{Name}";
@@ -141,7 +132,6 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 	public PackFile(string filePath) : this(new FileInfo(filePath)) { }
 
 	public string UniqueName { get; private set; }
-	public XElement SafeNavigateTo(string path) => Map.NavigateTo(path, ContainerNode);
 
 	public bool PathExists(string nodeName, string path)
 	{
@@ -167,7 +157,6 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 
 	[MemberNotNull(nameof(classLookup))]
 	public void TryBuildClassLookup() { if (classLookup == null) { BuildClassLookup(); } }
-	public HashSet<string> UsedNodeNames => Map.NavigateTo(ROOT_CONTAINER_NAME).Elements().Select(e => e.Attribute("name")!.Value).ToHashSet();
 	public XElement GetFirstNodeOfClass(string className)
 	{
 		TryBuildClassLookup();
