@@ -28,7 +28,7 @@ public partial class App : Application
 
 		if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
 		{
-			LaunchOptions.Current = LaunchOptions.Parse(desktop.Args, caseInsensitive: true);
+			LaunchOptions.Parse(desktop.Args, caseInsensitive: true);
 			SetupNLogConfigForSingleFilePublish();
 			// Line below is needed to remove Avalonia data validation.
 			// Without this line you will get duplicate validations from both Avalonia and CT
