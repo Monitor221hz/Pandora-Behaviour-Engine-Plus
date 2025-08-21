@@ -21,28 +21,29 @@ public class EngineConfigurationService
 
 	public void SetCurrentFactory(IEngineConfigurationFactory factory) => _currentFactory = factory;
 
-	public IReadOnlyCollection<IEngineConfigurationViewModel> GetInitialConfigurations(ReactiveCommand<IEngineConfigurationFactory, Unit> setCommand)
+	public void Initialize(bool useSkyrimDebug64, ReactiveCommand<IEngineConfigurationFactory, Unit> setCommand)
 	{
-		_configurations.Clear();
+		if (useSkyrimDebug64)
+			_currentFactory = new ConstEngineConfigurationFactory<SkyrimDebugConfiguration>("Debug");
 
+		_configurations.Clear();
 		var root = new EngineConfigurationViewModelContainer("Skyrim 64",
 			new EngineConfigurationViewModelContainer("Behavior",
 				new EngineConfigurationViewModelContainer("Patch",
-					new EngineConfigurationViewModel(_currentFactory, setCommand),
+					new EngineConfigurationViewModel(new ConstEngineConfigurationFactory<SkyrimConfiguration>("Normal"), setCommand),
 					new EngineConfigurationViewModel(new ConstEngineConfigurationFactory<SkyrimDebugConfiguration>("Debug"), setCommand)
 				)
 			)
 		);
-
 		_configurations.Add(root);
 
 		foreach (var plugin in BehaviourEngine.EngineConfigurations)
 		{
 			RegisterPlugin(plugin, setCommand);
 		}
-
-		return _configurations;
 	}
+
+	public IReadOnlyCollection<IEngineConfigurationViewModel> GetConfigurations() => _configurations;
 
 	private void RegisterPlugin(IEngineConfigurationPlugin plugin, ReactiveCommand<IEngineConfigurationFactory, Unit> setCommand)
 	{

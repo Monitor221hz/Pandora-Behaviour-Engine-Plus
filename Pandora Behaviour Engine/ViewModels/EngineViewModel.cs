@@ -75,8 +75,10 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		_isOutputFolderCustomSet = startup.IsCustomSet;
 		_outputDirectoryMessage = startup.Message;
 
+		_configService.Initialize(startup.UseSkyrimDebug64, SetEngineConfigCommand);
+
 		EngineConfigurationViewModels = new ObservableCollection<IEngineConfigurationViewModel>(
-			_configService.GetInitialConfigurations(SetEngineConfigCommand));
+			_configService.GetConfigurations());
 
 		SourceMods.ToObservableChangeSet()
 			.AutoRefresh(x => x.Priority)
