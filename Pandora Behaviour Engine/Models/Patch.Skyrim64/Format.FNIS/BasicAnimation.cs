@@ -156,7 +156,7 @@ public partial class BasicAnimation : IFNISAnimation
 					{
 						localTime = -0.3f,
 						relativeToEndOfClip = true,
-						@event = new hkbEventProperty()
+						_event = new hkbEventProperty()
 						{
 							id = graph.AddDefaultEvent(NextAnimation.GraphEvent)
 						}
@@ -173,7 +173,7 @@ public partial class BasicAnimation : IFNISAnimation
 				{
 					localTime = -0.2f,
 					relativeToEndOfClip = true,
-					@event = new hkbEventProperty()
+					_event = new hkbEventProperty()
 					{
 						id = graph.AddDefaultEvent(string.Concat(GraphEvent, "_DONE"))
 					}
@@ -185,7 +185,7 @@ public partial class BasicAnimation : IFNISAnimation
 				{
 					localTime = -0.05f,
 					relativeToEndOfClip = true,
-					@event = new hkbEventProperty()
+					_event = new hkbEventProperty()
 					{
 						id = graph.FindEvent("IdleForceDefaultState")
 					}
