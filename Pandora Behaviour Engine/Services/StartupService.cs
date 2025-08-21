@@ -8,10 +8,11 @@ namespace Pandora.Services;
 
 public class StartupService
 {
-	public record StartupInfo(bool IsCustomSet, bool AutoRun, bool AutoClose, string Message);
+	public record StartupInfo(bool IsCustomSet, bool AutoRun, bool AutoClose, string Message, bool UseSkyrimDebug64);
 
 	public static StartupInfo Handle(LaunchOptions? options)
 	{
+		bool useSkyrimDebug64 = options.UseSkyrimDebug64;
 		var outputDir = options?.OutputDirectory;
 		var modManager = ProcessUtils.Source;
 
@@ -27,7 +28,7 @@ public class StartupService
 			};
 		}
 
-		return new StartupInfo(isCustom, options?.AutoRun ?? false, options?.AutoClose ?? false, message);
+		return new StartupInfo(isCustom, options?.AutoRun ?? false, options?.AutoClose ?? false, message, useSkyrimDebug64);
 	}
 
 	public static void LogPlugins()
