@@ -1,4 +1,7 @@
-﻿using HKX2E;
+﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
+
+using HKX2E;
 using Pandora.API.Patch.Engine.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.AnimData;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
