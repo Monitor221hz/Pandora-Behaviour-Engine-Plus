@@ -63,7 +63,7 @@ public class AnimDataManager
 		return LastID;
 	}
 
-	public void SplitAnimationDataSingleFile(ProjectManager projectManager)
+	public void SplitAnimDataSingleFile(ProjectManager projectManager)
 	{
 		LastID = 32767;
 
