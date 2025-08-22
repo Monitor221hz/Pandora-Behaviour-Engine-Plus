@@ -39,8 +39,8 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 			{
 				return false;
 			}
-
-			var translations = new string[Math.Max(numTranslations, 1)];
+			numTranslations = Math.Max(numTranslations, 1);
+			var translations = new string[numTranslations];
 			for (int i = 0; i < translations.Length; i++)
 			{
 				if (!reader.TryReadNotEmptyLine(out var value))
@@ -51,7 +51,8 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 			}
 
 			if (!int.TryParse(reader.ReadLine(), out var numRotations)) { return false; }
-			var rotations = new string[Math.Max(numRotations, 1)];
+			numRotations = Math.Max(numRotations, 1);
+			var rotations = new string[numRotations];
 			for (int i = 0; i < rotations.Length; i++)
 			{
 				if (!reader.TryReadNotEmptyLine(out var value))
