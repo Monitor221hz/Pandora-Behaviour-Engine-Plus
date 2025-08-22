@@ -209,7 +209,7 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 				HavokMove.Move<T>((T)obj, targetObject);
 				//PartialDeserializer.UpdateDirectReference(targetObject, obj);
 				//PartialDeserializer.UpdatePropertyReferences(name, obj);
-				XmlDeserializer.UpdateMapping(name, obj);
+				XmlDeserializer.UpdateMapping(name, targetObject);
 			}
 			lock (objectElementMap)
 			{
@@ -239,7 +239,7 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 					HavokMove.Move<T>((T)obj, targetObject);
 					//PartialDeserializer.UpdateDirectReference(targetObject, obj);
 					//PartialDeserializer.UpdatePropertyReferences(name, obj);
-					XmlDeserializer.UpdateMapping(name, obj);
+					XmlDeserializer.UpdateMapping(name, targetObject);
 				}
 				objectElementMap.Remove(targetObject);
 			}
@@ -288,7 +288,7 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 			HavokMove.Move(obj,kvp.Key); 
 			//PartialDeserializer.UpdateDirectReference(kvp.Key, obj);
 			//PartialDeserializer.UpdatePropertyReferences(name, obj);
-			XmlDeserializer.UpdateMapping(name, obj);
+			XmlDeserializer.UpdateMapping(name, kvp.Key);
 
 		}
 		objectElementMap.Clear();
