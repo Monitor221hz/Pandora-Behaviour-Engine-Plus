@@ -100,7 +100,7 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 		}
 		public int GetLineCount()
 		{
-			return 4 + Translations.Count + Rotations.Count;
+			return 4 + NumTranslations + NumRotations;
 		}
 
 	}

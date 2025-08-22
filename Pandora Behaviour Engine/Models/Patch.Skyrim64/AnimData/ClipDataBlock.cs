@@ -140,7 +140,7 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 
 		public int GetLineCount()
 		{
-			return 6 + TriggerNames.Count;
+			return 6 + NumClipTriggers;
 		}
 	}
 }
