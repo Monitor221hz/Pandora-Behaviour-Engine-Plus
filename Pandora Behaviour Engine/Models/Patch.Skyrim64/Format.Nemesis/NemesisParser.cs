@@ -241,7 +241,6 @@ public class NemesisParser
 		FileInfo[] editFiles = folder.GetFiles("#*.txt");
 
 		var changeSet = new PackFileChangeSet(modInfo);
-		var modName = modInfo.Name;
 		XPathLookup lookup = new();
 		foreach (FileInfo editFile in editFiles)
 		{
@@ -254,7 +253,7 @@ public class NemesisParser
 			}
 			catch (XmlException e)
 			{
-				Logger.Error($"Nemesis Parser > File {editFile.FullName} > Load > FAILED > {e.Message}");
+				Logger.Error($"Nemesis Parser > {modInfo.Name} > File {editFile.FullName} > Load > FAILED > {e.Message}");
 				continue;
 			}
 			nodes = lookup.MapFromElement(element);
