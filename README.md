@@ -51,38 +51,51 @@ Pandora runs on Windows, Linux, and MacOS, but only Windows is extensively teste
 ## For Users
 
 ### Quickstart
-<br/>
 
-<details>
+#### **Mod Organizer 2**
 
-<summary>MO2 Users</summary>
-<br/>
+1. Install Pandora Behaviour Engine as a mod **or** outside the mods folder. Add Pandora as an [application for MO2](https://stepmodifications.org/wiki/Guide:Mod_Organizer#General_Application_Setup).
+2. Create an empty mod named **Pandora Output** using the Tools button on the top right of the main panel (beside the profile selection dropdown).
+3. Set `-o "path"` in the **Arguments** field. Replace `path` with the absolute path to the **Pandora Output** mod.
+4. Run Pandora from MO2. Tick the patches you want and click Launch.
 
-1. Install Pandora Behaviour Engine as a mod* and make sure it is active.
-2. Add Pandora as an [application for MO2](https://stepmodifications.org/wiki/Guide:Mod_Organizer#General_Application_Setup)
-    * Having a dedicated output mod is recommended to keep the files that the tool generates in one place.
-3. Run the program from within MO2, using the menu on the right.
-4. Tick the patches you want and click Launch. 
+> [!TIP]
+It is recommended to use the startup argument (command line) to set the output mod instead of MO2's `"Create in files in mod instead of overwrite"`.
+>
+> 
+> This is because files produced by Pandora with MO2 VFS will overwrite existing files at their origin, even if in another mod.
 
+---
 
-*<sub>Alternatively, you may install Pandora outside of the mod manager and set its output path to the Skyrim installation data folder using the `-o:"{path}"` startup argument.<sub/>
+#### **Vortex**
 
+1. Install Pandora Behavior Engine outside of the mods folder. Add it to the tools dashboard.
+2. Set `-o "path"` in the **Command Line** field. Replace path with your path to the **Pandora Output** folder.
+3. Ensure that the **Start In** field is set to the Skyrim **Data** directory.
+4. Run Pandora. Tick the patches you want and click Launch.
+
+> [!NOTE]
+> **Pandora Output** folder should be zipped and installed **as mod** via Vortex!
+
+> [!CAUTION]
+> It is not recommended to install Pandora directly in the Data folder, because mods may not be detected. The output it produces will also make the Data folder unclean.
 </details>
 <br/>
-<details>
 
-<summary>Vortex Users</summary>
-<br/>
+### Wabbajack and Multiple Installs
 
-1. Install Pandora Behaviour Engine outside of the mods folder.  
-2. Add it to the tools dashboard  
-   a) It is highly recommended you set a custom output mod folder using `--output "path"` in the 'Command Line' field  
-   b) Ensure that the 'Start In' field is set to the Skyrim data directory.  
-3. Run the program either manually or after adding it to the tools dashboard.
-4. Tick the patches you want and click Launch.
-</details>
+#### Wabbajack
+If the engine cannot find FNIS mods, set the path to your Wabbajack Stock Game install using the `--tesv:"path"` argument. For example, `--tesv:"C:/Path/To/MO2/Stock Game"`.
 
-<br/>
+#### Multiple Game Installs
+If you have multiple game installs, Use the `--tesv` argument as listed above but with the path pointing to the game **root** folder.
+
+--- 
+
+> [!TIP]
+> If you need to have multiple arguments, they can be separated with a space.
+
+##
 
 ### Patch Order
 Pandora has a drag and drop priority system. Higher priority mods will overwrite conflicting changes from lower priority mods. As patches go further down the list, priority increases. Direct behaviour conflicts are rare, so manual resolving is almost never needed, but the option is there just in case. 
@@ -374,8 +387,6 @@ Can you see why this edit failed?
 <br/>
 
 ```
-
-
 Dispatcher > "ExampleMod" > defaultfemale~1hm_behavior > Replace > Element > #2521/event/Element0/id > FAILED
 ```
 
