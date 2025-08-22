@@ -22,7 +22,7 @@ public class UnitTests
 		ProjectManager projectManager = new ProjectManager(Resources.TemplateDirectory, Resources.CurrentDirectory);
 		projectManager.LoadTrackedProjects();
 		AnimDataManager manager = new(Resources.TemplateDirectory, Resources.OutputDirectory);
-		manager.SplitAnimationDataSingleFile(projectManager);
+		manager.SplitAnimDataSingleFile(projectManager);
 		manager.MergeAnimDataSingleFile();
 
 		FileInfo outputFile = new(Path.Combine(Resources.OutputDirectory.FullName, animDataFileName));
