@@ -1,4 +1,7 @@
-﻿using System;
+﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
+
+using System;
 using System.Text;
 using static Nito.HashAlgorithms.CRC32;
 
