@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
+
 using Pandora.API.Patch.Engine.Skyrim64.AnimData;
 using Pandora.Models.Extensions;
 using System;
@@ -65,7 +68,11 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 			string[] triggerNames = new string[numClipTriggers];
 			for (int i = 0; i < numClipTriggers; i++)
 			{
-				if (!reader.TryReadLine(out var triggerName)) { return false; }
+				if (!reader.TryReadNotEmptyLine(out var triggerName)) 
+				{
+					numClipTriggers = 0;
+					break;
+				}
 				triggerNames[i] = triggerName;
 			}
 			block = new ClipDataBlock(clipName, clipId, playBackSpeed, cropStartLocalTime, cropEndLocalTime, numClipTriggers, triggerNames);
@@ -124,13 +131,9 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 
 			sb.AppendLine(Name).AppendLine(ClipID).AppendLine(PlaybackSpeed.ToString()).AppendLine(CropStartLocalTime.ToString()).AppendLine(CropEndLocalTime.ToString()).AppendLine(NumClipTriggers.ToString());
 
-			if (TriggerNames.Count > 0)
+			if (TriggerNames.Count > 0 && TriggerNames.Count == NumClipTriggers)
 			{
-
-
-
 				sb.AppendJoin("\r\n", TriggerNames).AppendLine();
-
 			}
 			return sb.ToString();
 		}
