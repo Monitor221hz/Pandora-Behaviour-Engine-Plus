@@ -31,23 +31,23 @@ public class LaunchOptions
 
 	static LaunchOptions()
 	{
-		_outputOption = new(name: "--output", aliases: ["--output", "-o"])
+		_outputOption = new(name: "--output", aliases: ["-output", "-o"])
 		{
 			Description = "Output directory."
 		};
-		_tesvOption = new(name: "--tesv", aliases: "--tesv")
+		_tesvOption = new(name: "--tesv", aliases: "-tesv")
 		{
 			Description = "Skyrim directory (TESV), should point to Skyrim root folder."
 		};
-		_autoRunOption = new(name: "--auto_run", aliases: ["--auto_run", "-ar"])
+		_autoRunOption = new(name: "--auto_run", aliases: ["-auto_run", "-ar"])
 		{
 			Description = "Automatically run after start."
 		};
-		_autoCloseOption = new(name: "--auto_close", aliases: ["--auto_close", "-ac"])
+		_autoCloseOption = new(name: "--auto_close", aliases: ["-auto_close", "-ac"])
 		{
 			Description = "Close app after execution."
 		};
-		_skyrimDebug64Option = new(name: "--skyrim_debug64", aliases: "--skyrim_debug64")
+		_skyrimDebug64Option = new(name: "--skyrim_debug64", aliases: "-skyrim_debug64")
 		{
 			Description = "Use skyrim debug 64-bit mode."
 		};
