@@ -1,4 +1,10 @@
-﻿using Microsoft.Win32;
+﻿using Avalonia.Xaml.Interactivity;
+using Microsoft.Win32;
+using NLog;
+using Pandora.Logging;
+using Pandora.Models;
+using System;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 
@@ -13,25 +19,49 @@ namespace Pandora.Utils;
 /// </returns>
 public static class SkyrimPathResolver
 {
+	private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
 	/// <summary>
 	/// Resolves the installation path of Skyrim Special Edition by checking command-line arguments first,
 	/// then falling back to the Windows Registry if no path is specified.
 	/// </summary>
 	/// <returns>
 	/// A <see cref="DirectoryInfo"/> representing the "Data" directory of the Skyrim Special Edition installation,
-	/// or null if the path cannot be resolved.
+	/// otherwise <see cref="Environment.CurrentDirectory"/>.
 	/// </returns>
 	public static DirectoryInfo? Resolve()
 	{
 		var argsPath = TryReadSkyrimPathFromCommandLineArgs();
-		if (argsPath is not null)
+		if (IsValidDataDirectory(argsPath))
 			return argsPath;
 
 		var registryPath = TryReadSkyrimPathFromRegistry();
-		if (registryPath is not null)
+		if (IsValidDataDirectory(registryPath))
 			return registryPath;
 
-		return null;
+		var currentPath = new DirectoryInfo(Environment.CurrentDirectory);
+
+		string infoPathMsg = $"Skyrim 'Data' directory not found in command-line args and registry, return {currentPath}.";
+
+		EngineLoggerAdapter.AppendLine($"WARNING: {infoPathMsg}");
+		Logger.Warn(infoPathMsg);
+		return currentPath;
+	}
+
+	private static bool IsValidDataDirectory(DirectoryInfo? dir)
+	{
+		if (dir is null)
+			return false;
+
+		if (!dir.Exists)
+		{
+			string infoPathExistsMsg = $"Skyrim 'Data' directory does not exist: {dir.FullName}";
+			EngineLoggerAdapter.AppendLine($"WARNING: {infoPathExistsMsg}");
+			Logger.Warn(infoPathExistsMsg);
+			return false;
+		}
+
+		return true;
 	}
 
 	/// <summary>
