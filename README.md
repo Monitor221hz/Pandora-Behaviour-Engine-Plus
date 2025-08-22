@@ -71,7 +71,7 @@ It is recommended to use the startup argument (command line) to set the output m
 
 1. Install Pandora Behavior Engine outside of the mods folder. Add it to the tools dashboard.
 2. Set `-o "path"` in the **Command Line** field. Replace path with your path to the **Pandora Output** folder.
-3. Ensure that the **Start In** field is set to the Skyrim **Data **directory.
+3. Ensure that the **Start In** field is set to the Skyrim **Data** directory.
 4. Run Pandora. Tick the patches you want and click Launch.
 
 > [!NOTE]
