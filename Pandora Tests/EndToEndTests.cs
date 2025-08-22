@@ -1,5 +1,4 @@
-﻿using NLog;
-using Pandora.API.Patch.IOManagers;
+﻿using Pandora.API.Patch.IOManagers;
 using Pandora.Data;
 using Pandora.Models;
 using Pandora.Models.Patch.Configs;
