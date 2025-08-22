@@ -29,7 +29,7 @@ public class BehaviourEngine
 	public static readonly DirectoryInfo AssemblyDirectory = new(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule?.FileName)!);
 
 	public static readonly DirectoryInfo CurrentDirectory = new(Environment.CurrentDirectory!);
-	public static readonly DirectoryInfo? SkyrimGameDirectory;
+	public static readonly DirectoryInfo SkyrimGameDirectory;
 	public static readonly List<IEngineConfigurationPlugin> EngineConfigurations = [];
 
 	public bool IsExternalOutput = false;

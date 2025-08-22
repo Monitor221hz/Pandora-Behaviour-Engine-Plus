@@ -11,6 +11,7 @@ using System.Diagnostics;
 using Microsoft.Win32;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Pandora.Utils;
 
@@ -33,7 +34,7 @@ public static class SkyrimPathResolver
 	/// A <see cref="DirectoryInfo"/> representing the "Data" directory of the Skyrim Special Edition installation,
 	/// otherwise <see cref="Environment.CurrentDirectory"/>.
 	/// </returns>
-	public static DirectoryInfo? Resolve()
+	public static DirectoryInfo Resolve()
 	{
 		var argsPath = TryReadSkyrimPathFromCommandLineArgs();
 		if (IsValidDataDirectory(argsPath))
@@ -52,7 +53,7 @@ public static class SkyrimPathResolver
 		return currentPath;
 	}
 
-	private static bool IsValidDataDirectory(DirectoryInfo? dir)
+	private static bool IsValidDataDirectory([NotNullWhen(true)] DirectoryInfo? dir)
 	{
 		if (dir is null)
 			return false;
