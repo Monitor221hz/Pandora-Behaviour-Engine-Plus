@@ -52,14 +52,27 @@ Pandora runs on Windows, Linux, and MacOS, but only Windows is extensively teste
 
 ### Quickstart
 
+> [!CAUTION]
+> Like any mod, it is not recommended to install Pandora directly in the Data folder, because mods may not be detected. The output it produces will also make the Data folder unclean.
+
+> [!TIP]
+> If you need to have multiple startup arguments, they can be separated with a space.
+
+---
+
 #### **Mod Organizer 2**
 
 1. Install Pandora Behaviour Engine as a mod **or** outside the mods folder. Add Pandora as an [application for MO2](https://stepmodifications.org/wiki/Guide:Mod_Organizer#General_Application_Setup).
 2. Create an empty mod named **Pandora Output** using the Tools button on the top right of the main panel (beside the profile selection dropdown).
 3. Set `-o "path"` in the **Arguments** field. Replace `path` with the absolute path to the **Pandora Output** mod.
-4. Run Pandora from MO2. Tick the patches you want and click Launch.
 
-> [!TIP]
+ >[!TIP]
+ > The absolute path can be found by right clicking the **Pandora Output** folder in MO2, clicking **Open In Explorer**, then copying the path from the URI path (the big box at the top with arrows)
+
+
+5. Run Pandora from MO2. Tick the patches you want and click Launch.
+
+> [!NOTE]
 It is recommended to use the startup argument (command line) to set the output mod instead of MO2's `"Create in files in mod instead of overwrite"`.
 >
 > 
@@ -77,8 +90,6 @@ It is recommended to use the startup argument (command line) to set the output m
 > [!NOTE]
 > **Pandora Output** folder should be zipped and installed **as mod** via Vortex!
 
-> [!CAUTION]
-> It is not recommended to install Pandora directly in the Data folder, because mods may not be detected. The output it produces will also make the Data folder unclean.
 </details>
 <br/>
 
@@ -90,10 +101,6 @@ If the engine cannot find FNIS mods, set the path to your Wabbajack Stock Game i
 #### Multiple Game Installs
 If you have multiple game installs, Use the `--tesv` argument as listed above but with the path pointing to the game **root** folder.
 
---- 
-
-> [!TIP]
-> If you need to have multiple arguments, they can be separated with a space.
 
 ##
 
