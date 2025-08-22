@@ -119,7 +119,9 @@ jobs:
             /p:Version=${{ needs.build.outputs.fullSemVer }} `
             /p:AssemblyVersion=${{ needs.build.outputs.assemblySemVer }} `
             /p:FileVersion=${{ needs.build.outputs.assemblySemFileVer }} `
-            /p:InformationalVersion=${{ needs.build.outputs.informationalVersion }}
+            /p:InformationalVersion=${{ needs.build.outputs.informationalVersion }} `
+            /p:DebugType=none `
+            /p:DebugSymbols=false
 
       - name: Zip and Release
         uses: ./.github/actions/zip-and-release
