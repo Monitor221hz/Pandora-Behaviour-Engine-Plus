@@ -20,7 +20,7 @@ public class PackFileDispatcher
 
 	public void TrackPotentialNode(PackFile packFile, string nodeName, XElement element)
 	{
-		packFile.PartialDeserializer.Collect(nodeName, element);
+		packFile.XmlDeserializer.Collect(nodeName, element);
 		packFileValidator.TrackElement(element);
 	}
 	public void AddChangeSet(PackFileChangeSet changeSet)

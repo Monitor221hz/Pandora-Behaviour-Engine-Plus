@@ -58,7 +58,7 @@ public class PandoraParser
 						string childNodeName = nameAttribute.Value;
 						if (!packFile.PopObjectAsXml(childNodeName))
 						{
-							packFile.PartialDeserializer.DeserializeRuntimeObject(element);
+							packFile.XmlDeserializer.DeserializeRuntimeObject(element);
 						}
 					}
 					break;
@@ -85,7 +85,7 @@ public class PandoraParser
 						string childNodeName = nameAttribute.Value;
 						if (!packFile.PopObjectAsXml(childNodeName))
 						{
-							packFile.PartialDeserializer.DeserializeRuntimeObject(element);
+							packFile.XmlDeserializer.DeserializeRuntimeObject(element);
 						}
 					}
 					break;
