@@ -1,4 +1,5 @@
 ﻿using HKX2E;
+using HKX2E.Mapper;
 using Pandora.API.Patch.Engine.Skyrim64;
 using Pandora.Utils;
 using System;
@@ -14,10 +15,9 @@ namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 public class PackFile : IEquatable<PackFile>, IPackFile
 {
 	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-	public HavokReferenceXmlDeserializer Deserializer { get; private set; } = new();
-	public HavokXmlPartialDeserializer PartialDeserializer { get; private set; } = new();
-	public HavokXmlPartialSerializer PartialSerializer { get; private set; } = new();
-	public HavokXmlSerializer Serializer { get; private set; } = new();
+	public MetaPackFileDeserializer BinaryDeserializer { get; private set; } = new();
+	public HavokXmlDeserializer XmlDeserializer { get; private set; } = new();
+	public HavokXmlMetaDataSerializer Serializer { get; private set; } = new();
 	public hkRootLevelContainer Container { get; private set; }
 
 	public static readonly string ROOT_CONTAINER_NAME = "__data__";
@@ -89,11 +89,15 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 
 		using (var stream = file.OpenRead())
 		{
-			Container = (hkRootLevelContainer)Deserializer.Deserialize(stream, HKXHeader.SkyrimSE());
+			var reader = new BinaryReaderEx(stream);
+			Container = (hkRootLevelContainer)BinaryDeserializer.Deserialize(reader, true);
 		}
-		PartialSerializer.ShareContext(Deserializer.Context);
-		PartialDeserializer.ShareContext(Deserializer.Context);
-		Serializer.ShareContext(Deserializer.Context);
+		var metaContext = BinaryDeserializer.Context;
+		var deserializerContext = (HavokXmlDeserializerContext)metaContext;
+		
+		XmlDeserializer.ShareContext(deserializerContext);
+		Serializer.ShareContext(metaContext);
+		Serializer.ShareContext(deserializerContext);
 		ParentProject = project;
 		Name = Path.GetFileNameWithoutExtension(InputHandle.Name).ToLower();
 
@@ -135,7 +139,7 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 
 	public bool PathExists(string nodeName, string path)
 	{
-		if (Deserializer.TryGetObject(nodeName, out var keyObject) && objectElementMap.TryGetValue(keyObject, out var xmap) && xmap.PathExists(path))
+		if (XmlDeserializer.TryGetObject(nodeName, out var keyObject) && objectElementMap.TryGetValue(keyObject, out var xmap) && xmap.PathExists(path))
 		{
 			return true;
 		}
@@ -143,11 +147,11 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 	}
 	public bool TargetExists(string nodeName)
 	{
-		return Deserializer.TryGetObject(nodeName, out var keyObject) && objectElementMap.ContainsKey(keyObject);
+		return XmlDeserializer.TryGetObject(nodeName, out var keyObject) && objectElementMap.ContainsKey(keyObject);
 	}
 	public bool TryGetXMap(string nodeName, [NotNullWhen(true)] out XMapElement? xmap)
 	{
-		if (Deserializer.TryGetObject(nodeName, out var keyObject))
+		if (XmlDeserializer.TryGetObject(nodeName, out var keyObject))
 		{
 			return objectElementMap.TryGetValue(keyObject, out xmap);
 		}
@@ -170,14 +174,14 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 		{
 			return false;
 		}
-		XMapElement mappedElement = new(PartialSerializer.SerializeObject(node));
+		XMapElement mappedElement = new(Serializer.SerializeObject(node));
 		mappedElement.MapSlice(mappedElement);
 		objectElementMap.Add(node, mappedElement);
 		return true;
 	}
 	public bool PopObjectAsXml(string nodeName)
 	{
-		if (Deserializer.TryGetObject(nodeName, out var havokObj))
+		if (XmlDeserializer.TryGetObject(nodeName, out var havokObj))
 		{
 			return PopObjectAsXml(havokObj);
 		}
@@ -196,12 +200,13 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 		}
 		try
 		{
-			var obj = PartialDeserializer.DeserializeRuntimeObjectOverwrite(element);
-			lock (Deserializer)
+			var obj = XmlDeserializer.DeserializeRuntimeObjectOverwrite(element);
+			lock (XmlDeserializer)
 			{
-				Deserializer.UpdateDirectReference(targetObject, obj);
-				Deserializer.UpdatePropertyReferences(name, obj);
-				Deserializer.UpdateMapping(name, obj);
+				HavokMove.Move<T>((T)obj, targetObject);
+				//PartialDeserializer.UpdateDirectReference(targetObject, obj);
+				//PartialDeserializer.UpdatePropertyReferences(name, obj);
+				XmlDeserializer.UpdateMapping(name, obj);
 			}
 			lock (objectElementMap)
 			{
@@ -225,12 +230,13 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 
 			try
 			{
-				var obj = PartialDeserializer.DeserializeRuntimeObjectOverwrite(element);
-				lock (Deserializer)
+				var obj = XmlDeserializer.DeserializeRuntimeObjectOverwrite(element);
+				lock (XmlDeserializer)
 				{
-					Deserializer.UpdateDirectReference(targetObject, obj);
-					Deserializer.UpdatePropertyReferences(name, obj);
-					Deserializer.UpdateMapping(name, obj);
+					HavokMove.Move<T>((T)obj, targetObject);
+					//PartialDeserializer.UpdateDirectReference(targetObject, obj);
+					//PartialDeserializer.UpdatePropertyReferences(name, obj);
+					XmlDeserializer.UpdateMapping(name, obj);
 				}
 				objectElementMap.Remove(targetObject);
 			}
@@ -238,7 +244,7 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 			{
 				Logger.Error($"Packfile > Active Nodes > Push > FAILED > {ex}");
 			}
-			if (!Deserializer.TryGetObjectAs<T>(name, out var newObj))
+			if (!XmlDeserializer.TryGetObjectAs<T>(name, out var newObj))
 			{
 				return targetObject;
 			}
@@ -247,9 +253,9 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 	}
 	public T GetPushedObjectAs<T>(string name) where T : class, IHavokObject
 	{
-		lock (Deserializer) //Lock important! Prevents mapping and deserialization from getting de-synced on high parallelization machines
+		lock (XmlDeserializer) //Lock important! Prevents mapping and deserialization from getting de-synced on high parallelization machines
 		{
-			return GetPushXmlAsObject(Deserializer.GetObjectAs<T>(name));
+			return GetPushXmlAsObject(XmlDeserializer.GetObjectAs<T>(name));
 		}
 
 	}
@@ -263,12 +269,12 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 	}
 	public virtual void PushXmlAsObjects()
 	{
-		foreach (var kvp in objectElementMap.OrderBy(kvp => Deserializer.GetOrder(Serializer.GetName(kvp.Key))))
+		foreach (var kvp in objectElementMap.OrderBy(kvp => BinaryDeserializer.GetOrder(kvp.Key)))
 		{
 			IHavokObject? obj = null;
 			try
 			{
-				obj = PartialDeserializer.DeserializeRuntimeObjectOverwrite(kvp.Value);
+				obj = XmlDeserializer.DeserializeRuntimeObjectOverwrite(kvp.Value);
 			}
 			catch (Exception ex)
 			{
@@ -276,9 +282,10 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 				continue;
 			}
 			string name = Serializer.GetName(kvp.Key);
-			Deserializer.UpdateDirectReference(kvp.Key, obj);
-			Deserializer.UpdatePropertyReferences(name, obj);
-			Deserializer.UpdateMapping(name, obj);
+			HavokMove.Move(obj,kvp.Key); 
+			//PartialDeserializer.UpdateDirectReference(kvp.Key, obj);
+			//PartialDeserializer.UpdatePropertyReferences(name, obj);
+			XmlDeserializer.UpdateMapping(name, obj);
 
 		}
 		objectElementMap.Clear();

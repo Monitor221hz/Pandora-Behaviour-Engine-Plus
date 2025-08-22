@@ -30,7 +30,7 @@ public class FurnitureAnimation : BasicAnimation
 	{
 		localTime = -0.2f,
 		relativeToEndOfClip = true,
-		@event = idleFurnitureExitProperty,
+		_event = idleFurnitureExitProperty,
 	};
 
 
