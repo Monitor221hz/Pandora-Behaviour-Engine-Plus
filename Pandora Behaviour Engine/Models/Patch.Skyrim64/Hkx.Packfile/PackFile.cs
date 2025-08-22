@@ -27,6 +27,7 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 
 	public static readonly string ROOT_CONTAINER_INSERT_PATH = "__data__/top";
 
+	private static readonly string TemplateRootPath = Path.Combine(BehaviourEngine.AssemblyDirectory.FullName, "Pandora_Engine", "Skyrim", "Template");
 
 	public string Name { get; private set; }
 	public FileInfo InputHandle { get; private set; }
@@ -84,8 +85,7 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 		InputHandle = file;
 		OutputHandle = file;
 
-		var templateRootPath = Path.Combine(BehaviourEngine.AssemblyDirectory.FullName, "Pandora_Engine", "Skyrim", "Template");
-		var relativePathInsideTemplate = Path.GetRelativePath(templateRootPath, file.FullName);
+		var relativePathInsideTemplate = Path.GetRelativePath(TemplateRootPath, file.FullName);
 
 		relativeOutputFilePath = Path.Combine("meshes", relativePathInsideTemplate);
 		RelativeOutputDirectoryPath = Path.GetDirectoryName(relativeOutputFilePath)!;
