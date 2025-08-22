@@ -1,5 +1,4 @@
-﻿using NLog;
-using Pandora.API.Patch.IOManagers;
+﻿using Pandora.API.Patch.IOManagers;
 using Pandora.Data;
 using Pandora.Models;
 using Pandora.Models.Patch.Configs;
@@ -12,12 +11,17 @@ namespace PandoraTests;
 
 public class EndToEndTests
 {
-    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+    private readonly ITestOutputHelper _output;
+
+    public EndToEndTests(ITestOutputHelper output)
+    {
+        _output = output;
+    }
 
     [Fact]
     public async Task EngineOutputTest()
     {
-        logger.Info($"Starting EngineOutputTest. OutputDirectory: {Resources.OutputDirectory.FullName}");
+        _output.WriteLine($"Starting EngineOutputTest. OutputDirectory: {Resources.OutputDirectory.FullName}");
 
         // Loading mods
         var modInfoProviders = new List<IModInfoProvider>
@@ -31,9 +35,9 @@ public class EndToEndTests
             new(Path.Combine(Environment.CurrentDirectory, "Data"))
         };
         var activeModsFilePath = PandoraPaths.ActiveModsFile;
-        logger.Info($"Loading mods from directories: {string.Join(", ", directories.Select(d => d.FullName))}");
+        _output.WriteLine($"Loading mods from directories: {string.Join(", ", directories.Select(d => d.FullName))}");
         var mods = await ModLoader.LoadModsAsync(modInfoProviders, directories);
-        logger.Info($"Loaded {mods.Count} mods");
+        _output.WriteLine($"Loaded {mods.Count} mods");
 
         Assert.NotEmpty(mods);
 
@@ -42,27 +46,27 @@ public class EndToEndTests
         BehaviourEngine engine = new BehaviourEngine()
             .SetConfiguration(new SkyrimDebugConfiguration())
             .SetOutputPath(Resources.OutputDirectory); // SetOutputPath() must be after configuration initialization
-        logger.Info($"BehaviourEngine configured with OutputPath: {Resources.OutputDirectory.FullName}");
+        _output.WriteLine($"BehaviourEngine configured with OutputPath: {Resources.OutputDirectory.FullName}");
 
         await engine.PreloadAsync();
-        logger.Info("PreloadAsync completed");
+        _output.WriteLine("PreloadAsync completed");
 
         bool launchSuccess = await engine.LaunchAsync(mods.ToList());
         Assert.True(launchSuccess, "LaunchAsync failed");
-        logger.Info("LaunchAsync completed successfully");
+        _output.WriteLine("LaunchAsync completed successfully");
 
         var skyrimPatcher = engine.Configuration.Patcher as SkyrimPatcher;
         Assert.NotNull(skyrimPatcher);
-        logger.Info("SkyrimPatcher retrieved");
+        _output.WriteLine("SkyrimPatcher retrieved");
 
         var activePackFiles = skyrimPatcher.NemesisAssembler.ProjectManager.ActivePackFiles;
-        logger.Info($"Found {activePackFiles.Count} ActivePackFiles");
+        _output.WriteLine($"Found {activePackFiles.Count} ActivePackFiles");
 
         Assert.NotEmpty(activePackFiles);
 
         foreach (var activePackFile in activePackFiles)
         {
-            logger.Info($"PackFile: Name={activePackFile.Name}, InputHandle={activePackFile.InputHandle.FullName}, OutputHandle={activePackFile.OutputHandle.FullName}, RelativeOutputDirectoryPath={activePackFile.RelativeOutputDirectoryPath}");
+            _output.WriteLine($"PackFile: Name={activePackFile.Name}, InputHandle={activePackFile.InputHandle.FullName}, OutputHandle={activePackFile.OutputHandle.FullName}, RelativeOutputDirectoryPath={activePackFile.RelativeOutputDirectoryPath}");
             PackFileAssert.DowncastValidPackFile(activePackFile);
         }
 
@@ -70,15 +74,15 @@ public class EndToEndTests
         // Checking for meshes with .hkx files
         var meshesPath = Path.Combine(Resources.OutputDirectory.FullName, "meshes");
         Assert.True(Directory.Exists(meshesPath), $"Meshes directory does NOT exist: {meshesPath}");
-        logger.Info($"Meshes directory exists: {meshesPath}");
+        _output.WriteLine($"Meshes directory exists: {meshesPath}");
 
         var meshFiles = Directory.GetFiles(meshesPath, "*.hkx", SearchOption.AllDirectories);
-        logger.Info($"Found {meshFiles.Length} mesh files");
+        _output.WriteLine($"Found {meshFiles.Length} mesh files");
         Assert.NotEmpty(meshFiles);
 
         foreach (var file in meshFiles)
         {
-            logger.Info($"Found mesh file: {file}");
+            _output.WriteLine($"Found mesh file: {file}");
         }
 
 
@@ -87,7 +91,7 @@ public class EndToEndTests
         if (exporterField?.GetValue(skyrimPatcher) is IMetaDataExporter<PackFile> exporter)
         {
             Assert.NotNull(exporter.ExportDirectory);
-            logger.Info($"Exporter ExportDirectory: {exporter.ExportDirectory.FullName}");
+            _output.WriteLine($"Exporter ExportDirectory: {exporter.ExportDirectory.FullName}");
         }
         else
         {
