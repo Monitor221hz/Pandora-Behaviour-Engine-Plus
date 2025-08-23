@@ -1,0 +1,33 @@
+header:
+  license:
+    spdx-id: GPL-3.0-or-later
+    copyright-owner: Pandora Behaviour Engine Contributors
+    copyright-year: '2023-2025'
+    content: |
+      SPDX-License-Identifier: GPL-3.0-or-later
+      Copyright (C) [year] [owner]
+      
+  paths:
+    - '**/*.cs'
+    - '**/*.axaml'
+      
+  paths-ignore:
+    - 'Pandora API/**'
+    - 'XML.Cake.NET/**'
+      
+  comment: on-failure
+    
+  license-location-threshold: 0
+    
+  language:
+    CSharp:
+      extensions:
+        - ".cs"
+      comment_style_id: DoubleSlash
+
+    XAML:
+      extensions:
+        - ".axaml"
+      comment_style_id: AngleBracket
+
+    
