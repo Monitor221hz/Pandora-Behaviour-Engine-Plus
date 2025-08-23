@@ -115,8 +115,6 @@ public class LaunchOptions
 
 		Current = options;
 
-		EngineLoggerAdapter.AppendLine($"INFO: {LaunchOptions.Current.OutputDirectory?.FullName}");
-		EngineLoggerAdapter.AppendLine($"INFO: {LaunchOptions.Current.SkyrimGameDirectory?.FullName}");
 		return options;
 	}
 
