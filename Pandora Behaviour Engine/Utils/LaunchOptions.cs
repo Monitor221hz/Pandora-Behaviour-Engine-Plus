@@ -75,11 +75,7 @@ public class LaunchOptions
 			options.UseSkyrimDebug64 = parseResult.GetValue(_skyrimDebug64Option);
 		});
 
-		string[] normalizedArgs = args;
-		if (caseInsensitive)
-		{
-			normalizedArgs = PreprocessArgumentsForCaseInsensitivity(args, _rootCommand);
-		}
+		string[] normalizedArgs = PreprocessArguments(args, _rootCommand, caseInsensitive);
 
 		var config = new CommandLineConfiguration(_rootCommand);
 		var parseResult = config.Parse(normalizedArgs);
@@ -118,6 +114,7 @@ public class LaunchOptions
 		}
 
 		Current = options;
+
 		return options;
 	}
 
@@ -131,11 +128,16 @@ public class LaunchOptions
 	/// </summary>
 	/// <param name="args">The array of command-line arguments to normalize.</param>
 	/// <param name="rootCommand">The command containing the defined options and their aliases.</param>
+	/// <param name="caseInsensitive">Boolean value to enable case insensitivity.</param>
 	/// <returns>An array of normalized arguments, with option aliases standardized and values separated.</returns>
-	private static string[] PreprocessArgumentsForCaseInsensitivity(string[] args, RootCommand rootCommand)
+	private static string[] PreprocessArguments(string[] args, RootCommand rootCommand, bool caseInsensitive = false)
 	{
+		var comparison = caseInsensitive
+			? StringComparison.OrdinalIgnoreCase
+			: StringComparison.Ordinal;
+
 		var canonicalAliases = rootCommand.Options
-			.SelectMany(option => option.Aliases)
+			.SelectMany(option => option.Aliases.Prepend(option.Name))
 			.OrderByDescending(alias => alias.Length)
 			.ToList();
 
@@ -143,7 +145,6 @@ public class LaunchOptions
 
 		foreach (var token in args)
 		{
-
 			if (!token.StartsWith('-'))
 			{
 				processedArgs.Add(token);
@@ -151,13 +152,13 @@ public class LaunchOptions
 			}
 
 			var matchedCanonicalAlias = canonicalAliases.FirstOrDefault(
-				alias => token.StartsWith(alias, StringComparison.OrdinalIgnoreCase));
+				alias => token.StartsWith(alias, comparison));
 
 			if (matchedCanonicalAlias != null)
 			{
 				var valuePart = token[matchedCanonicalAlias.Length..];
 
-				if (matchedCanonicalAlias.StartsWith("--") && valuePart.Length > 0 && !valuePart.StartsWith(':') && !valuePart.StartsWith('='))
+				if (valuePart.Length > 0 && !valuePart.StartsWith(':') && !valuePart.StartsWith('='))
 				{
 					processedArgs.Add($"{matchedCanonicalAlias}:{valuePart}");
 				}
