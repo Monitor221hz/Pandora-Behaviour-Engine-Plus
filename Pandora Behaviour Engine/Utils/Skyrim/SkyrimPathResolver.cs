@@ -1,17 +1,15 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using Avalonia.Xaml.Interactivity;
 using Microsoft.Win32;
 using NLog;
 using Pandora.Logging;
 using Pandora.Models;
 using System;
-using System.Diagnostics;
-using Microsoft.Win32;
-using System.IO;
-using System.Runtime.InteropServices;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace Pandora.Utils;
 
@@ -20,11 +18,16 @@ namespace Pandora.Utils;
 /// If not provided, it queries the Windows Registry for the installation path.
 /// </summary>
 /// <returns>
-/// Returns the "Data" directory within the installation folder if found; otherwise, null.
+/// Returns the "Data" directory within the installation folder if found; otherwise <see cref="Environment.CurrentDirectory"/>.
 /// </returns>
 public static class SkyrimPathResolver
 {
 	private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+	internal const string RegistrySubKey = @"SOFTWARE\Wow6432Node\Bethesda Softworks\Skyrim Special Edition";
+	internal const string RegistryValueName = "Installed Path";
+
+	public delegate DirectoryInfo? PathProvider();
 
 	/// <summary>
 	/// Resolves the installation path of Skyrim Special Edition by checking command-line arguments first,
@@ -36,59 +39,27 @@ public static class SkyrimPathResolver
 	/// </returns>
 	public static DirectoryInfo Resolve()
 	{
-		var argsPath = TryReadSkyrimPathFromCommandLineArgs();
-		if (IsValidDataDirectory(argsPath))
-			return argsPath;
+		PathProvider[] providers =
+		[
+			TryGetDataPathFromCommandLine,
+			TryGetDataPathFromCurrentDirectory,
+			() => TryGetDataPathFromRegistry()
+		];
 
-		var registryPath = TryReadSkyrimPathFromRegistry();
-		if (IsValidDataDirectory(registryPath))
-			return registryPath;
+		var resolvedPath = providers
+			.Select(provider => provider())
+			.FirstOrDefault(IsValidSkyrimDataDirectory);
 
-		var currentPath = new DirectoryInfo(Environment.CurrentDirectory);
-
-		string infoPathMsg = $"Skyrim 'Data' directory not found in command-line args and registry, return {currentPath}.";
-
-		EngineLoggerAdapter.AppendLine($"WARNING: {infoPathMsg}");
-		Logger.Warn(infoPathMsg);
-		return currentPath;
-	}
-
-	private static bool IsValidDataDirectory([NotNullWhen(true)] DirectoryInfo? dir)
-	{
-		if (dir is null)
-			return false;
-
-		if (!dir.Exists)
+		if (resolvedPath is not null)
 		{
-			string infoPathExistsMsg = $"Skyrim 'Data' directory does not exist: {dir.FullName}";
-			EngineLoggerAdapter.AppendLine($"WARNING: {infoPathExistsMsg}");
-			Logger.Warn(infoPathExistsMsg);
-			return false;
+			Logger.Info($"Found valid Skyrim 'Data' directory at: {resolvedPath.FullName}");
+			return resolvedPath;
 		}
 
-		return true;
-	}
-
-	/// <summary>
-	/// Attempts to retrieve the Skyrim Special Edition installation path from the Windows Registry.
-	/// Queries the "Installed Path" value under the registry key for Skyrim Special Edition.
-	/// </summary>
-	/// <returns>
-	/// A <see cref="DirectoryInfo"/> representing the "Data" directory within the installation folder if found;
-	/// otherwise, null if the registry key or value is unavailable or the platform is not Windows.
-	/// </returns>
-	private static DirectoryInfo? TryReadSkyrimPathFromRegistry()
-	{
-		if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-			return null;
-
-		const string subKey = @"SOFTWARE\Wow6432Node\Bethesda Softworks\Skyrim Special Edition";
-
-		using var key = Registry.LocalMachine.OpenSubKey(subKey, false);
-		if (key?.GetValue("Installed Path") is string path)
-			return new DirectoryInfo(Path.Combine(path, "Data"));
-
-		return null;
+		string msg = $"Could not find a valid Skyrim 'Data' directory. Current directory {BehaviourEngine.CurrentDirectory}";
+		EngineLoggerAdapter.AppendLine($"WARN: {msg}");
+		Logger.Warn(msg);
+		return BehaviourEngine.CurrentDirectory;
 	}
 
 	/// <summary>
@@ -99,13 +70,90 @@ public static class SkyrimPathResolver
 	/// A <see cref="DirectoryInfo"/> representing the "Data" directory within the specified path if provided;
 	/// otherwise, null if no path is specified in the command-line arguments.
 	/// </returns>
-	private static DirectoryInfo? TryReadSkyrimPathFromCommandLineArgs()
+	private static DirectoryInfo? TryGetDataPathFromCommandLine()
 	{
-		var optionSkyrimGameDir = LaunchOptions.Current?.SkyrimGameDirectory;
-
-		if (optionSkyrimGameDir is not null)
-			return new DirectoryInfo(Path.Combine(optionSkyrimGameDir.FullName, "Data"));
-
+		var gameDir = LaunchOptions.Current?.SkyrimGameDirectory;
+		if (gameDir is not null)
+		{
+			Logger.Debug("Attempting Skyrim path from command line args (--tesv): {0}", gameDir.FullName);
+			return NormalizeToDataDirectory(gameDir);
+		}
+		Logger.Debug("No Skyrim path in command line args.");
 		return null;
+	}
+
+	/// <summary>
+	/// Try to get path from current working directory. 
+	/// This is needed in case the path of the current directory coincides with the directory to Data. 
+	/// Such cases are set via MO2/Vortex using Start In.
+	/// </summary>
+	/// <returns>
+	/// A <see cref="DirectoryInfo"/> representing the "Data" directory within the installation folder if found; 
+	/// otherwise <see cref="Environment.CurrentDirectory"/>.
+	/// </returns>
+	private static DirectoryInfo? TryGetDataPathFromCurrentDirectory()
+	{
+		var cwd = new DirectoryInfo(Environment.CurrentDirectory);
+		Logger.Debug("Attempting Skyrim path from current directory: {0}", cwd.FullName);
+		return NormalizeToDataDirectory(cwd);
+	}
+
+	/// <summary>
+	/// Attempts to retrieve the Skyrim Special Edition installation path from the Windows Registry.
+	/// Queries the "Installed Path" value under the registry key for Skyrim Special Edition.
+	/// </summary>
+	/// <returns>
+	/// A <see cref="DirectoryInfo"/> representing the "Data" directory within the installation folder if found;
+	/// otherwise, null if the registry key or value is unavailable or the platform is not Windows.
+	/// </returns>
+	public static DirectoryInfo? TryGetDataPathFromRegistry(RegistryKey? baseKey = null, string? subKeyOverride = null)
+	{
+		if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+			return null;
+
+		try
+		{
+			var rootKey = baseKey ?? Registry.LocalMachine;
+			var finalSubKey = subKeyOverride ?? RegistrySubKey;
+
+			using var key = rootKey.OpenSubKey(finalSubKey);
+
+			if (key?.GetValue(RegistryValueName) is string path && !string.IsNullOrEmpty(path))
+			{
+				Logger.Debug("Found Skyrim path in registry: {0}", path);
+				return NormalizeToDataDirectory(new DirectoryInfo(path));
+			}
+
+			Logger.Debug("Skyrim registry key/value not found or empty.");
+		}
+		catch (Exception ex)
+		{
+			Logger.Warn(ex, "Failed to read Skyrim installation path from registry.");
+		}
+		return null;
+	}
+
+	public static bool IsValidSkyrimDataDirectory([NotNullWhen(true)] DirectoryInfo? dataDirectory)
+	{
+		if (dataDirectory is null || !dataDirectory.Exists)
+			return false;
+
+		if (!dataDirectory.Name.Equals("Data", StringComparison.OrdinalIgnoreCase))
+			return false;
+
+		var gameRoot = dataDirectory.Parent;
+		if (gameRoot is null || !gameRoot.Exists)
+			return false;
+
+		return File.Exists(Path.Combine(gameRoot.FullName, "SkyrimSE.exe")) ||
+			   File.Exists(Path.Combine(gameRoot.FullName, "SkyrimSELauncher.exe"));
+	}
+
+	private static DirectoryInfo NormalizeToDataDirectory(DirectoryInfo directory)
+	{
+		if (directory.Name.Equals("Data", StringComparison.OrdinalIgnoreCase))
+			return directory;
+
+		return new DirectoryInfo(Path.Combine(directory.FullName, "Data"));
 	}
 }
