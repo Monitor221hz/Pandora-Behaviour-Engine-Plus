@@ -75,10 +75,10 @@ public class LaunchOptions
 			options.UseSkyrimDebug64 = parseResult.GetValue(_skyrimDebug64Option);
 		});
 
-		string[] normalizedArgs = PreprocessArguments(args, _rootCommand, caseInsensitive);
+		PreprocessArguments(args, _rootCommand, caseInsensitive);
 
 		var config = new CommandLineConfiguration(_rootCommand);
-		var parseResult = config.Parse(normalizedArgs);
+		var parseResult = config.Parse(args);
 
 		if (parseResult.Errors.Any())
 		{
@@ -129,8 +129,7 @@ public class LaunchOptions
 	/// <param name="args">The array of command-line arguments to normalize.</param>
 	/// <param name="rootCommand">The command containing the defined options and their aliases.</param>
 	/// <param name="caseInsensitive">Boolean value to enable case insensitivity.</param>
-	/// <returns>An array of normalized arguments, with option aliases standardized and values separated.</returns>
-	private static string[] PreprocessArguments(string[] args, RootCommand rootCommand, bool caseInsensitive = false)
+	private static void PreprocessArguments(string[] args, RootCommand rootCommand, bool caseInsensitive = false)
 	{
 		var comparison = caseInsensitive
 			? StringComparison.OrdinalIgnoreCase
@@ -141,37 +140,28 @@ public class LaunchOptions
 			.OrderByDescending(alias => alias.Length)
 			.ToList();
 
-		var processedArgs = new List<string>(args.Length);
-
-		foreach (var token in args)
+		for (int i = 0; i < args.Length; i++)
 		{
-			if (!token.StartsWith('-'))
-			{
-				processedArgs.Add(token);
-				continue;
-			}
+			var token = args[i];
+			if (!token.StartsWith('-')) continue;
 
 			var matchedCanonicalAlias = canonicalAliases.FirstOrDefault(
 				alias => token.StartsWith(alias, comparison));
 
-			if (matchedCanonicalAlias != null)
-			{
-				var valuePart = token[matchedCanonicalAlias.Length..];
+			if (matchedCanonicalAlias is null) continue;
 
-				if (valuePart.Length > 0 && !valuePart.StartsWith(':') && !valuePart.StartsWith('='))
-				{
-					processedArgs.Add($"{matchedCanonicalAlias}:{valuePart}");
-				}
-				else
-				{
-					processedArgs.Add(matchedCanonicalAlias + valuePart);
-				}
-			}
-			else
+			var valuePart = token.AsSpan(matchedCanonicalAlias.Length);
+			if (valuePart.Length > 0)
 			{
-				processedArgs.Add(token);
+				var firstChar = valuePart[0];
+				if (firstChar is not ':' and not '=')
+				{
+					args[i] = $"{matchedCanonicalAlias}:{valuePart}";
+					continue;
+				}
 			}
+
+			args[i] = string.Concat(matchedCanonicalAlias.AsSpan(), valuePart);
 		}
-		return [.. processedArgs];
 	}
 }
