@@ -14,7 +14,7 @@ jobs:
           mode: fix
           
       - name: apply changes
-        uses: EndBug/add-and-commit@v4
+        uses: EndBug/add-and-commit@v9.1.4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
