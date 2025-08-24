@@ -99,20 +99,40 @@ public class ProjectManager : IProjectManager
 		FileInfo projectList = new(Path.Join(templateFolder.FullName, VANILLA_PROJECTPATHS_FILENAME));
 		string? expectedLine = null;
 		List<string> projectPaths = [];
-		using (var readStream = projectList.OpenRead())
-		{
-			using (var streamReader = new StreamReader(readStream))
-			{
-				while ((expectedLine = streamReader.ReadLine()) != null)
-				{
-					if (string.IsNullOrWhiteSpace(expectedLine)) continue;
-					projectPaths.Add(expectedLine);
 
+		try
+		{
+			using (var readStream = projectList.OpenRead())
+			{
+				using (var streamReader = new StreamReader(readStream))
+				{
+					while ((expectedLine = streamReader.ReadLine()) != null)
+					{
+						if (string.IsNullOrWhiteSpace(expectedLine)) continue;
+						projectPaths.Add(expectedLine);
+
+					}
 				}
 			}
+			LoadProjects(projectPaths);
+			Logger.Info($"Loaded {projectPaths.Count} tracked projects from {projectList.Name}");
 		}
-		LoadProjects(projectPaths);
+		catch (FileNotFoundException ex)
+		{
+			Logger.Error(ex, $"Project list file not found: {projectList.Name}");
+		}
+		catch (IOException ex)
+		{
+			Logger.Error(ex, $"I/O error while reading project list file: {projectList.Name}");
+		}
+		catch (Exception ex)
+		{
+			Logger.Fatal(ex, $"Unexpected error while loading tracked projects from {projectList.Name}");
+			throw;
+		}
 	}
+
+
 	public void LoadProjects(List<string> projectPaths)
 	{
 		Dictionary<string, Project> directoryProjectPaths = [];
