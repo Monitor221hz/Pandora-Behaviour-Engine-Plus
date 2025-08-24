@@ -64,21 +64,38 @@ public class PackFileExporter : IMetaDataExporter<PackFile>
 	}
 	public void LoadMetaData()
 	{
-		if (!PreviousOutputFile.Exists) { return; }
-
-		using (FileStream readStream = PreviousOutputFile.OpenRead())
+		if (!PreviousOutputFile.Exists)
 		{
-			using (StreamReader reader = new(readStream))
-			{
-				string? expectedLine;
-				while ((expectedLine = reader.ReadLine()) != null)
-				{
-					FileInfo file = new(expectedLine);
-					if (!file.Exists) { continue; }
+			Logger.Warn($"Previous output file not found");
+			return;
+		}
 
-					file.Delete();
+		try
+		{
+			using (FileStream readStream = PreviousOutputFile.OpenRead())
+			{
+				using (StreamReader reader = new(readStream))
+				{
+					string? expectedLine;
+					while ((expectedLine = reader.ReadLine()) != null)
+					{
+						FileInfo file = new(expectedLine);
+						if (!file.Exists) { continue; }
+
+						file.Delete();
+
+					}
 				}
 			}
+		}
+		catch (IOException ex)
+		{
+			Logger.Error(ex, $"I/O error while reading metadata file: {PreviousOutputFile.Name}");
+		}
+		catch (Exception ex)
+		{
+			Logger.Fatal(ex, $"Unexpected error while processing metadata file: {PreviousOutputFile.Name}");
+			throw;
 		}
 	}
 

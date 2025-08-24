@@ -1,6 +1,7 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -72,102 +73,142 @@ public class AnimDataManager
 
 		int NumProjects;
 
-
-		using (var readStream = TemplateAnimDataSingleFile.OpenRead())
+		try
 		{
-			using (StreamReader reader = new(readStream))
+			using (var readStream = TemplateAnimDataSingleFile.OpenRead())
 			{
-				string? expectedLine;
-				int projectIndex = 0;
-				int sectionIndex = 0;
-				NumProjects = int.Parse(reader.ReadLine()!);
-				Project? activeProject = null;
-				ProjectAnimData? animData = null;
-				MotionData? motionData;
-				while ((expectedLine = reader.ReadLine()) != null)
+				using (StreamReader reader = new(readStream))
 				{
-
-					if (expectedLine.Contains(".txt"))
+					string? expectedLine;
+					int projectIndex = 0;
+					int sectionIndex = 0;
+					NumProjects = int.Parse(reader.ReadLine()!);
+					logger.Info($"Reading TemplateAnimData file {TemplateAnimDataSingleFile.Name}, found {NumProjects} projects.");
+					Project? activeProject = null;
+					ProjectAnimData? animData = null;
+					MotionData? motionData;
+					while ((expectedLine = reader.ReadLine()) != null)
 					{
-						projectNames.Add(Path.GetFileNameWithoutExtension(expectedLine));
 
-					}
-					else if (int.TryParse(expectedLine, out int numLines))
-					{
-						string projectName = projectNames[projectIndex].ToLower();
-						if (projectManager.ProjectLoaded(projectName)) activeProject = projectManager.LookupProject(projectName);
-						sectionIndex++;
-
-
-						if (sectionIndex % 2 != 0)
+						if (expectedLine.Contains(".txt"))
 						{
-							if (!ProjectAnimData.TryReadProject(reader, this, numLines, out animData))
-							{
-								for (int i = 0; i < numLines; i++)
-								{
-									reader.ReadLine();
-								}
-								projectIndex++;
-								sectionIndex++;
-								continue;
-							}
+							projectNames.Add(Path.GetFileNameWithoutExtension(expectedLine));
 
-							if (animData.Header.HasMotionData == 0)
-							{
-								projectIndex++;
-								sectionIndex++;
-							}
-							animDataList.Add(animData);
-							if (activeProject != null)
-							{
-								activeProject.AnimData = animData;
-							}
 						}
-						else
+						else if (int.TryParse(expectedLine, out int numLines))
 						{
-							if (!MotionData.TryReadProject(reader, numLines, out motionData))
+							string projectName = projectNames[projectIndex].ToLower();
+
+							if (projectManager.ProjectLoaded(projectName)) 
+								activeProject = projectManager.LookupProject(projectName);
+
+							sectionIndex++;
+
+							if (sectionIndex % 2 != 0)
 							{
-								projectIndex++;
-								continue;
+								if (!ProjectAnimData.TryReadProject(reader, this, numLines, out animData))
+								{
+									for (int i = 0; i < numLines; i++)
+									{
+										reader.ReadLine();
+									}
+									projectIndex++;
+									sectionIndex++;
+									continue;
+								}
+
+								if (animData.Header.HasMotionData == 0)
+								{
+									projectIndex++;
+									sectionIndex++;
+								}
+								animDataList.Add(animData);
+								if (activeProject != null)
+								{
+									activeProject.AnimData = animData;
+								}
 							}
-							if (animData != null) animData.BoundMotionDataProject = motionData;
+							else
+							{
+								if (!MotionData.TryReadProject(reader, numLines, out motionData))
+								{
+									projectIndex++;
+									continue;
+								}
+								if (animData != null) animData.BoundMotionDataProject = motionData;
 
 
-							motionDataList.Add(motionData);
-							projectIndex++;
+								motionDataList.Add(motionData);
+								projectIndex++;
+							}
 						}
 					}
 				}
 			}
+			MapAnimData();
+			logger.Info("Successfully split AnimData into projects and mapped.");
 		}
-		MapAnimData();
+		catch (FormatException ex)
+		{
+			logger.Error(ex, $"Invalid format while reading TemplateAnimData file {TemplateAnimDataSingleFile.Name}");
+		}
+		catch (IOException ex)
+		{
+			logger.Error(ex, $"I/O error while processing TemplateAnimData file {TemplateAnimDataSingleFile.Name}");
+		}
+		catch (Exception ex)
+		{
+			logger.Fatal(ex, $"Unexpected error while splitting TemplateAnimData from {TemplateAnimDataSingleFile.Name}");
+			throw;
+		}
 	}
 
 	public void MergeAnimDataSingleFile()
 	{
-		OutputAnimDataSingleFile.Directory?.Create();
-		using (var writeStream = OutputAnimDataSingleFile.Create())
+		try
 		{
-			using (var streamWriter = new StreamWriter(writeStream))
+			if (OutputAnimDataSingleFile.Directory != null && !OutputAnimDataSingleFile.Directory.Exists)
 			{
-				streamWriter.WriteLine(projectNames.Count);
-				foreach (var projectName in projectNames) { streamWriter.WriteLine($"{projectName}.txt"); }
+				OutputAnimDataSingleFile.Directory.Create();
+				logger.Debug($"Created directory for OutputAnimData output");
+			}
+
+			using (var writeStream = OutputAnimDataSingleFile.Create())
+			using (var writer = new StreamWriter(writeStream))
+			{
+				writer.WriteLine(projectNames.Count);
+				logger.Info($"Merging {projectNames.Count} projects into OutputAnimData file");
+
+				foreach (var projectName in projectNames)
+				{
+					writer.WriteLine($"{projectName}.txt");
+				}
 
 				for (int i = 0; i < projectNames.Count; i++)
 				{
 					var animData = animDataList[i];
 					var motionData = animData.BoundMotionDataProject;
 
-					streamWriter.WriteLine(animData.GetLineCount());
-					streamWriter.WriteLine(animData.ToString());
+					writer.WriteLine(animData.GetLineCount());
+					writer.WriteLine(animData.ToString());
 
 					if (motionData == null) continue;
 
-					streamWriter.WriteLine(motionData.GetLineCount());
-					streamWriter.WriteLine(motionData.ToString());
+					writer.WriteLine(motionData.GetLineCount());
+					writer.WriteLine(motionData.ToString());
 				}
 			}
-		}
 
+			logger.Info($"Successfully merged OutputAnimData file");
+		}
+		catch (IOException ex)
+		{
+			logger.Error(ex, $"I/O error while writing OutputAnimData file");
+		}
+		catch (Exception ex)
+		{
+			logger.Fatal(ex, $"Unexpected error while merging OutputAnimData file");
+			throw;
+		}
 	}
 }

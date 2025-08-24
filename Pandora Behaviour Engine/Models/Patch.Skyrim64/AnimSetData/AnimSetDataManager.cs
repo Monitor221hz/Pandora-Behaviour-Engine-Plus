@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
+using NLog;
 using Pandora.Models.Extensions;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,8 @@ namespace Pandora.Models.Patch.Skyrim64.AnimSetData;
 
 public class AnimSetDataManager
 {
+	private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
 	private const string ANIMSETDATA_FILENAME = "animationsetdatasinglefile.txt";
 	private const string VANILLA_HKXPATHS_FILENAME = "vanilla_hkxpaths.txt";
 
@@ -44,59 +47,99 @@ public class AnimSetDataManager
 
 	public bool SplitAnimSetDataSingleFile()
 	{
-		using (var readStream = TemplateAnimSetDataSingleFile.OpenRead())
+		try
 		{
-			using (var reader = new StreamReader(readStream))
+			using (var readStream = TemplateAnimSetDataSingleFile.OpenRead())
 			{
-				int NumProjects = int.Parse(reader.ReadLine()!);
-				for (int i = 0; i < NumProjects; i++)
+				using (var reader = new StreamReader(readStream))
 				{
-					projectPaths.Add(reader.ReadLineOrEmpty());
+					int NumProjects = int.Parse(reader.ReadLine()!);
+					for (int i = 0; i < NumProjects; i++)
+					{
+						projectPaths.Add(reader.ReadLineOrEmpty());
+					}
+
+					for (int i = 0; i < NumProjects; i++)
+					{
+						if (!ProjectAnimSetData.TryRead(reader, out var animSetData)) { return false; }
+						animSetDataList.Add(animSetData);
+						AnimSetDataMap.Add(Path.GetFileNameWithoutExtension(projectPaths[i]), animSetData);
+
+						//#if DEBUG
+						//						FileInfo animDataFile = new FileInfo($"{outputFolder.FullName}\\animsetdata\\{(Path.GetFileName(projectPaths[i]))}");
+						//						if (animDataFile.Exists) { animDataFile.Delete(); }
+						//						if (!(animDataFile.Directory!.Exists)) { animDataFile.Directory.Create(); }
+						//						using (var stream = animDataFile.OpenWrite())
+						//						{
+						//							using (var writer = new StreamWriter(stream))
+						//							{
+						//								writer.Write(animSetDataList[i]);
+						//							}
+						//						}
+
+						//#endif
+
+					}
+
 				}
-
-				for (int i = 0; i < NumProjects; i++)
-				{
-					if (!ProjectAnimSetData.TryRead(reader, out var animSetData)) { return false; }
-					animSetDataList.Add(animSetData);
-					AnimSetDataMap.Add(Path.GetFileNameWithoutExtension(projectPaths[i]), animSetData);
-
-					//#if DEBUG
-					//						FileInfo animDataFile = new FileInfo($"{outputFolder.FullName}\\animsetdata\\{(Path.GetFileName(projectPaths[i]))}");
-					//						if (animDataFile.Exists) { animDataFile.Delete(); }
-					//						if (!(animDataFile.Directory!.Exists)) { animDataFile.Directory.Create(); }
-					//						using (var stream = animDataFile.OpenWrite())
-					//						{
-					//							using (var writer = new StreamWriter(stream))
-					//							{
-					//								writer.Write(animSetDataList[i]);
-					//							}
-					//						}
-
-					//#endif
-
-				}
-
 			}
+			Logger.Info("Successfully split TemplateAnimSetData into individual entries.");
+			return true;
 		}
-		return true;
+		catch (FormatException ex)
+		{
+			Logger.Error(ex, $"Invalid format while reading {TemplateAnimSetDataSingleFile.Name}");
+			return false;
+		}
+		catch (IOException ex)
+		{
+			Logger.Error(ex, $"I/O error while processing {TemplateAnimSetDataSingleFile.Name}");
+			return false;
+		}
+		catch (Exception ex)
+		{
+			Logger.Fatal(ex, $"Unexpected error while splitting TemplateAnimSetData from {TemplateAnimSetDataSingleFile.Name}");
+			throw;
+		}
 	}
 
 	public void MergeAnimSetDataSingleFile()
 	{
-		if (OutputAnimSetDataSingleFile.Directory != null && !OutputAnimSetDataSingleFile.Directory.Exists) 
-			OutputAnimSetDataSingleFile.Directory.Create();
-
-		using (var writeStream = OutputAnimSetDataSingleFile.Create())
+		try
 		{
+			if (OutputAnimSetDataSingleFile.Directory != null && !OutputAnimSetDataSingleFile.Directory.Exists)
+			{
+				OutputAnimSetDataSingleFile.Directory.Create();
+				Logger.Debug($"Created directory for OutputAnimSetData output");
+			}
+
+			using (var writeStream = OutputAnimSetDataSingleFile.Create())
 			using (var writer = new StreamWriter(writeStream))
 			{
 				writer.WriteLine(projectPaths.Count);
-				foreach (var projectPath in projectPaths) { writer.WriteLine(projectPath); }
+				Logger.Info($"Merging {projectPaths.Count} projects into OutputAnimSetData file");
+
+				foreach (var projectPath in projectPaths)
+				{
+					writer.WriteLine(projectPath);
+				}
+
 				foreach (ProjectAnimSetData animSetData in animSetDataList)
 				{
 					writer.Write(animSetData);
 				}
 			}
+
+			Logger.Info($"Successfully merged OutputAnimSetData file");
+		}
+		catch (IOException ex)
+		{
+			Logger.Error(ex, $"I/O error while writing OutputAnimSetData file");
+		}
+		catch (Exception ex)
+		{
+			Logger.Fatal(ex, $"Unexpected error while merging AnimSetData file");
+			throw;
 		}
 	}
 }
