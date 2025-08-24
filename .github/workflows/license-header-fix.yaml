@@ -12,7 +12,8 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-          ref: ${{ github.head_ref || github.ref_name }}
+          repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
+          ref: ${{ github.event.pull_request.head.ref || github.ref_name }}
 
       - name: fix headers
         uses: apache/skywalking-eyes/header@v0.7.0
