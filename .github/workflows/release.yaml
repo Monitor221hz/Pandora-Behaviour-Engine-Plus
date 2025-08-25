@@ -87,18 +87,18 @@ jobs:
             output-dir: Output.Win-Arm64
 
           # Linux targets
-          - rid: linux-x64
-            runner: windows-latest
-            output-dir: Output.Linux-x64
-          - rid: linux-arm
-            runner: windows-latest
-            output-dir: Output.Linux-Arm
-          - rid: linux-arm64
-            runner: windows-latest
-            output-dir: Output.Linux-Arm64
-          - rid: linux-musl-x64
-            runner: windows-latest
-            output-dir: Output.Linux-Musl-x64
+          # - rid: linux-x64
+          #   runner: windows-latest
+          #   output-dir: Output.Linux-x64
+          # - rid: linux-arm
+          #   runner: windows-latest
+          #   output-dir: Output.Linux-Arm
+          # - rid: linux-arm64
+          #   runner: windows-latest
+          #   output-dir: Output.Linux-Arm64
+          # - rid: linux-musl-x64
+          #   runner: windows-latest
+          #   output-dir: Output.Linux-Musl-x64
 
     steps:
       - uses: actions/checkout@v4
