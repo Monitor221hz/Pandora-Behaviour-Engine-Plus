@@ -10,7 +10,6 @@ using Pandora.Logging;
 using Pandora.Utils;
 using Pandora.ViewModels;
 using Pandora.Views;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 
@@ -32,7 +31,7 @@ public partial class App : Application
 		if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
 		{
 			LaunchOptions.Parse(desktop.Args, caseInsensitive: true);
-			SetupNLogConfigForSingleFilePublish();
+			SetupNLogConfig();
 			// Line below is needed to remove Avalonia data validation.
 			// Without this line you will get duplicate validations from both Avalonia and CT
 			BindingPlugins.DataValidators.RemoveAt(0);
@@ -63,18 +62,21 @@ public partial class App : Application
 			_ => ThemeVariant.Default
 		};
 	}
-	private static void SetupNLogConfigForSingleFilePublish()
+	private static void SetupNLogConfig()
 	{
-		var configPath = Path.Combine(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName), "NLog.config");
-		var config = new NLog.Config.XmlLoggingConfiguration(configPath);
+		var config = new NLog.Config.LoggingConfiguration();
 
-		var fileTarget = config.FindTargetByName<NLog.Targets.FileTarget>("Engine Log");
-		if (fileTarget != null)
+		var fileTarget = new NLog.Targets.FileTarget("Engine Log")
 		{
-			fileTarget.FileName = NLog.Layouts.Layout.FromString(Path.Combine(PandoraPaths.OutputPath.FullName, "Engine.log"));
-		}
+			FileName = Path.Combine(PandoraPaths.OutputPath.FullName, "Engine.log"),
+			DeleteOldFileOnStartup = true,
+			Layout = "${level:uppercase=true} : ${message}"
+		};
+
+		config.AddTarget(fileTarget);
+		config.AddRule(NLog.LogLevel.Trace, NLog.LogLevel.Fatal, fileTarget);
 
 		NLog.LogManager.Configuration = config;
-
 	}
+
 }
