@@ -2,13 +2,20 @@
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
 using Microsoft.Win32;
+using NSubstitute;
 using Pandora.Utils;
+using Pandora.Utils.Platform.Windows;
+using Pandora.Utils.Skyrim;
+using System.Runtime.Versioning;
 
 namespace PandoraTests;
 
+[SupportedOSPlatform("windows")]
 public class SkyrimPathResolverPriorityTests : IDisposable
 {
     private readonly ITestOutputHelper _output;
+    private readonly IRuntimeEnvironment _mockEnvironment;
+    private readonly IRegistry _mockRegistry;
 
     public readonly DirectoryInfo PrimaryValidSkyrimDir;
     public readonly string PrimaryValidDataPath;
@@ -17,31 +24,29 @@ public class SkyrimPathResolverPriorityTests : IDisposable
     public readonly string SecondaryValidDataPath;
 
     public readonly DirectoryInfo InvalidDir;
-    private readonly string _originalCurrentDirectory;
-    public const string TestRegistrySubKey = @"SOFTWARE\PandoraTest\Skyrim Special Edition";
 
     public SkyrimPathResolverPriorityTests(ITestOutputHelper output)
     {
         _output = output;
-
-        _originalCurrentDirectory = Environment.CurrentDirectory;
+        _mockRegistry = Substitute.For<IRegistry>();
+        _mockEnvironment = Substitute.For<IRuntimeEnvironment>();
 
         // 1. Primary valid path
-        var primaryRoot = Path.Combine(Path.GetTempPath(), $"Skyrim SE");
+        var primaryRoot = Path.Combine(Path.GetTempPath(), "Skyrim SE");
         PrimaryValidSkyrimDir = new DirectoryInfo(primaryRoot);
         PrimaryValidDataPath = Path.Combine(primaryRoot, "Data");
         Directory.CreateDirectory(PrimaryValidDataPath);
         File.Create(Path.Combine(primaryRoot, "SkyrimSE.exe")).Close();
 
         // 2. Secondary valid path
-        var secondaryRoot = Path.Combine(Path.GetTempPath(), $"Skyrim");
+        var secondaryRoot = Path.Combine(Path.GetTempPath(), "Skyrim");
         SecondaryValidSkyrimDir = new DirectoryInfo(secondaryRoot);
         SecondaryValidDataPath = Path.Combine(secondaryRoot, "Data");
         Directory.CreateDirectory(SecondaryValidDataPath);
         File.Create(Path.Combine(secondaryRoot, "SkyrimSELauncher.exe")).Close();
 
         // 3. Invalid path without .exe
-        var invalidRoot = Path.Combine(Path.GetTempPath(), $"Fallout");
+        var invalidRoot = Path.Combine(Path.GetTempPath(), "Fallout");
         InvalidDir = new DirectoryInfo(Path.Combine(invalidRoot, "Data"));
         Directory.CreateDirectory(InvalidDir.FullName);
     }
@@ -51,16 +56,18 @@ public class SkyrimPathResolverPriorityTests : IDisposable
     public void Resolve_Should_PrioritizeCommandLineArgs()
     {
         LaunchOptions.Parse(["--tesv", PrimaryValidSkyrimDir.FullName], caseInsensitive: true);
-        Environment.CurrentDirectory = SecondaryValidSkyrimDir.FullName;
+        _mockEnvironment.CurrentDirectory.Returns(SecondaryValidSkyrimDir.FullName);
         SetRegistryPath(InvalidDir.FullName);
+        var sut = new SkyrimPathResolver(_mockEnvironment, _mockRegistry);
 
         _output.WriteLine($"Args: {PrimaryValidSkyrimDir.FullName}");
-        _output.WriteLine($"Current Dir: {Environment.CurrentDirectory}");
+        _output.WriteLine($"Current Dir: {_mockEnvironment.CurrentDirectory}");
         _output.WriteLine($"Registry: {InvalidDir.FullName}");
 
-        var result = SkyrimPathResolver.Resolve();
+        var result = sut.Resolve();
 
         _output.WriteLine($"\nResolved path: {result.FullName}");
+
         Assert.Equal(PrimaryValidDataPath, result.FullName);
     }
 
@@ -68,16 +75,18 @@ public class SkyrimPathResolverPriorityTests : IDisposable
     public void Resolve_Should_PrioritizeStartIn_When_ArgsAreMissing()
     {
         LaunchOptions.Current = null;
-        Environment.CurrentDirectory = PrimaryValidSkyrimDir.FullName;
+        _mockEnvironment.CurrentDirectory.Returns(PrimaryValidSkyrimDir.FullName);
         SetRegistryPath(SecondaryValidSkyrimDir.FullName);
+        var sut = new SkyrimPathResolver(_mockEnvironment, _mockRegistry);
 
-        _output.WriteLine($"Args: <null>");
-        _output.WriteLine($"Current Dir: {Environment.CurrentDirectory}");
+        _output.WriteLine("Args: <null>");
+        _output.WriteLine($"Current Dir: {_mockEnvironment.CurrentDirectory}");
         _output.WriteLine($"Registry: {SecondaryValidSkyrimDir.FullName}");
 
-        var result = SkyrimPathResolver.Resolve();
+        var result = sut.Resolve();
 
         _output.WriteLine($"\nResolved path: {result.FullName}");
+
         Assert.Equal(PrimaryValidDataPath, result.FullName);
     }
 
@@ -85,33 +94,18 @@ public class SkyrimPathResolverPriorityTests : IDisposable
     public void Resolve_Should_UseRegistry_When_ArgsAndCurrentDirAreInvalid()
     {
         LaunchOptions.Current = null;
-        Environment.CurrentDirectory = InvalidDir.FullName;
-
+        _mockEnvironment.CurrentDirectory.Returns(InvalidDir.FullName);
         SetRegistryPath(PrimaryValidSkyrimDir.FullName);
+        var sut = new SkyrimPathResolver(_mockEnvironment, _mockRegistry);
 
-        SkyrimPathResolver.PathProvider registryProvider = () => SkyrimPathResolver.TryGetDataPathFromRegistry(
-            Registry.CurrentUser,
-            TestRegistrySubKey
-        );
-
-        SkyrimPathResolver.PathProvider[] providers =
-        [
-            () => null,
-            () => InvalidDir,
-            registryProvider 
-        ];
-
-        _output.WriteLine($"Args: <null>");
-        _output.WriteLine($"Current Dir: {Environment.CurrentDirectory}");
+        _output.WriteLine("Args: <null>");
+        _output.WriteLine($"Current Dir: {_mockEnvironment.CurrentDirectory}");
         _output.WriteLine($"Registry: {PrimaryValidSkyrimDir.FullName}");
 
-        var result = providers
-            .Select(provider => provider())
-            .FirstOrDefault(SkyrimPathResolver.IsValidSkyrimDataDirectory);
+        var result = sut.Resolve();
 
         _output.WriteLine($"\nResolved path: {result.FullName}");
 
-        Assert.NotNull(result);
         Assert.Equal(PrimaryValidDataPath, result.FullName);
     }
 
@@ -119,41 +113,35 @@ public class SkyrimPathResolverPriorityTests : IDisposable
     public void Resolve_Should_ReturnCurrentDirectory_When_NoValidPathIsFound()
     {
         LaunchOptions.Current = null;
+        _mockEnvironment.CurrentDirectory.Returns(InvalidDir.FullName);
+        var sut = new SkyrimPathResolver(_mockEnvironment, registry: null);
 
-        Environment.CurrentDirectory = InvalidDir.FullName;
+        _output.WriteLine("Args: <null>");
+        _output.WriteLine($"Current Dir set to: {_mockEnvironment.CurrentDirectory}");
+        _output.WriteLine("Registry is empty.");
 
-        ClearRegistryPath();
-
-        _output.WriteLine($"Args: <null>");
-        _output.WriteLine($"Current Dir set to: {Environment.CurrentDirectory}");
-        _output.WriteLine($"Registry is empty.");
-
-        var result = SkyrimPathResolver.Resolve();
+        var result = sut.Resolve();
 
         _output.WriteLine($"\nResolved path: {result.FullName}");
 
         Assert.Equal(InvalidDir.FullName, result.FullName);
     }
 
-    public void SetRegistryPath(string path)
+    private void SetRegistryPath(string path)
     {
-        using var key = Registry.CurrentUser.CreateSubKey(TestRegistrySubKey, true);
-        key.SetValue("Installed Path", path);
+        _mockRegistry.GetValue(Arg.Any<RegistryKey>(), SkyrimPathResolver.RegistrySubKey, SkyrimPathResolver.RegistryValueName).Returns(path);
     }
 
-    public void ClearRegistryPath()
-    {
-        using var key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\PandoraTest", true);
-        key?.DeleteSubKeyTree("Skyrim Special Edition", false);
-    }
     public void Dispose()
     {
-        Environment.CurrentDirectory = _originalCurrentDirectory;
         LaunchOptions.Current = null;
-        ClearRegistryPath();
 
         if (Directory.Exists(PrimaryValidSkyrimDir.FullName)) Directory.Delete(PrimaryValidSkyrimDir.FullName, true);
         if (Directory.Exists(SecondaryValidSkyrimDir.FullName)) Directory.Delete(SecondaryValidSkyrimDir.FullName, true);
         if (Directory.Exists(InvalidDir.FullName)) Directory.Delete(InvalidDir.FullName, true);
+        
+        GC.SuppressFinalize(this);
     }
+
+    ~SkyrimPathResolverPriorityTests() => Dispose();
 }

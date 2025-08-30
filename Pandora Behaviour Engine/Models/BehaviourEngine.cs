@@ -6,10 +6,13 @@ using Pandora.API.Patch.Engine.Config;
 using Pandora.Models.Patch.Configs;
 using Pandora.Models.Patch.Plugins;
 using Pandora.Utils;
+using Pandora.Utils.Platform.Windows;
+using Pandora.Utils.Skyrim;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace Pandora.Models;
@@ -40,7 +43,10 @@ public class BehaviourEngine
 	static BehaviourEngine()
 	{
 		PluginManager.LoadAllPlugins(AssemblyDirectory);
-		SkyrimGameDirectory = SkyrimPathResolver.Resolve();
+		var runtimeEnvironment = new PandoraRuntimeEnvironment();
+		var registry = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? new WindowsRegistry() : null;
+		var skyrimPathResolver = new SkyrimPathResolver(runtimeEnvironment, registry);
+		SkyrimGameDirectory = skyrimPathResolver.Resolve();
 	}
 
 	public BehaviourEngine()
