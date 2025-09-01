@@ -45,7 +45,8 @@ public class BehaviourEngine
 		PluginManager.LoadAllPlugins(AssemblyDirectory);
 		var runtimeEnvironment = new PandoraRuntimeEnvironment();
 		var registry = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? new WindowsRegistry() : null;
-		var skyrimPathResolver = new SkyrimPathResolver(runtimeEnvironment, registry);
+		var fileSystem = new SystemIOFileSystem();
+		var skyrimPathResolver = new SkyrimPathResolver(runtimeEnvironment, registry, fileSystem);
 		SkyrimGameDirectory = skyrimPathResolver.Resolve();
 	}
 

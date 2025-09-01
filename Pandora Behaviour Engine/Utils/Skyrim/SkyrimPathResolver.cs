@@ -31,12 +31,14 @@ public sealed class SkyrimPathResolver
 
 	private readonly IRuntimeEnvironment _environment;
 	private readonly IRegistry? _registry;
+	private readonly IFileSystem _fileSystem;
 	private readonly DirectoryInfo _currentDirectory;
 
-	public SkyrimPathResolver(IRuntimeEnvironment environment, IRegistry? registry)
+	public SkyrimPathResolver(IRuntimeEnvironment environment, IRegistry? registry, IFileSystem fileSystem)
 	{
 		_environment = environment;
 		_registry = registry;
+		_fileSystem = fileSystem;
 		_currentDirectory = new DirectoryInfo(_environment.CurrentDirectory);
 	}
 
@@ -142,20 +144,22 @@ public sealed class SkyrimPathResolver
 		return null;
 	}
 
-	public static bool IsValidSkyrimDataDirectory([NotNullWhen(true)] DirectoryInfo? dataDirectory)
+	public bool IsValidSkyrimDataDirectory([NotNullWhen(true)] DirectoryInfo? dataDirectory)
 	{
-		if (dataDirectory is null || !dataDirectory.Exists)
+		if (dataDirectory is null || !_fileSystem.DirectoryExists(dataDirectory.FullName))
 			return false;
 
-		if (!dataDirectory.Name.Equals("Data", StringComparison.OrdinalIgnoreCase))
+		if (!_fileSystem.GetFileName(dataDirectory.FullName).Equals("Data", StringComparison.OrdinalIgnoreCase))
 			return false;
 
-		var gameRoot = dataDirectory.Parent;
-		if (gameRoot is null || !gameRoot.Exists)
+		var gameRootPath = _fileSystem.GetParentDirectoryPath(dataDirectory.FullName);
+		if (gameRootPath is null || !_fileSystem.DirectoryExists(gameRootPath))
 			return false;
 
-		return File.Exists(Path.Combine(gameRoot.FullName, "SkyrimSE.exe")) ||
-			   File.Exists(Path.Combine(gameRoot.FullName, "SkyrimSELauncher.exe"));
+		var exePath = _fileSystem.Combine(gameRootPath, "SkyrimSE.exe");
+		var launcherPath = _fileSystem.Combine(gameRootPath, "SkyrimSELauncher.exe");
+
+		return _fileSystem.FileExists(exePath) || _fileSystem.FileExists(launcherPath);
 	}
 
 	private static DirectoryInfo NormalizeToDataDirectory(DirectoryInfo directory)

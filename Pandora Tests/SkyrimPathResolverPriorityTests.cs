@@ -3,7 +3,7 @@
 
 using Microsoft.Win32;
 using NSubstitute;
-using Pandora.Utils;
+using Pandora.Utils; 
 using Pandora.Utils.Platform.Windows;
 using Pandora.Utils.Skyrim;
 using System.Runtime.Versioning;
@@ -16,114 +16,137 @@ public class SkyrimPathResolverPriorityTests : IDisposable
     private readonly ITestOutputHelper _output;
     private readonly IRuntimeEnvironment _mockEnvironment;
     private readonly IRegistry _mockRegistry;
+    private readonly IFileSystem _mockFileSystem;
 
-    private readonly DirectoryInfo _primaryValidSkyrimDir;
+    private readonly string _primaryValidSkyrimRoot;
     private readonly string _primaryValidDataPath;
-
-    private readonly DirectoryInfo _secondaryValidSkyrimDir;
-
-    private readonly DirectoryInfo _invalidDir;
+    private readonly string _secondaryValidSkyrimRoot;
+    private readonly string _secondaryValidDataPath;
+    private readonly string _invalidRoot;
+    private readonly string _invalidDataPath;
 
     public SkyrimPathResolverPriorityTests(ITestOutputHelper output)
     {
         _output = output;
         _mockRegistry = Substitute.For<IRegistry>();
         _mockEnvironment = Substitute.For<IRuntimeEnvironment>();
+        _mockFileSystem = Substitute.For<IFileSystem>();
+
+        _primaryValidSkyrimRoot = Path.Combine(Path.GetTempPath(), $"SkyrimSE-{Guid.NewGuid()}");
+        _primaryValidDataPath = Path.Combine(_primaryValidSkyrimRoot, "Data");
+
+        _secondaryValidSkyrimRoot = Path.Combine(Path.GetTempPath(), $"Skyrim-{Guid.NewGuid()}");
+        _secondaryValidDataPath = Path.Combine(_secondaryValidSkyrimRoot, "Data");
+
+        _invalidRoot = Path.Combine(Path.GetTempPath(), $"Fallout-{Guid.NewGuid()}");
+        _invalidDataPath = Path.Combine(_invalidRoot, "Data");
+
+        _mockFileSystem.Combine(Arg.Any<string[]>()).Returns(callInfo => Path.Combine(callInfo.Arg<string[]>()));
+        _mockFileSystem.GetFileName(Arg.Any<string>()).Returns(callInfo => Path.GetFileName(callInfo.Arg<string>()));
 
         // 1. Primary valid path
-        var primaryRoot = Path.Combine(Path.GetTempPath(), "Skyrim SE");
-        _primaryValidSkyrimDir = new DirectoryInfo(primaryRoot);
-        _primaryValidDataPath = Path.Combine(primaryRoot, "Data");
-        Directory.CreateDirectory(_primaryValidDataPath);
-        File.Create(Path.Combine(primaryRoot, "SkyrimSE.exe")).Close();
+        SetupValidPath(_primaryValidSkyrimRoot, _primaryValidDataPath, hasExe: true, hasLauncher: false);
 
         // 2. Secondary valid path
-        var secondaryRoot = Path.Combine(Path.GetTempPath(), "Skyrim");
-        _secondaryValidSkyrimDir = new DirectoryInfo(secondaryRoot);
-        var secondaryValidDataPath = Path.Combine(secondaryRoot, "Data");
-        Directory.CreateDirectory(secondaryValidDataPath);
-        File.Create(Path.Combine(secondaryRoot, "SkyrimSELauncher.exe")).Close();
+        SetupValidPath(_secondaryValidSkyrimRoot, _secondaryValidDataPath, hasExe: false, hasLauncher: true);
 
         // 3. Invalid path without .exe
-        var invalidRoot = Path.Combine(Path.GetTempPath(), "Fallout");
-        _invalidDir = new DirectoryInfo(Path.Combine(invalidRoot, "Data"));
-        Directory.CreateDirectory(_invalidDir.FullName);
+        SetupValidPath(_invalidRoot, _invalidDataPath, hasExe: false, hasLauncher: false);
+    }
+
+    private void SetupValidPath(string rootPath, string dataPath, bool hasExe, bool hasLauncher)
+    {
+        _mockFileSystem.DirectoryExists(dataPath).Returns(true);
+        _mockFileSystem.GetParentDirectoryPath(dataPath).Returns(rootPath);
+        _mockFileSystem.DirectoryExists(rootPath).Returns(true);
+        _mockFileSystem.FileExists(Path.Combine(rootPath, "SkyrimSE.exe")).Returns(hasExe);
+        _mockFileSystem.FileExists(Path.Combine(rootPath, "SkyrimSELauncher.exe")).Returns(hasLauncher);
     }
 
 
-    [Fact(DisplayName = "Priority 1: Command line arguments (--tesv)")]
-    public void Resolve_Should_PrioritizeCommandLineArgs()
+    public static TheoryData<string, string?, string, string?, string> TestScenarios
     {
-        LaunchOptions.Parse(["--tesv", _primaryValidSkyrimDir.FullName], caseInsensitive: true);
-        _mockEnvironment.CurrentDirectory.Returns(_secondaryValidSkyrimDir.FullName);
-        SetRegistryPath(_invalidDir.FullName);
-        var sut = new SkyrimPathResolver(_mockEnvironment, _mockRegistry);
+        get
+        {
+            using var fixture = new SkyrimPathResolverPriorityTests(Substitute.For<ITestOutputHelper>());
 
-        _output.WriteLine($"Args: {_primaryValidSkyrimDir.FullName}");
-        _output.WriteLine($"Current Dir: {_mockEnvironment.CurrentDirectory}");
-        _output.WriteLine($"Registry: {_invalidDir.FullName}");
-
-        var result = sut.Resolve();
-
-        _output.WriteLine($"\nResolved path: {result.FullName}");
-
-        Assert.Equal(_primaryValidDataPath, result.FullName);
+            return new TheoryData<string, string?, string, string?, string>
+            {
+                {
+                    "Priority 1: Command line arguments (--tesv)",
+                    fixture._primaryValidSkyrimRoot,                // Command line arg (top priority)
+                    fixture._secondaryValidSkyrimRoot,              // Current directory
+                    fixture._invalidRoot,                           // Path registry
+                    fixture._primaryValidDataPath                   // Expected behavior
+                },
+                {
+                    "Priority 2: Current directory (Start In)",
+                    null,                                           // Command line arg (none)
+                    fixture._primaryValidSkyrimRoot,                // Current directory (top priority)
+                    fixture._secondaryValidSkyrimRoot,              // Path registry
+                    fixture._primaryValidDataPath                   // Expected behavior
+                },
+                {
+                    "Priority 3: Registry",
+                    null,                                           // Command line args (none)
+                    fixture._invalidRoot,                           // Current directory (invalid)
+                    fixture._primaryValidSkyrimRoot,                // Path registry (top priority)
+                    fixture._primaryValidDataPath                   // Expected behavior
+                },
+                {
+                    "Extreme case: Nothing found",
+                    null,                                           // Command line args (none)
+                    fixture._invalidDataPath,                       // Current directory (invalid)
+                    null,                                           // Path registry (none)
+                    fixture._invalidDataPath                        // Expected behavior: return Current Directory
+                }
+            };
+        }
     }
 
-    [Fact(DisplayName = "Priority 2: Current directory (Start In)")]
-    public void Resolve_Should_PrioritizeStartIn_When_ArgsAreMissing()
-    {
-        LaunchOptions.Current = null;
-        _mockEnvironment.CurrentDirectory.Returns(_primaryValidSkyrimDir.FullName);
-        SetRegistryPath(_secondaryValidSkyrimDir.FullName);
-        var sut = new SkyrimPathResolver(_mockEnvironment, _mockRegistry);
 
-        _output.WriteLine("Args: <null>");
-        _output.WriteLine($"Current Dir: {_mockEnvironment.CurrentDirectory}");
-        _output.WriteLine($"Registry: {_secondaryValidSkyrimDir.FullName}");
+    [Theory(DisplayName = "Resolve_ReturnCorrectPath_BasedOnPriority")]
+    [MemberData(nameof(TestScenarios))]
+    public void Resolve_ReturnCorrectPath_BasedOnPriority(
+        string scenario, string? commandLinePath, string currentDirectory, string? registryPath, string expectedPath)
+    {
+        _output.WriteLine($"--- Running scenario: {scenario} ---");
+
+        // 1. Setting command line arguments
+        if (commandLinePath is not null)
+        {
+            LaunchOptions.Parse(["--tesv", commandLinePath], caseInsensitive: true);
+            _output.WriteLine($"Args: {commandLinePath}");
+        }
+        else
+        {
+            LaunchOptions.Current = null;
+            _output.WriteLine("Args: <null>");
+        }
+
+        // 2. Setting Current Directory
+        _mockEnvironment.CurrentDirectory.Returns(currentDirectory);
+        _output.WriteLine($"Current Dir: {currentDirectory}");
+
+        // 3. Setting Path Registry
+        IRegistry? registryToUse = null;
+        if (registryPath is not null)
+        {
+            SetRegistryPath(registryPath);
+            registryToUse = _mockRegistry;
+            _output.WriteLine($"Registry: {registryPath}");
+        }
+        else
+        {
+            _output.WriteLine("Registry: <null>");
+        }
+
+        var sut = new SkyrimPathResolver(_mockEnvironment, registryToUse, _mockFileSystem);
 
         var result = sut.Resolve();
-
         _output.WriteLine($"\nResolved path: {result.FullName}");
 
-        Assert.Equal(_primaryValidDataPath, result.FullName);
-    }
-
-    [Fact(DisplayName = "Priority 3: Registry")]
-    public void Resolve_Should_UseRegistry_When_ArgsAndCurrentDirAreInvalid()
-    {
-        LaunchOptions.Current = null;
-        _mockEnvironment.CurrentDirectory.Returns(_invalidDir.FullName);
-        SetRegistryPath(_primaryValidSkyrimDir.FullName);
-        var sut = new SkyrimPathResolver(_mockEnvironment, _mockRegistry);
-
-        _output.WriteLine("Args: <null>");
-        _output.WriteLine($"Current Dir: {_mockEnvironment.CurrentDirectory}");
-        _output.WriteLine($"Registry: {_primaryValidSkyrimDir.FullName}");
-
-        var result = sut.Resolve();
-
-        _output.WriteLine($"\nResolved path: {result.FullName}");
-
-        Assert.Equal(_primaryValidDataPath, result.FullName);
-    }
-
-    [Fact(DisplayName = "Extreme case: Nothing found")]
-    public void Resolve_Should_ReturnCurrentDirectory_When_NoValidPathIsFound()
-    {
-        LaunchOptions.Current = null;
-        _mockEnvironment.CurrentDirectory.Returns(_invalidDir.FullName);
-        var sut = new SkyrimPathResolver(_mockEnvironment, registry: null);
-
-        _output.WriteLine("Args: <null>");
-        _output.WriteLine($"Current Dir set to: {_mockEnvironment.CurrentDirectory}");
-        _output.WriteLine("Registry is empty.");
-
-        var result = sut.Resolve();
-
-        _output.WriteLine($"\nResolved path: {result.FullName}");
-
-        Assert.Equal(_invalidDir.FullName, result.FullName);
+        Assert.Equal(expectedPath, result.FullName);
     }
 
     private void SetRegistryPath(string path)
@@ -134,10 +157,6 @@ public class SkyrimPathResolverPriorityTests : IDisposable
     public void Dispose()
     {
         LaunchOptions.Current = null;
-
-        if (Directory.Exists(_primaryValidSkyrimDir.FullName)) Directory.Delete(_primaryValidSkyrimDir.FullName, true);
-        if (Directory.Exists(_secondaryValidSkyrimDir.FullName)) Directory.Delete(_secondaryValidSkyrimDir.FullName, true);
-        if (Directory.Exists(_invalidDir.FullName)) Directory.Delete(_invalidDir.FullName, true);
         
         GC.SuppressFinalize(this);
     }
