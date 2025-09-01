@@ -18,11 +18,11 @@ public class SkyrimPathResolverPriorityTests : IDisposable
     private readonly IRegistry _mockRegistry;
     private readonly IFileSystem _mockFileSystem;
 
-    private static readonly string _primaryValidSkyrimRoot = Path.Combine(Path.GetTempPath(), $"SkyrimSE-{Guid.NewGuid()}");
+    private static readonly string _primaryValidSkyrimRoot = Path.Combine(Path.GetTempPath(), "Skyrim SE");
     private static readonly string _primaryValidDataPath = Path.Combine(_primaryValidSkyrimRoot, "Data");
-    private static readonly string _secondaryValidSkyrimRoot = Path.Combine(Path.GetTempPath(), $"Skyrim-{Guid.NewGuid()}");
+    private static readonly string _secondaryValidSkyrimRoot = Path.Combine(Path.GetTempPath(), "Skyrim");
     private static readonly string _secondaryValidDataPath = Path.Combine(_secondaryValidSkyrimRoot, "Data");
-    private static readonly string _invalidRoot = Path.Combine(Path.GetTempPath(), $"Fallout-{Guid.NewGuid()}");
+    private static readonly string _invalidRoot = Path.Combine(Path.GetTempPath(), "Fallout");
     private static readonly string _invalidDataPath = Path.Combine(_invalidRoot, "Data");
 
     public SkyrimPathResolverPriorityTests(ITestOutputHelper output)
