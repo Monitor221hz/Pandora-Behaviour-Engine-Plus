@@ -11,120 +11,36 @@ namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
 public class PackFileConcurrentCache : IPackFileCache
 {
-	private ConcurrentDictionary<string, PackFile> pathMap = new(StringComparer.OrdinalIgnoreCase);
-	private static readonly FileInfo PreviousOutputFile = new(Path.Combine(Environment.CurrentDirectory, "Pandora_Engine\\PreviousOutput.txt"));
+	private readonly ConcurrentDictionary<string, PackFile> _pathMap = new(StringComparer.OrdinalIgnoreCase);
+	private readonly Dictionary<PackFile, List<Project>> _sharedPackFileProjectMap = [];
 
-	private Dictionary<PackFile, List<Project>> sharedPackFileProjectMap = [];
 	public PackFileConcurrentCache() { }
-	public PackFile LoadPackFile(FileInfo file)
-	{
 
-		PackFile? packFile = null;
+	public PackFile LoadPackFile(FileInfo file) => 
+		_pathMap.GetOrAdd(file.FullName, _ => new PackFile(file));
 
-		lock (pathMap)
-		{
-			if (!pathMap.TryGetValue(file.FullName, out packFile))
-			{
-				packFile = new PackFile(file);
-				pathMap.TryAdd(file.FullName, packFile);
-			}
-		}
 
-		return packFile;
-	}
-	public PackFileGraph LoadPackFileGraph(FileInfo file)
-	{
-		PackFile? packFile = null;
-		lock (pathMap)
-		{
-			if (!pathMap.TryGetValue(file.FullName, out packFile))
-			{
-				packFile = new PackFileGraph(file);
-				pathMap.TryAdd(file.FullName, packFile);
-			}
-		}
+	public PackFileGraph LoadPackFileGraph(FileInfo file) =>
+		(PackFileGraph)_pathMap.GetOrAdd(file.FullName, _ => new PackFileGraph(file));
 
-		return (PackFileGraph)packFile;
-	}
+	public PackFileGraph LoadPackFileGraph(FileInfo file, Project project) => 
+		(PackFileGraph)_pathMap.GetOrAdd(file.FullName, _ => new PackFileGraph(file, project));
 
-	public PackFileGraph LoadPackFileGraph(FileInfo file, Project project)
-	{
-		PackFile? packFile = null;
-		lock (pathMap)
-		{
-			if (!pathMap.TryGetValue(file.FullName, out packFile))
-			{
-				packFile = new PackFileGraph(file, project);
-				pathMap.TryAdd(file.FullName, packFile);
 
-			}
-		}
+	public PackFileCharacter LoadPackFileCharacter(FileInfo file) => 
+		(PackFileCharacter)_pathMap.GetOrAdd(file.FullName, _ => new PackFileCharacter(file));
 
-		return (PackFileGraph)packFile;
-	}
+	public PackFileCharacter LoadPackFileCharacter(FileInfo file, Project project) => 
+		(PackFileCharacter)_pathMap.GetOrAdd(file.FullName, _ => new PackFileCharacter(file, project));
 
-	public PackFileCharacter LoadPackFileCharacter(FileInfo file)
-	{
-		PackFile? packFile = null;
-		lock (pathMap)
-		{
-			if (!pathMap.TryGetValue(file.FullName, out packFile))
-			{
-				packFile = new PackFileCharacter(file);
-				pathMap.TryAdd(file.FullName, packFile);
-			}
-		}
 
-		return (PackFileCharacter)packFile;
-	}
+	public PackFileSkeleton LoadPackFileSkeleton(FileInfo file) => 
+		(PackFileSkeleton)_pathMap.GetOrAdd(file.FullName, _ => new PackFileSkeleton(file));
 
-	public PackFileCharacter LoadPackFileCharacter(FileInfo file, Project project)
-	{
-		PackFile? packFile = null;
-		lock (pathMap)
-		{
-			if (!pathMap.TryGetValue(file.FullName, out packFile))
-			{
-				packFile = new PackFileCharacter(file, project);
-				pathMap.TryAdd(file.FullName, packFile);
-			}
-		}
+	public PackFileSkeleton LoadPackFileSkeleton(FileInfo file, Project project) => 
+		(PackFileSkeleton)_pathMap.GetOrAdd(file.FullName, _ => new PackFileSkeleton(file, project));
 
-		return (PackFileCharacter)packFile;
-	}
 
-	public PackFileSkeleton LoadPackFileSkeleton(FileInfo file)
-	{
-		PackFile? packFile = null;
-		lock (pathMap)
-		{
-			if (!pathMap.TryGetValue(file.FullName, out packFile))
-			{
-				packFile = new PackFileSkeleton(file);
-				pathMap.TryAdd(file.FullName, packFile);
-			}
-		}
-
-		return (PackFileSkeleton)packFile;
-	}
-
-	public PackFileSkeleton LoadPackFileSkeleton(FileInfo file, Project project)
-	{
-		PackFile? packFile = null;
-		lock (pathMap)
-		{
-			if (!pathMap.TryGetValue(file.FullName, out packFile))
-			{
-				packFile = new PackFileSkeleton(file, project);
-				pathMap.TryAdd(file.FullName, packFile);
-			}
-		}
-
-		return (PackFileSkeleton)packFile;
-	}
-
-	public bool TryLookupSharedProjects(PackFile packFile, [NotNullWhen(true)] out List<Project>? projects)
-	{
-		return sharedPackFileProjectMap.TryGetValue(packFile, out projects);
-	}
+	public bool TryLookupSharedProjects(PackFile packFile, [NotNullWhen(true)] out List<Project>? projects) => 
+		_sharedPackFileProjectMap.TryGetValue(packFile, out projects);
 }
