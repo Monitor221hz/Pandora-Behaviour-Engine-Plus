@@ -12,8 +12,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Abstractions;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Testably.Abstractions;
 
 namespace Pandora.Models;
 
@@ -45,9 +47,12 @@ public class BehaviourEngine
 		PluginManager.LoadAllPlugins(AssemblyDirectory);
 		var runtimeEnvironment = new PandoraRuntimeEnvironment();
 		var registry = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? new WindowsRegistry() : null;
-		var fileSystem = new SystemIOFileSystem();
+		var fileSystem = new RealFileSystem();
 		var skyrimPathResolver = new SkyrimPathResolver(runtimeEnvironment, registry, fileSystem);
-		SkyrimGameDirectory = skyrimPathResolver.Resolve();
+
+		IDirectoryInfo abstractSkyrimDir = skyrimPathResolver.Resolve();
+
+		SkyrimGameDirectory = new DirectoryInfo(abstractSkyrimDir.FullName);
 	}
 
 	public BehaviourEngine()

@@ -8,6 +8,7 @@ using Pandora.Utils.Platform.Windows;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Runtime.InteropServices;
 
@@ -27,19 +28,19 @@ public sealed class SkyrimPathResolver
 	public const string RegistrySubKey = @"SOFTWARE\Wow6432Node\Bethesda Softworks\Skyrim Special Edition";
 	public const string RegistryValueName = "Installed Path";
 
-	private delegate DirectoryInfo? PathProvider();
+	private delegate IDirectoryInfo? PathProvider();
 
 	private readonly IRuntimeEnvironment _environment;
 	private readonly IRegistry? _registry;
 	private readonly IFileSystem _fileSystem;
-	private readonly DirectoryInfo _currentDirectory;
+	private readonly IDirectoryInfo _currentDirectory;
 
 	public SkyrimPathResolver(IRuntimeEnvironment environment, IRegistry? registry, IFileSystem fileSystem)
 	{
 		_environment = environment;
 		_registry = registry;
 		_fileSystem = fileSystem;
-		_currentDirectory = new DirectoryInfo(_environment.CurrentDirectory);
+		_currentDirectory = _fileSystem.DirectoryInfo.New(_environment.CurrentDirectory);
 	}
 
 	/// <summary>
@@ -50,7 +51,7 @@ public sealed class SkyrimPathResolver
 	/// A <see cref="DirectoryInfo"/> representing the "Data" directory of the Skyrim Special Edition installation,
 	/// otherwise <see cref="Environment.CurrentDirectory"/>.
 	/// </returns>
-	public DirectoryInfo Resolve()
+	public IDirectoryInfo Resolve()
 	{
 		PathProvider[] providers =
 		[
@@ -83,13 +84,14 @@ public sealed class SkyrimPathResolver
 	/// A <see cref="DirectoryInfo"/> representing the "Data" directory within the specified path if provided;
 	/// otherwise, null if no path is specified in the command-line arguments.
 	/// </returns>
-	private DirectoryInfo? TryGetDataPathFromCommandLine()
+	private IDirectoryInfo? TryGetDataPathFromCommandLine()
 	{
 		var gameDir = LaunchOptions.Current?.SkyrimGameDirectory;
 		if (gameDir is not null)
 		{
 			Logger.Debug("Attempting Skyrim path from command line args (--tesv): {0}", gameDir.FullName);
-			return NormalizeToDataDirectory(gameDir);
+			var abstractGameDir = _fileSystem.DirectoryInfo.New(gameDir.FullName);
+			return NormalizeToDataDirectory(abstractGameDir);
 		}
 		Logger.Debug("No Skyrim path in command line args.");
 		return null;
@@ -104,7 +106,7 @@ public sealed class SkyrimPathResolver
 	/// A <see cref="DirectoryInfo"/> representing the "Data" directory within the installation folder if found; 
 	/// otherwise <see cref="Environment.CurrentDirectory"/>.
 	/// </returns>
-	private DirectoryInfo? TryGetDataPathFromCurrentDirectory()
+	private IDirectoryInfo? TryGetDataPathFromCurrentDirectory()
 	{
 		Logger.Debug("Attempting Skyrim path from current directory: {0}", _currentDirectory.FullName);
 		return NormalizeToDataDirectory(_currentDirectory);
@@ -118,7 +120,7 @@ public sealed class SkyrimPathResolver
 	/// A <see cref="DirectoryInfo"/> representing the "Data" directory within the installation folder if found;
 	/// otherwise, null if the registry key or value is unavailable or the platform is not Windows.
 	/// </returns>
-	public DirectoryInfo? TryGetDataPathFromRegistry(RegistryKey? baseKey = null, string? subKeyOverride = null)
+	public IDirectoryInfo? TryGetDataPathFromRegistry(RegistryKey? baseKey = null, string? subKeyOverride = null)
 	{
 		if (_registry is null || !RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
 			return null;
@@ -131,7 +133,7 @@ public sealed class SkyrimPathResolver
 			if (_registry.GetValue(rootKey, finalSubKey, RegistryValueName) is string path && !string.IsNullOrEmpty(path))
 			{
 				Logger.Debug("Found Skyrim path in registry: {0}", path);
-				return NormalizeToDataDirectory(new DirectoryInfo(path));
+				return NormalizeToDataDirectory(_fileSystem.DirectoryInfo.New(path));
 			}
 
 			Logger.Debug("Skyrim registry key/value not found or empty.");
@@ -144,29 +146,29 @@ public sealed class SkyrimPathResolver
 		return null;
 	}
 
-	public bool IsValidSkyrimDataDirectory([NotNullWhen(true)] DirectoryInfo? dataDirectory)
+	public bool IsValidSkyrimDataDirectory([NotNullWhen(true)] IDirectoryInfo? dataDirectory)
 	{
-		if (dataDirectory is null || !_fileSystem.DirectoryExists(dataDirectory.FullName))
+		if (dataDirectory is null || !dataDirectory.Exists)
 			return false;
 
-		if (!_fileSystem.GetFileName(dataDirectory.FullName).Equals("Data", StringComparison.OrdinalIgnoreCase))
+		if (!dataDirectory.Name.Equals("Data", StringComparison.OrdinalIgnoreCase))
 			return false;
 
-		var gameRootPath = _fileSystem.GetParentDirectoryPath(dataDirectory.FullName);
-		if (gameRootPath is null || !_fileSystem.DirectoryExists(gameRootPath))
+		var gameRoot = dataDirectory.Parent;
+		if (gameRoot is null || !gameRoot.Exists)
 			return false;
 
-		var exePath = _fileSystem.Combine(gameRootPath, "SkyrimSE.exe");
-		var launcherPath = _fileSystem.Combine(gameRootPath, "SkyrimSELauncher.exe");
+		var exePath = _fileSystem.Path.Combine(gameRoot.FullName, "SkyrimSE.exe");
+		var launcherPath = _fileSystem.Path.Combine(gameRoot.FullName, "SkyrimSELauncher.exe");
 
-		return _fileSystem.FileExists(exePath) || _fileSystem.FileExists(launcherPath);
+		return _fileSystem.File.Exists(exePath) || _fileSystem.File.Exists(launcherPath);
 	}
 
-	private DirectoryInfo NormalizeToDataDirectory(DirectoryInfo directory)
+	private IDirectoryInfo NormalizeToDataDirectory(IDirectoryInfo directory)
 	{
-		if (_fileSystem.GetFileName(directory.FullName).Equals("Data", StringComparison.OrdinalIgnoreCase))
+		if (directory.Name.Equals("Data", StringComparison.OrdinalIgnoreCase))
 			return directory;
 
-		return new DirectoryInfo(_fileSystem.Combine(directory.FullName, "Data"));
+		return _fileSystem.DirectoryInfo.New(_fileSystem.Path.Combine(directory.FullName, "Data"));
 	}
 }

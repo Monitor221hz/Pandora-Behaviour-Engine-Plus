@@ -6,7 +6,9 @@ using NSubstitute;
 using Pandora.Utils; 
 using Pandora.Utils.Platform.Windows;
 using Pandora.Utils.Skyrim;
+using System.IO.Abstractions;
 using System.Runtime.Versioning;
+using Testably.Abstractions.Testing;
 
 namespace PandoraTests;
 
@@ -21,7 +23,6 @@ public class SkyrimPathResolverPriorityTests : IDisposable
     private static readonly string _primaryValidSkyrimRoot = Path.Combine(Path.GetTempPath(), "Skyrim SE");
     private static readonly string _primaryValidDataPath = Path.Combine(_primaryValidSkyrimRoot, "Data");
     private static readonly string _secondaryValidSkyrimRoot = Path.Combine(Path.GetTempPath(), "Skyrim");
-    private static readonly string _secondaryValidDataPath = Path.Combine(_secondaryValidSkyrimRoot, "Data");
     private static readonly string _invalidRoot = Path.Combine(Path.GetTempPath(), "Fallout");
     private static readonly string _invalidDataPath = Path.Combine(_invalidRoot, "Data");
 
@@ -30,30 +31,16 @@ public class SkyrimPathResolverPriorityTests : IDisposable
         _output = output;
         _mockRegistry = Substitute.For<IRegistry>();
         _mockEnvironment = Substitute.For<IRuntimeEnvironment>();
-        _mockFileSystem = Substitute.For<IFileSystem>();
+        _mockFileSystem = new MockFileSystem();
 
-        _mockFileSystem.Combine(Arg.Any<string[]>()).Returns(callInfo => Path.Combine(callInfo.Arg<string[]>()));
-        _mockFileSystem.GetFileName(Arg.Any<string>()).Returns(callInfo => Path.GetFileName(callInfo.Arg<string>()));
+        _mockFileSystem.Directory.CreateDirectory(_primaryValidDataPath);
+        _mockFileSystem.File.WriteAllText(Path.Combine(_primaryValidSkyrimRoot, "SkyrimSE.exe"), "");
 
-        // 1. Primary valid path
-        SetupValidPath(_primaryValidSkyrimRoot, _primaryValidDataPath, hasExe: true, hasLauncher: false);
+        _mockFileSystem.Directory.CreateDirectory(Path.Combine(_secondaryValidSkyrimRoot, "Data"));
+        _mockFileSystem.File.WriteAllText(Path.Combine(_secondaryValidSkyrimRoot, "SkyrimSELauncher.exe"), "");
 
-        // 2. Secondary valid path
-        SetupValidPath(_secondaryValidSkyrimRoot, _secondaryValidDataPath, hasExe: false, hasLauncher: true);
-
-        // 3. Invalid path without .exe
-        SetupValidPath(_invalidRoot, _invalidDataPath, hasExe: false, hasLauncher: false);
+        _mockFileSystem.Directory.CreateDirectory(_invalidDataPath);
     }
-
-    private void SetupValidPath(string rootPath, string dataPath, bool hasExe, bool hasLauncher)
-    {
-        _mockFileSystem.DirectoryExists(dataPath).Returns(true);
-        _mockFileSystem.GetParentDirectoryPath(dataPath).Returns(rootPath);
-        _mockFileSystem.DirectoryExists(rootPath).Returns(true);
-        _mockFileSystem.FileExists(Path.Combine(rootPath, "SkyrimSE.exe")).Returns(hasExe);
-        _mockFileSystem.FileExists(Path.Combine(rootPath, "SkyrimSELauncher.exe")).Returns(hasLauncher);
-    }
-
 
     public static TheoryData<string, string?, string, string?, string> TestScenarios = new()
     {
