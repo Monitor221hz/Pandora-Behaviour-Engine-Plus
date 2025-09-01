@@ -18,12 +18,12 @@ public class SkyrimPathResolverPriorityTests : IDisposable
     private readonly IRegistry _mockRegistry;
     private readonly IFileSystem _mockFileSystem;
 
-    private readonly string _primaryValidSkyrimRoot;
-    private readonly string _primaryValidDataPath;
-    private readonly string _secondaryValidSkyrimRoot;
-    private readonly string _secondaryValidDataPath;
-    private readonly string _invalidRoot;
-    private readonly string _invalidDataPath;
+    private static readonly string _primaryValidSkyrimRoot = Path.Combine(Path.GetTempPath(), $"SkyrimSE-{Guid.NewGuid()}");
+    private static readonly string _primaryValidDataPath = Path.Combine(_primaryValidSkyrimRoot, "Data");
+    private static readonly string _secondaryValidSkyrimRoot = Path.Combine(Path.GetTempPath(), $"Skyrim-{Guid.NewGuid()}");
+    private static readonly string _secondaryValidDataPath = Path.Combine(_secondaryValidSkyrimRoot, "Data");
+    private static readonly string _invalidRoot = Path.Combine(Path.GetTempPath(), $"Fallout-{Guid.NewGuid()}");
+    private static readonly string _invalidDataPath = Path.Combine(_invalidRoot, "Data");
 
     public SkyrimPathResolverPriorityTests(ITestOutputHelper output)
     {
@@ -31,15 +31,6 @@ public class SkyrimPathResolverPriorityTests : IDisposable
         _mockRegistry = Substitute.For<IRegistry>();
         _mockEnvironment = Substitute.For<IRuntimeEnvironment>();
         _mockFileSystem = Substitute.For<IFileSystem>();
-
-        _primaryValidSkyrimRoot = Path.Combine(Path.GetTempPath(), $"SkyrimSE-{Guid.NewGuid()}");
-        _primaryValidDataPath = Path.Combine(_primaryValidSkyrimRoot, "Data");
-
-        _secondaryValidSkyrimRoot = Path.Combine(Path.GetTempPath(), $"Skyrim-{Guid.NewGuid()}");
-        _secondaryValidDataPath = Path.Combine(_secondaryValidSkyrimRoot, "Data");
-
-        _invalidRoot = Path.Combine(Path.GetTempPath(), $"Fallout-{Guid.NewGuid()}");
-        _invalidDataPath = Path.Combine(_invalidRoot, "Data");
 
         _mockFileSystem.Combine(Arg.Any<string[]>()).Returns(callInfo => Path.Combine(callInfo.Arg<string[]>()));
         _mockFileSystem.GetFileName(Arg.Any<string>()).Returns(callInfo => Path.GetFileName(callInfo.Arg<string>()));
@@ -64,45 +55,37 @@ public class SkyrimPathResolverPriorityTests : IDisposable
     }
 
 
-    public static TheoryData<string, string?, string, string?, string> TestScenarios
+    public static TheoryData<string, string?, string, string?, string> TestScenarios = new()
     {
-        get
         {
-            using var fixture = new SkyrimPathResolverPriorityTests(Substitute.For<ITestOutputHelper>());
-
-            return new TheoryData<string, string?, string, string?, string>
-            {
-                {
-                    "Priority 1: Command line arguments (--tesv)",
-                    fixture._primaryValidSkyrimRoot,                // Command line arg (top priority)
-                    fixture._secondaryValidSkyrimRoot,              // Current directory
-                    fixture._invalidRoot,                           // Path registry
-                    fixture._primaryValidDataPath                   // Expected behavior
-                },
-                {
-                    "Priority 2: Current directory (Start In)",
-                    null,                                           // Command line arg (none)
-                    fixture._primaryValidSkyrimRoot,                // Current directory (top priority)
-                    fixture._secondaryValidSkyrimRoot,              // Path registry
-                    fixture._primaryValidDataPath                   // Expected behavior
-                },
-                {
-                    "Priority 3: Registry",
-                    null,                                           // Command line args (none)
-                    fixture._invalidRoot,                           // Current directory (invalid)
-                    fixture._primaryValidSkyrimRoot,                // Path registry (top priority)
-                    fixture._primaryValidDataPath                   // Expected behavior
-                },
-                {
-                    "Extreme case: Nothing found",
-                    null,                                           // Command line args (none)
-                    fixture._invalidDataPath,                       // Current directory (invalid)
-                    null,                                           // Path registry (none)
-                    fixture._invalidDataPath                        // Expected behavior: return Current Directory
-                }
-            };
+            "Priority 1: Command line arguments (--tesv)",
+            _primaryValidSkyrimRoot,                // Command line arg (top priority)
+            _secondaryValidSkyrimRoot,              // Current directory
+            _invalidRoot,                           // Path registry
+            _primaryValidDataPath                   // Expected behavior
+        },
+        {
+            "Priority 2: Current directory (Start In)",
+            null,                                   // Command line arg (none)
+            _primaryValidSkyrimRoot,                // Current directory (top priority)
+            _secondaryValidSkyrimRoot,              // Path registry
+            _primaryValidDataPath                   // Expected behavior
+        },
+        {
+            "Priority 3: Registry",
+            null,                                   // Command line args (none)
+            _invalidRoot,                           // Current directory (invalid)
+            _primaryValidSkyrimRoot,                // Path registry (top priority)
+            _primaryValidDataPath                   // Expected behavior
+        },
+        {
+            "Extreme case: Nothing found",
+            null,                                   // Command line args (none)
+            _invalidDataPath,                       // Current directory (invalid)
+            null,                                   // Path registry (none)
+            _invalidDataPath                        // Expected behavior: return Current Directory
         }
-    }
+    };
 
 
     [Theory(DisplayName = "Resolve_ReturnCorrectPath_BasedOnPriority")]
