@@ -83,7 +83,7 @@ public sealed class SkyrimPathResolver
 	/// A <see cref="DirectoryInfo"/> representing the "Data" directory within the specified path if provided;
 	/// otherwise, null if no path is specified in the command-line arguments.
 	/// </returns>
-	private static DirectoryInfo? TryGetDataPathFromCommandLine()
+	private DirectoryInfo? TryGetDataPathFromCommandLine()
 	{
 		var gameDir = LaunchOptions.Current?.SkyrimGameDirectory;
 		if (gameDir is not null)
@@ -162,11 +162,11 @@ public sealed class SkyrimPathResolver
 		return _fileSystem.FileExists(exePath) || _fileSystem.FileExists(launcherPath);
 	}
 
-	private static DirectoryInfo NormalizeToDataDirectory(DirectoryInfo directory)
+	private DirectoryInfo NormalizeToDataDirectory(DirectoryInfo directory)
 	{
-		if (directory.Name.Equals("Data", StringComparison.OrdinalIgnoreCase))
+		if (_fileSystem.GetFileName(directory.FullName).Equals("Data", StringComparison.OrdinalIgnoreCase))
 			return directory;
 
-		return new DirectoryInfo(Path.Combine(directory.FullName, "Data"));
+		return new DirectoryInfo(_fileSystem.Combine(directory.FullName, "Data"));
 	}
 }
