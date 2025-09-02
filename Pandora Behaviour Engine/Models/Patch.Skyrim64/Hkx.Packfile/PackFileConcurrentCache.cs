@@ -16,31 +16,30 @@ public class PackFileConcurrentCache : IPackFileCache
 
 	public PackFileConcurrentCache() { }
 
-	public PackFile LoadPackFile(FileInfo file) => 
-		_pathMap.GetOrAdd(file.FullName, _ => new PackFile(file));
+	private T GetOrCreatePackFile<T>(FileInfo file, Func<T> creator) where T : PackFile =>
+		(T)_pathMap.GetOrAdd(file.FullName, _ => creator());
 
+	public PackFile LoadPackFile(FileInfo file) =>
+		GetOrCreatePackFile(file, () => new PackFile(file));
 
 	public PackFileGraph LoadPackFileGraph(FileInfo file) =>
-		(PackFileGraph)_pathMap.GetOrAdd(file.FullName, _ => new PackFileGraph(file));
+		GetOrCreatePackFile(file, () => new PackFileGraph(file));
 
-	public PackFileGraph LoadPackFileGraph(FileInfo file, Project project) => 
-		(PackFileGraph)_pathMap.GetOrAdd(file.FullName, _ => new PackFileGraph(file, project));
+	public PackFileGraph LoadPackFileGraph(FileInfo file, Project project) =>
+		GetOrCreatePackFile(file, () => new PackFileGraph(file, project));
 
+	public PackFileCharacter LoadPackFileCharacter(FileInfo file) =>
+		GetOrCreatePackFile(file, () => new PackFileCharacter(file));
 
-	public PackFileCharacter LoadPackFileCharacter(FileInfo file) => 
-		(PackFileCharacter)_pathMap.GetOrAdd(file.FullName, _ => new PackFileCharacter(file));
+	public PackFileCharacter LoadPackFileCharacter(FileInfo file, Project project) =>
+		GetOrCreatePackFile(file, () => new PackFileCharacter(file, project));
 
-	public PackFileCharacter LoadPackFileCharacter(FileInfo file, Project project) => 
-		(PackFileCharacter)_pathMap.GetOrAdd(file.FullName, _ => new PackFileCharacter(file, project));
+	public PackFileSkeleton LoadPackFileSkeleton(FileInfo file) =>
+		GetOrCreatePackFile(file, () => new PackFileSkeleton(file));
 
+	public PackFileSkeleton LoadPackFileSkeleton(FileInfo file, Project project) =>
+		GetOrCreatePackFile(file, () => new PackFileSkeleton(file, project));
 
-	public PackFileSkeleton LoadPackFileSkeleton(FileInfo file) => 
-		(PackFileSkeleton)_pathMap.GetOrAdd(file.FullName, _ => new PackFileSkeleton(file));
-
-	public PackFileSkeleton LoadPackFileSkeleton(FileInfo file, Project project) => 
-		(PackFileSkeleton)_pathMap.GetOrAdd(file.FullName, _ => new PackFileSkeleton(file, project));
-
-
-	public bool TryLookupSharedProjects(PackFile packFile, [NotNullWhen(true)] out List<Project>? projects) => 
+	public bool TryLookupSharedProjects(PackFile packFile, [NotNullWhen(true)] out List<Project>? projects) =>
 		_sharedPackFileProjectMap.TryGetValue(packFile, out projects);
 }
