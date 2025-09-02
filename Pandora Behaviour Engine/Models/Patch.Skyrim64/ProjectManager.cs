@@ -31,7 +31,7 @@ public class ProjectManager : IProjectManager
 	private readonly DirectoryInfo templateFolder;
 	private DirectoryInfo baseOutputFolder;
 
-	private IPackFileCache packFileCache = new PackFileCache();
+	private IPackFileCache packFileCache = new PackFileConcurrentCache();
 
 	private FNISParser fnisParser;
 
