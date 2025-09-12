@@ -72,14 +72,6 @@ public class BehaviourEngine
 		Configuration = configuration ?? new SkyrimConfiguration();
 		return this;
 	}
-	public void Launch(List<IModInfo> mods)
-	{
-		logger.Info($"Launching with configuration {Configuration.Name}");
-		logger.Info($"Launching with patcher {Configuration.Patcher.GetVersionString()}");
-		Configuration.Patcher.SetTarget(mods);
-		Configuration.Patcher.Update();
-		Configuration.Patcher.Run();
-	}
 
 	public async Task<bool> LaunchAsync(List<IModInfo> mods)
 	{
@@ -87,10 +79,11 @@ public class BehaviourEngine
 		logger.Info($"Launching with patcher version {Configuration.Patcher.GetVersionString()}");
 		Configuration.Patcher.SetTarget(mods);
 
-		if (!OutputPath.Exists) OutputPath.Create();
+		if (!OutputPath.Exists) 
+			OutputPath.Create();
 
-
-		if (!await Configuration.Patcher.UpdateAsync()) { return false; }
+		if (!await Configuration.Patcher.UpdateAsync()) 
+			return false;
 
 		return await Configuration.Patcher.RunAsync();
 	}
