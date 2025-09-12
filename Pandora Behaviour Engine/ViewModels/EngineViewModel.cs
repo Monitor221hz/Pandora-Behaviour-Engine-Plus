@@ -221,7 +221,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		bool success;
 		try
 		{
-			success = await Task.Run(() => Engine.LaunchAsync(activeMods));
+			success = await Engine.LaunchAsync(activeMods);
 		}
 		catch (Exception ex)
 		{
