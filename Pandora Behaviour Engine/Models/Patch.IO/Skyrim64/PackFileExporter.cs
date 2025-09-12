@@ -101,6 +101,8 @@ public class PackFileExporter : IMetaDataExporter<PackFile>
 
 	public void SaveMetaData(IEnumerable<PackFile> packFiles)
 	{
+		PreviousOutputFile.Directory?.Create();
+
 		using (FileStream readStream = PreviousOutputFile.Create())
 		{
 			using (StreamWriter writer = new(readStream))
