@@ -81,26 +81,24 @@ public class SkyrimPatcher : IPatcher
 
 	public async Task<bool> UpdateAsync()
 	{
-
 		logger.Info($"Skyrim Patcher {GetVersionString()}");
 
 		try
 		{
-			Parallel.ForEach(activeMods, mod =>
+			await Parallel.ForEachAsync(activeMods, async (mod, ct) =>
 			{
 				switch (mod.Format)
 				{
 					case IModInfo.ModFormat.Nemesis:
-						NemesisAssembler.AssemblePatch(mod);
+						await Task.Run(() => NemesisAssembler.AssemblePatch(mod), ct);
 						break;
 					case IModInfo.ModFormat.Pandora:
-						PandoraAssembler.AssemblePatch(mod);
+						await Task.Run(() => PandoraAssembler.AssemblePatch(mod), ct);
 						break;
 					default:
 						break;
 				}
-			}
-			);
+			});
 		}
 		catch (Exception ex)
 		{
