@@ -50,6 +50,86 @@ Pandora runs on Windows, Linux, and MacOS, but only Windows is extensively teste
 
 ## For Users
 
+
+
+### Quickstart
+
+> [!CAUTION]
+> Outputting any Behavior Engine files directly to the `Skyrim Special Edition\Data` folder is almost impossible to manually undo.  
+> This is only a problem if you need to remove previously generated behavior files or try changing Behavior Engines.  
+> **Consider yourself warned.**
+
+> [!TIP]
+> If you need to have multiple startup arguments, they can be separated with a space.
+
+---
+
+### 🔄 Coming from Nemesis?
+
+> [!TIP]
+> Before installing Pandora:
+> 1. Disable all animation mods.  
+> 2. Run **Nemesis one last time** – this will delete any output Nemesis previously generated.  
+> 3. If you have a `Nemesis Output` folder, delete its contents.  
+> 4. Re-enable your animation mods afterward.  
+
+Nemesis will fail to run after installing Pandora because it doesn’t recognize text files that Pandora uses.  
+Failing to perform these steps could result in **crashes or leftover behavior data** if you ever remove animation mods.
+
+---
+
+### Mod Organizer 2
+
+1. Install **Pandora Behavior Engine** as a mod, **or** outside the mods folder.  
+2. Add Pandora as an [application in MO2](https://stepmodifications.org/wiki/Guide:Mod_Organizer#General_Application_Setup).
+3. Create an **empty mod** in your load order named `Pandora Output` using the **Tools** button (top-right of the main panel, next to the profile dropdown).  
+4. Right-click the `Pandora Output` folder in MO2 → **Open in Explorer** → copy the path from the Explorer window.  
+   - This is your **Output Path**.  
+5. In the Application Settings from Step 2, in the **Arguments** field, enter: `-o "your permanent output path"`
+> [!NOTE]
+> Leave the quotes and make sure there is a space between `-o` and `"your path"`.
+>
+> It is recommended to use the startup argument (command line) to set the output mod instead of MO2's `"Create in files in mod instead of overwrite"`.
+> This is because files produced by Pandora with MO2 VFS will overwrite existing files at their origin, even if in another mod.
+6. Run Pandora from MO2 using the application you just made for it.
+
+---
+
+### Vortex
+
+### 1. Install Pandora
+- Download **Pandora manually**.  
+- ❌ **Do not install as a mod**.  
+- Extract contents into your `Skyrim Special Edition\Data` folder so that `Pandora Behavior Engine.exe` lives in `\Data`.  
+- Right-click the `.exe` → **Copy as Path**.  
+- This is your **Target Path**.  
+
+### 2. Create Temporary Output Folder
+- On your desktop, create an empty folder named `PandoraOutput`.  
+- This is your *temporary* **Output Path**.  
+
+### 3. Create Pandora Tool in Vortex
+- Go to: `Vortex > Dashboard > Tools`.  
+- Toggle **Enable Toolbar**.  
+- Make a new tool:  
+    - **Target Path:** path from Step 1 (without quotes).  
+    - **Command Line:** `-o "temporary output path"`
+    - Example:  
+    ![Example 1](https://i.imgur.com/HKUPqN7.png)
+
+### 4. Run Pandora & Add Output to Vortex
+- Run Pandora once using the tool in Vortex.  
+- Compress the **output folder** into an archive on your desktop.  
+- Add the archive to Vortex as a mod:  
+`Vortex > Mods > Install from file (top orange bar)`.  
+
+### 5. Change Pandora Output Location to Staging Mod Folder
+- Go to: `Vortex > Open (top orange bar) > Open Mod Staging Folder`.  
+- Find `PandoraOutput` folder → **Copy as path**.  
+- This is your *permanent* **Output Path**.  
+- Open the Pandora tool shortcut again → **Command Line** → erase the old path after `-o`, and replace it with the new staging folder path.  
+
+
 ### Quickstart
 
 > [!CAUTION]
