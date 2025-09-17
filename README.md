@@ -60,7 +60,7 @@ Pandora runs on Windows, Linux, and MacOS, but only Windows is extensively teste
 > [!TIP]
 > If you need to have multiple startup arguments, they can be separated with a space.
 
----
+##
 
 ### Coming from Nemesis?
 
@@ -74,7 +74,7 @@ Pandora runs on Windows, Linux, and MacOS, but only Windows is extensively teste
 Nemesis will fail to run after installing Pandora because it doesn’t recognize text files that Pandora uses.  
 Failing to perform these steps could result in **crashes or leftover behavior data** if you ever remove animation mods.
 
----
+##
 
 ### Mod Organizer 2
 
@@ -91,7 +91,7 @@ Failing to perform these steps could result in **crashes or leftover behavior da
 > This is because files produced by Pandora with MO2 VFS will overwrite existing files at their origin, even if in another mod.
 6. Run Pandora from MO2 using the application you just made for it.
 
----
+##
 
 ### Vortex
 
@@ -129,8 +129,11 @@ Failing to perform these steps could result in **crashes or leftover behavior da
     - Example:
     ![Example 2](https://i.imgur.com/PKa9iSi.png)
 
-</details>
-<br/>
+> [!NOTE]
+> Running Pandora from this point will output all files into this PandoraOutput staging folder. If you need to delete your Pandora output for any reason, delete the PandoraOutput mod and archive from Vortex > Mods.
+> If Vortex asks, always select “Use newer file”. 
+
+##
 
 ### Wabbajack and Multiple Installs
 
