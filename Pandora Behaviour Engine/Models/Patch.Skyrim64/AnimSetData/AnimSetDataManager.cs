@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using NLog;
-using Pandora.Models.Extensions;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using NLog;
+using Pandora.Models.Extensions;
 
 namespace Pandora.Models.Patch.Skyrim64.AnimSetData;
 
@@ -19,12 +19,16 @@ public class AnimSetDataManager
 	private DirectoryInfo templateFolder;
 	private DirectoryInfo outputMeshFolder;
 
-	public FileInfo TemplateAnimSetDataSingleFile => new(Path.Join(templateFolder.FullName, ANIMSETDATA_FILENAME));
-	public FileInfo OutputAnimSetDataSingleFile => new(Path.Join(outputMeshFolder.FullName, ANIMSETDATA_FILENAME));
+	public FileInfo TemplateAnimSetDataSingleFile =>
+		new(Path.Join(templateFolder.FullName, ANIMSETDATA_FILENAME));
+	public FileInfo OutputAnimSetDataSingleFile =>
+		new(Path.Join(outputMeshFolder.FullName, ANIMSETDATA_FILENAME));
 
 	private FileInfo vanillaHkxFiles;
 
-	private HashSet<string> vanillaAnimationPaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+	private HashSet<string> vanillaAnimationPaths = new HashSet<string>(
+		StringComparer.OrdinalIgnoreCase
+	);
 
 	private IList<string> projectPaths = [];
 	private IList<ProjectAnimSetData> animSetDataList = [];
@@ -35,7 +39,9 @@ public class AnimSetDataManager
 	{
 		this.templateFolder = templateFolder;
 
-		vanillaHkxFiles = new FileInfo(Path.Join(templateFolder.FullName, VANILLA_HKXPATHS_FILENAME));
+		vanillaHkxFiles = new FileInfo(
+			Path.Join(templateFolder.FullName, VANILLA_HKXPATHS_FILENAME)
+		);
 
 		this.outputMeshFolder = outputMeshFolder;
 	}
@@ -61,9 +67,15 @@ public class AnimSetDataManager
 
 					for (int i = 0; i < NumProjects; i++)
 					{
-						if (!ProjectAnimSetData.TryRead(reader, out var animSetData)) { return false; }
+						if (!ProjectAnimSetData.TryRead(reader, out var animSetData))
+						{
+							return false;
+						}
 						animSetDataList.Add(animSetData);
-						AnimSetDataMap.Add(Path.GetFileNameWithoutExtension(projectPaths[i]), animSetData);
+						AnimSetDataMap.Add(
+							Path.GetFileNameWithoutExtension(projectPaths[i]),
+							animSetData
+						);
 
 						//#if DEBUG
 						//						FileInfo animDataFile = new FileInfo($"{outputFolder.FullName}\\animsetdata\\{(Path.GetFileName(projectPaths[i]))}");
@@ -78,9 +90,7 @@ public class AnimSetDataManager
 						//						}
 
 						//#endif
-
 					}
-
 				}
 			}
 			Logger.Info("Successfully split TemplateAnimSetData into individual entries.");
@@ -98,7 +108,10 @@ public class AnimSetDataManager
 		}
 		catch (Exception ex)
 		{
-			Logger.Fatal(ex, $"Unexpected error while splitting TemplateAnimSetData from {TemplateAnimSetDataSingleFile.Name}");
+			Logger.Fatal(
+				ex,
+				$"Unexpected error while splitting TemplateAnimSetData from {TemplateAnimSetDataSingleFile.Name}"
+			);
 			throw;
 		}
 	}
@@ -107,7 +120,10 @@ public class AnimSetDataManager
 	{
 		try
 		{
-			if (OutputAnimSetDataSingleFile.Directory != null && !OutputAnimSetDataSingleFile.Directory.Exists)
+			if (
+				OutputAnimSetDataSingleFile.Directory != null
+				&& !OutputAnimSetDataSingleFile.Directory.Exists
+			)
 			{
 				OutputAnimSetDataSingleFile.Directory.Create();
 				Logger.Debug($"Created directory for OutputAnimSetData output");

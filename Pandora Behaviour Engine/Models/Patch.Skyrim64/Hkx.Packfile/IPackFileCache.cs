@@ -16,5 +16,8 @@ public interface IPackFileCache
 	PackFileGraph LoadPackFileGraph(FileInfo file, Project project);
 	PackFileSkeleton LoadPackFileSkeleton(FileInfo file);
 	PackFileSkeleton LoadPackFileSkeleton(FileInfo file, Project project);
-	bool TryLookupSharedProjects(PackFile packFile, [NotNullWhen(true)] out List<Project>? projects);
+	bool TryLookupSharedProjects(
+		PackFile packFile,
+		[NotNullWhen(true)] out List<Project>? projects
+	);
 }

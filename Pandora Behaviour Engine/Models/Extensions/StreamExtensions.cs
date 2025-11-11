@@ -13,10 +13,16 @@ public static class StreamExtensions
 		line = reader.ReadLine();
 		return line != null;
 	}
-	public static bool TryReadNotEmptyLine(this StreamReader reader, [NotNullWhen(true)] out string? line)
+
+	public static bool TryReadNotEmptyLine(
+		this StreamReader reader,
+		[NotNullWhen(true)] out string? line
+	)
 	{
 		line = reader.ReadLine();
 		return !string.IsNullOrEmpty(line);
 	}
-	public static string ReadLineOrEmpty(this StreamReader reader) => reader.ReadLine() ?? string.Empty;
+
+	public static string ReadLineOrEmpty(this StreamReader reader) =>
+		reader.ReadLine() ?? string.Empty;
 }

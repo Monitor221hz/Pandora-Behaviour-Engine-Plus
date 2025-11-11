@@ -10,7 +10,12 @@ namespace Pandora.Models.Extensions;
 
 public static class StringExtension
 {
-	public static string Insert(this string value, int index, string separator, params string[] values)
+	public static string Insert(
+		this string value,
+		int index,
+		string separator,
+		params string[] values
+	)
 	{
 		List<string> sections = value.Split(separator).ToList();
 
@@ -19,7 +24,12 @@ public static class StringExtension
 		return string.Join(separator, sections);
 	}
 
-	public static string Insert(this string value, int index, char separator, params string[] values)
+	public static string Insert(
+		this string value,
+		int index,
+		char separator,
+		params string[] values
+	)
 	{
 		List<string> sections = value.Split(separator).ToList();
 
@@ -28,13 +38,23 @@ public static class StringExtension
 		return string.Join(separator, sections);
 	}
 
-	public static string Insert(this string value, string insertValue, char separator, params string[] values)
+	public static string Insert(
+		this string value,
+		string insertValue,
+		char separator,
+		params string[] values
+	)
 	{
-
 		int index = value.IndexOf(insertValue) + insertValue.Length;
 		string joinedValues = separator + string.Join(separator, values) + separator;
 		//sections.InsertRange(index, values);
-		return insertValue.Length > 0 ? string.Concat(value.AsSpan(0, index), joinedValues, value.AsSpan(index + joinedValues.Length)) : joinedValues + value;
+		return insertValue.Length > 0
+			? string.Concat(
+				value.AsSpan(0, index),
+				joinedValues,
+				value.AsSpan(index + joinedValues.Length)
+			)
+			: joinedValues + value;
 	}
 
 	public static string Append(this string value, char separator, params string[] values)
@@ -55,8 +75,8 @@ public static class StringExtension
 		sections.AddRange(values);
 
 		return string.Join(separator, sections);
-
 	}
+
 	public static string Insert(this string value, int index, params string[] values)
 	{
 		string separator = Environment.NewLine;
@@ -66,9 +86,13 @@ public static class StringExtension
 
 		return string.Join(separator, sections);
 	}
-	public static string Replace(this string self,
-								  string oldValue, string newValue,
-								  bool firstOccurrenceOnly = false)
+
+	public static string Replace(
+		this string self,
+		string oldValue,
+		string newValue,
+		bool firstOccurrenceOnly = false
+	)
 	{
 		if (!firstOccurrenceOnly)
 			return self.Replace(oldValue, newValue);
@@ -77,8 +101,7 @@ public static class StringExtension
 		if (pos < 0)
 			return self;
 
-		return string.Concat(self.AsSpan(0, pos), newValue
-, self.AsSpan(pos + oldValue.Length));
+		return string.Concat(self.AsSpan(0, pos), newValue, self.AsSpan(pos + oldValue.Length));
 	}
 
 	public static string Replace(this string self, string oldValue, string newValue, int index)
@@ -88,14 +111,18 @@ public static class StringExtension
 		for (int i = 0; i < index; i++)
 		{
 			newPos = self.IndexOf(oldValue, newPos);
-			if (newPos < 0) { break; }
+			if (newPos < 0)
+			{
+				break;
+			}
 			pos = newPos;
 			newPos += oldValue.Length;
 		}
-		if (pos < 0) return self;
-		return string.Concat(self.AsSpan(0, pos), newValue
-, self.AsSpan(pos + oldValue.Length));
+		if (pos < 0)
+			return self;
+		return string.Concat(self.AsSpan(0, pos), newValue, self.AsSpan(pos + oldValue.Length));
 	}
+
 	public static IEnumerable<int> IndexesOf(this string str, string searchstring)
 	{
 		int minIndex = str.IndexOf(searchstring);
@@ -105,6 +132,6 @@ public static class StringExtension
 			minIndex = str.IndexOf(searchstring, minIndex + searchstring.Length);
 		}
 	}
-	public static void RemoveValue(this XElement element) => element.SetValue(string.Empty);
 
+	public static void RemoveValue(this XElement element) => element.SetValue(string.Empty);
 }

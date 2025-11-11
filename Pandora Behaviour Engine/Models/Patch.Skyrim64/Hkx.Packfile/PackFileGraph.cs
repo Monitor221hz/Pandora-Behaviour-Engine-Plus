@@ -1,19 +1,18 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using HKX2E;
-using Pandora.API.Patch.Engine.Skyrim64;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using HKX2E;
+using Pandora.API.Patch.Engine.Skyrim64;
 
 namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
 public class PackFileGraph : PackFile, IPackFileGraph, IEquatable<PackFileGraph>
 {
-
 	public uint InitialEventCount { get; private set; } = 0;
 	public uint InitialVariableCount { get; private set; } = 0;
 
@@ -31,20 +30,20 @@ public class PackFileGraph : PackFile, IPackFileGraph, IEquatable<PackFileGraph>
 		}
 	}
 
-	private readonly Dictionary<string, int> customEventIndices = new(StringComparer.OrdinalIgnoreCase);
+	private readonly Dictionary<string, int> customEventIndices = new(
+		StringComparer.OrdinalIgnoreCase
+	);
 
-
-
-	public PackFileGraph(FileInfo file, Project? project) : base(file, project)
+	public PackFileGraph(FileInfo file, Project? project)
+		: base(file, project)
 	{
 		Load();
 		InitialVariableCount = (uint)Data.variableInfos.Count;
 		InitialEventCount = (uint)Data.eventInfos.Count;
 	}
 
-	public PackFileGraph(FileInfo file) : this(file, null)
-	{
-	}
+	public PackFileGraph(FileInfo file)
+		: this(file, null) { }
 
 	[MemberNotNull(nameof(Data), nameof(StringData), nameof(VariableValueSet))]
 	public override void Load()
@@ -62,6 +61,7 @@ public class PackFileGraph : PackFile, IPackFileGraph, IEquatable<PackFileGraph>
 		dispatcher.ApplyChangesForNode(StringData, this);
 		dispatcher.ApplyChangesForNode(VariableValueSet, this);
 	}
+
 	public override void PushPriorityObjects()
 	{
 		base.PushPriorityObjects();
@@ -69,10 +69,12 @@ public class PackFileGraph : PackFile, IPackFileGraph, IEquatable<PackFileGraph>
 		PushXmlAsObject(StringData);
 		PushXmlAsObject(VariableValueSet);
 	}
+
 	public override void PushXmlAsObjects()
 	{
 		base.PushXmlAsObjects();
 	}
+
 	public override void PopPriorityXmlAsObjects()
 	{
 		PopObjectAsXml(Data);
@@ -106,7 +108,6 @@ public class PackFileGraph : PackFile, IPackFileGraph, IEquatable<PackFileGraph>
 					StringData.eventNames.Add(name);
 					customEventIndices.Add(name, index);
 				}
-
 			}
 		}
 		return index;
@@ -128,7 +129,11 @@ public class PackFileGraph : PackFile, IPackFileGraph, IEquatable<PackFileGraph>
 				{
 					for (int i = 0; i < StringData.eventNames.Count; i++)
 					{
-						if (StringData.eventNames[i].Equals(name, StringComparison.OrdinalIgnoreCase))
+						if (
+							StringData
+								.eventNames[i]
+								.Equals(name, StringComparison.OrdinalIgnoreCase)
+						)
 						{
 							index = i;
 							customEventIndices.Add(name, index);
@@ -136,15 +141,16 @@ public class PackFileGraph : PackFile, IPackFileGraph, IEquatable<PackFileGraph>
 						}
 					}
 				}
-
 			}
 		}
 		return index;
 	}
+
 	public bool Equals(PackFileGraph? other)
 	{
 		return base.Equals(other);
 	}
+
 	public override int GetHashCode()
 	{
 		return base.GetHashCode();

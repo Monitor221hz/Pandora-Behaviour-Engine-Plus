@@ -1,23 +1,37 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using Pandora.Models.Patch.Skyrim64.Hkx.Changes;
-using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using Pandora.Models.Patch.Skyrim64.Hkx.Changes;
+using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.Pandora;
+
 using ChangeType = IPackFileChange.ChangeType;
+
 public class PandoraParser
 {
-	private static readonly Dictionary<string, ChangeType> changeTypeNameMap = Enum.GetValues(typeof(ChangeType)).Cast<ChangeType>().ToDictionary(c => c.ToString(), v => v, StringComparer.OrdinalIgnoreCase);
+	private static readonly Dictionary<string, ChangeType> changeTypeNameMap = Enum.GetValues(
+			typeof(ChangeType)
+		)
+		.Cast<ChangeType>()
+		.ToDictionary(c => c.ToString(), v => v, StringComparer.OrdinalIgnoreCase);
 
-	public static void ParseEdit(ChangeType changeType, XElement element, PackFile packFile, PackFileChangeSet changeSet)
+	public static void ParseEdit(
+		ChangeType changeType,
+		XElement element,
+		PackFile packFile,
+		PackFileChangeSet changeSet
+	)
 	{
 		XAttribute? pathAttribute = element.Attribute("path");
-		if (pathAttribute == null) { return; }
+		if (pathAttribute == null)
+		{
+			return;
+		}
 
 		bool isPathEmpty = string.IsNullOrWhiteSpace(pathAttribute.Value);
 
@@ -33,31 +47,58 @@ public class PandoraParser
 					break;
 				}
 				// assume text
-				if (string.IsNullOrWhiteSpace(element.Value) || string.IsNullOrWhiteSpace(textAttribute.Value)) { break; }
+				if (
+					string.IsNullOrWhiteSpace(element.Value)
+					|| string.IsNullOrWhiteSpace(textAttribute.Value)
+				)
+				{
+					break;
+				}
 
 				if (preTextAttribute == null)
 				{
-					changeSet.AddChange(new RemoveTextChange(nodeName, pathAttribute.Value, textAttribute.Value));
+					changeSet.AddChange(
+						new RemoveTextChange(nodeName, pathAttribute.Value, textAttribute.Value)
+					);
 					break;
 				}
-				changeSet.AddChange(new ReplaceTextChange(nodeName, pathAttribute.Value, preTextAttribute.Value, textAttribute.Value, string.Empty));
+				changeSet.AddChange(
+					new ReplaceTextChange(
+						nodeName,
+						pathAttribute.Value,
+						preTextAttribute.Value,
+						textAttribute.Value,
+						string.Empty
+					)
+				);
 
 				break;
 
 			case ChangeType.Insert:
-				if (element.IsEmpty) { break; }
+				if (element.IsEmpty)
+				{
+					break;
+				}
 				if (element.HasElements)
 				{
 					if (!isPathEmpty)
 					{
-						foreach (var childElement in element.Elements()) { changeSet.AddChange(new InsertElementChange(nodeName, pathAttribute.Value, childElement)); }
+						foreach (var childElement in element.Elements())
+						{
+							changeSet.AddChange(
+								new InsertElementChange(nodeName, pathAttribute.Value, childElement)
+							);
+						}
 						break;
 					}
 
 					foreach (var childElement in element.Elements())
 					{
 						var nameAttribute = childElement.Attribute("name");
-						if (nameAttribute == null) { continue; }
+						if (nameAttribute == null)
+						{
+							continue;
+						}
 						string childNodeName = nameAttribute.Value;
 						if (!packFile.PopObjectAsXml(childNodeName))
 						{
@@ -66,25 +107,46 @@ public class PandoraParser
 					}
 					break;
 				}
-				if (textAttribute == null || isPathEmpty) { break; }
+				if (textAttribute == null || isPathEmpty)
+				{
+					break;
+				}
 
-				changeSet.AddChange(new InsertTextChange(nodeName, pathAttribute.Value, textAttribute.Value, element.Value));
+				changeSet.AddChange(
+					new InsertTextChange(
+						nodeName,
+						pathAttribute.Value,
+						textAttribute.Value,
+						element.Value
+					)
+				);
 
 				break;
 			case ChangeType.Append:
-				if (element.IsEmpty) { break; }
+				if (element.IsEmpty)
+				{
+					break;
+				}
 				if (element.HasElements)
 				{
 					if (!isPathEmpty)
 					{
-						foreach (var childElement in element.Elements()) { changeSet.AddChange(new AppendElementChange(nodeName, pathAttribute.Value, childElement)); }
+						foreach (var childElement in element.Elements())
+						{
+							changeSet.AddChange(
+								new AppendElementChange(nodeName, pathAttribute.Value, childElement)
+							);
+						}
 						break;
 					}
 
 					foreach (var childElement in element.Elements())
 					{
 						var nameAttribute = childElement.Attribute("name");
-						if (nameAttribute == null) { continue; }
+						if (nameAttribute == null)
+						{
+							continue;
+						}
 						string childNodeName = nameAttribute.Value;
 						if (!packFile.PopObjectAsXml(childNodeName))
 						{
@@ -94,35 +156,74 @@ public class PandoraParser
 					break;
 				}
 
-				if (isPathEmpty) { break; }
-				changeSet.AddChange(new AppendTextChange(nodeName, pathAttribute.Value, element.Value));
+				if (isPathEmpty)
+				{
+					break;
+				}
+				changeSet.AddChange(
+					new AppendTextChange(nodeName, pathAttribute.Value, element.Value)
+				);
 
 				break;
 
 			case ChangeType.Replace:
-				if (element.IsEmpty || isPathEmpty) { break; }
+				if (element.IsEmpty || isPathEmpty)
+				{
+					break;
+				}
 				if (textAttribute == null && element.HasElements)
 				{
-					foreach (var childElement in element.Elements()) { changeSet.AddChange(new ReplaceElementChange(nodeName, pathAttribute.Value, new XElement(childElement))); }
+					foreach (var childElement in element.Elements())
+					{
+						changeSet.AddChange(
+							new ReplaceElementChange(
+								nodeName,
+								pathAttribute.Value,
+								new XElement(childElement)
+							)
+						);
+					}
 					break;
 				}
-				if (textAttribute == null) { break; }
+				if (textAttribute == null)
+				{
+					break;
+				}
 				if (preTextAttribute == null)
 				{
-					changeSet.AddChange(new ReplaceTextChange(nodeName, pathAttribute.Value, string.Empty, textAttribute.Value, element.Value));
+					changeSet.AddChange(
+						new ReplaceTextChange(
+							nodeName,
+							pathAttribute.Value,
+							string.Empty,
+							textAttribute.Value,
+							element.Value
+						)
+					);
 					break;
 				}
-				changeSet.AddChange(new ReplaceTextChange(nodeName, pathAttribute.Value, preTextAttribute.Value, textAttribute.Value, element.Value));
+				changeSet.AddChange(
+					new ReplaceTextChange(
+						nodeName,
+						pathAttribute.Value,
+						preTextAttribute.Value,
+						textAttribute.Value,
+						element.Value
+					)
+				);
 				break;
 
 			default:
 				break;
-
-
 		}
-
 	}
-	public static void ParseTypedEdits(ChangeType changeType, XElement container, PackFile packFile, PackFileChangeSet changeSet)
+
+	public static void ParseTypedEdits(
+		ChangeType changeType,
+		XElement container,
+		PackFile packFile,
+		PackFileChangeSet changeSet
+	)
 	{
 		foreach (var element in container.Elements())
 		{
@@ -130,12 +231,18 @@ public class PandoraParser
 		}
 	}
 
-	public static void ParseEdits(XElement container, PackFile packFile, PackFileChangeSet changeSet)
+	public static void ParseEdits(
+		XElement container,
+		PackFile packFile,
+		PackFileChangeSet changeSet
+	)
 	{
-		if (!container.HasElements) { return; }
+		if (!container.HasElements)
+		{
+			return;
+		}
 		foreach (var element in container.Elements())
 		{
-
 			if (changeTypeNameMap.TryGetValue(element.Name.ToString(), out ChangeType changeType))
 			{
 				if (element.HasAttributes)
@@ -147,7 +254,6 @@ public class PandoraParser
 				continue;
 			}
 			ParseEdits(element, packFile, changeSet);
-
 		}
 	}
 }

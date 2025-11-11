@@ -8,5 +8,5 @@ public enum WindowVisualState
 	Idle,
 	Running,
 	Error,
-	Indeterminate
+	Indeterminate,
 }

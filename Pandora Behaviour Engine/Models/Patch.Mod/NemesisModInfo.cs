@@ -14,11 +14,12 @@ public class NemesisModInfo : IModInfo
 	{
 		return Code.GetHashCode();
 	}
+
 	public bool Equals(IModInfo? other)
 	{
-		return other != null && Code == other.Code &&
-			Version == other.Version;
+		return other != null && Code == other.Code && Version == other.Version;
 	}
+
 	public bool Active { get; set; } = false;
 
 	public DirectoryInfo Folder { get; private set; }
@@ -49,7 +50,15 @@ public class NemesisModInfo : IModInfo
 		Valid = false;
 		Folder = new DirectoryInfo(Environment.CurrentDirectory);
 	}
-	public NemesisModInfo(DirectoryInfo folder, string name, string author, string url, bool active, Dictionary<string, string> properties)
+
+	public NemesisModInfo(
+		DirectoryInfo folder,
+		string name,
+		string author,
+		string url,
+		bool active,
+		Dictionary<string, string> properties
+	)
 	{
 		Folder = folder;
 		Name = name;
@@ -60,6 +69,7 @@ public class NemesisModInfo : IModInfo
 		Valid = true;
 		Active = active;
 	}
+
 	public static NemesisModInfo ParseMetadata(FileInfo file)
 	{
 		Dictionary<string, string> properties = [];
@@ -89,8 +99,9 @@ public class NemesisModInfo : IModInfo
 
 		bool.TryParse(hidden, out bool active);
 
-
-		return name != null && author != null && url != null ? new NemesisModInfo(file.Directory!, name, author, url, active, properties) : new NemesisModInfo();
+		return name != null && author != null && url != null
+			? new NemesisModInfo(file.Directory!, name, author, url, active, properties)
+			: new NemesisModInfo();
 		//add metadata later
 	}
 }

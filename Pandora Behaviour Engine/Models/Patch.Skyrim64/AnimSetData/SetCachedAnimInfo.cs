@@ -14,20 +14,28 @@ public class SetCachedAnimInfo
 	public uint EncodedPath { get; private set; } = ENCODED_PATH_VANILLA; //vanilla actor animation folder path
 	public uint EncodedFileName { get; private set; } = 0; //animation name in lowercase
 	public uint EncodedExtension { get; private set; } = ENCODED_EXTENSION_DEFAULT; //xkh
+
 	public SetCachedAnimInfo(uint encodedPath, uint encodedFileName, uint encodedExtension)
 	{
 		EncodedPath = encodedPath;
 		EncodedFileName = encodedFileName;
 		EncodedExtension = encodedExtension;
 	}
-	public SetCachedAnimInfo(uint encodedPath, uint encodedFileName) : this(encodedPath, encodedFileName, ENCODED_EXTENSION_DEFAULT) { }
-	public SetCachedAnimInfo(uint encodedFileName) : this(ENCODED_PATH_VANILLA, encodedFileName, ENCODED_EXTENSION_DEFAULT) { }
+
+	public SetCachedAnimInfo(uint encodedPath, uint encodedFileName)
+		: this(encodedPath, encodedFileName, ENCODED_EXTENSION_DEFAULT) { }
+
+	public SetCachedAnimInfo(uint encodedFileName)
+		: this(ENCODED_PATH_VANILLA, encodedFileName, ENCODED_EXTENSION_DEFAULT) { }
+
 	public static bool TryRead(StreamReader reader, [NotNullWhen(true)] out SetCachedAnimInfo? info)
 	{
 		info = null;
-		if (!uint.TryParse(reader.ReadLine(), out var encodedPath) ||
-			!uint.TryParse(reader.ReadLine(), out var encodedFileName) ||
-			!uint.TryParse(reader.ReadLine(), out var encodedExtension))
+		if (
+			!uint.TryParse(reader.ReadLine(), out var encodedPath)
+			|| !uint.TryParse(reader.ReadLine(), out var encodedFileName)
+			|| !uint.TryParse(reader.ReadLine(), out var encodedExtension)
+		)
 		{
 			return false;
 		}
@@ -37,7 +45,10 @@ public class SetCachedAnimInfo
 
 	public static SetCachedAnimInfo Encode(string folderPath, string fileName) //filename without extension
 	{
-		var animInfo = new SetCachedAnimInfo(BSCRC32.GetValueUInt32(folderPath.ToLower()), BSCRC32.GetValueUInt32(fileName.ToLower()));
+		var animInfo = new SetCachedAnimInfo(
+			BSCRC32.GetValueUInt32(folderPath.ToLower()),
+			BSCRC32.GetValueUInt32(fileName.ToLower())
+		);
 		return animInfo;
 	}
 

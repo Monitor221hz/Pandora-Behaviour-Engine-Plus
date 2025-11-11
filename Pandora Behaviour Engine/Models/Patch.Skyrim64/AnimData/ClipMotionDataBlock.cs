@@ -1,18 +1,16 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using Pandora.API.Patch.Engine.Skyrim64.AnimData;
-using Pandora.Models.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
+using Pandora.API.Patch.Engine.Skyrim64.AnimData;
+using Pandora.Models.Extensions;
 
 namespace Pandora.Models.Patch.Skyrim64.AnimData
 {
-
-
 	public class ClipMotionDataBlock : IClipMotionDataBlock
 	{
 		public string ClipID { get; set; } = string.Empty;
@@ -22,20 +20,24 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 		public int NumRotations { get; private set; } = 1;
 		public IList<string> Rotations { get; private set; } = ["1 0 0 0 1"];
 
-		public ClipMotionDataBlock()
-		{
+		public ClipMotionDataBlock() { }
 
-		}
 		public ClipMotionDataBlock(string id)
 		{
 			ClipID = id;
 		}
-		public static bool TryReadBlock(StreamReader reader, [NotNullWhen(true)] out ClipMotionDataBlock? block)
+
+		public static bool TryReadBlock(
+			StreamReader reader,
+			[NotNullWhen(true)] out ClipMotionDataBlock? block
+		)
 		{
 			block = null;
-			if (!reader.TryReadLine(out var clipId) ||
-				!float.TryParse(reader.ReadLine(), out var duration) ||
-				!int.TryParse(reader.ReadLine(), out var numTranslations))
+			if (
+				!reader.TryReadLine(out var clipId)
+				|| !float.TryParse(reader.ReadLine(), out var duration)
+				|| !int.TryParse(reader.ReadLine(), out var numTranslations)
+			)
 			{
 				return false;
 			}
@@ -50,7 +52,10 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 				translations[i] = value;
 			}
 
-			if (!int.TryParse(reader.ReadLine(), out var numRotations)) { return false; }
+			if (!int.TryParse(reader.ReadLine(), out var numRotations))
+			{
+				return false;
+			}
 			numRotations = Math.Max(numRotations, 1);
 			var rotations = new string[numRotations];
 			for (int i = 0; i < rotations.Length; i++)
@@ -68,11 +73,15 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 				NumTranslations = numTranslations,
 				NumRotations = numRotations,
 				Translations = translations,
-				Rotations = rotations
+				Rotations = rotations,
 			};
 			return true;
 		}
-		public static bool TryReadBlock(FileInfo fileInfo, [NotNullWhen(true)] out ClipMotionDataBlock? block)
+
+		public static bool TryReadBlock(
+			FileInfo fileInfo,
+			[NotNullWhen(true)] out ClipMotionDataBlock? block
+		)
 		{
 			using (var fileStream = fileInfo.OpenRead())
 			{
@@ -82,7 +91,11 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 				}
 			}
 		}
-		public static bool TryLoadBlock(FileInfo file, [NotNullWhen(true)] out ClipMotionDataBlock? motionDataBlock)
+
+		public static bool TryLoadBlock(
+			FileInfo file,
+			[NotNullWhen(true)] out ClipMotionDataBlock? motionDataBlock
+		)
 		{
 			using (var fileStream = file.OpenRead())
 			{
@@ -96,13 +109,18 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 		public override string ToString()
 		{
 			StringBuilder sb = new StringBuilder();
-			sb.AppendLine(ClipID).AppendLine(Duration.ToString()).AppendLine(Translations.Count.ToString()).AppendLine(string.Join("\r\n", Translations)).AppendLine(Rotations.Count.ToString()).AppendLine(string.Join("\r\n", Rotations));
+			sb.AppendLine(ClipID)
+				.AppendLine(Duration.ToString())
+				.AppendLine(Translations.Count.ToString())
+				.AppendLine(string.Join("\r\n", Translations))
+				.AppendLine(Rotations.Count.ToString())
+				.AppendLine(string.Join("\r\n", Rotations));
 			return sb.ToString();
 		}
+
 		public int GetLineCount()
 		{
 			return 4 + NumTranslations + NumRotations;
 		}
-
 	}
 }

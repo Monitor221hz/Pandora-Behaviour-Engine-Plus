@@ -11,13 +11,15 @@ namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
 public class PackFileConcurrentCache : IPackFileCache
 {
-	private readonly ConcurrentDictionary<string, PackFile> _pathMap = new(StringComparer.OrdinalIgnoreCase);
+	private readonly ConcurrentDictionary<string, PackFile> _pathMap = new(
+		StringComparer.OrdinalIgnoreCase
+	);
 	private readonly Dictionary<PackFile, List<Project>> _sharedPackFileProjectMap = [];
 
 	public PackFileConcurrentCache() { }
 
-	private T GetOrCreatePackFile<T>(FileInfo file, Func<T> creator) where T : PackFile =>
-		(T)_pathMap.GetOrAdd(file.FullName, _ => creator());
+	private T GetOrCreatePackFile<T>(FileInfo file, Func<T> creator)
+		where T : PackFile => (T)_pathMap.GetOrAdd(file.FullName, _ => creator());
 
 	public PackFile LoadPackFile(FileInfo file) =>
 		GetOrCreatePackFile(file, () => new PackFile(file));
@@ -40,6 +42,8 @@ public class PackFileConcurrentCache : IPackFileCache
 	public PackFileSkeleton LoadPackFileSkeleton(FileInfo file, Project project) =>
 		GetOrCreatePackFile(file, () => new PackFileSkeleton(file, project));
 
-	public bool TryLookupSharedProjects(PackFile packFile, [NotNullWhen(true)] out List<Project>? projects) =>
-		_sharedPackFileProjectMap.TryGetValue(packFile, out projects);
+	public bool TryLookupSharedProjects(
+		PackFile packFile,
+		[NotNullWhen(true)] out List<Project>? projects
+	) => _sharedPackFileProjectMap.TryGetValue(packFile, out projects);
 }

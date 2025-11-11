@@ -17,7 +17,9 @@ public class ArgumentsParsingTests : IDisposable
 
         var tempRoot = Path.GetTempPath();
         _tempDir = Directory.CreateDirectory(Path.Combine(tempRoot, $"pandora_test_Temp"));
-        _tempDirWithSpaces = Directory.CreateDirectory(Path.Combine(tempRoot, $"pandora test Temp"));
+        _tempDirWithSpaces = Directory.CreateDirectory(
+            Path.Combine(tempRoot, $"pandora test Temp")
+        );
 
         _output.WriteLine($"Test directories created:");
         _output.WriteLine($"  - Path: {_tempDir.FullName}");
@@ -26,45 +28,48 @@ public class ArgumentsParsingTests : IDisposable
 
     #region Test Data Sources
 
-    public static TheoryData<string[]> StandardFormatsData => new()
-    {
-        { new[] { "--tesv", "{0}" } }, { new[] { "-tesv", "{0}" } },
-        { new[] { "--tesv:{0}" } }, { new[] { "-tesv:{0}" } },
-        { new[] { "--tesv={0}" } }, { new[] { "-tesv={0}" } }
-    };
-    public static TheoryData<string[]> StandardFormatsWithSpaceData => new()
-    {
+    public static TheoryData<string[]> StandardFormatsData =>
+        new()
+        {
+            { new[] { "--tesv", "{0}" } },
+            { new[] { "-tesv", "{0}" } },
+            { new[] { "--tesv:{0}" } },
+            { new[] { "-tesv:{0}" } },
+            { new[] { "--tesv={0}" } },
+            { new[] { "-tesv={0}" } },
+        };
+    public static TheoryData<string[]> StandardFormatsWithSpaceData =>
+        new()
+        {
+            { new[] { "--tesv", "{0}" } },
+            { new[] { "-tesv", "{0}" } },
+            { new[] { "--tesv:", "{0}" } },
+            { new[] { "-tesv:", "{0}" } },
+            { new[] { "--tesv=", "{0}" } },
+            { new[] { "-tesv=", "{0}" } },
+        };
 
-        { new[] { "--tesv", "{0}" } }, { new[] { "-tesv", "{0}" } },
-        { new[] { "--tesv:", "{0}" } }, { new[] { "-tesv:", "{0}" } },
-        { new[] { "--tesv=", "{0}" } }, { new[] { "-tesv=", "{0}" } }
-    };
+    public static TheoryData<string> CorrectCaseCombinedArgumentData =>
+        new() { { "--tesv:\"{0}\"-o:\"{0}\"" }, { "-tesv:\"{0}\"--output:\"{0}\"" } };
 
-    public static TheoryData<string> CorrectCaseCombinedArgumentData => new()
-    {
-        { "--tesv:\"{0}\"-o:\"{0}\"" },
-        { "-tesv:\"{0}\"--output:\"{0}\"" }
-    };
+    public static TheoryData<string> MixedCaseCombinedArgumentData =>
+        new() { { "--TeSv:\"{0}\"-O:\"{0}\"" }, { "-tEsV:\"{0}\"--OuTpUt:\"{0}\"" } };
 
-    public static TheoryData<string> MixedCaseCombinedArgumentData => new()
-    {
-        { "--TeSv:\"{0}\"-O:\"{0}\"" },
-        { "-tEsV:\"{0}\"--OuTpUt:\"{0}\"" }
-    };
+    public static TheoryData<string[]> MultipleArgumentsData =>
+        new()
+        {
+            { new[] { "--tesv", "{0}", "-o", "{1}", "--auto_run" } },
+            { new[] { "-tesv", "{0}", "--output", "{1}", "-ar" } },
+            { new[] { "--tesv={0}", "-o:{1}", "--auto_close" } },
+        };
 
-    public static TheoryData<string[]> MultipleArgumentsData => new()
-    {
-        { new[] { "--tesv", "{0}", "-o", "{1}", "--auto_run" } },
-        { new[] { "-tesv", "{0}", "--output", "{1}", "-ar" } },
-        { new[] { "--tesv={0}", "-o:{1}", "--auto_close" } }
-    };
-
-    public static TheoryData<string[]> CaseVariantFormatsData => new()
-    {
-        { new[] { "--TeSv", "{0}" } },
-        { new[] { "-tEsV:{0}" } },
-        { new[] { "--TESV={0}" } }
-    };
+    public static TheoryData<string[]> CaseVariantFormatsData =>
+        new()
+        {
+            { new[] { "--TeSv", "{0}" } },
+            { new[] { "-tEsV:{0}" } },
+            { new[] { "--TESV={0}" } },
+        };
 
     #endregion
 
@@ -78,7 +83,6 @@ public class ArgumentsParsingTests : IDisposable
         RunParseTest(_tempDir.FullName, caseInsensitive: true, argsTemplate);
     }
 
-
     [Theory(DisplayName = "Parse: Path with spaces")]
     [MemberData(nameof(StandardFormatsWithSpaceData))]
     public void Parse_Should_HandlePathsWithSpaces_WhenQuoted(params string[] argsTemplate)
@@ -87,7 +91,6 @@ public class ArgumentsParsingTests : IDisposable
         RunParseTest(_tempDirWithSpaces.FullName, caseInsensitive: true, argsTemplate);
     }
 
-
     [Theory(DisplayName = "Parse: Incorrect fused arguments (Correct Case)")]
     [MemberData(nameof(CorrectCaseCombinedArgumentData))]
     public void Parse_Should_Handle_CorrectCase_FusedArguments(string formatTemplate)
@@ -95,7 +98,6 @@ public class ArgumentsParsingTests : IDisposable
         RunCombinedArgumentsTest(_tempDir.FullName, caseInsensitive: false, formatTemplate);
         RunCombinedArgumentsTest(_tempDir.FullName, caseInsensitive: true, formatTemplate);
     }
-
 
     [Theory(DisplayName = "Parse: Incorrect fused arguments (Mixed Case)")]
     [MemberData(nameof(MixedCaseCombinedArgumentData))]
@@ -111,7 +113,6 @@ public class ArgumentsParsingTests : IDisposable
         Assert.Null(options.SkyrimGameDirectory);
     }
 
-
     [Theory(DisplayName = "Parse: Value without separator")]
     [InlineData("--tesv{0}", false)]
     [InlineData("-tesv{0}", false)]
@@ -122,7 +123,6 @@ public class ArgumentsParsingTests : IDisposable
         RunParseTest(_tempDir.FullName, isCaseInsensitive, format);
     }
 
-
     [Theory(DisplayName = "Parse: Multiple arguments")]
     [MemberData(nameof(MultipleArgumentsData))]
     public void Parse_Should_HandleMultipleArguments(params string[] argsTemplate)
@@ -130,7 +130,6 @@ public class ArgumentsParsingTests : IDisposable
         RunMultipleArgumentsTest(caseInsensitive: false, argsTemplate);
         RunMultipleArgumentsTest(caseInsensitive: true, argsTemplate);
     }
-
 
     [Theory(DisplayName = "Parse: Mixed case arguments")]
     [MemberData(nameof(CaseVariantFormatsData))]
@@ -141,7 +140,9 @@ public class ArgumentsParsingTests : IDisposable
         var path = _tempDir.FullName;
         var args = argsTemplate.Select(arg => string.Format(arg, path)).ToArray();
 
-        _output.WriteLine($"Testing (expect failure, caseSensitive=true): `{string.Join(" ", args)}`");
+        _output.WriteLine(
+            $"Testing (expect failure, caseSensitive=true): `{string.Join(" ", args)}`"
+        );
         var options = LaunchOptions.Parse(args, caseInsensitive: false);
 
         Assert.Null(options.SkyrimGameDirectory);
@@ -155,7 +156,9 @@ public class ArgumentsParsingTests : IDisposable
     {
         var args = argsTemplate.Select(arg => string.Format(arg, path)).ToArray();
 
-        _output.WriteLine($"Testing (caseInsensitive={caseInsensitive}): ` {string.Join(" ", args)} `");
+        _output.WriteLine(
+            $"Testing (caseInsensitive={caseInsensitive}): ` {string.Join(" ", args)} `"
+        );
         var options = LaunchOptions.Parse(args, caseInsensitive);
 
         Assert.NotNull(options.SkyrimGameDirectory);
@@ -166,7 +169,9 @@ public class ArgumentsParsingTests : IDisposable
     {
         var args = new[] { string.Format(formatTemplate, path) };
 
-        _output.WriteLine($"Testing combined argument (caseInsensitive={caseInsensitive}): `{args[0]}`");
+        _output.WriteLine(
+            $"Testing combined argument (caseInsensitive={caseInsensitive}): `{args[0]}`"
+        );
         var options = LaunchOptions.Parse(args, caseInsensitive);
 
         Assert.NotNull(options.SkyrimGameDirectory);
@@ -180,7 +185,9 @@ public class ArgumentsParsingTests : IDisposable
         var outputPath = _tempDirWithSpaces.FullName;
         var args = argsTemplate.Select(arg => string.Format(arg, skyrimPath, outputPath)).ToArray();
 
-        _output.WriteLine($"Testing multiple arguments (caseInsensitive={caseInsensitive}): `{string.Join(" ", args)}`");
+        _output.WriteLine(
+            $"Testing multiple arguments (caseInsensitive={caseInsensitive}): `{string.Join(" ", args)}`"
+        );
         var options = LaunchOptions.Parse(args, caseInsensitive);
 
         Assert.NotNull(options.SkyrimGameDirectory);
@@ -188,10 +195,10 @@ public class ArgumentsParsingTests : IDisposable
         Assert.NotNull(options.OutputDirectory);
         Assert.Equal(outputPath, options.OutputDirectory.FullName);
 
-        if (new[] { "--auto_run", "-ar" }.Any(a => args.Contains(a))) 
+        if (new[] { "--auto_run", "-ar" }.Any(a => args.Contains(a)))
             Assert.True(options.AutoRun);
 
-        if (new[] { "--auto_close", "-ac" }.Any(a => args.Contains(a))) 
+        if (new[] { "--auto_close", "-ac" }.Any(a => args.Contains(a)))
             Assert.True(options.AutoClose);
     }
 

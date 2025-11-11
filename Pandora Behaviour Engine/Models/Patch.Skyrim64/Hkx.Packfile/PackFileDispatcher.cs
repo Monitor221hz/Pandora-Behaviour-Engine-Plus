@@ -1,11 +1,11 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using HKX2E;
-using Pandora.Models.Patch.Skyrim64.Hkx.Changes;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using HKX2E;
+using Pandora.Models.Patch.Skyrim64.Hkx.Changes;
 
 namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
@@ -26,6 +26,7 @@ public class PackFileDispatcher
 		packFile.XmlDeserializer.Collect(nodeName, element);
 		packFileValidator.TrackElement(element);
 	}
+
 	public void AddChangeSet(PackFileChangeSet changeSet)
 	{
 		lock (changeSets)
@@ -38,6 +39,7 @@ public class PackFileDispatcher
 	{
 		changeSets = changeSets.OrderBy(s => s.Origin.Priority).ToList();
 	}
+
 	public void ApplyChangesForNode(IHavokObject obj, PackFile packFile)
 	{
 		if (!packFile.Serializer.TryGetName(obj, out var nodeName))
@@ -46,6 +48,7 @@ public class PackFileDispatcher
 		}
 		PackFileChangeSet.ApplyForNode(nodeName, packFile, changeSets);
 	}
+
 	public void ApplyChanges(PackFile packFile)
 	{
 		SortChangeSets();

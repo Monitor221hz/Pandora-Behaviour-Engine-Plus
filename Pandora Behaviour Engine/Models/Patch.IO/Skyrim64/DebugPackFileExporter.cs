@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
+using System.IO;
 using HKX2E;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
-using System.IO;
 
 namespace Pandora.Models.Patch.IO.Skyrim64;
 
@@ -13,20 +13,25 @@ public class DebugPackFileExporter : BasePackFileExporter
 	{
 		var outputHandle = packFile.RebaseOutput(ExportDirectory);
 
-		if (outputHandle.Directory == null) 
+		if (outputHandle.Directory == null)
 			return false;
 
-		if (!outputHandle.Directory.Exists) 
+		if (!outputHandle.Directory.Exists)
 			outputHandle.Directory.Create();
 
-		if (outputHandle.Exists) 
+		if (outputHandle.Exists)
 			outputHandle.Delete();
 
 		HKXHeader header = HKXHeader.SkyrimSE();
 
 		foreach (var element in packFile.IndexedElements)
 		{
-			FileInfo debugFile = new(Path.Join(outputHandle.DirectoryName!, $"{packFile.Name}~{element.Attribute("name")!.Value}.xml"));
+			FileInfo debugFile = new(
+				Path.Join(
+					outputHandle.DirectoryName!,
+					$"{packFile.Name}~{element.Attribute("name")!.Value}.xml"
+				)
+			);
 			using (var writeStream = debugFile.Create())
 			{
 				element.Save(writeStream);

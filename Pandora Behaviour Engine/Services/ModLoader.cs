@@ -1,6 +1,11 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using DynamicData.Binding;
 using NLog;
 using Pandora.API.Patch;
@@ -9,11 +14,6 @@ using Pandora.Logging;
 using Pandora.Models;
 using Pandora.Utils;
 using Pandora.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Pandora.Services;
 
@@ -21,11 +21,15 @@ public static class ModLoader
 {
 	private static readonly NLog.Logger logger = LogManager.GetCurrentClassLogger();
 
-	public static async Task<HashSet<IModInfo>> LoadModsAsync(IEnumerable<IModInfoProvider> providers, IEnumerable<DirectoryInfo> directories)
+	public static async Task<HashSet<IModInfo>> LoadModsAsync(
+		IEnumerable<IModInfoProvider> providers,
+		IEnumerable<DirectoryInfo> directories
+	)
 	{
 		var modInfos = new HashSet<IModInfo>();
 
-		var pathsToScan = ModUtils.ResolvePaths(directories, providers)
+		var pathsToScan = ModUtils
+			.ResolvePaths(directories, providers)
 			.DistinctBy(p => p.path, StringComparer.OrdinalIgnoreCase)
 			.ToList();
 
@@ -37,7 +41,10 @@ public static class ModLoader
 			}
 			catch (Exception ex)
 			{
-				logger.Warn(ex, $"Error loading mods from directory '{p.path}' using provider '{p.provider.GetType().Name}'.");
+				logger.Warn(
+					ex,
+					$"Error loading mods from directory '{p.path}' using provider '{p.provider.GetType().Name}'."
+				);
 				return Enumerable.Empty<IModInfo>();
 			}
 		});
@@ -52,7 +59,11 @@ public static class ModLoader
 		return modInfos;
 	}
 
-	public static async Task LoadModsVMAsync(ObservableCollectionExtended<ModInfoViewModel> mods, IEnumerable<DirectoryInfo> directories, IEnumerable<IModInfoProvider> providers)
+	public static async Task LoadModsVMAsync(
+		ObservableCollectionExtended<ModInfoViewModel> mods,
+		IEnumerable<DirectoryInfo> directories,
+		IEnumerable<IModInfoProvider> providers
+	)
 	{
 		mods.Clear();
 

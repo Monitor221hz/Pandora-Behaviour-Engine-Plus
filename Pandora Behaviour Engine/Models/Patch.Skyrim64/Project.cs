@@ -1,15 +1,15 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using HKX2E;
-using Pandora.API.Patch.Engine.Skyrim64;
-using Pandora.Models.Patch.Skyrim64.AnimData;
-using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using HKX2E;
+using Pandora.API.Patch.Engine.Skyrim64;
+using Pandora.Models.Patch.Skyrim64.AnimData;
+using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
 namespace Pandora.Models.Patch.Skyrim64;
 
@@ -19,10 +19,12 @@ public class Project : IProject, IEquatable<Project>
 	{
 		return other != null && ProjectFile.Equals(other.ProjectFile);
 	}
+
 	public override int GetHashCode()
 	{
 		return ProjectFile.GetHashCode();
 	}
+
 	private Dictionary<string, PackFile> filesByName { get; set; } = [];
 
 	public string Identifier { get; private set; } = string.Empty;
@@ -49,6 +51,7 @@ public class Project : IProject, IEquatable<Project>
 	public PackFileSkeleton SkeletonFile { get; private set; }
 
 	public IPackFileSkeleton GetSkeletonPackFile() => SkeletonFile;
+
 	public PackFileGraph BehaviorFile { get; private set; }
 
 	public IPackFileGraph GetBehaviorPackFile() => BehaviorFile;
@@ -59,13 +62,20 @@ public class Project : IProject, IEquatable<Project>
 	{
 		Valid = false;
 	}
+
 	public Project(PackFile projectFile)
 	{
 		Valid = false;
 		ProjectFile = projectFile;
 		Identifier = Path.GetFileNameWithoutExtension(ProjectFile.InputHandle.Name);
 	}
-	public Project(PackFile projectfile, PackFileCharacter characterfile, PackFileSkeleton skeletonfile, PackFileGraph behaviorfile)
+
+	public Project(
+		PackFile projectfile,
+		PackFileCharacter characterfile,
+		PackFileSkeleton skeletonfile,
+		PackFileGraph behaviorfile
+	)
 	{
 		ProjectFile = projectfile;
 		CharacterPackFile = characterfile;
@@ -78,7 +88,8 @@ public class Project : IProject, IEquatable<Project>
 
 	public PackFile LookupPackFile(string name) => filesByName[name];
 
-	public bool TryLookupPackFile(string name, [NotNullWhen(true)] out PackFile? packFile) => filesByName.TryGetValue(name, out packFile);
+	public bool TryLookupPackFile(string name, [NotNullWhen(true)] out PackFile? packFile) =>
+		filesByName.TryGetValue(name, out packFile);
 
 	public bool TryLookupPackFileEx(string name, [NotNullWhen(true)] out IPackFile? packFile)
 	{
@@ -91,10 +102,10 @@ public class Project : IProject, IEquatable<Project>
 	public List<string> MapFiles(IPackFileCache cache)
 	{
 		DirectoryInfo? behaviorFolder = BehaviorFile.InputHandle.Directory;
-		if (behaviorFolder == null) return [];
+		if (behaviorFolder == null)
+			return [];
 
 		var behaviorFiles = behaviorFolder.GetFiles("*.hkx");
-
 
 		lock (filesByName)
 		{
@@ -106,13 +117,13 @@ public class Project : IProject, IEquatable<Project>
 				filesByName.Add(packFile.Name, packFile);
 			}
 
-			if (!filesByName.ContainsKey(SkeletonFile.Name)) filesByName.Add(SkeletonFile.Name, SkeletonFile);
-			if (!filesByName.ContainsKey(CharacterPackFile.Name)) filesByName.Add(CharacterPackFile.Name, CharacterPackFile);
+			if (!filesByName.ContainsKey(SkeletonFile.Name))
+				filesByName.Add(SkeletonFile.Name, SkeletonFile);
+			if (!filesByName.ContainsKey(CharacterPackFile.Name))
+				filesByName.Add(CharacterPackFile.Name, CharacterPackFile);
 
 			filesByName.Add($"{Identifier}_skeleton", SkeletonFile);
 			filesByName.Add($"{Identifier}_character", CharacterPackFile);
-
-
 
 			//SkeletonFile.DeleteExistingOutput();
 			//CharacterFile.DeleteExistingOutput();
@@ -120,20 +131,25 @@ public class Project : IProject, IEquatable<Project>
 			return filesByName.Keys.ToList();
 		}
 	}
+
 	public static Project Create(PackFile projectFile, IPackFileCache cache)
 	{
-		if (!projectFile.InputHandle.Exists) return new Project();
+		if (!projectFile.InputHandle.Exists)
+			return new Project();
 
 		PackFileCharacter characterFile = GetCharacterFile(projectFile, cache);
-		if (!characterFile.InputHandle.Exists) return new Project();
+		if (!characterFile.InputHandle.Exists)
+			return new Project();
 
 		var (skeleton, behavior) = GetSkeletonAndBehaviorFile(projectFile, characterFile, cache);
 
 		PackFileSkeleton skeletonFile = skeleton;
-		if (!skeletonFile.InputHandle.Exists) return new Project();
+		if (!skeletonFile.InputHandle.Exists)
+			return new Project();
 
 		PackFileGraph behaviorFile = behavior;
-		if (!behaviorFile.InputHandle.Exists) return new Project();
+		if (!behaviorFile.InputHandle.Exists)
+			return new Project();
 
 		var project = new Project(projectFile, characterFile, skeletonFile, behaviorFile);
 
@@ -144,21 +160,30 @@ public class Project : IProject, IEquatable<Project>
 
 		return project;
 	}
+
 	public bool Load(IPackFileCache cache)
 	{
-		if (!ProjectFile.InputHandle.Exists) return false;
+		if (!ProjectFile.InputHandle.Exists)
+			return false;
 
 		ProjectFile = ProjectFile;
 		CharacterPackFile = GetCharacterFile(ProjectFile, cache);
-		if (!CharacterPackFile.InputHandle.Exists) return false;
+		if (!CharacterPackFile.InputHandle.Exists)
+			return false;
 
-		var (skeleton, behavior) = GetSkeletonAndBehaviorFile(ProjectFile, CharacterPackFile, cache);
+		var (skeleton, behavior) = GetSkeletonAndBehaviorFile(
+			ProjectFile,
+			CharacterPackFile,
+			cache
+		);
 
 		SkeletonFile = skeleton;
-		if (!SkeletonFile.InputHandle.Exists) return false;
+		if (!SkeletonFile.InputHandle.Exists)
+			return false;
 
 		BehaviorFile = behavior;
-		if (!BehaviorFile.InputHandle.Exists) return false;
+		if (!BehaviorFile.InputHandle.Exists)
+			return false;
 
 		ProjectFile.ParentProject = this;
 		CharacterPackFile.ParentProject = this;
@@ -167,24 +192,56 @@ public class Project : IProject, IEquatable<Project>
 
 		return true;
 	}
-	public static Project Load(FileInfo file, IPackFileCache cache) => Create(cache.LoadPackFile(file), cache);
+
+	public static Project Load(FileInfo file, IPackFileCache cache) =>
+		Create(cache.LoadPackFile(file), cache);
 
 	//public static Project Load(string projectFilePath) => Load(new PackFile(projectFilePath));
 
-
 	private static PackFileCharacter GetCharacterFile(PackFile projectFile, IPackFileCache cache)
 	{
-
-		if (projectFile.Container.namedVariants.Count == 0) { throw new InvalidDataException($"{nameof(hkRootLevelContainer)} for project file has no named variants in file {projectFile.Name}"); }
+		if (projectFile.Container.namedVariants.Count == 0)
+		{
+			throw new InvalidDataException(
+				$"{nameof(hkRootLevelContainer)} for project file has no named variants in file {projectFile.Name}"
+			);
+		}
 		var projectData = (hkbProjectData)projectFile.Container.namedVariants.First()!.variant!;
-		var projectStringData = projectData.stringData ?? throw new InvalidDataException($"{nameof(hkbProjectData)} is has null stringData property.");
+		var projectStringData =
+			projectData.stringData
+			?? throw new InvalidDataException(
+				$"{nameof(hkbProjectData)} is has null stringData property."
+			);
 		string characterFilePath = projectStringData.characterFilenames.First();
 
-		return cache.LoadPackFileCharacter(new FileInfo(Path.Combine(projectFile.InputHandle.DirectoryName!, characterFilePath)));
+		return cache.LoadPackFileCharacter(
+			new FileInfo(Path.Combine(projectFile.InputHandle.DirectoryName!, characterFilePath))
+		);
 	}
 
-	private static (PackFileSkeleton skeleton, PackFileGraph behavior) GetSkeletonAndBehaviorFile(PackFile projectFile, PackFileCharacter characterFile, IPackFileCache cache)
+	private static (PackFileSkeleton skeleton, PackFileGraph behavior) GetSkeletonAndBehaviorFile(
+		PackFile projectFile,
+		PackFileCharacter characterFile,
+		IPackFileCache cache
+	)
 	{
-		return (cache.LoadPackFileSkeleton(new FileInfo(Path.Combine(projectFile.InputHandle.DirectoryName!, characterFile.SkeletonFileName))), cache.LoadPackFileGraph(new FileInfo(Path.Combine(projectFile.InputHandle.DirectoryName!, characterFile.BehaviorFileName))));
+		return (
+			cache.LoadPackFileSkeleton(
+				new FileInfo(
+					Path.Combine(
+						projectFile.InputHandle.DirectoryName!,
+						characterFile.SkeletonFileName
+					)
+				)
+			),
+			cache.LoadPackFileGraph(
+				new FileInfo(
+					Path.Combine(
+						projectFile.InputHandle.DirectoryName!,
+						characterFile.BehaviorFileName
+					)
+				)
+			)
+		);
 	}
 }

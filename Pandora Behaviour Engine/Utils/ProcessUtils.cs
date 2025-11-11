@@ -1,7 +1,6 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using Pandora.API.ModManager;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
+using Pandora.API.ModManager;
 using static Vanara.PInvoke.NtDll;
 
 namespace Pandora.Utils;
@@ -20,14 +20,16 @@ public static class ProcessUtils
 
 	public static ModManager Source => _parentProcessInfo.Value.Manager;
 
-	private static readonly Lazy<ParentProcessInfo> _parentProcessInfo = new(DetectAndCacheParentProcess);
+	private static readonly Lazy<ParentProcessInfo> _parentProcessInfo = new(
+		DetectAndCacheParentProcess
+	);
 
 	private record ParentProcessInfo(int Pid, ModManager Manager);
 
 	private static readonly List<(string[] keywords, ModManager manager)> _managerDetectors = new()
 	{
 		(new[] { "modorganizer", "mo2" }, ModManager.ModOrganizer),
-		(new[] { "vortex" }, ModManager.Vortex)
+		(new[] { "vortex" }, ModManager.Vortex),
 	};
 
 	private static ParentProcessInfo DetectAndCacheParentProcess()
@@ -129,8 +131,9 @@ public static class ProcessUtils
 		try
 		{
 			PROCESS_BASIC_INFORMATION pbi = NtQueryInformationProcess<PROCESS_BASIC_INFORMATION>(
-			   process.Handle,
-			   PROCESSINFOCLASS.ProcessBasicInformation);
+				process.Handle,
+				PROCESSINFOCLASS.ProcessBasicInformation
+			);
 
 			return (int)pbi.InheritedFromUniqueProcessId.ToUInt32();
 		}

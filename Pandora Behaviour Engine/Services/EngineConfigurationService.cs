@@ -1,16 +1,16 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using Pandora.API.Patch.Engine.Config;
-using Pandora.Models;
-using Pandora.Models.Patch.Configs;
-using Pandora.ViewModels;
-using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
+using Pandora.API.Patch.Engine.Config;
+using Pandora.Models;
+using Pandora.Models.Patch.Configs;
+using Pandora.ViewModels;
+using ReactiveUI;
 
 namespace Pandora.Services;
 
@@ -19,22 +19,37 @@ public class EngineConfigurationService
 	private readonly ObservableCollection<IEngineConfigurationViewModel> _configurations = [];
 	private readonly char[] _pathSeparators = ['/', '\\'];
 
-	private IEngineConfigurationFactory _currentFactory = new ConstEngineConfigurationFactory<SkyrimConfiguration>("Normal");
+	private IEngineConfigurationFactory _currentFactory =
+		new ConstEngineConfigurationFactory<SkyrimConfiguration>("Normal");
 	public IEngineConfigurationFactory CurrentFactory => _currentFactory;
 
 	public void SetCurrentFactory(IEngineConfigurationFactory factory) => _currentFactory = factory;
 
-	public void Initialize(bool useSkyrimDebug64, ReactiveCommand<IEngineConfigurationFactory, Unit> setCommand)
+	public void Initialize(
+		bool useSkyrimDebug64,
+		ReactiveCommand<IEngineConfigurationFactory, Unit> setCommand
+	)
 	{
 		if (useSkyrimDebug64)
-			_currentFactory = new ConstEngineConfigurationFactory<SkyrimDebugConfiguration>("Debug");
+			_currentFactory = new ConstEngineConfigurationFactory<SkyrimDebugConfiguration>(
+				"Debug"
+			);
 
 		_configurations.Clear();
-		var root = new EngineConfigurationViewModelContainer("Skyrim 64",
-			new EngineConfigurationViewModelContainer("Behavior",
-				new EngineConfigurationViewModelContainer("Patch",
-					new EngineConfigurationViewModel(new ConstEngineConfigurationFactory<SkyrimConfiguration>("Normal"), setCommand),
-					new EngineConfigurationViewModel(new ConstEngineConfigurationFactory<SkyrimDebugConfiguration>("Debug"), setCommand)
+		var root = new EngineConfigurationViewModelContainer(
+			"Skyrim 64",
+			new EngineConfigurationViewModelContainer(
+				"Behavior",
+				new EngineConfigurationViewModelContainer(
+					"Patch",
+					new EngineConfigurationViewModel(
+						new ConstEngineConfigurationFactory<SkyrimConfiguration>("Normal"),
+						setCommand
+					),
+					new EngineConfigurationViewModel(
+						new ConstEngineConfigurationFactory<SkyrimDebugConfiguration>("Debug"),
+						setCommand
+					)
 				)
 			)
 		);
@@ -46,9 +61,13 @@ public class EngineConfigurationService
 		}
 	}
 
-	public IReadOnlyCollection<IEngineConfigurationViewModel> GetConfigurations() => _configurations;
+	public IReadOnlyCollection<IEngineConfigurationViewModel> GetConfigurations() =>
+		_configurations;
 
-	private void RegisterPlugin(IEngineConfigurationPlugin plugin, ReactiveCommand<IEngineConfigurationFactory, Unit> setCommand)
+	private void RegisterPlugin(
+		IEngineConfigurationPlugin plugin,
+		ReactiveCommand<IEngineConfigurationFactory, Unit> setCommand
+	)
 	{
 		if (string.IsNullOrWhiteSpace(plugin.MenuPath))
 		{
@@ -56,7 +75,10 @@ public class EngineConfigurationService
 			return;
 		}
 
-		var pathSegments = plugin.MenuPath.Split(_pathSeparators, StringSplitOptions.RemoveEmptyEntries);
+		var pathSegments = plugin.MenuPath.Split(
+			_pathSeparators,
+			StringSplitOptions.RemoveEmptyEntries
+		);
 
 		EngineConfigurationViewModelContainer? currentContainer = null;
 		foreach (var segment in pathSegments)
@@ -75,10 +97,13 @@ public class EngineConfigurationService
 			currentContainer = existing;
 		}
 
-		currentContainer?.NestedViewModels.Add(new EngineConfigurationViewModel(plugin.Factory, setCommand));
+		currentContainer?.NestedViewModels.Add(
+			new EngineConfigurationViewModel(plugin.Factory, setCommand)
+		);
 	}
 
-	public IEngineConfigurationFactory? GetFactoryByType<T>() where T : IEngineConfiguration
+	public IEngineConfigurationFactory? GetFactoryByType<T>()
+		where T : IEngineConfiguration
 	{
 		return FlattenConfigurations(_configurations)
 			.OfType<EngineConfigurationViewModel>()
@@ -86,7 +111,9 @@ public class EngineConfigurationService
 			.FirstOrDefault(factory => factory.Config is T);
 	}
 
-	public static IEnumerable<IEngineConfigurationViewModel> FlattenConfigurations(IEnumerable<IEngineConfigurationViewModel> configs)
+	public static IEnumerable<IEngineConfigurationViewModel> FlattenConfigurations(
+		IEnumerable<IEngineConfigurationViewModel> configs
+	)
 	{
 		foreach (var config in configs)
 		{
@@ -101,5 +128,4 @@ public class EngineConfigurationService
 			}
 		}
 	}
-
 }

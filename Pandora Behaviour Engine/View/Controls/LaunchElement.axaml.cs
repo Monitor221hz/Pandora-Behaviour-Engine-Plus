@@ -8,8 +8,8 @@ namespace Pandora.Views;
 
 public partial class LaunchElement : ReactiveUserControl<EngineViewModel>
 {
-    public LaunchElement()
-    {
-        InitializeComponent();
-    }
+	public LaunchElement()
+	{
+		InitializeComponent();
+	}
 }

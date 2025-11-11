@@ -24,9 +24,10 @@ public class AnimDataManager
 	private DirectoryInfo templateFolder;
 	private DirectoryInfo outputMeshFolder;
 
-	public FileInfo OutputAnimDataSingleFile => new(Path.Join(outputMeshFolder.FullName, ANIMDATA_FILENAME));
-	public FileInfo TemplateAnimDataSingleFile => new(Path.Join(templateFolder.FullName, ANIMDATA_FILENAME));
-
+	public FileInfo OutputAnimDataSingleFile =>
+		new(Path.Join(outputMeshFolder.FullName, ANIMDATA_FILENAME));
+	public FileInfo TemplateAnimDataSingleFile =>
+		new(Path.Join(templateFolder.FullName, ANIMDATA_FILENAME));
 
 	private int LastID { get; set; } = 32767;
 
@@ -83,30 +84,37 @@ public class AnimDataManager
 					int projectIndex = 0;
 					int sectionIndex = 0;
 					NumProjects = int.Parse(reader.ReadLine()!);
-					logger.Info($"Reading TemplateAnimData file {TemplateAnimDataSingleFile.Name}, found {NumProjects} projects.");
+					logger.Info(
+						$"Reading TemplateAnimData file {TemplateAnimDataSingleFile.Name}, found {NumProjects} projects."
+					);
 					Project? activeProject = null;
 					ProjectAnimData? animData = null;
 					MotionData? motionData;
 					while ((expectedLine = reader.ReadLine()) != null)
 					{
-
 						if (expectedLine.Contains(".txt"))
 						{
 							projectNames.Add(Path.GetFileNameWithoutExtension(expectedLine));
-
 						}
 						else if (int.TryParse(expectedLine, out int numLines))
 						{
 							string projectName = projectNames[projectIndex].ToLower();
 
-							if (projectManager.ProjectLoaded(projectName)) 
+							if (projectManager.ProjectLoaded(projectName))
 								activeProject = projectManager.LookupProject(projectName);
 
 							sectionIndex++;
 
 							if (sectionIndex % 2 != 0)
 							{
-								if (!ProjectAnimData.TryReadProject(reader, this, numLines, out animData))
+								if (
+									!ProjectAnimData.TryReadProject(
+										reader,
+										this,
+										numLines,
+										out animData
+									)
+								)
 								{
 									for (int i = 0; i < numLines; i++)
 									{
@@ -135,8 +143,8 @@ public class AnimDataManager
 									projectIndex++;
 									continue;
 								}
-								if (animData != null) animData.BoundMotionDataProject = motionData;
-
+								if (animData != null)
+									animData.BoundMotionDataProject = motionData;
 
 								motionDataList.Add(motionData);
 								projectIndex++;
@@ -150,15 +158,24 @@ public class AnimDataManager
 		}
 		catch (FormatException ex)
 		{
-			logger.Error(ex, $"Invalid format while reading TemplateAnimData file {TemplateAnimDataSingleFile.Name}");
+			logger.Error(
+				ex,
+				$"Invalid format while reading TemplateAnimData file {TemplateAnimDataSingleFile.Name}"
+			);
 		}
 		catch (IOException ex)
 		{
-			logger.Error(ex, $"I/O error while processing TemplateAnimData file {TemplateAnimDataSingleFile.Name}");
+			logger.Error(
+				ex,
+				$"I/O error while processing TemplateAnimData file {TemplateAnimDataSingleFile.Name}"
+			);
 		}
 		catch (Exception ex)
 		{
-			logger.Fatal(ex, $"Unexpected error while splitting TemplateAnimData from {TemplateAnimDataSingleFile.Name}");
+			logger.Fatal(
+				ex,
+				$"Unexpected error while splitting TemplateAnimData from {TemplateAnimDataSingleFile.Name}"
+			);
 			throw;
 		}
 	}
@@ -167,7 +184,10 @@ public class AnimDataManager
 	{
 		try
 		{
-			if (OutputAnimDataSingleFile.Directory != null && !OutputAnimDataSingleFile.Directory.Exists)
+			if (
+				OutputAnimDataSingleFile.Directory != null
+				&& !OutputAnimDataSingleFile.Directory.Exists
+			)
 			{
 				OutputAnimDataSingleFile.Directory.Create();
 				logger.Debug($"Created directory for OutputAnimData output");
@@ -192,7 +212,8 @@ public class AnimDataManager
 					writer.WriteLine(animData.GetLineCount());
 					writer.WriteLine(animData.ToString());
 
-					if (motionData == null) continue;
+					if (motionData == null)
+						continue;
 
 					writer.WriteLine(motionData.GetLineCount());
 					writer.WriteLine(motionData.ToString());

@@ -11,7 +11,13 @@ namespace Pandora.Services;
 
 public class StartupService
 {
-	public record StartupInfo(bool IsCustomSet, bool AutoRun, bool AutoClose, string Message, bool UseSkyrimDebug64);
+	public record StartupInfo(
+		bool IsCustomSet,
+		bool AutoRun,
+		bool AutoClose,
+		string Message,
+		bool UseSkyrimDebug64
+	);
 
 	public static StartupInfo Handle(LaunchOptions? options)
 	{
@@ -26,12 +32,20 @@ public class StartupService
 		{
 			message = modManager switch
 			{
-				ModManager.Vortex => "Output folder not set via -o. In the Pandora tool settings, add the parameter -o to the Command Line field.",
-				_ => "Output folder is not set. Use the -o argument to define it, or default location will be used."
+				ModManager.Vortex =>
+					"Output folder not set via -o. In the Pandora tool settings, add the parameter -o to the Command Line field.",
+				_ =>
+					"Output folder is not set. Use the -o argument to define it, or default location will be used.",
 			};
 		}
 
-		return new StartupInfo(isCustom, options?.AutoRun ?? false, options?.AutoClose ?? false, message, useSkyrimDebug64);
+		return new StartupInfo(
+			isCustom,
+			options?.AutoRun ?? false,
+			options?.AutoClose ?? false,
+			message,
+			useSkyrimDebug64
+		);
 	}
 
 	public static void LogPlugins()

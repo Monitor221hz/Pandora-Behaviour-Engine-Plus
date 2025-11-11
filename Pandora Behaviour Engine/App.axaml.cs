@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
+using System.Globalization;
+using System.IO;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
@@ -10,8 +12,6 @@ using Pandora.Logging;
 using Pandora.Utils;
 using Pandora.ViewModels;
 using Pandora.Views;
-using System.Globalization;
-using System.IO;
 
 namespace Pandora;
 
@@ -35,20 +35,19 @@ public partial class App : Application
 			// Line below is needed to remove Avalonia data validation.
 			// Without this line you will get duplicate validations from both Avalonia and CT
 			BindingPlugins.DataValidators.RemoveAt(0);
-			desktop.MainWindow = new MainWindow
-			{
-				DataContext = new MainWindowViewModel(),
-			};
+			desktop.MainWindow = new MainWindow { DataContext = new MainWindowViewModel() };
 		}
 
 		base.OnFrameworkInitializationCompleted();
 	}
+
 	private static void SetupCultureInfo()
 	{
 		CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
 		CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CreateSpecificCulture("en-US");
 		CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
 	}
+
 	private static void SetupAppTheme()
 	{
 		var theme = Properties.GUISettings.Default.AppTheme;
@@ -57,9 +56,10 @@ public partial class App : Application
 		{
 			0 => ThemeVariant.Light,
 			1 => ThemeVariant.Dark,
-			_ => ThemeVariant.Default
+			_ => ThemeVariant.Default,
 		};
 	}
+
 	private static void SetupNLogConfig()
 	{
 		var config = new NLog.Config.LoggingConfiguration();
@@ -68,7 +68,7 @@ public partial class App : Application
 		{
 			FileName = Path.Combine(PandoraPaths.OutputPath.FullName, "Engine.log"),
 			DeleteOldFileOnStartup = true,
-			Layout = "${level:uppercase=true} : ${message}"
+			Layout = "${level:uppercase=true} : ${message}",
 		};
 
 		config.AddTarget(fileTarget);
@@ -76,5 +76,4 @@ public partial class App : Application
 
 		NLog.LogManager.Configuration = config;
 	}
-
 }

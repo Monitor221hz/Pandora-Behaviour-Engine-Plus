@@ -1,12 +1,12 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using Pandora.Utils;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using System.Diagnostics;
+using Pandora.Utils;
 
 namespace Pandora.Logging;
 
@@ -25,7 +25,10 @@ public static class AppExceptionHandler
 	/// </summary>
 	/// <param name="sender"></param>
 	/// <param name="e"></param>
-	private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+	private static void CurrentDomain_UnhandledException(
+		object sender,
+		UnhandledExceptionEventArgs e
+	)
 	{
 		var ex = e.ExceptionObject as Exception;
 		// NOTE:
@@ -41,12 +44,16 @@ public static class AppExceptionHandler
 	/// </summary>
 	/// <param name="sender"></param>
 	/// <param name="e"></param>
-	private static void TaskScheduler_UnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
+	private static void TaskScheduler_UnobservedTaskException(
+		object? sender,
+		UnobservedTaskExceptionEventArgs e
+	)
 	{
 		var log = BuildLog("UnobservedTaskException", e.Exception.ToString());
 		WriteCrashLog("Pandora_CriticalCrash_UnobservedTaskException.log", log);
 		e.SetObserved();
 	}
+
 	private static void WriteCrashLog(string fileName, string log)
 	{
 		try
@@ -72,7 +79,9 @@ public static class AppExceptionHandler
 		sb.AppendLine("=======================================");
 		sb.AppendLine($"Type: {type}");
 		sb.AppendLine($"Environment.CurrentDirectory: {Environment.CurrentDirectory}");
-		sb.AppendLine($"Executable Path: {Process.GetCurrentProcess().MainModule?.FileName ?? "unknown"}");
+		sb.AppendLine(
+			$"Executable Path: {Process.GetCurrentProcess().MainModule?.FileName ?? "unknown"}"
+		);
 		sb.AppendLine();
 		sb.AppendLine(content);
 		sb.AppendLine("=======================================");

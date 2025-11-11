@@ -1,9 +1,6 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using NLog;
-using Pandora.Utils;
-using Pandora.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,6 +9,9 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using NLog;
+using Pandora.Utils;
+using Pandora.ViewModels;
 
 namespace Pandora.Services;
 
@@ -19,9 +19,14 @@ public static class JsonModSettingsStore
 {
 	private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 	private static readonly JsonSerializerOptions jsonOptions = new() { WriteIndented = true };
-	private static readonly Dictionary<string, ModSaveEntry> EmptySettings = new(StringComparer.OrdinalIgnoreCase);
+	private static readonly Dictionary<string, ModSaveEntry> EmptySettings = new(
+		StringComparer.OrdinalIgnoreCase
+	);
 
-	public static async Task<(bool Success, Dictionary<string, ModSaveEntry> Settings)> TryLoadAsync(string path)
+	public static async Task<(
+		bool Success,
+		Dictionary<string, ModSaveEntry> Settings
+	)> TryLoadAsync(string path)
 	{
 		if (!File.Exists(path))
 			return (false, EmptySettings);
@@ -29,7 +34,10 @@ public static class JsonModSettingsStore
 		try
 		{
 			var json = await File.ReadAllTextAsync(path);
-			var data = JsonSerializer.Deserialize<Dictionary<string, ModSaveEntry>>(json, jsonOptions);
+			var data = JsonSerializer.Deserialize<Dictionary<string, ModSaveEntry>>(
+				json,
+				jsonOptions
+			);
 
 			if (data is null)
 			{
@@ -37,8 +45,7 @@ public static class JsonModSettingsStore
 				return (false, EmptySettings);
 			}
 
-			var settings = data
-				.Where(kvp => kvp.Value is not null)
+			var settings = data.Where(kvp => kvp.Value is not null)
 				.ToDictionary(kvp => kvp.Key, kvp => kvp.Value!, StringComparer.OrdinalIgnoreCase);
 
 			return (true, settings);
@@ -77,13 +84,11 @@ public static class JsonModSettingsStore
 		logger.Info("Mod settings applied successfully.");
 	}
 
-
 	public static async Task SaveAsync(IEnumerable<ModInfoViewModel> mods, string settingsPath)
 	{
 		try
 		{
-			var settings = mods
-				.Where(m => !ModUtils.IsPandoraMod(m))
+			var settings = mods.Where(m => !ModUtils.IsPandoraMod(m))
 				.OrderBy(m => m.Priority)
 				.ToDictionary(
 					m => m.Code,

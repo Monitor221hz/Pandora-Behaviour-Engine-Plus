@@ -12,7 +12,9 @@ namespace Pandora.ViewModels;
 
 public partial class SettingsViewModel : ViewModelBase
 {
-	[Reactive] private bool _themeToggleState = Properties.GUISettings.Default.AppTheme == (int)PlatformThemeVariant.Dark;
+	[Reactive]
+	private bool _themeToggleState =
+		Properties.GUISettings.Default.AppTheme == (int)PlatformThemeVariant.Dark;
 
 	public SettingsViewModel()
 	{

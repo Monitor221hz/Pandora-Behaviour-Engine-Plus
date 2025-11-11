@@ -1,12 +1,12 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using Pandora.API.Patch.Engine.Config;
-using Pandora.Models.Patch.Engine.Plugins;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using Pandora.API.Patch.Engine.Config;
+using Pandora.Models.Patch.Engine.Plugins;
 
 namespace Pandora.Models.Patch.Plugins;
 
@@ -19,7 +19,9 @@ public static class PluginManager
 
 	public static void LoadAllPlugins(DirectoryInfo assemblyDirectory)
 	{
-		var pluginsDirectory = new DirectoryInfo(Path.Combine(assemblyDirectory.FullName, "Plugins"));
+		var pluginsDirectory = new DirectoryInfo(
+			Path.Combine(assemblyDirectory.FullName, "Plugins")
+		);
 		if (!pluginsDirectory.Exists)
 			return;
 
@@ -58,8 +60,10 @@ public static class PluginManager
 	{
 		foreach (Type type in assembly.GetTypes())
 		{
-			if (typeof(IEngineConfigurationPlugin).IsAssignableFrom(type) &&
-				Activator.CreateInstance(type) is IEngineConfigurationPlugin plugin)
+			if (
+				typeof(IEngineConfigurationPlugin).IsAssignableFrom(type)
+				&& Activator.CreateInstance(type) is IEngineConfigurationPlugin plugin
+			)
 			{
 				_configurations.Add(plugin);
 			}

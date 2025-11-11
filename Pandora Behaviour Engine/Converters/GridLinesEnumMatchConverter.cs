@@ -1,15 +1,15 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Data.Converters;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Data.Converters;
 
 namespace Pandora.Converters;
 
@@ -28,8 +28,12 @@ public class GridLinesEnumMatchConverter : IValueConverter
 
 	public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 	{
-		if (value is bool b && b && parameter is string param &&
-			Enum.TryParse<DataGridGridLinesVisibility>(param, out var result))
+		if (
+			value is bool b
+			&& b
+			&& parameter is string param
+			&& Enum.TryParse<DataGridGridLinesVisibility>(param, out var result)
+		)
 		{
 			return result;
 		}
