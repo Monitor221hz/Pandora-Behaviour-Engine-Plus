@@ -17,6 +17,9 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - uses: actions/setup-dotnet@v5
+      with:
+        dotnet-version: ${{ inputs.dotnet-version }}
     - name: Cache NuGet and Build Outputs
       uses: actions/cache@v4 # https://github.com/actions/cache
       with:
