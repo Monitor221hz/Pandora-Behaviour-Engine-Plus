@@ -8,9 +8,9 @@ namespace ExamplePlugin;
 
 public class ExampleEngineConfiguration : IEngineConfiguration
 {
-	public string Name { get; } = "Stuff";
+    public string Name { get; } = "Stuff";
 
-	public string Description { get; } = "Does some stuff."; 
+    public string Description { get; } = "Does some stuff.";
 
-	public IPatcher Patcher { get; } = new ExamplePatcher();
+    public IPatcher Patcher { get; } = new ExamplePatcher();
 }

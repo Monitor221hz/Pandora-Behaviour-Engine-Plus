@@ -1,23 +1,27 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using HKX2E;
-using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using HKX2E;
+using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
 
 public class FurnitureAnimation : BasicAnimation
 {
-	public FurnitureAnimation(Match match) : base(FNISAnimType.OffsetArm, match)
-	{
+	public FurnitureAnimation(Match match)
+		: base(FNISAnimType.OffsetArm, match) { }
 
-	}
-	public FurnitureAnimation(FNISAnimType templateType, FNISAnimFlags flags, string graphEvent, string animationFilePath, List<string> animationObjectNames) : base(templateType, flags, graphEvent, animationFilePath, animationObjectNames)
-	{
+	public FurnitureAnimation(
+		FNISAnimType templateType,
+		FNISAnimFlags flags,
+		string graphEvent,
+		string animationFilePath,
+		List<string> animationObjectNames
+	)
+		: base(templateType, flags, graphEvent, animationFilePath, animationObjectNames) { }
 
-	}
 	private static readonly hkbEventProperty headTrackingOffEventProperty = new() { id = 20 };
 	private static readonly hkbEventProperty idleChairSittingProperty = new() { id = 14 };
 	private static readonly hkbEventProperty idleFurnitureExitProperty = new() { id = 5 };
@@ -26,7 +30,7 @@ public class FurnitureAnimation : BasicAnimation
 	{
 		bindingType = 0,
 		bitIndex = -1,
-		variableIndex = 1, //bAnimationDriven, 
+		variableIndex = 1, //bAnimationDriven,
 		memberPath = "isActive",
 	};
 	private static readonly hkbClipTrigger idleFurnitureExitTrigger = new()
@@ -36,9 +40,12 @@ public class FurnitureAnimation : BasicAnimation
 		_event = idleFurnitureExitProperty,
 	};
 
-
-
-	public override void BuildFlags(FNISAnimationListBuildContext buildContext, PackFileGraph graph, hkbStateMachineStateInfo stateInfo, hkbClipGenerator clip)
+	public override void BuildFlags(
+		FNISAnimationListBuildContext buildContext,
+		PackFileGraph graph,
+		hkbStateMachineStateInfo stateInfo,
+		hkbClipGenerator clip
+	)
 	{
 		base.BuildFlags(buildContext, graph, stateInfo, clip);
 		if (Flags.HasFlag(FNISAnimFlags.SequenceStart) && NextAnimation != null)
@@ -53,7 +60,7 @@ public class FurnitureAnimation : BasicAnimation
 			//int exitEventIndex = 152;  // IdleChairExitStart
 			//exitTransition.eventId = exitEventIndex;
 			//exitTransition.transition = defaultTransition;
-			//exitTransition.toStateId = lastAnimation.Hash; 
+			//exitTransition.toStateId = lastAnimation.Hash;
 			//exitTransition.toNestedStateId = lastAnimation.Hash;
 			//exitTransitionInfoArray.transitions.Add(exitTransition);
 			//stateInfo.transitions = exitTransitionInfoArray;
@@ -102,13 +109,18 @@ public class FurnitureAnimation : BasicAnimation
 			clip.triggers = triggerObject;
 		}
 	}
+
 	public override bool BuildBehavior(FNISAnimationListBuildContext buildContext)
 	{
 		var project = buildContext.TargetProject;
 		var projectManager = buildContext.ProjectManager;
 		var modInfo = buildContext.ModInfo;
 
-		if (!base.BuildBehavior(buildContext) || !project.TryLookupPackFile("mt_behavior", out var targetPackFile) || targetPackFile is not PackFileGraph graph) //only supports humanoids as FNIS does
+		if (
+			!base.BuildBehavior(buildContext)
+			|| !project.TryLookupPackFile("mt_behavior", out var targetPackFile)
+			|| targetPackFile is not PackFileGraph graph
+		) //only supports humanoids as FNIS does
 		{
 			return false;
 		}
@@ -116,21 +128,12 @@ public class FurnitureAnimation : BasicAnimation
 		hkbStateMachine furnitureBehaviorState = new()
 		{
 			name = $"{GraphEvent}_Behavior",
-			wildcardTransitions = new()
-			{
-				transitions = []
-			}
+			wildcardTransitions = new() { transitions = [] },
 		};
 		furnitureBehaviorState.SetDefault();
 
 		//variable binding set for animation driven
-		hkbVariableBindingSet bindingSet = new()
-		{
-			bindings =
-			[
-				animationDrivenBinding
-			]
-		};
+		hkbVariableBindingSet bindingSet = new() { bindings = [animationDrivenBinding] };
 		string uniqueStateInfoName = $"{modInfo.Code}_{GraphEvent}_State";
 		int stateId = Hash;
 
@@ -146,13 +149,11 @@ public class FurnitureAnimation : BasicAnimation
 
 		//#5195
 
-
-
-
 		furnitureBehaviorState.name = $"Pandora_Furniture_Behavior";
 
 		// declare exit transition array reference in advance
-		hkbStateMachineTransitionInfoArray exitTransitionInfoArray = hkbStateMachineTransitionInfoArray.GetDefault();
+		hkbStateMachineTransitionInfoArray exitTransitionInfoArray =
+			hkbStateMachineTransitionInfoArray.GetDefault();
 
 		//enter furniture state and clip
 		int eventIndex = graph.AddDefaultEvent(GraphEvent);
@@ -176,7 +177,7 @@ public class FurnitureAnimation : BasicAnimation
 			//		}
 			//	}
 			//},
-			animationName = AnimationFilePath
+			animationName = AnimationFilePath,
 		};
 		enterClip.SetDefault();
 
@@ -184,40 +185,29 @@ public class FurnitureAnimation : BasicAnimation
 		{
 			name = GraphEvent,
 			stateId = stateId,
-			enterNotifyEvents = new()
-			{
-				events =
-				[
-					headTrackingOffEventProperty,
-				]
-			},
-			exitNotifyEvents = new()
-			{
-				events =
-				[
-					idleChairSittingProperty,
-				]
-			},
+			enterNotifyEvents = new() { events = [headTrackingOffEventProperty] },
+			exitNotifyEvents = new() { events = [idleChairSittingProperty] },
 			generator = enterClip,
-			transitions = exitTransitionInfoArray
-
+			transitions = exitTransitionInfoArray,
 		};
 		enterStateInfo.SetDefault();
 
 		BuildFlags(buildContext, graph, enterStateInfo, enterClip);
 
-
 		furnitureBehaviorState.states.Add(enterStateInfo);
 
 		int enterEventIndex = graph.AddDefaultEvent(GraphEvent);
 
-		// add root enter transition 
-		hkbStateMachineTransitionInfo rootEnterTransition = hkbStateMachineTransitionInfo.GetDefault();
+		// add root enter transition
+		hkbStateMachineTransitionInfo rootEnterTransition =
+			hkbStateMachineTransitionInfo.GetDefault();
 		rootEnterTransition.transition = defaultTransition;
 		rootEnterTransition.eventId = enterEventIndex;
 		rootEnterTransition.toStateId = 4; // furniture state
 		rootEnterTransition.toNestedStateId = stateId;
-		rootEnterTransition.flags |= (short)TransitionFlags.FLAG_TO_NESTED_STATE_ID_IS_VALID | (short)TransitionFlags.FLAG_IS_LOCAL_WILDCARD;
+		rootEnterTransition.flags |=
+			(short)TransitionFlags.FLAG_TO_NESTED_STATE_ID_IS_VALID
+			| (short)TransitionFlags.FLAG_IS_LOCAL_WILDCARD;
 
 		//hkbStateMachineTransitionInfo rootExitTransition = hkbStateMachineTransitionInfo.GetDefault();
 		//rootExitTransition.transition = longTransition6;
@@ -226,7 +216,8 @@ public class FurnitureAnimation : BasicAnimation
 		//rootExitTransition.toNestedStateId = stateId;
 		//rootExitTransition.flags |= (short)TransitionFlags.FLAG_TO_NESTED_STATE_ID_IS_VALID | (short)TransitionFlags.FLAG_IS_LOCAL_WILDCARD;
 
-		hkbStateMachineTransitionInfoArray rootTransitionArray = graph.GetPushedObjectAs<hkbStateMachineTransitionInfoArray>("#0089");
+		hkbStateMachineTransitionInfoArray rootTransitionArray =
+			graph.GetPushedObjectAs<hkbStateMachineTransitionInfoArray>("#0089");
 		lock (rootTransitionArray.transitions)
 		{
 			rootTransitionArray.transitions.Add(rootEnterTransition);
@@ -237,7 +228,9 @@ public class FurnitureAnimation : BasicAnimation
 		transition.transition = defaultTransition;
 		transition.eventId = enterEventIndex;
 		transition.toStateId = stateId;
-		transition.flags |= (short)TransitionFlags.FLAG_IS_LOCAL_WILDCARD | (short)TransitionFlags.FLAG_IS_GLOBAL_WILDCARD;
+		transition.flags |=
+			(short)TransitionFlags.FLAG_IS_LOCAL_WILDCARD
+			| (short)TransitionFlags.FLAG_IS_GLOBAL_WILDCARD;
 		if (Flags.HasFlag(FNISAnimFlags.SequenceStart) && NextAnimation != null)
 		{
 			var lastAnimation = NextAnimation;
@@ -245,18 +238,24 @@ public class FurnitureAnimation : BasicAnimation
 			{
 				lastAnimation = lastAnimation.NextAnimation;
 			}
-			hkbStateMachineTransitionInfo exitTransition = hkbStateMachineTransitionInfo.GetDefault();
+			hkbStateMachineTransitionInfo exitTransition =
+				hkbStateMachineTransitionInfo.GetDefault();
 			exitTransition.transition = defaultTransition;
 			exitTransition.eventId = 152;
 			exitTransition.toStateId = lastAnimation.Hash;
 			exitTransition.toNestedStateId = lastAnimation.Hash;
-			exitTransition.flags |= (short)TransitionFlags.FLAG_TO_NESTED_STATE_ID_IS_VALID | (short)TransitionFlags.FLAG_IS_LOCAL_WILDCARD;
-			furnitureGroupStateInfo.transitions = new hkbStateMachineTransitionInfoArray() { transitions = [] };
+			exitTransition.flags |=
+				(short)TransitionFlags.FLAG_TO_NESTED_STATE_ID_IS_VALID
+				| (short)TransitionFlags.FLAG_IS_LOCAL_WILDCARD;
+			furnitureGroupStateInfo.transitions = new hkbStateMachineTransitionInfoArray()
+			{
+				transitions = [],
+			};
 			furnitureGroupStateInfo.transitions.transitions.Add(exitTransition);
 		}
 		furnitureBehaviorState.wildcardTransitions.transitions.Add(transition);
 
-		//IFNISAnimation? animation = this; 
+		//IFNISAnimation? animation = this;
 		//IFNISAnimation lastAnimation = NextAnimation;
 		//hkbStateMachineStateInfo stateInfo;
 		//hkbClipGenerator? clipGenerator = null;
@@ -305,7 +304,7 @@ public class FurnitureAnimation : BasicAnimation
 		//int exitEventIndex = 152;  // IdleChairExitStart
 		//exitTransition.eventId = exitEventIndex;
 		//exitTransition.transition = longTransition6;
-		//exitTransition.toStateId = furnitureBehaviorState.states.Count - 1; 
+		//exitTransition.toStateId = furnitureBehaviorState.states.Count - 1;
 
 		//exitTransitionInfoArray.transitions.Add(exitTransition);
 		//var exitState = furnitureBehaviorState.states.Last();
@@ -320,7 +319,6 @@ public class FurnitureAnimation : BasicAnimation
 		//		}
 		//	}
 		//};
-
 
 		//#4002
 		hkbStateMachine furnitureGraph = graph.GetPushedObjectAs<hkbStateMachine>("#4002");

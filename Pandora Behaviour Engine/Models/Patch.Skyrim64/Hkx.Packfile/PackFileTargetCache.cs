@@ -1,14 +1,15 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using HKX2E;
-using Pandora.API.Patch;
-using Pandora.Models.Patch.Skyrim64.Hkx.Changes;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Xml.Linq;
+using HKX2E;
+using Pandora.API.Patch;
+using Pandora.Models.Patch.Skyrim64.Hkx.Changes;
 
 namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
+
 /// <summary>
 /// Reuses pack file change sets when possible and outputs targets for patching. Thread safe.
 /// </summary>
@@ -18,6 +19,7 @@ public class PackFileTargetCache
 	private Dictionary<PackFile, HavokXmlSerializer> packFileSerializerMap = [];
 
 	private ProjectManager projectManager;
+
 	public PackFileTargetCache(IModInfo origin, ProjectManager manager)
 	{
 		Origin = origin;
@@ -45,6 +47,7 @@ public class PackFileTargetCache
 		}
 		return serializer;
 	}
+
 	public PackFileChangeSet GetChangeSet(PackFile packFile)
 	{
 		lock (packFileChangeSetMap)
@@ -52,7 +55,11 @@ public class PackFileTargetCache
 			return packFileChangeSetMap[packFile].ChangeSet;
 		}
 	}
-	public bool TryGetChangeSet(PackFile packFile, [NotNullWhen(true)] out PackFileChangeSet? changeSet)
+
+	public bool TryGetChangeSet(
+		PackFile packFile,
+		[NotNullWhen(true)] out PackFileChangeSet? changeSet
+	)
 	{
 		lock (packFileChangeSetMap)
 		{
@@ -65,6 +72,7 @@ public class PackFileTargetCache
 		changeSet = null;
 		return false;
 	}
+
 	public void AddChangeSet(PackFile packFile, PackFileChangeSet changeSet)
 	{
 		lock (packFileChangeSetMap)
@@ -76,6 +84,7 @@ public class PackFileTargetCache
 		}
 		projectManager.TryActivatePackFile(packFile);
 	}
+
 	public void AddChange(PackFile packFile, IPackFileChange change)
 	{
 		lock (packFileChangeSetMap)
@@ -94,6 +103,7 @@ public class PackFileTargetCache
 		changeSet.AddChange(change);
 		AddChangeSet(packFile, changeSet);
 	}
+
 	/// <summary>
 	/// Add a named havok object as a change, provided no existing objects have been added already.
 	/// </summary>
@@ -101,20 +111,21 @@ public class PackFileTargetCache
 	/// <param name="hkObject"></param>
 	/// <param name="packFile"></param>
 	/// <param name="name"></param>
-	public void AddNamedHkObjectAsChange<T>(T hkObject, PackFile packFile, string name) where T : IHavokObject
+	public void AddNamedHkObjectAsChange<T>(T hkObject, PackFile packFile, string name)
+		where T : IHavokObject
 	{
-		//bool existingReference = false; 
+		//bool existingReference = false;
 		//XElement element = GetSerializer(packFile).WriteRegisteredNamedObject<T>(hkObject, name, out existingReference);
 		//if (!existingReference)
 		//{
 		//	//AddElementAsChange(packFile, element);
 		//}
 	}
+
 	public void AddElementAsChange(PackFile packFile, XElement element)
 	{
 		lock (packFileChangeSetMap)
 		{
-
 			if (packFileChangeSetMap.TryGetValue(packFile, out var target))
 			{
 				lock (target.ChangeSet)

@@ -1,10 +1,10 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using Pandora.Models.Extensions;
 using System;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using Pandora.Models.Extensions;
 using XmlCake.Linq;
 
 namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
@@ -12,10 +12,13 @@ namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 public partial class PackFileEditor
 {
 	private static readonly char[] trimChars = ['\t', '\r', '\n', ')', '('];
+
 	[GeneratedRegex(@"(?:\s|\(|\))+", RegexOptions.Compiled)]
 	private static partial Regex WhiteSpaceRegex { get; }
+
 	[GeneratedRegex(@"(?:\*|\+|\?|\||\^|\.|\#)", RegexOptions.Compiled)]
 	private static partial Regex EscapeRegex { get; }
+
 	private static string NormalizeElementValue(XElement element)
 	{
 		var value = WhiteSpaceRegex.Replace(element.Value.Trim(trimChars), " ");
@@ -26,8 +29,9 @@ public partial class PackFileEditor
 	{
 		return WhiteSpaceRegex.Replace(value.Trim(trimChars), " ");
 	}
-	public static XElement ReplaceElement(IXMap xmap, string path, XElement element) => xmap.ReplaceElement(path, element);
 
+	public static XElement ReplaceElement(IXMap xmap, string path, XElement element) =>
+		xmap.ReplaceElement(path, element);
 
 	public static string InsertElement(IXMap xmap, string path, XElement element)
 	{
@@ -46,11 +50,17 @@ public partial class PackFileEditor
 
 	public static XElement RemoveElement(IXMap xmap, string path) => xmap.RemoveElement(path);
 
-	public static bool ReplaceText(IXMap xmap, string path, string preValue, string oldValue, string newValue)
+	public static bool ReplaceText(
+		IXMap xmap,
+		string path,
+		string preValue,
+		string oldValue,
+		string newValue
+	)
 	{
-
 		XElement element = xmap.NavigateTo(path);
-		if (string.IsNullOrWhiteSpace(oldValue)) return false;
+		if (string.IsNullOrWhiteSpace(oldValue))
+			return false;
 
 		string source = NormalizeElementValue(element);
 		//if (String.IsNullOrWhiteSpace(newValue))
@@ -76,23 +86,30 @@ public partial class PackFileEditor
 			matchIndex++;
 			if (matchIndex == targetMatchIndex)
 			{
-				source = string.Concat(source.AsSpan(0, match.Index), newValue, source.AsSpan(match.Index + match.Length));
+				source = string.Concat(
+					source.AsSpan(0, match.Index),
+					newValue,
+					source.AsSpan(match.Index + match.Length)
+				);
 				break;
 			}
-
 		}
-		if (matchIndex == -1) { return false; }
+		if (matchIndex == -1)
+		{
+			return false;
+		}
 		element.SetValue(source);
 
 		return true;
-
 	}
+
 	public static bool SetText(IXMap xmap, string path, string newValue)
 	{
 		XElement element = xmap.NavigateTo(path);
 		element.SetValue(newValue);
 		return true;
 	}
+
 	public static bool InsertText(IXMap xmap, string path, string markerValue, string newValue)
 	{
 		XElement element = xmap.NavigateTo(path);
@@ -100,7 +117,10 @@ public partial class PackFileEditor
 
 		markerValue = NormalizeStringValue(markerValue);
 		var match = Regex.Match(source, markerValue);
-		if (!match.Success) { return false; }
+		if (!match.Success)
+		{
+			return false;
+		}
 		source = string.Concat(source.AsSpan(0, match.Index), newValue, source.AsSpan(match.Index));
 
 		//var headSpan = source.AsSpan(0,markerValue.Length);
@@ -119,10 +139,12 @@ public partial class PackFileEditor
 		source = NormalizeStringValue(string.Concat(source, " ", newValue, " "));
 		element.SetValue(source);
 	}
+
 	public static void RemoveText(IXMap xmap, string path, string value)
 	{
 		XElement element = xmap.NavigateTo(path);
-		if (string.IsNullOrWhiteSpace(value)) return;
+		if (string.IsNullOrWhiteSpace(value))
+			return;
 		string source = element.Value;
 		source = NormalizeStringValue(source.Replace(value, string.Empty, true));
 		element.SetValue(source);

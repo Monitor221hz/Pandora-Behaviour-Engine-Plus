@@ -17,6 +17,11 @@ public interface IFNISAnimation
 	public FNISAnimType TemplateType { get; }
 	public void BuildAnimation(Project project, ProjectManager projectManager);
 	public bool BuildBehavior(FNISAnimationListBuildContext buildContext);
-	public void BuildFlags(FNISAnimationListBuildContext buildContext, PackFileGraph graph, hkbStateMachineStateInfo stateInfo, hkbClipGenerator clip);
+	public void BuildFlags(
+		FNISAnimationListBuildContext buildContext,
+		PackFileGraph graph,
+		hkbStateMachineStateInfo stateInfo,
+		hkbClipGenerator clip
+	);
 	public string ToString();
 }

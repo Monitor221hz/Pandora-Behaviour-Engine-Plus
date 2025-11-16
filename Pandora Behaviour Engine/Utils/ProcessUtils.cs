@@ -1,7 +1,6 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using Pandora.API.ModManager;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
+using Pandora.API.ModManager;
 using static Vanara.PInvoke.NtDll;
 
 namespace Pandora.Utils;
@@ -20,14 +20,16 @@ public static class ProcessUtils
 
 	public static ModManager Source => _parentProcessInfo.Value.Manager;
 
-	private static readonly Lazy<ParentProcessInfo> _parentProcessInfo = new(DetectAndCacheParentProcess);
+	private static readonly Lazy<ParentProcessInfo> _parentProcessInfo = new(
+		DetectAndCacheParentProcess
+	);
 
 	private record ParentProcessInfo(int Pid, ModManager Manager);
 
 	private static readonly List<(string[] keywords, ModManager manager)> _managerDetectors = new()
 	{
 		(new[] { "modorganizer", "mo2" }, ModManager.ModOrganizer),
-		(new[] { "vortex" }, ModManager.Vortex)
+		(new[] { "vortex" }, ModManager.Vortex),
 	};
 
 	private static ParentProcessInfo DetectAndCacheParentProcess()
@@ -53,10 +55,20 @@ public static class ProcessUtils
 				return new ParentProcessInfo(parentPid, detectedManager);
 			}
 
-			if (parentName.Contains("wine"))
+			if (parentName.Contains("proton"))
 			{
-				var managerInWine = DetectManagerInWine(parentPid);
-				if (managerInWine != ModManager.None)
+				var managerInProton = DetectManagerFromCmdline(parentPid);
+				if (managerInProton is not ModManager.None)
+				{
+					Logger.Info($"Detected launcher: {managerInProton} (Proton)");
+					return new ParentProcessInfo(parentPid, managerInProton);
+				}
+				Logger.Info("Proton detected, but no known mod manager found");
+			}
+			else if (parentName.Contains("wine"))
+			{
+				var managerInWine = DetectManagerFromCmdline(parentPid);
+				if (managerInWine is not ModManager.None)
 				{
 					Logger.Info($"Detected launcher: {managerInWine} (Wine)");
 					return new ParentProcessInfo(parentPid, managerInWine);
@@ -119,8 +131,9 @@ public static class ProcessUtils
 		try
 		{
 			PROCESS_BASIC_INFORMATION pbi = NtQueryInformationProcess<PROCESS_BASIC_INFORMATION>(
-			   process.Handle,
-			   PROCESSINFOCLASS.ProcessBasicInformation);
+				process.Handle,
+				PROCESSINFOCLASS.ProcessBasicInformation
+			);
 
 			return (int)pbi.InheritedFromUniqueProcessId.ToUInt32();
 		}
@@ -157,11 +170,12 @@ public static class ProcessUtils
 		return InvalidProcessId;
 	}
 
-	private static ModManager DetectManagerInWine(int winePid)
+	[SupportedOSPlatform("linux")]
+	private static ModManager DetectManagerFromCmdline(int parentPid)
 	{
 		try
 		{
-			string cmdlinePath = $"/proc/{winePid}/cmdline";
+			string cmdlinePath = $"/proc/{parentPid}/cmdline";
 			if (!File.Exists(cmdlinePath))
 				return ModManager.None;
 
@@ -171,7 +185,7 @@ public static class ProcessUtils
 		}
 		catch (Exception ex)
 		{
-			Logger.Warn(ex, $"Failed to inspect cmdline for PID {winePid}");
+			Logger.Warn(ex, $"Failed to inspect cmdline for PID {parentPid}");
 		}
 
 		return ModManager.None;

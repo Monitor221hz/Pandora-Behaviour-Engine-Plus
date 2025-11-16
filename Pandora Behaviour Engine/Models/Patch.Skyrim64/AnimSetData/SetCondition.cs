@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using Pandora.Models.Extensions;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
+using Pandora.Models.Extensions;
 
 namespace Pandora.Models.Patch.Skyrim64.AnimSetData;
 
@@ -22,13 +22,20 @@ public class SetCondition
 	public int Value1 { get; private set; } = 0;
 
 	public int Value2 { get; private set; } = 0;
+
 	public static bool TryRead(StreamReader reader, [NotNullWhen(true)] out SetCondition? condition)
 	{
 		condition = null;
-		if (!reader.TryReadLine(out var variableName) || !int.TryParse(reader.ReadLine(), out int value1) || !int.TryParse(reader.ReadLine(), out int value2)) { return false; }
+		if (
+			!reader.TryReadLine(out var variableName)
+			|| !int.TryParse(reader.ReadLine(), out int value1)
+			|| !int.TryParse(reader.ReadLine(), out int value2)
+		)
+		{
+			return false;
+		}
 		condition = new(variableName, value1, value2);
 		return true;
-
 	}
 
 	public override string ToString()
@@ -40,6 +47,5 @@ public class SetCondition
 		sb.AppendLine(Value2.ToString());
 
 		return sb.ToString();
-
 	}
 }

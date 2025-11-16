@@ -1,16 +1,21 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.IO.Abstractions;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using Pandora.API.Patch;
 using Pandora.API.Patch.Engine.Config;
 using Pandora.Models.Patch.Configs;
 using Pandora.Models.Patch.Plugins;
 using Pandora.Utils;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Threading.Tasks;
+using Pandora.Utils.Platform.Windows;
+using Pandora.Utils.Skyrim;
+using Testably.Abstractions;
 
 namespace Pandora.Models;
 
@@ -22,11 +27,13 @@ public class BehaviourEngine
 
 	/// <summary>
 	/// Gets the real file system path to the folder containing the running executable.
-	/// 
-	/// Unlike typical assembly path methods, this returns the actual disk path even when 
+	///
+	/// Unlike typical assembly path methods, this returns the actual disk path even when
 	/// running inside virtualized environments like Mod Organizer 2 (MO2), bypassing the VFS.
 	/// </summary>
-	public static readonly DirectoryInfo AssemblyDirectory = new(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule?.FileName)!);
+	public static readonly DirectoryInfo AssemblyDirectory = new(
+		Path.GetDirectoryName(Process.GetCurrentProcess().MainModule?.FileName)!
+	);
 
 	public static readonly DirectoryInfo CurrentDirectory = new(Environment.CurrentDirectory!);
 	public static readonly DirectoryInfo SkyrimGameDirectory;
@@ -35,18 +42,26 @@ public class BehaviourEngine
 	public bool IsExternalOutput = false;
 
 	public IEngineConfiguration Configuration { get; private set; } = new SkyrimConfiguration();
-	public static DirectoryInfo OutputPath { get; private set; } = new(Environment.CurrentDirectory);
+	public static DirectoryInfo OutputPath { get; private set; } =
+		new(Environment.CurrentDirectory);
 
 	static BehaviourEngine()
 	{
 		PluginManager.LoadAllPlugins(AssemblyDirectory);
-		SkyrimGameDirectory = SkyrimPathResolver.Resolve();
+		var runtimeEnvironment = new PandoraRuntimeEnvironment();
+		var registry = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+			? new WindowsRegistry()
+			: null;
+		var fileSystem = new RealFileSystem();
+		var skyrimPathResolver = new SkyrimPathResolver(runtimeEnvironment, registry, fileSystem);
+
+		IDirectoryInfo abstractSkyrimDir = skyrimPathResolver.Resolve();
+
+		SkyrimGameDirectory = new DirectoryInfo(abstractSkyrimDir.FullName);
 	}
 
-	public BehaviourEngine()
-	{
+	public BehaviourEngine() { }
 
-	}
 	public BehaviourEngine SetOutputPath(DirectoryInfo outputPath)
 	{
 		OutputPath = outputPath!;
@@ -60,14 +75,6 @@ public class BehaviourEngine
 		Configuration = configuration ?? new SkyrimConfiguration();
 		return this;
 	}
-	public void Launch(List<IModInfo> mods)
-	{
-		logger.Info($"Launching with configuration {Configuration.Name}");
-		logger.Info($"Launching with patcher {Configuration.Patcher.GetVersionString()}");
-		Configuration.Patcher.SetTarget(mods);
-		Configuration.Patcher.Update();
-		Configuration.Patcher.Run();
-	}
 
 	public async Task<bool> LaunchAsync(List<IModInfo> mods)
 	{
@@ -75,18 +82,19 @@ public class BehaviourEngine
 		logger.Info($"Launching with patcher version {Configuration.Patcher.GetVersionString()}");
 		Configuration.Patcher.SetTarget(mods);
 
-		if (!OutputPath.Exists) OutputPath.Create();
+		if (!OutputPath.Exists)
+			OutputPath.Create();
 
-
-		if (!await Configuration.Patcher.UpdateAsync()) { return false; }
+		if (!await Configuration.Patcher.UpdateAsync())
+			return false;
 
 		return await Configuration.Patcher.RunAsync();
 	}
 
+	public async Task PreloadAsync() => await Configuration.Patcher.PreloadAsync();
 
-	public async Task PreloadAsync() => 
-		await Configuration.Patcher.PreloadAsync();
-
-	public string GetMessages(bool success) => 
-		success ? Configuration.Patcher.GetPostRunMessages() : Configuration.Patcher.GetFailureMessages();
+	public string GetMessages(bool success) =>
+		success
+			? Configuration.Patcher.GetPostRunMessages()
+			: Configuration.Patcher.GetFailureMessages();
 }

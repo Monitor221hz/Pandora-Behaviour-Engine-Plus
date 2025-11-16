@@ -1,9 +1,9 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using Avalonia.Controls;
 using System;
 using System.Runtime.InteropServices;
+using Avalonia.Controls;
 
 namespace Pandora.Utils;
 
@@ -28,7 +28,7 @@ public static partial class TaskbarFlasher
 			hwnd = handle,
 			dwFlags = FLASHW_ALL | FLASHW_TIMERNOFG,
 			uCount = uint.MaxValue,
-			dwTimeout = 0
+			dwTimeout = 0,
 		};
 
 		FlashWindowEx(ref fw);
@@ -52,7 +52,7 @@ public static partial class TaskbarFlasher
 			hwnd = handle,
 			dwFlags = FLASHW_STOP,
 			uCount = 0,
-			dwTimeout = 0
+			dwTimeout = 0,
 		};
 
 		FlashWindowEx(ref fw);

@@ -1,12 +1,13 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using Pandora.API.Patch;
 using System;
 using System.IO;
 using System.Xml.Serialization;
+using Pandora.API.Patch;
 
 namespace Pandora.Models.Patch.Mod;
+
 //<mod>
 //	<name></name>
 //	<author></author>
@@ -20,11 +21,10 @@ public class PandoraModInfo : IModInfo
 	{
 		return Code.GetHashCode();
 	}
+
 	public bool Equals(IModInfo? other)
 	{
-		return other == null ? false :
-			Code == other.Code &&
-			Version == other.Version;
+		return other == null ? false : Code == other.Code && Version == other.Version;
 	}
 
 	[XmlIgnore]
@@ -57,13 +57,10 @@ public class PandoraModInfo : IModInfo
 	[XmlIgnore]
 	public bool Valid { get; private set; } = true;
 
-	private PandoraModInfo()
-	{
+	private PandoraModInfo() { }
 
-	}
 	public void FillData(DirectoryInfo folder)
 	{
 		Folder = folder;
 	}
-
 }

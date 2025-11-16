@@ -1,0 +1,53 @@
+name: validate license headers
+
+on:
+  pull_request:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  fix-license-headers:
+    # For PRs from forks, the bot has no write permission, so only run the fix job on pushes to main or PRs from the same repo.
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          repository: ${{ (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name) || github.repository }}
+          ref: ${{ (github.event_name == 'pull_request' && github.event.pull_request.head.ref) || github.ref_name }}
+          persist-credentials: true
+
+      - name: fix headers
+        uses: apache/skywalking-eyes/header@v0.7.0
+        with:
+          mode: fix
+          
+      - name: apply changes
+        uses: EndBug/add-and-commit@v9.1.4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          author_name: License Bot
+          author_email: license_bot@github.com
+          message: 'Automatic application of license header'
+
+  check-license-headers:
+    # Only run the check job on PRs from forks.
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+          fetch-depth: 1
+      - name: check headers
+        uses: apache/skywalking-eyes/header@v0.7.0
+        with:
+          mode: check
+    

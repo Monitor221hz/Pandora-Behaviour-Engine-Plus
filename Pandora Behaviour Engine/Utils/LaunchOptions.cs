@@ -1,12 +1,12 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using Pandora.Logging;
 using System;
 using System.Collections.Generic;
 using System.CommandLine;
 using System.IO;
 using System.Linq;
+using Pandora.Logging;
 
 namespace Pandora.Utils;
 
@@ -33,23 +33,23 @@ public class LaunchOptions
 	{
 		_outputOption = new(name: "--output", aliases: ["-output", "-o"])
 		{
-			Description = "Output directory."
+			Description = "Output directory.",
 		};
 		_tesvOption = new(name: "--tesv", aliases: "-tesv")
 		{
-			Description = "Skyrim directory (TESV), should point to Skyrim root folder."
+			Description = "Skyrim directory (TESV), should point to Skyrim root folder.",
 		};
 		_autoRunOption = new(name: "--auto_run", aliases: ["-auto_run", "-ar"])
 		{
-			Description = "Automatically run after start."
+			Description = "Automatically run after start.",
 		};
 		_autoCloseOption = new(name: "--auto_close", aliases: ["-auto_close", "-ac"])
 		{
-			Description = "Close app after execution."
+			Description = "Close app after execution.",
 		};
 		_skyrimDebug64Option = new(name: "--skyrim_debug64", aliases: "-skyrim_debug64")
 		{
-			Description = "Use skyrim debug 64-bit mode."
+			Description = "Use skyrim debug 64-bit mode.",
 		};
 
 		_rootCommand = new RootCommand("Pandora command line arguments.");
@@ -59,7 +59,6 @@ public class LaunchOptions
 		_rootCommand.Options.Add(_autoCloseOption);
 		_rootCommand.Options.Add(_skyrimDebug64Option);
 	}
-
 
 	public static LaunchOptions Parse(string[]? args, bool caseInsensitive = false)
 	{
@@ -75,31 +74,32 @@ public class LaunchOptions
 			options.UseSkyrimDebug64 = parseResult.GetValue(_skyrimDebug64Option);
 		});
 
-		string[] normalizedArgs = args;
-		if (caseInsensitive)
-		{
-			normalizedArgs = PreprocessArgumentsForCaseInsensitivity(args, _rootCommand);
-		}
+		PreprocessArguments(args, _rootCommand, caseInsensitive);
 
 		var config = new CommandLineConfiguration(_rootCommand);
-		var parseResult = config.Parse(normalizedArgs);
+		var parseResult = config.Parse(args);
 
 		if (parseResult.Errors.Any())
 		{
 			var unmatchedTokens = parseResult.UnmatchedTokens;
 			if (unmatchedTokens.Any())
 			{
-				string unrecognizedArgs = string.Join(", ", unmatchedTokens.Select(token => $"'{token}'"));
-				string errorArgsMsg = $"Unrecognized command-line argument(s) provided: {unrecognizedArgs}.";
-				string infoArgsMsg = "Please check the spelling and prefixes ('-' for short aliases, '--' for full names).";
+				string unrecognizedArgs = string.Join(
+					", ",
+					unmatchedTokens.Select(token => $"'{token}'")
+				);
+				string errorArgsMsg =
+					$"Unrecognized command-line argument(s) provided: {unrecognizedArgs}.";
+				string infoArgsMsg =
+					"Please check the spelling and prefixes ('-' for short aliases, '--' for full names).";
 				logger.Error(errorArgsMsg);
 				logger.Info(infoArgsMsg);
 				EngineLoggerAdapter.AppendLine($"ERROR: {errorArgsMsg}");
 				EngineLoggerAdapter.AppendLine(infoArgsMsg);
 			}
 
-			var otherErrors = parseResult.Errors
-				.Where(e => !e.Message.StartsWith("Unrecognized command or argument"))
+			var otherErrors = parseResult
+				.Errors.Where(e => !e.Message.StartsWith("Unrecognized command or argument"))
 				.ToList();
 
 			if (otherErrors.Any())
@@ -109,7 +109,9 @@ public class LaunchOptions
 				{
 					logger.Error($"- {error.Message}");
 				}
-				EngineLoggerAdapter.AppendLine("ERROR: Command line arguments could not be processed. See Engine.log for details.");
+				EngineLoggerAdapter.AppendLine(
+					"ERROR: Command line arguments could not be processed. See Engine.log for details."
+				);
 			}
 		}
 		else
@@ -118,6 +120,7 @@ public class LaunchOptions
 		}
 
 		Current = options;
+
 		return options;
 	}
 
@@ -131,46 +134,47 @@ public class LaunchOptions
 	/// </summary>
 	/// <param name="args">The array of command-line arguments to normalize.</param>
 	/// <param name="rootCommand">The command containing the defined options and their aliases.</param>
-	/// <returns>An array of normalized arguments, with option aliases standardized and values separated.</returns>
-	private static string[] PreprocessArgumentsForCaseInsensitivity(string[] args, RootCommand rootCommand)
+	/// <param name="caseInsensitive">Boolean value to enable case insensitivity.</param>
+	private static void PreprocessArguments(
+		string[] args,
+		RootCommand rootCommand,
+		bool caseInsensitive = false
+	)
 	{
-		var canonicalAliases = rootCommand.Options
-			.SelectMany(option => option.Aliases)
+		var comparison = caseInsensitive
+			? StringComparison.OrdinalIgnoreCase
+			: StringComparison.Ordinal;
+
+		var canonicalAliases = rootCommand
+			.Options.SelectMany(option => option.Aliases.Prepend(option.Name))
 			.OrderByDescending(alias => alias.Length)
 			.ToList();
 
-		var processedArgs = new List<string>(args.Length);
-
-		foreach (var token in args)
+		for (int i = 0; i < args.Length; i++)
 		{
-
+			var token = args[i];
 			if (!token.StartsWith('-'))
-			{
-				processedArgs.Add(token);
 				continue;
-			}
 
-			var matchedCanonicalAlias = canonicalAliases.FirstOrDefault(
-				alias => token.StartsWith(alias, StringComparison.OrdinalIgnoreCase));
+			var matchedCanonicalAlias = canonicalAliases.FirstOrDefault(alias =>
+				token.StartsWith(alias, comparison)
+			);
 
-			if (matchedCanonicalAlias != null)
+			if (matchedCanonicalAlias is null)
+				continue;
+
+			var valuePart = token.AsSpan(matchedCanonicalAlias.Length);
+			if (valuePart.Length > 0)
 			{
-				var valuePart = token[matchedCanonicalAlias.Length..];
+				var firstChar = valuePart[0];
+				if (firstChar is not ':' and not '=')
+				{
+					args[i] = $"{matchedCanonicalAlias}:{valuePart}";
+					continue;
+				}
+			}
 
-				if (matchedCanonicalAlias.StartsWith("--") && valuePart.Length > 0 && !valuePart.StartsWith(':') && !valuePart.StartsWith('='))
-				{
-					processedArgs.Add($"{matchedCanonicalAlias}:{valuePart}");
-				}
-				else
-				{
-					processedArgs.Add(matchedCanonicalAlias + valuePart);
-				}
-			}
-			else
-			{
-				processedArgs.Add(token);
-			}
+			args[i] = string.Concat(matchedCanonicalAlias.AsSpan(), valuePart);
 		}
-		return [.. processedArgs];
 	}
 }

@@ -1,31 +1,37 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
+using System.Collections.ObjectModel;
+using System.Reactive;
 using Pandora.API.Patch.Engine.Config;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
-using System.Collections.ObjectModel;
-using System.Reactive;
 
 namespace Pandora.ViewModels;
 
-public partial class EngineConfigurationViewModelContainer : ViewModelBase, IEngineConfigurationViewModel
+public partial class EngineConfigurationViewModelContainer
+	: ViewModelBase,
+		IEngineConfigurationViewModel
 {
-    [Reactive] private string _name;
+	[Reactive]
+	private string _name;
 
-    public ReactiveCommand<IEngineConfigurationFactory, Unit>? SetCommand { get; }
+	public ReactiveCommand<IEngineConfigurationFactory, Unit>? SetCommand { get; }
 
-    public ObservableCollection<IEngineConfigurationViewModel> NestedViewModels { get; }
+	public ObservableCollection<IEngineConfigurationViewModel> NestedViewModels { get; }
 
-    public EngineConfigurationViewModelContainer(string name)
-    {
-        Name = name;
-        NestedViewModels = [];
-    }
-    public EngineConfigurationViewModelContainer(string name, params IEngineConfigurationViewModel[] viewModels)
-    {
-        Name = name;
-        NestedViewModels = new ObservableCollection<IEngineConfigurationViewModel>(viewModels);
-    }
+	public EngineConfigurationViewModelContainer(string name)
+	{
+		Name = name;
+		NestedViewModels = [];
+	}
 
+	public EngineConfigurationViewModelContainer(
+		string name,
+		params IEngineConfigurationViewModel[] viewModels
+	)
+	{
+		Name = name;
+		NestedViewModels = new ObservableCollection<IEngineConfigurationViewModel>(viewModels);
+	}
 }

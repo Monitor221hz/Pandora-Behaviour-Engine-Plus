@@ -1,18 +1,23 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using Pandora.Models.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
+using Pandora.Models.Extensions;
 
 namespace Pandora.Models.Patch.Skyrim64.AnimSetData;
 
 public class ProjectAnimSetData
 {
-	public ProjectAnimSetData(int numSets, IList<string> animSetFileNames, IList<AnimSet> animSets, Dictionary<string, AnimSet> animSetsByName)
+	public ProjectAnimSetData(
+		int numSets,
+		IList<string> animSetFileNames,
+		IList<AnimSet> animSets,
+		Dictionary<string, AnimSet> animSetsByName
+	)
 	{
 		NumSets = numSets;
 		AnimSetFileNames = animSetFileNames;
@@ -27,22 +32,35 @@ public class ProjectAnimSetData
 	public IList<AnimSet> AnimSets { get; private set; } = [];
 
 	public Dictionary<string, AnimSet> AnimSetsByName { get; private set; } = [];
-	public static bool TryRead(StreamReader reader, [NotNullWhen(true)] out ProjectAnimSetData? setData)
+
+	public static bool TryRead(
+		StreamReader reader,
+		[NotNullWhen(true)] out ProjectAnimSetData? setData
+	)
 	{
 		setData = null;
-		if (!int.TryParse(reader.ReadLine(), out int numSets)) { return false; }
+		if (!int.TryParse(reader.ReadLine(), out int numSets))
+		{
+			return false;
+		}
 
 		string[] animSetFileNames = new string[numSets];
 		AnimSet[] animSets = new AnimSet[numSets];
 		Dictionary<string, AnimSet> animSetNameMap = new(numSets, StringComparer.OrdinalIgnoreCase);
 		for (int i = 0; i < numSets; i++)
 		{
-			if (!reader.TryReadLine(out var fileName)) { return false; }
+			if (!reader.TryReadLine(out var fileName))
+			{
+				return false;
+			}
 			animSetFileNames[i] = fileName;
 		}
 		for (int i = 0; i < numSets; i++)
 		{
-			if (!AnimSet.TryRead(reader, out var animSet)) { return false; }
+			if (!AnimSet.TryRead(reader, out var animSet))
+			{
+				return false;
+			}
 			animSets[i] = animSet;
 			animSetNameMap.Add(animSetFileNames[i], animSet);
 		}
@@ -62,6 +80,5 @@ public class ProjectAnimSetData
 		}
 
 		return sb.ToString();
-
 	}
 }

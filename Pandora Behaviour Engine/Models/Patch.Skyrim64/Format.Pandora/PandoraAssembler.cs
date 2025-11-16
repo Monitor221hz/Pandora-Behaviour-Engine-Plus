@@ -1,6 +1,10 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Xml.Linq;
 using Pandora.API.Patch;
 using Pandora.API.Patch.IOManagers;
 using Pandora.Models.Patch.IO.Skyrim64;
@@ -10,10 +14,6 @@ using Pandora.Models.Patch.Skyrim64.Format.Nemesis;
 using Pandora.Models.Patch.Skyrim64.Hkx.Changes;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 using Pandora.Utils;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Xml.Linq;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.Pandora;
 
@@ -21,8 +21,17 @@ public class PandoraAssembler
 {
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-	private readonly DirectoryInfo templateFolder = new(Path.Join(BehaviourEngine.AssemblyDirectory.FullName, "Pandora_Engine", "Skyrim", "Template"));
-	private readonly DirectoryInfo defaultOutputMeshFolder = new(Path.Join(PandoraPaths.OutputPath.FullName, "meshes"));
+	private readonly DirectoryInfo templateFolder = new(
+		Path.Join(
+			BehaviourEngine.AssemblyDirectory.FullName,
+			"Pandora_Engine",
+			"Skyrim",
+			"Template"
+		)
+	);
+	private readonly DirectoryInfo defaultOutputMeshFolder = new(
+		Path.Join(PandoraPaths.OutputPath.FullName, "meshes")
+	);
 
 	private readonly PandoraNativePatchManager nativeManager = new();
 	private readonly IMetaDataExporter<PackFile> exporter = new PackFileExporter();
@@ -38,6 +47,7 @@ public class PandoraAssembler
 		AnimSetDataManager = new AnimSetDataManager(templateFolder, defaultOutputMeshFolder);
 		AnimDataManager = new AnimDataManager(templateFolder, defaultOutputMeshFolder);
 	}
+
 	public PandoraAssembler(IMetaDataExporter<PackFile> exporter, NemesisAssembler nemesisAssembler)
 	{
 		this.exporter = exporter;
@@ -45,7 +55,12 @@ public class PandoraAssembler
 		AnimSetDataManager = nemesisAssembler.AnimSetDataManager;
 		AnimDataManager = nemesisAssembler.AnimDataManager;
 	}
-	public PandoraAssembler(ProjectManager projManager, AnimSetDataManager animSDManager, AnimDataManager animDManager)
+
+	public PandoraAssembler(
+		ProjectManager projManager,
+		AnimSetDataManager animSDManager,
+		AnimDataManager animDManager
+	)
 	{
 		ProjectManager = projManager;
 		AnimSetDataManager = animSDManager;
@@ -54,20 +69,22 @@ public class PandoraAssembler
 
 	public void SetOutputPath(DirectoryInfo baseOutputDirectory)
 	{
-		var outputMeshDirectory = new DirectoryInfo(Path.Join(baseOutputDirectory.FullName, "meshes"));
+		var outputMeshDirectory = new DirectoryInfo(
+			Path.Join(baseOutputDirectory.FullName, "meshes")
+		);
 		ProjectManager.SetOutputPath(baseOutputDirectory);
 		AnimDataManager.SetOutputPath(outputMeshDirectory);
 		AnimSetDataManager.SetOutputPath(outputMeshDirectory);
 	}
 
-
-
 	public bool AssemblePackFilePatch(FileInfo file, IModInfo modInfo)
 	{
-
 		var name = Path.GetFileNameWithoutExtension(file.Name);
 		PackFile targetPackFile;
-		if (!ProjectManager.TryActivatePackFilePriority(name, out targetPackFile!)) { return false; }
+		if (!ProjectManager.TryActivatePackFilePriority(name, out targetPackFile!))
+		{
+			return false;
+		}
 
 		var changeSet = new PackFileChangeSet(modInfo);
 
@@ -78,13 +95,17 @@ public class PandoraAssembler
 		}
 		var editContainer = container;
 
-		if (editContainer == null) { return false; }
+		if (editContainer == null)
+		{
+			return false;
+		}
 
 		PandoraParser.ParseEdits(editContainer, targetPackFile, changeSet);
 
 		targetPackFile.Dispatcher.AddChangeSet(changeSet);
 		return true;
 	}
+
 	public void AssemblePatch(IModInfo modInfo)
 	{
 		var patchFolder = new DirectoryInfo(Path.Join(modInfo.Folder.FullName, "patches"));
@@ -104,16 +125,31 @@ public class PandoraAssembler
 				nativeManager.LoadAssembly(folder);
 			}
 		}
-
 	}
-	public void ApplyNativePatches(RuntimeMode mode, RunOrder order) { nativeManager.ApplyPatches(ProjectManager, mode, order); }
-	public void QueueNativePatches() { nativeManager.QueuePatches(); }
+
+	public void ApplyNativePatches(RuntimeMode mode, RunOrder order)
+	{
+		nativeManager.ApplyPatches(ProjectManager, mode, order);
+	}
+
+	public void QueueNativePatches()
+	{
+		nativeManager.QueuePatches();
+	}
+
 	public void AssembleAnimDataPatch(DirectoryInfo folder)
 	{
 		var files = folder.GetFiles();
 		foreach (var file in files)
 		{
-			if (!file.Exists || !ProjectManager.TryGetProject(Path.GetFileNameWithoutExtension(file.Name.ToLower()), out Project? targetProject)) continue;
+			if (
+				!file.Exists
+				|| !ProjectManager.TryGetProject(
+					Path.GetFileNameWithoutExtension(file.Name.ToLower()),
+					out Project? targetProject
+				)
+			)
+				continue;
 
 			using (var readStream = file.OpenRead())
 			{
@@ -122,51 +158,68 @@ public class PandoraAssembler
 					string? expectedLine;
 					while ((expectedLine = reader.ReadLine()) != null)
 					{
-						if (string.IsNullOrWhiteSpace(expectedLine)) continue;
+						if (string.IsNullOrWhiteSpace(expectedLine))
+							continue;
 						targetProject!.AnimData?.AddDummyClipData(expectedLine);
 					}
 				}
 			}
 		}
 	}
+
 	public void AssembleAnimSetDataPatch(DirectoryInfo directoryInfo) //not exactly Nemesis format but this format is just simpler
 	{
 		ProjectAnimSetData? targetAnimSetData;
 
 		foreach (DirectoryInfo subDirInfo in directoryInfo.GetDirectories())
 		{
-			if (!AnimSetDataManager.AnimSetDataMap.TryGetValue(subDirInfo.Name, out targetAnimSetData)) continue;
+			if (
+				!AnimSetDataManager.AnimSetDataMap.TryGetValue(
+					subDirInfo.Name,
+					out targetAnimSetData
+				)
+			)
+				continue;
 			var patchFiles = subDirInfo.GetFiles();
 
 			foreach (var patchFile in patchFiles)
 			{
-
-				if (!targetAnimSetData.AnimSetsByName.TryGetValue(patchFile.Name, out AnimSet? targetAnimSet)) continue;
+				if (
+					!targetAnimSetData.AnimSetsByName.TryGetValue(
+						patchFile.Name,
+						out AnimSet? targetAnimSet
+					)
+				)
+					continue;
 
 				using (var readStream = patchFile.OpenRead())
 				{
-
 					using (var reader = new StreamReader(readStream))
 					{
-
 						string? expectedPath;
 						while ((expectedPath = reader.ReadLine()) != null)
 						{
-							if (string.IsNullOrWhiteSpace(expectedPath)) continue;
+							if (string.IsNullOrWhiteSpace(expectedPath))
+								continue;
 
 							string animationName = Path.GetFileNameWithoutExtension(expectedPath);
 							string folder = Path.GetDirectoryName(expectedPath)!;
 							var animInfo = SetCachedAnimInfo.Encode(folder, animationName);
 							targetAnimSet.AddAnimInfo(animInfo);
 						}
-
 					}
 				}
 			}
 		}
 		foreach (FileInfo patchFile in directoryInfo.GetFiles("*.txt"))
 		{
-			if (!AnimSetDataManager.AnimSetDataMap.TryGetValue(Path.GetFileNameWithoutExtension(patchFile.Name), out targetAnimSetData)) continue;
+			if (
+				!AnimSetDataManager.AnimSetDataMap.TryGetValue(
+					Path.GetFileNameWithoutExtension(patchFile.Name),
+					out targetAnimSetData
+				)
+			)
+				continue;
 			List<SetCachedAnimInfo> animInfos = [];
 			using (var readStream = patchFile.OpenRead())
 			{
@@ -175,7 +228,8 @@ public class PandoraAssembler
 					string? expectedPath;
 					while ((expectedPath = reader.ReadLine()) != null)
 					{
-						if (string.IsNullOrWhiteSpace(expectedPath)) continue;
+						if (string.IsNullOrWhiteSpace(expectedPath))
+							continue;
 
 						string animationName = Path.GetFileNameWithoutExtension(expectedPath);
 						string folder = Path.GetDirectoryName(expectedPath)!;
@@ -193,8 +247,5 @@ public class PandoraAssembler
 			}
 			break;
 		}
-
-
-
 	}
 }

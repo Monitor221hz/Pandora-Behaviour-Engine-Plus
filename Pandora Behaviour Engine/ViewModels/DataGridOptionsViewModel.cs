@@ -10,8 +10,11 @@ namespace Pandora.ViewModels;
 
 public partial class DataGridOptionsViewModel : ViewModelBase
 {
-	[Reactive] private bool _isCompactRowHeight;
-	[Reactive] private DataGridGridLinesVisibility _gridLinesVisibility;
+	[Reactive]
+	private bool _isCompactRowHeight;
+
+	[Reactive]
+	private DataGridGridLinesVisibility _gridLinesVisibility;
 
 	public DataGridOptionsViewModel()
 	{
@@ -22,7 +25,8 @@ public partial class DataGridOptionsViewModel : ViewModelBase
 	private void InitProperties()
 	{
 		IsCompactRowHeight = Properties.GUISettings.Default.IsCompactRowHeight;
-		GridLinesVisibility = (DataGridGridLinesVisibility)Properties.GUISettings.Default.GridLinesVisibility;
+		GridLinesVisibility = (DataGridGridLinesVisibility)
+			Properties.GUISettings.Default.GridLinesVisibility;
 	}
 
 	private void InitSubscriptions()

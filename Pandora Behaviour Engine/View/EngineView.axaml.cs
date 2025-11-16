@@ -41,7 +41,9 @@ public partial class EngineView : ReactiveUserControl<EngineViewModel>
 		Grid.SetRowSpan(MySplitter, isWide ? 3 : 1);
 		Grid.SetColumn(MySplitter, isWide ? 1 : 0);
 		Grid.SetColumnSpan(MySplitter, isWide ? 1 : 3);
-		MySplitter.ResizeDirection = isWide ? GridResizeDirection.Columns : GridResizeDirection.Rows;
+		MySplitter.ResizeDirection = isWide
+			? GridResizeDirection.Columns
+			: GridResizeDirection.Rows;
 		MySplitter.Width = isWide ? 8 : 90;
 		MySplitter.Height = isWide ? 90 : 8;
 

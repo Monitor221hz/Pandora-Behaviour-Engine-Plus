@@ -1,10 +1,10 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using HKX2E;
-using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using HKX2E;
+using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
 
@@ -25,13 +25,15 @@ public partial class BasicAnimation : IFNISAnimation
 		{ "md", FNISAnimFlags.MotionDriven },
 		{ "st", FNISAnimFlags.Sticky },
 		{ "Tn", FNISAnimFlags.TransitionNext },
-
 	};
+
 	protected static int GetPositiveHash(string name) => name.GetHashCode() & 0xfffffff;
+
 	public FNISAnimType TemplateType { get; private set; } = FNISAnimType.Basic;
 	public FNISAnimFlags Flags { get; set; } = FNISAnimFlags.None;
 
-	public bool HasModifier => Flags.HasFlag(FNISAnimFlags.Headtracking) || Flags.HasFlag(FNISAnimFlags.MotionDriven);
+	public bool HasModifier =>
+		Flags.HasFlag(FNISAnimFlags.Headtracking) || Flags.HasFlag(FNISAnimFlags.MotionDriven);
 
 	public int Hash { get; private set; }
 	public string GraphEvent { get; private set; }
@@ -42,6 +44,7 @@ public partial class BasicAnimation : IFNISAnimation
 	public IFNISAnimation? NextAnimation { get; set; } //unused
 
 	public override string ToString() => $"PN_{TemplateType}_{GraphEvent}";
+
 	static BasicAnimation()
 	{
 		defaultTransition = hkbBlendingTransitionEffect.GetDefault();
@@ -49,6 +52,7 @@ public partial class BasicAnimation : IFNISAnimation
 		defaultTransition.duration = 0.6f;
 		defaultTransition.eventMode = (sbyte)EventMode.EVENT_MODE_PROCESS_ALL;
 	}
+
 	/// <summary>
 	/// Assumes that match has the groups specified in the animLine regex.
 	/// </summary>
@@ -70,7 +74,11 @@ public partial class BasicAnimation : IFNISAnimation
 		}
 		GraphEvent = match.Groups[3].Value;
 		AnimationFilePath = match.Groups[4].Value;
-		if (TemplateType != FNISAnimType.Basic && Flags.HasFlag(FNISAnimFlags.AnimObjects) && match.Groups[5].Success)
+		if (
+			TemplateType != FNISAnimType.Basic
+			&& Flags.HasFlag(FNISAnimFlags.AnimObjects)
+			&& match.Groups[5].Success
+		)
 		{
 			foreach (Capture capture in match.Groups[5].Captures)
 			{
@@ -79,12 +87,18 @@ public partial class BasicAnimation : IFNISAnimation
 		}
 		Hash = GetPositiveHash(GraphEvent);
 	}
-	public BasicAnimation(Match match) : this(FNISAnimType.Basic, match)
-	{
 
-	}
+	public BasicAnimation(Match match)
+		: this(FNISAnimType.Basic, match) { }
 
-	public BasicAnimation(FNISAnimType templateType, FNISAnimFlags flags, string graphEvent, string animationFilePath, BasicAnimation? nextAnimation, List<string> animationObjectNames)
+	public BasicAnimation(
+		FNISAnimType templateType,
+		FNISAnimFlags flags,
+		string graphEvent,
+		string animationFilePath,
+		BasicAnimation? nextAnimation,
+		List<string> animationObjectNames
+	)
 	{
 		TemplateType = templateType;
 		Flags = flags;
@@ -94,9 +108,16 @@ public partial class BasicAnimation : IFNISAnimation
 		animObjectNames = animationObjectNames;
 		Hash = GetPositiveHash(GraphEvent);
 	}
-	public BasicAnimation(FNISAnimType templateType, FNISAnimFlags flags, string graphEvent, string animationFilePath, List<string> animationObjectNames) : this(templateType, flags, graphEvent, animationFilePath, null, animationObjectNames)
-	{
-	}
+
+	public BasicAnimation(
+		FNISAnimType templateType,
+		FNISAnimFlags flags,
+		string graphEvent,
+		string animationFilePath,
+		List<string> animationObjectNames
+	)
+		: this(templateType, flags, graphEvent, animationFilePath, null, animationObjectNames) { }
+
 	/// <summary>
 	/// Must always reassign the trigger array to the parent clip generator.
 	/// </summary>
@@ -106,22 +127,39 @@ public partial class BasicAnimation : IFNISAnimation
 	{
 		return clip.triggers ?? new hkbClipTriggerArray() { triggers = [] };
 	}
-	protected static hkbStateMachineEventPropertyArray CreateEventArrayIfNull(hkbStateMachineEventPropertyArray? property)
+
+	protected static hkbStateMachineEventPropertyArray CreateEventArrayIfNull(
+		hkbStateMachineEventPropertyArray? property
+	)
 	{
 		return property ?? new hkbStateMachineEventPropertyArray() { events = [] };
 	}
-	public virtual void BuildFlags(FNISAnimationListBuildContext buildContext, PackFileGraph graph, hkbStateMachineStateInfo stateInfo, hkbClipGenerator clip)
+
+	public virtual void BuildFlags(
+		FNISAnimationListBuildContext buildContext,
+		PackFileGraph graph,
+		hkbStateMachineStateInfo stateInfo,
+		hkbClipGenerator clip
+	)
 	{
 		if (HasModifier)
 		{
 			var modifierList = new hkbModifierList() { enable = true };
-			var modifierGenerator = new hkbModifierGenerator() { modifier = modifierList, generator = clip };
+			var modifierGenerator = new hkbModifierGenerator()
+			{
+				modifier = modifierList,
+				generator = clip,
+			};
 			if (Flags.HasFlag(FNISAnimFlags.MotionDriven))
 			{
 				//buildContext.TargetProject?.AnimData?.AddDummyClipData(clip.name);
 			}
 		}
-		clip.mode = (sbyte)(Flags.HasFlag(FNISAnimFlags.Acyclic) ? PlaybackMode.MODE_SINGLE_PLAY : PlaybackMode.MODE_LOOPING);
+		clip.mode = (sbyte)(
+			Flags.HasFlag(FNISAnimFlags.Acyclic)
+				? PlaybackMode.MODE_SINGLE_PLAY
+				: PlaybackMode.MODE_LOOPING
+		);
 		if (Flags.HasFlag(FNISAnimFlags.AnimObjects))
 		{
 			bool enterEventsExist = stateInfo.enterNotifyEvents != null;
@@ -137,14 +175,25 @@ public partial class BasicAnimation : IFNISAnimation
 					enterEventList.Add(new hkbEventProperty() { id = 393, payload = payload });
 					enterEventList.Add(new hkbEventProperty() { id = 394, payload = payload });
 				}
-				if (Flags.HasFlag(FNISAnimFlags.Sticky)) { continue; }
+				if (Flags.HasFlag(FNISAnimFlags.Sticky))
+				{
+					continue;
+				}
 				lock (exitEventList)
 				{
 					exitEventList.Add(new hkbEventProperty() { id = 165, payload = null });
 				}
 			}
-			if (!enterEventsExist) stateInfo.enterNotifyEvents = new hkbStateMachineEventPropertyArray() { events = enterEventList };
-			if (!exitEventsExist) stateInfo.exitNotifyEvents = new hkbStateMachineEventPropertyArray() { events = exitEventList };
+			if (!enterEventsExist)
+				stateInfo.enterNotifyEvents = new hkbStateMachineEventPropertyArray()
+				{
+					events = enterEventList,
+				};
+			if (!exitEventsExist)
+				stateInfo.exitNotifyEvents = new hkbStateMachineEventPropertyArray()
+				{
+					events = exitEventList,
+				};
 		}
 		if (Flags.HasFlag(FNISAnimFlags.Acyclic))
 		{
@@ -153,57 +202,58 @@ public partial class BasicAnimation : IFNISAnimation
 		if (Flags.HasFlag(FNISAnimFlags.SequenceStart) && NextAnimation != null)
 		{
 			var triggerObject = GetOrCreateTriggerArray(clip);
-			triggerObject.triggers.Add
-				(
-					new hkbClipTrigger()
+			triggerObject.triggers.Add(
+				new hkbClipTrigger()
+				{
+					localTime = -0.3f,
+					relativeToEndOfClip = true,
+					_event = new hkbEventProperty()
 					{
-						localTime = -0.3f,
-						relativeToEndOfClip = true,
-						_event = new hkbEventProperty()
-						{
-							id = graph.AddDefaultEvent(NextAnimation.GraphEvent)
-						}
-					}
-				);
+						id = graph.AddDefaultEvent(NextAnimation.GraphEvent),
+					},
+				}
+			);
 			clip.triggers = triggerObject;
 		}
 		if (Flags.HasFlag(FNISAnimFlags.SequenceFinish))
 		{
 			var triggerObject = GetOrCreateTriggerArray(clip);
-			triggerObject.triggers.Add
-			(
+			triggerObject.triggers.Add(
 				new hkbClipTrigger()
 				{
 					localTime = -0.2f,
 					relativeToEndOfClip = true,
 					_event = new hkbEventProperty()
 					{
-						id = graph.AddDefaultEvent(string.Concat(GraphEvent, "_DONE"))
-					}
+						id = graph.AddDefaultEvent(string.Concat(GraphEvent, "_DONE")),
+					},
 				}
 			);
-			triggerObject.triggers.Add
-			(
+			triggerObject.triggers.Add(
 				new hkbClipTrigger()
 				{
 					localTime = -0.05f,
 					relativeToEndOfClip = true,
 					_event = new hkbEventProperty()
 					{
-						id = graph.FindEvent("IdleForceDefaultState")
-					}
+						id = graph.FindEvent("IdleForceDefaultState"),
+					},
 				}
 			);
 			clip.triggers = triggerObject;
 		}
-
 	}
+
 	public virtual void BuildAnimation(Project project, ProjectManager projectManager)
 	{
-		if (project.Sibling != null) { projectManager.TryActivatePackFile(project.Sibling.CharacterPackFile); }
+		if (project.Sibling != null)
+		{
+			projectManager.TryActivatePackFile(project.Sibling.CharacterPackFile);
+		}
 		projectManager.TryActivatePackFile(project.CharacterPackFile);
 		project.CharacterPackFile.AddUniqueAnimation(AnimationFilePath);
 	}
+
 	public virtual bool BuildBehavior(FNISAnimationListBuildContext buildContext)
 	{
 		//var project = buildContext.TargetProject;

@@ -1,18 +1,16 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using Pandora.API.Patch.Engine.Skyrim64.AnimData;
-using Pandora.Models.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
+using Pandora.API.Patch.Engine.Skyrim64.AnimData;
+using Pandora.Models.Extensions;
 
 namespace Pandora.Models.Patch.Skyrim64.AnimData
 {
-
-
 	public class ClipDataBlock : IClipDataBlock
 	{
 		public string Name { get; private set; } = string.Empty;
@@ -27,10 +25,7 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 
 		public IList<string> TriggerNames { get; private set; } = [];
 
-		public ClipDataBlock()
-		{
-
-		}
+		public ClipDataBlock() { }
 
 		public ClipDataBlock(string name, string id)
 		{
@@ -38,7 +33,16 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 			ClipID = id;
 		}
 
-		public ClipDataBlock(string name, string clipID, float playbackSpeed, float cropStartLocalTime, float cropEndLocalTime, int numClipTriggers, IList<string> triggerNames) : this(name, clipID)
+		public ClipDataBlock(
+			string name,
+			string clipID,
+			float playbackSpeed,
+			float cropStartLocalTime,
+			float cropEndLocalTime,
+			int numClipTriggers,
+			IList<string> triggerNames
+		)
+			: this(name, clipID)
 		{
 			PlaybackSpeed = playbackSpeed;
 			CropStartLocalTime = cropStartLocalTime;
@@ -53,33 +57,49 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 			return expectedLine == null ? string.Empty : expectedLine;
 		}
 
-		public static bool TryReadBlock(StreamReader reader, [NotNullWhen(true)] out ClipDataBlock? block)
+		public static bool TryReadBlock(
+			StreamReader reader,
+			[NotNullWhen(true)] out ClipDataBlock? block
+		)
 		{
 			block = null;
-			if (!reader.TryReadLine(out var clipName) ||
-				!reader.TryReadLine(out var clipId) ||
-				!float.TryParse(reader.ReadLine(), out float playBackSpeed) ||
-				!float.TryParse(reader.ReadLine(), out float cropStartLocalTime) ||
-				!float.TryParse(reader.ReadLine(), out float cropEndLocalTime) ||
-				!int.TryParse(reader.ReadLine(), out int numClipTriggers))
+			if (
+				!reader.TryReadLine(out var clipName)
+				|| !reader.TryReadLine(out var clipId)
+				|| !float.TryParse(reader.ReadLine(), out float playBackSpeed)
+				|| !float.TryParse(reader.ReadLine(), out float cropStartLocalTime)
+				|| !float.TryParse(reader.ReadLine(), out float cropEndLocalTime)
+				|| !int.TryParse(reader.ReadLine(), out int numClipTriggers)
+			)
 			{
 				return false;
 			}
 			string[] triggerNames = new string[numClipTriggers];
 			for (int i = 0; i < numClipTriggers; i++)
 			{
-				if (!reader.TryReadNotEmptyLine(out var triggerName)) 
+				if (!reader.TryReadNotEmptyLine(out var triggerName))
 				{
 					numClipTriggers = 0;
 					break;
 				}
 				triggerNames[i] = triggerName;
 			}
-			block = new ClipDataBlock(clipName, clipId, playBackSpeed, cropStartLocalTime, cropEndLocalTime, numClipTriggers, triggerNames);
+			block = new ClipDataBlock(
+				clipName,
+				clipId,
+				playBackSpeed,
+				cropStartLocalTime,
+				cropEndLocalTime,
+				numClipTriggers,
+				triggerNames
+			);
 			return true;
 		}
 
-		public static bool TryReadBlock(FileInfo fileInfo, [NotNullWhen(true)] out ClipDataBlock? block)
+		public static bool TryReadBlock(
+			FileInfo fileInfo,
+			[NotNullWhen(true)] out ClipDataBlock? block
+		)
 		{
 			using (var fileStream = fileInfo.OpenRead())
 			{
@@ -89,6 +109,7 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 				}
 			}
 		}
+
 		public static ClipDataBlock ReadBlock(StreamReader reader)
 		{
 			ClipDataBlock block = new ClipDataBlock();
@@ -113,7 +134,6 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 				throw new Exception(ex.Message + " in ", ex);
 			}
 			return block;
-
 		}
 
 		public static ClipDataBlock LoadBlock(string filePath)
@@ -126,10 +146,14 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 
 		public override string ToString()
 		{
-
 			StringBuilder sb = new StringBuilder();
 
-			sb.AppendLine(Name).AppendLine(ClipID).AppendLine(PlaybackSpeed.ToString()).AppendLine(CropStartLocalTime.ToString()).AppendLine(CropEndLocalTime.ToString()).AppendLine(NumClipTriggers.ToString());
+			sb.AppendLine(Name)
+				.AppendLine(ClipID)
+				.AppendLine(PlaybackSpeed.ToString())
+				.AppendLine(CropStartLocalTime.ToString())
+				.AppendLine(CropEndLocalTime.ToString())
+				.AppendLine(NumClipTriggers.ToString());
 
 			if (TriggerNames.Count > 0 && TriggerNames.Count == NumClipTriggers)
 			{

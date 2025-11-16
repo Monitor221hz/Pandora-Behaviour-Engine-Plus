@@ -12,7 +12,6 @@ public class FileCache
 
 	public FileInfo GetFile(string path)
 	{
-
 		if (!pathMap.TryGetValue(path, out FileInfo? fileInfo))
 		{
 			pathMap.Add(path, fileInfo = new FileInfo(path));

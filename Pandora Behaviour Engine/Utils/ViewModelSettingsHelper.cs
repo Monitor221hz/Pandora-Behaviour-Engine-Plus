@@ -12,7 +12,8 @@ public static class ViewModelSettingsHelper
 	public static IDisposable BindSetting<T>(
 		IObservable<T> source,
 		Action<T> assignToSetting,
-		TimeSpan? throttle = null)
+		TimeSpan? throttle = null
+	)
 	{
 		var observable = throttle.HasValue ? source.Throttle(throttle.Value) : source;
 

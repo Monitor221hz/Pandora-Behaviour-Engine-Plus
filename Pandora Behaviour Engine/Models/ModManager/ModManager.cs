@@ -5,7 +5,7 @@ namespace Pandora.API.ModManager;
 
 public enum ModManager
 {
-    None,
-    ModOrganizer,
-    Vortex,
+	None,
+	ModOrganizer,
+	Vortex,
 }

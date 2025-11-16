@@ -1,6 +1,18 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reactive;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -16,18 +28,6 @@ using Pandora.Views;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using Splat;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reactive;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Pandora.ViewModels;
 
@@ -37,9 +37,10 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 
 	private static readonly EngineConfigurationService _configService = new();
 
-	private static DirectoryInfo DataOrCurrentDirectory => BehaviourEngine.SkyrimGameDirectory ?? BehaviourEngine.CurrentDirectory;
+	private static DirectoryInfo DataOrCurrentDirectory =>
+		BehaviourEngine.SkyrimGameDirectory ?? BehaviourEngine.CurrentDirectory;
 
-	[BindableDerivedList] 
+	[BindableDerivedList]
 	private readonly ReadOnlyObservableCollection<ModInfoViewModel> _modViewModels;
 
 	private readonly bool _autoRun = false;
@@ -48,15 +49,29 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 
 	private Task _preloadTask = Task.CompletedTask;
 
-	[Reactive] private bool _isPreloading;
-	[Reactive] private bool _isOutputFolderCustomSet;
-	[Reactive] private bool _isVisibleLinkOutputDirectory;
-	[Reactive] private string _logText = string.Empty;
-	[Reactive] private string _searchTerm = string.Empty;
-	[Reactive] private string _outputDirectoryMessage = string.Empty;
+	[Reactive]
+	private bool _isPreloading;
 
-	[ObservableAsProperty(ReadOnly = false)] private bool? _allSelected;
-	[ObservableAsProperty(ReadOnly = false)] private bool _engineRunning;
+	[Reactive]
+	private bool _isOutputFolderCustomSet;
+
+	[Reactive]
+	private bool _isVisibleLinkOutputDirectory;
+
+	[Reactive]
+	private string _logText = string.Empty;
+
+	[Reactive]
+	private string _searchTerm = string.Empty;
+
+	[Reactive]
+	private string _outputDirectoryMessage = string.Empty;
+
+	[ObservableAsProperty(ReadOnly = false)]
+	private bool? _allSelected;
+
+	[ObservableAsProperty(ReadOnly = false)]
+	private bool _engineRunning;
 
 	public static string OutputFolderUri => PandoraPaths.OutputPath.FullName;
 
@@ -66,7 +81,8 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 	public SettingsViewModel SettingsApp { get; } = new();
 	public ViewModelActivator Activator { get; } = new();
 
-	public ObservableCollection<IEngineConfigurationViewModel> EngineConfigurationViewModels { get; } = [];
+	public ObservableCollection<IEngineConfigurationViewModel> EngineConfigurationViewModels { get; } =
+	[];
 	public ObservableCollectionExtended<ModInfoViewModel> SourceMods { get; } = [];
 
 	public EngineViewModel()
@@ -81,34 +97,35 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		_configService.Initialize(startup.UseSkyrimDebug64, SetEngineConfigCommand);
 
 		EngineConfigurationViewModels = new ObservableCollection<IEngineConfigurationViewModel>(
-			_configService.GetConfigurations());
+			_configService.GetConfigurations()
+		);
 
-		SourceMods.ToObservableChangeSet()
+		SourceMods
+			.ToObservableChangeSet()
 			.AutoRefresh(x => x.Priority)
-			.Filter(this.WhenAnyValue(x => x.SearchTerm)
-				.Throttle(TimeSpan.FromMilliseconds(200))
-				.ObserveOn(RxApp.MainThreadScheduler)
-				.Select(ModUtils.BuildNameFilter))
+			.Filter(
+				this.WhenAnyValue(x => x.SearchTerm)
+					.Throttle(TimeSpan.FromMilliseconds(200))
+					.ObserveOn(RxApp.MainThreadScheduler)
+					.Select(ModUtils.BuildNameFilter)
+			)
 			.Sort(SortExpressionComparer<ModInfoViewModel>.Ascending(x => x.Priority))
 			.Bind(out _modViewModels)
 			.Subscribe();
 
 		this.WhenActivated(disposables =>
 		{
-			EngineLoggerAdapter.LogObservable
-				.ObserveOn(RxApp.MainThreadScheduler)
+			EngineLoggerAdapter
+				.LogObservable.ObserveOn(RxApp.MainThreadScheduler)
 				.Subscribe(line => LogText = line, ex => logger.Error(ex))
 				.DisposeWith(disposables);
 
-			Observable.FromAsync(InitAsync)
-				.Subscribe()
-				.DisposeWith(disposables);
+			Observable.FromAsync(InitAsync).Subscribe().DisposeWith(disposables);
 
 			InitSubscriptions(disposables);
 
-			if (_autoRun) 
+			if (_autoRun)
 				LaunchEngineCommand.Execute().Subscribe().DisposeWith(disposables);
-
 		});
 
 		StartupService.LogPlugins();
@@ -152,6 +169,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 			_preloadLock.Release();
 		}
 	}
+
 	private async Task InitAsync()
 	{
 		try
@@ -168,7 +186,11 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 				DataOrCurrentDirectory,
 			};
 
-			var loadModsTask = ModLoader.LoadModsVMAsync(SourceMods, uniqueDirectories, modProviders);
+			var loadModsTask = ModLoader.LoadModsVMAsync(
+				SourceMods,
+				uniqueDirectories,
+				modProviders
+			);
 			var preloadTask = PreloadEngineAsync();
 
 			await Task.WhenAll(loadModsTask, preloadTask);
@@ -176,14 +198,16 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		catch (Exception ex)
 		{
 			logger.Error(ex, "Failed to initialize load mods and preload engine.");
-			EngineLoggerAdapter.AppendLine("Error: Failed to load initial data. Please check the logs.");
+			EngineLoggerAdapter.AppendLine(
+				"Error: Failed to load initial data. Please check the logs."
+			);
 		}
 	}
 
 	private void InitSubscriptions(CompositeDisposable disposables)
 	{
-		_engineRunningHelper = LaunchEngineCommand.IsExecuting
-			.ToProperty(this, x => x.EngineRunning)
+		_engineRunningHelper = LaunchEngineCommand
+			.IsExecuting.ToProperty(this, x => x.EngineRunning)
 			.DisposeWith(disposables);
 
 		_allSelectedHelper = SourceMods
@@ -194,13 +218,17 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 			.ToProperty(this, x => x.AllSelected)
 			.DisposeWith(disposables);
 
-		LaunchEngineCommand.ThrownExceptions.Subscribe(ex => this.Log().Error(ex)).DisposeWith(disposables);
+		LaunchEngineCommand
+			.ThrownExceptions.Subscribe(ex => this.Log().Error(ex))
+			.DisposeWith(disposables);
 	}
 
 	private async Task WaitForPreloadAsync()
 	{
 		EngineLoggerAdapter.Clear();
-		EngineLoggerAdapter.AppendLine($"Engine launched with configuration: {Engine.Configuration.Name}. Do not exit before the launch is finished.");
+		EngineLoggerAdapter.AppendLine(
+			$"Engine launched with configuration: {Engine.Configuration.Name}. Do not exit before the launch is finished."
+		);
 		try
 		{
 			EngineLoggerAdapter.AppendLine("Waiting for preload to finish...");
@@ -221,7 +249,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		bool success;
 		try
 		{
-			success = await Task.Run(() => Engine.LaunchAsync(activeMods));
+			success = await Engine.LaunchAsync(activeMods);
 		}
 		catch (Exception ex)
 		{
@@ -241,20 +269,29 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 
 			await JsonModSettingsStore.SaveAsync(SourceMods, PandoraPaths.ActiveModsFile.FullName);
 
-			if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime lifetime && _autoClose)
+			if (
+				Application.Current?.ApplicationLifetime
+					is IClassicDesktopStyleApplicationLifetime lifetime
+				&& _autoClose
+			)
 				lifetime.Shutdown();
 		}
 		else
 		{
 			mainWindow?.SetVisualState(WindowVisualState.Error);
-			EngineLoggerAdapter.AppendLine("Launch aborted. Existing output was not cleared, and current patch list will not be saved.");
+			EngineLoggerAdapter.AppendLine(
+				"Launch aborted. Existing output was not cleared, and current patch list will not be saved."
+			);
 		}
 	}
 
 	[ReactiveCommand]
 	private async Task LaunchEngine()
 	{
-		var mainWindow = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow as MainWindow;
+		var mainWindow =
+			(
+				Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime
+			)?.MainWindow as MainWindow;
 		mainWindow?.SetVisualState(WindowVisualState.Running);
 
 		try
@@ -267,7 +304,9 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 			timer.Stop();
 
 			EngineLoggerAdapter.AppendLine(Engine.GetMessages(success));
-			EngineLoggerAdapter.AppendLine($"Launch finished in {timer.Elapsed.TotalSeconds:F2} seconds.");
+			EngineLoggerAdapter.AppendLine(
+				$"Launch finished in {timer.Elapsed.TotalSeconds:F2} seconds."
+			);
 			await HandleLaunchResultAsync(success, mainWindow);
 
 			_ = PreloadEngineAsync();
@@ -281,7 +320,8 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 	[ReactiveCommand]
 	private async Task SetEngineConfig(IEngineConfigurationFactory? factory)
 	{
-		if (factory is null || factory == _configService.CurrentFactory) return;
+		if (factory is null || factory == _configService.CurrentFactory)
+			return;
 
 		try
 		{
@@ -292,7 +332,9 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		catch (Exception ex)
 		{
 			logger.Error(ex, "Failed to set engine config.");
-			EngineLoggerAdapter.AppendLine("Error: Failed to apply configuration. See logs for details.");
+			EngineLoggerAdapter.AppendLine(
+				"Error: Failed to apply configuration. See logs for details."
+			);
 		}
 	}
 
@@ -315,7 +357,8 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 	[ReactiveCommand]
 	private void ToggleSelectAll(bool? isChecked)
 	{
-		if (isChecked is not bool check) return;
+		if (isChecked is not bool check)
+			return;
 
 		ModUtils.SetModsActiveState(SourceMods, check);
 	}

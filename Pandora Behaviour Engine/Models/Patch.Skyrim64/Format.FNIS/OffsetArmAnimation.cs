@@ -1,30 +1,38 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using HKX2E;
-using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using HKX2E;
+using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
 
 public class OffsetArmAnimation : BasicAnimation
 {
-	public OffsetArmAnimation(Match match) : base(FNISAnimType.OffsetArm, match)
-	{
+	public OffsetArmAnimation(Match match)
+		: base(FNISAnimType.OffsetArm, match) { }
 
-	}
-	public OffsetArmAnimation(FNISAnimType templateType, FNISAnimFlags flags, string graphEvent, string animationFilePath, List<string> animationObjectNames) : base(templateType, flags, graphEvent, animationFilePath, animationObjectNames)
-	{
+	public OffsetArmAnimation(
+		FNISAnimType templateType,
+		FNISAnimFlags flags,
+		string graphEvent,
+		string animationFilePath,
+		List<string> animationObjectNames
+	)
+		: base(templateType, flags, graphEvent, animationFilePath, animationObjectNames) { }
 
-	}
 	public override bool BuildBehavior(FNISAnimationListBuildContext buildContext)
 	{
 		var project = buildContext.TargetProject;
 		var projectManager = buildContext.ProjectManager;
 		var modInfo = buildContext.ModInfo;
 
-		if (!base.BuildBehavior(buildContext) || !project.TryLookupPackFile("mt_behavior", out var targetPackFile) || targetPackFile is not PackFileGraph graph) //only supports humanoids as FNIS does
+		if (
+			!base.BuildBehavior(buildContext)
+			|| !project.TryLookupPackFile("mt_behavior", out var targetPackFile)
+			|| targetPackFile is not PackFileGraph graph
+		) //only supports humanoids as FNIS does
 		{
 			return false;
 		}
@@ -52,15 +60,25 @@ public class OffsetArmAnimation : BasicAnimation
 			generator = clipGenerator,
 			stateId = Hash,
 			enable = true,
-			transitions = graph.GetPushedObjectAs<hkbStateMachineTransitionInfoArray>("#5111")
+			transitions = graph.GetPushedObjectAs<hkbStateMachineTransitionInfoArray>("#5111"),
 		};
 		hkbStateMachine rightArmState = graph.GetPushedObjectAs<hkbStateMachine>("#5138"); // possible crash here.
 		hkbStateMachine leftArmState = graph.GetPushedObjectAs<hkbStateMachine>("#5183");
-		lock (rightArmState) { rightArmState.states.Add(stateInfo); }
-		lock (leftArmState) { leftArmState.states.Add(stateInfo); }
+		lock (rightArmState)
+		{
+			rightArmState.states.Add(stateInfo);
+		}
+		lock (leftArmState)
+		{
+			leftArmState.states.Add(stateInfo);
+		}
 		hkbStateMachineTransitionInfo transitionInfo = new()
 		{
-			flags = (short)(TransitionFlags.FLAG_IS_LOCAL_WILDCARD | TransitionFlags.FLAG_IS_GLOBAL_WILDCARD | TransitionFlags.FLAG_DISABLE_CONDITION),
+			flags = (short)(
+				TransitionFlags.FLAG_IS_LOCAL_WILDCARD
+				| TransitionFlags.FLAG_IS_GLOBAL_WILDCARD
+				| TransitionFlags.FLAG_DISABLE_CONDITION
+			),
 			transition = graph.GetPushedObjectAs<hkbBlendingTransitionEffect>("#0093"),
 			condition = null,
 			eventId = graph.AddDefaultEvent(GraphEvent),

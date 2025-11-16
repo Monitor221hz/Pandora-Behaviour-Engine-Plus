@@ -1,18 +1,21 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using Pandora.API.Patch.Engine.Skyrim64.AnimData;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Pandora.API.Patch.Engine.Skyrim64.AnimData;
 
 namespace Pandora.Models.Patch.Skyrim64.AnimData;
 
 public class MotionData : IMotionData
 {
-	public MotionData(IList<ClipMotionDataBlock> blocks, Dictionary<int, ClipMotionDataBlock> blocksByID)
+	public MotionData(
+		IList<ClipMotionDataBlock> blocks,
+		Dictionary<int, ClipMotionDataBlock> blocksByID
+	)
 	{
 		Blocks = blocks;
 		BlocksByID = blocksByID;
@@ -23,19 +26,35 @@ public class MotionData : IMotionData
 
 	public bool TryGetBlock(int id, [NotNullWhen(true)] out IClipMotionDataBlock? block)
 	{
-		block = BlocksByID.TryGetValue(id, out var exBlock) ? exBlock as IClipMotionDataBlock : null;
+		block = BlocksByID.TryGetValue(id, out var exBlock)
+			? exBlock as IClipMotionDataBlock
+			: null;
 		return block != null;
 	}
+
 	public IList<IClipMotionDataBlock> GetBlocks() => Blocks.Cast<IClipMotionDataBlock>().ToList();
+
 	public void AddClipMotionData(ClipMotionDataBlock block)
 	{
-		lock (Blocks) { Blocks.Add(block); }
+		lock (Blocks)
+		{
+			Blocks.Add(block);
+		}
 	}
+
 	public void AddDummyClipMotionData(string id)
 	{
-		lock (Blocks) { Blocks.Add(new ClipMotionDataBlock(id)); }
+		lock (Blocks)
+		{
+			Blocks.Add(new ClipMotionDataBlock(id));
+		}
 	}
-	public static bool TryReadProject(StreamReader reader, int lineLimit, [NotNullWhen(true)] out MotionData? motionData)
+
+	public static bool TryReadProject(
+		StreamReader reader,
+		int lineLimit,
+		[NotNullWhen(true)] out MotionData? motionData
+	)
 	{
 		motionData = null;
 		lineLimit -= 1;
@@ -44,7 +63,10 @@ public class MotionData : IMotionData
 		Dictionary<int, ClipMotionDataBlock> blocksById = [];
 		while (whitespace != null && lineLimit > 0)
 		{
-			if (!ClipMotionDataBlock.TryReadBlock(reader, out var block) || !int.TryParse(block.ClipID, out var id))
+			if (
+				!ClipMotionDataBlock.TryReadBlock(reader, out var block)
+				|| !int.TryParse(block.ClipID, out var id)
+			)
 			{
 				return false;
 			}
@@ -67,6 +89,7 @@ public class MotionData : IMotionData
 		//byte[] bytes = Encoding.Default.GetBytes(sb.ToString());
 		//return Encoding.UTF8.GetString(bytes);
 	}
+
 	public int GetLineCount()
 	{
 		int i = 0;

@@ -1,9 +1,13 @@
 name: build & tests
 
-on: [push, pull_request]
+on:
+  pull_request:
+  push:
+    branches:
+      - "main"
 
 env:
-  DOTNET_VERSION: "9.0.x"
+  DOTNET_VERSION: "10.0.x"
   PROFILE: Debug # Release | Debug
   NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages # Since env cannot be specified in composite action, specify cache dir individually.
 
@@ -23,7 +27,7 @@ jobs:
         id: set-paths
         shell: pwsh
         run: |
-          $output_dir='./Pandora Behaviour Engine/bin/${{ env.PROFILE }}/net9.0'
+          $output_dir='./Pandora Behaviour Engine/bin/${{ env.PROFILE }}/net10.0'
 
           echo "output_dir=$output_dir" >> $env:GITHUB_OUTPUT
 

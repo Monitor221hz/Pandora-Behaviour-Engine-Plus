@@ -20,6 +20,7 @@ public enum FNISAnimFlags
 	MotionDriven = 1 << 8,
 	Sticky = 1 << 9,
 	TransitionNext = 1 << 10,
+
 	// special runtime added flags, not parsable
 	SequenceStart = 1 << 11,
 	SequenceFinish = 1 << 12,

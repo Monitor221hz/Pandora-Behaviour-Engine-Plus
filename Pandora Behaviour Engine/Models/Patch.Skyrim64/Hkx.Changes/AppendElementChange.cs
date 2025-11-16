@@ -1,9 +1,9 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 using System.Xml;
 using System.Xml.Linq;
+using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
 namespace Pandora.Models.Patch.Skyrim64.Hkx.Changes;
 
@@ -17,6 +17,7 @@ public class AppendElementChange : IPackFileChange
 	public string Path { get; private set; }
 
 	private XElement element { get; set; }
+
 	public AppendElementChange(string target, string path, XElement element)
 	{
 		Target = target;
@@ -26,7 +27,10 @@ public class AppendElementChange : IPackFileChange
 
 	public bool Apply(PackFile packFile)
 	{
-		if (!packFile.TryGetXMap(Target, out var xmap)) { return false; }
+		if (!packFile.TryGetXMap(Target, out var xmap))
+		{
+			return false;
+		}
 		string newPath = PackFileEditor.AppendElement(xmap!, Path, element);
 		Path = string.IsNullOrEmpty(newPath) ? Path : newPath;
 		return xmap!.PathExists(Path);

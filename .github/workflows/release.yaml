@@ -7,7 +7,7 @@ on:
       - "v*.*.*-beta*"
 
 env:
-  DOTNET_VERSION: "9.0.x"
+  DOTNET_VERSION: "10.0.x"
   PROFILE: Release # Release | Debug
   NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages # Since env cannot be specified in composite action, specify cache dir individually.
 
@@ -27,11 +27,17 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0 # 0 need for GitVersion
-          
+
+      - name: Setup .NET & Cache Dependencies
+        uses: ./.github/actions/prepare-dotnet
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+          cache-key-suffix: ${{ env.PROFILE }}
+
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v4.1.0
         with:
-          versionSpec: '6.3.x'
+          versionSpec: "6.3.x"
 
       - name: Determine Version
         id: version_step
@@ -41,7 +47,7 @@ jobs:
         id: set_paths
         shell: pwsh
         run: |
-          $output_dir='${{ github.workspace }}/Pandora Behaviour Engine/bin/${{ env.PROFILE }}/net9.0'
+          $output_dir='${{ github.workspace }}/Pandora Behaviour Engine/bin/${{ env.PROFILE }}/net10.0'
           $zip_file_name='Pandora_Behaviour_Engine_${{ github.ref_name }}.zip'
           $zip_dir='${{ github.workspace }}/Output'
 
@@ -87,24 +93,29 @@ jobs:
             output-dir: Output.Win-Arm64
 
           # Linux targets
-          - rid: linux-x64
-            runner: windows-latest
-            output-dir: Output.Linux-x64
-          - rid: linux-arm
-            runner: windows-latest
-            output-dir: Output.Linux-Arm
-          - rid: linux-arm64
-            runner: windows-latest
-            output-dir: Output.Linux-Arm64
-          - rid: linux-musl-x64
-            runner: windows-latest
-            output-dir: Output.Linux-Musl-x64
+          # - rid: linux-x64
+          #   runner: windows-latest
+          #   output-dir: Output.Linux-x64
+          # - rid: linux-arm
+          #   runner: windows-latest
+          #   output-dir: Output.Linux-Arm
+          # - rid: linux-arm64
+          #   runner: windows-latest
+          #   output-dir: Output.Linux-Arm64
+          # - rid: linux-musl-x64
+          #   runner: windows-latest
+          #   output-dir: Output.Linux-Musl-x64
 
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
           fetch-depth: 1
+      - name: Setup .NET & Cache Dependencies
+        uses: ./.github/actions/prepare-dotnet
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+          cache-key-suffix: ${{ env.PROFILE }}
 
       - name: Publish Self-Contained
         shell: pwsh

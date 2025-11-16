@@ -1,14 +1,15 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using HKX2E;
-using Pandora.Models.Patch.Skyrim64.Hkx.Changes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using HKX2E;
+using Pandora.Models.Patch.Skyrim64.Hkx.Changes;
 using XmlCake.Linq;
+
 namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
 public class PackFileValidator
@@ -16,18 +17,21 @@ public class PackFileValidator
 	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
 	private readonly Dictionary<string, int> eventIndices = new();
-	private readonly Dictionary<string, int> variableIndices = new(StringComparer.OrdinalIgnoreCase);
-
+	private readonly Dictionary<string, int> variableIndices = new(
+		StringComparer.OrdinalIgnoreCase
+	);
 
 	private List<XElement> registeredElements = [];
+
 	private enum NemesisEntityType : sbyte
 	{
 		None,
 		Event,
-		Variable
+		Variable,
 	}
 
 	public void TrackElement(XElement element) => registeredElements.Add(element);
+
 	private int GetEventIndex(ReadOnlySpan<char> key)
 	{
 		if (!eventIndices.TryGetValue(key.ToString(), out var value))
@@ -45,18 +49,23 @@ public class PackFileValidator
 		}
 		return value;
 	}
+
 	private int GetIndexFromMatch(Dictionary<string, int> map, Match match)
 	{
-		if (!match.Success) return -1;
+		if (!match.Success)
+			return -1;
 
 		if (!map.TryGetValue(match.Groups[1].Value, out int index))
 		{
-			Logger.Warn($"Validator > Nemesis Event ID > {match.Groups[1].Value} > Index > NOT FOUND");
+			Logger.Warn(
+				$"Validator > Nemesis Event ID > {match.Groups[1].Value} > Index > NOT FOUND"
+			);
 			return -1;
 		}
 
 		return index;
 	}
+
 	public bool ValidateEventsAndVariables(PackFileGraph graph)
 	{
 		var initialEventNames = graph.StringData.eventNames.ToArray();
@@ -86,7 +95,9 @@ public class PackFileValidator
 			var eventName = initialEventNames[i];
 			if (!eventIndices.TryAdd(eventName, i - duplicateEventCount) && i >= eventLowerBound)
 			{
-				Logger.Warn($"Validator > {graph.ParentProject?.Identifier}~{graph.Name} > Duplicate Event > {eventName} > Index > {i} > SKIPPED");
+				Logger.Warn(
+					$"Validator > {graph.ParentProject?.Identifier}~{graph.Name} > Duplicate Event > {eventName} > Index > {i} > SKIPPED"
+				);
 				duplicateEventCount++;
 				continue;
 			}
@@ -96,9 +107,14 @@ public class PackFileValidator
 		for (int i = 0; i < initialVariableNames.Length; i++)
 		{
 			var variableName = initialVariableNames[i];
-			if (!variableIndices.TryAdd(variableName, i - duplicateVariableCount) && i >= variableLowerBound)
+			if (
+				!variableIndices.TryAdd(variableName, i - duplicateVariableCount)
+				&& i >= variableLowerBound
+			)
 			{
-				Logger.Warn($"Validator > {graph.ParentProject?.Identifier}~{graph.Name} > Duplicate Variable > {variableName} > Index > {i} > SKIPPED");
+				Logger.Warn(
+					$"Validator > {graph.ParentProject?.Identifier}~{graph.Name} > Duplicate Variable > {variableName} > Index > {i} > SKIPPED"
+				);
 				duplicateVariableCount++;
 				continue;
 			}
@@ -114,7 +130,10 @@ public class PackFileValidator
 		return true;
 	}
 
-	private NemesisEntityType TryGetNemesisEntity(ReadOnlySpan<char> value, out ReadOnlySpan<char> captured)
+	private NemesisEntityType TryGetNemesisEntity(
+		ReadOnlySpan<char> value,
+		out ReadOnlySpan<char> captured
+	)
 	{
 		captured = new ReadOnlySpan<char>();
 		var returnType = NemesisEntityType.None;
@@ -156,11 +175,19 @@ public class PackFileValidator
 		}
 		return returnType;
 	}
-	private void ValidateElementText(XElement element, Dictionary<string, int> eventIndices, Dictionary<string, int> variableIndices)
+
+	private void ValidateElementText(
+		XElement element,
+		Dictionary<string, int> eventIndices,
+		Dictionary<string, int> variableIndices
+	)
 	{
 		string rawValue = element.Value;
 		NemesisEntityType entityType;
-		if ((entityType = TryGetNemesisEntity(rawValue, out var entity)) == NemesisEntityType.None || entity.IsEmpty)
+		if (
+			(entityType = TryGetNemesisEntity(rawValue, out var entity)) == NemesisEntityType.None
+			|| entity.IsEmpty
+		)
 		{
 			return;
 		}
@@ -192,23 +219,24 @@ public class PackFileValidator
 		//element.SetValue(rawValue);
 	}
 
-	private void ValidateElementContent(XElement element, Dictionary<string, int> eventIndices, Dictionary<string, int> variableIndices)
+	private void ValidateElementContent(
+		XElement element,
+		Dictionary<string, int> eventIndices,
+		Dictionary<string, int> variableIndices
+	)
 	{
-
 		if (!element.HasElements)
 		{
 			ValidateElementText(element, eventIndices, variableIndices);
 			return;
 		}
 
-
 		foreach (var xelement in element.Elements())
 		{
-
 			ValidateElementContent(xelement, eventIndices, variableIndices);
 		}
-
 	}
+
 	public void ValidateTrackedElements()
 	{
 		foreach (XElement element in registeredElements)
@@ -216,9 +244,10 @@ public class PackFileValidator
 			ValidateElementContent(element, eventIndices, variableIndices);
 		}
 	}
+
 	public void Validate(PackFile packFile, params ReadOnlySpan<List<IPackFileChange>> changeLists)
 	{
-		//if (!ValidateEventsAndVariables(packFile)) return; 
+		//if (!ValidateEventsAndVariables(packFile)) return;
 
 		foreach (var changeList in changeLists)
 		{
@@ -229,11 +258,8 @@ public class PackFileValidator
 					continue;
 				}
 				ValidateElementContent(element, eventIndices, variableIndices);
-
 			}
 		}
 	}
-
 }
 #pragma warning restore CA1416
-

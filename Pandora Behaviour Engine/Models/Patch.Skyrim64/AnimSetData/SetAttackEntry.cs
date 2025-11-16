@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using Pandora.Models.Extensions;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
+using Pandora.Models.Extensions;
 
 namespace Pandora.Models.Patch.Skyrim64.AnimSetData;
 
@@ -30,22 +30,28 @@ public class SetAttackEntry
 	public static bool TryRead(StreamReader reader, [NotNullWhen(true)] out SetAttackEntry? entry)
 	{
 		entry = null;
-		if (!reader.TryReadLine(out var attackTrigger) ||
-			!int.TryParse(reader.ReadLineOrEmpty(), out int unk) ||
-			!int.TryParse(reader.ReadLineOrEmpty(), out int numClips))
+		if (
+			!reader.TryReadLine(out var attackTrigger)
+			|| !int.TryParse(reader.ReadLineOrEmpty(), out int unk)
+			|| !int.TryParse(reader.ReadLineOrEmpty(), out int numClips)
+		)
 		{
 			return false;
 		}
 		string[] clips = new string[numClips];
 		for (int i = 0; i < numClips; i++)
 		{
-			if (!reader.TryReadLine(out var value)) { return false; }
+			if (!reader.TryReadLine(out var value))
+			{
+				return false;
+			}
 			clips[i] = value;
 		}
 
 		entry = new(attackTrigger, unk, numClips, clips);
 		return true;
 	}
+
 	//public static SetAttackEntry ReadEntry(StreamReader reader)
 	//{
 	//	SetAttackEntry entry = new()
@@ -62,7 +68,6 @@ public class SetAttackEntry
 	//	{
 	//		entry.ClipNames.Add(reader.ReadLineOrEmpty());
 	//	}
-
 
 	//	return entry;
 	//}

@@ -15,12 +15,11 @@ public static class BSCRC32
 		TruncatedPolynomial = 0x04C11DB7,
 		FinalXorValue = 0,
 		ReverseResultBeforeFinalXor = true,
-		ReverseDataBytes = true
+		ReverseDataBytes = true,
 	};
 
 	public static byte[] GetValue(byte[] bytes)
 	{
-
 		using (var alg = new Nito.HashAlgorithms.CRC32(BSDefinition))
 		{
 			byte[] crc32 = alg.ComputeHash(bytes);
@@ -28,6 +27,8 @@ public static class BSCRC32
 		}
 	}
 
-	public static uint GetValueUInt32(string str) => BitConverter.ToUInt32(GetValue(Encoding.ASCII.GetBytes(str)));
+	public static uint GetValueUInt32(string str) =>
+		BitConverter.ToUInt32(GetValue(Encoding.ASCII.GetBytes(str)));
+
 	public static string GetValueString(string str) => GetValueUInt32(str).ToString();
 }

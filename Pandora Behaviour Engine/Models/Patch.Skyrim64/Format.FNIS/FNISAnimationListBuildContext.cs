@@ -1,9 +1,9 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
+using System.Collections.Generic;
 using HKX2E;
 using Pandora.API.Patch;
-using System.Collections.Generic;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
 
@@ -12,12 +12,18 @@ public class FNISAnimationListBuildContext
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 	private Dictionary<string, hkbStringEventPayload> stringEventPayloadNameMap = [];
-	public FNISAnimationListBuildContext(Project targetProject, ProjectManager projectManager, IModInfo modInfo)
+
+	public FNISAnimationListBuildContext(
+		Project targetProject,
+		ProjectManager projectManager,
+		IModInfo modInfo
+	)
 	{
 		TargetProject = targetProject;
 		ProjectManager = projectManager;
 		ModInfo = modInfo;
 	}
+
 	public Project TargetProject { get; private set; }
 	public ProjectManager ProjectManager { get; private set; }
 

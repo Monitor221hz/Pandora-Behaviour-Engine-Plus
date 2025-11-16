@@ -1,34 +1,43 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using Pandora.API.Patch.Engine.Skyrim64.AnimData;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Pandora.API.Patch.Engine.Skyrim64.AnimData;
 
 namespace Pandora.Models.Patch.Skyrim64.AnimData
 {
-
-
 	public class ProjectAnimData : IProjectAnimData
 	{
 		public ProjectAnimDataHeader Header { get; private set; }
+
 		public IProjectAnimDataHeader GetHeader() => Header;
+
 		public IList<ClipDataBlock> Blocks { get; set; } = new List<ClipDataBlock>();
+
 		public IList<IClipDataBlock> GetBlocks() => Blocks.Cast<IClipDataBlock>().ToList();
+
 		public MotionData? BoundMotionDataProject { get; set; }
+
 		public IMotionData? GetBoundMotionData() => BoundMotionDataProject;
+
 		private AnimDataManager manager { get; set; }
 
 		private HashSet<string> dummyClipNames = new HashSet<string>();
+
 		public ProjectAnimData(AnimDataManager manager)
 		{
 			this.manager = manager;
 		}
 
-		public ProjectAnimData(ProjectAnimDataHeader header, IList<ClipDataBlock> blocks, AnimDataManager manager)
+		public ProjectAnimData(
+			ProjectAnimDataHeader header,
+			IList<ClipDataBlock> blocks,
+			AnimDataManager manager
+		)
 		{
 			Header = header;
 			Blocks = blocks;
@@ -48,16 +57,19 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 
 		public void AddClipData(ClipDataBlock dataBlock)
 		{
-			lock (Blocks) { Blocks.Add(dataBlock); }
+			lock (Blocks)
+			{
+				Blocks.Add(dataBlock);
+			}
 		}
+
 		public void AddDummyClipData(string clipName)
 		{
 			lock (dummyClipNames)
 			{
-				if (dummyClipNames.Contains(clipName)) return;
+				if (dummyClipNames.Contains(clipName))
+					return;
 			}
-
-
 
 			var id = manager.GetNextValidID().ToString();
 			Blocks.Add(new ClipDataBlock(clipName, id));
@@ -67,19 +79,30 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 			{
 				dummyClipNames.Add(clipName);
 			}
-
 		}
-		public static bool TryReadProject(StreamReader reader, AnimDataManager manager, int lineLimit, [NotNullWhen(true)] out ProjectAnimData? projectAnimData)
+
+		public static bool TryReadProject(
+			StreamReader reader,
+			AnimDataManager manager,
+			int lineLimit,
+			[NotNullWhen(true)] out ProjectAnimData? projectAnimData
+		)
 		{
 			projectAnimData = null;
-			if (!ProjectAnimDataHeader.TryReadBlock(reader, out var header)) { return false; }
+			if (!ProjectAnimDataHeader.TryReadBlock(reader, out var header))
+			{
+				return false;
+			}
 
 			lineLimit -= header.GetLineCount() + 1;
 			string? whiteSpace = "";
 			List<ClipDataBlock> blocks = [];
 			while (whiteSpace != null && lineLimit > 0)
 			{
-				if (!ClipDataBlock.TryReadBlock(reader, out var block)) { break; }
+				if (!ClipDataBlock.TryReadBlock(reader, out var block))
+				{
+					break;
+				}
 				blocks.Add(block);
 				lineLimit -= block.GetLineCount();
 
@@ -90,6 +113,7 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 
 			return true;
 		}
+
 		public override string ToString()
 		{
 			StringBuilder sb = new StringBuilder();
@@ -102,6 +126,7 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 			//byte[] bytes = Encoding.Default.GetBytes(sb.ToString());
 			//return Encoding.UTF8.GetString(bytes);
 		}
+
 		public int GetLineCount()
 		{
 			int i = Header.GetLineCount() + 1;

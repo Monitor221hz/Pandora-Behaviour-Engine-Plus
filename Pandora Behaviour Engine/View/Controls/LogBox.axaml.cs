@@ -9,11 +9,11 @@ namespace Pandora.Views;
 
 public partial class LogBox : ReactiveUserControl<EngineViewModel>
 {
-    public LogBox()
-    {
-        InitializeComponent();
-    }
+	public LogBox()
+	{
+		InitializeComponent();
+	}
 
-	private void TextBox_TextChanged(object sender, TextChangedEventArgs e) => 
+	private void TextBox_TextChanged(object sender, TextChangedEventArgs e) =>
 		LogTextBox.CaretIndex = int.MaxValue;
 }

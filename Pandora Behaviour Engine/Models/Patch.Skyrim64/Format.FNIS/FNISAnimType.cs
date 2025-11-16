@@ -15,5 +15,5 @@ public enum FNISAnimType
 	Paired,
 	Killmove,
 	Alternate,
-	Chair
+	Chair,
 }

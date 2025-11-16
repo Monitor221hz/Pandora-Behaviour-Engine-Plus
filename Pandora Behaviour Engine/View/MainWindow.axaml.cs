@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
+using System;
 using FluentAvalonia.UI.Windowing;
 using Pandora.Utils;
 using Pandora.Utils.Platform.Windows;
-using System;
 
 namespace Pandora.Views;
 
@@ -28,12 +28,14 @@ public partial class MainWindow : AppWindow
 		Properties.GUISettings.Default.WindowWidth = Width;
 		Properties.GUISettings.Default.Save();
 	}
+
 	private void ConfigureTitleBar()
 	{
 		TitleBar.ExtendsContentIntoTitleBar = true;
 		TitleBar.TitleBarHitTestType = TitleBarHitTestType.Complex;
 		TitleBar.Height = 42;
 	}
+
 	private void RestoreWindowSize()
 	{
 		var savedHeight = Properties.GUISettings.Default.WindowHeight;
@@ -46,5 +48,6 @@ public partial class MainWindow : AppWindow
 			Width = savedWidth;
 	}
 
-	public void SetVisualState(WindowVisualState state) => WindowsPlatformHelper.SetVisualWindowState(this, state);
+	public void SetVisualState(WindowVisualState state) =>
+		WindowsPlatformHelper.SetVisualWindowState(this, state);
 }

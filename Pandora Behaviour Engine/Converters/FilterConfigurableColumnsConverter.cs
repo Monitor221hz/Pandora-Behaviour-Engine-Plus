@@ -1,28 +1,38 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using Avalonia.Controls;
-using Avalonia.Data.Converters;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Avalonia.Controls;
+using Avalonia.Data.Converters;
 
 namespace Pandora.Converters;
 
 public class FilterConfigurableColumnsConverter : IValueConverter
 {
-    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
-    {
-        if (value is IEnumerable<DataGridColumn> columns)
-        {
-            return columns.Where(c => (c.CanUserReorder || c.CanUserResize) && c.Header?.ToString() != (parameter?.ToString() ?? string.Empty)).ToList();
-        }
-        return Enumerable.Empty<DataGridColumn>();
-    }
+	public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+	{
+		if (value is IEnumerable<DataGridColumn> columns)
+		{
+			return columns
+				.Where(c =>
+					(c.CanUserReorder || c.CanUserResize)
+					&& c.Header?.ToString() != (parameter?.ToString() ?? string.Empty)
+				)
+				.ToList();
+		}
+		return Enumerable.Empty<DataGridColumn>();
+	}
 
-    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
-    {
-        throw new NotImplementedException();
-    }
+	public object? ConvertBack(
+		object? value,
+		Type targetType,
+		object? parameter,
+		CultureInfo culture
+	)
+	{
+		throw new NotImplementedException();
+	}
 }
