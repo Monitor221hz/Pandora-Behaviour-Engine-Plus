@@ -1,6 +1,13 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Text;
+using System.Threading.Tasks;
+using System.Xml;
 using NLog;
 using Pandora.API.Patch;
 using Pandora.API.Patch.IOManagers;
@@ -10,12 +17,6 @@ using Pandora.Models.Patch.Skyrim64.AnimSetData;
 using Pandora.Models.Patch.Skyrim64.Format.Pandora;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 using Pandora.Utils;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
 using XmlCake.Linq.Expressions;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.Nemesis;
@@ -24,15 +25,33 @@ public class NemesisAssembler
 {
 	private static readonly Logger Logger = LogManager.GetCurrentClassLogger(); //to do: move logger into inheritable base class
 
-	private static readonly DirectoryInfo templateFolder = new(Path.Join(BehaviourEngine.AssemblyDirectory.FullName, "Pandora_Engine", "Skyrim", "Template"));
+	private static readonly DirectoryInfo templateFolder = new(
+		Path.Join(
+			BehaviourEngine.AssemblyDirectory.FullName,
+			"Pandora_Engine",
+			"Skyrim",
+			"Template"
+		)
+	);
 	private static readonly DirectoryInfo outputFolder = PandoraPaths.OutputPath;
-	private static readonly DirectoryInfo defaultOutputMeshFolder = new(Path.Join(outputFolder.FullName, "meshes"));
+	private static readonly DirectoryInfo defaultOutputMeshFolder = new(
+		Path.Join(outputFolder.FullName, "meshes")
+	);
 
 	private readonly PandoraBridgedAssembler pandoraConverter;
 	private readonly IMetaDataExporter<PackFile> exporter = new PackFileExporter();
-	
-	private IXExpression replacePattern = new XSkipWrapExpression(new XStep(XmlNodeType.Comment, "CLOSE"), new XStep(XmlNodeType.Comment, "OPEN"), new XStep(XmlNodeType.Comment, "ORIGINAL"), new XStep(XmlNodeType.Comment, "CLOSE"));
-	private IXExpression insertPattern = new XSkipWrapExpression(new XStep(XmlNodeType.Comment, "ORIGINAL"), new XStep(XmlNodeType.Comment, "OPEN"), new XStep(XmlNodeType.Comment, "CLOSE"));
+
+	private static readonly IXExpression replacePattern = new XSkipWrapExpression(
+		new XStep(XmlNodeType.Comment, "CLOSE"),
+		new XStep(XmlNodeType.Comment, "OPEN"),
+		new XStep(XmlNodeType.Comment, "ORIGINAL"),
+		new XStep(XmlNodeType.Comment, "CLOSE")
+	);
+	private static readonly IXExpression insertPattern = new XSkipWrapExpression(
+		new XStep(XmlNodeType.Comment, "ORIGINAL"),
+		new XStep(XmlNodeType.Comment, "OPEN"),
+		new XStep(XmlNodeType.Comment, "CLOSE")
+	);
 
 	//private XPathLookup lookup = new XPathLookup();
 
@@ -48,8 +67,13 @@ public class NemesisAssembler
 		AnimSetDataManager = new AnimSetDataManager(templateFolder, defaultOutputMeshFolder);
 		AnimDataManager = new AnimDataManager(templateFolder, defaultOutputMeshFolder);
 
-		pandoraConverter = new PandoraBridgedAssembler(ProjectManager, AnimSetDataManager, AnimDataManager);
+		pandoraConverter = new PandoraBridgedAssembler(
+			ProjectManager,
+			AnimSetDataManager,
+			AnimDataManager
+		);
 	}
+
 	public NemesisAssembler(IMetaDataExporter<PackFile> ioManager)
 	{
 		exporter = ioManager;
@@ -57,20 +81,36 @@ public class NemesisAssembler
 		AnimSetDataManager = new AnimSetDataManager(templateFolder, defaultOutputMeshFolder);
 		AnimDataManager = new AnimDataManager(templateFolder, defaultOutputMeshFolder);
 
-		pandoraConverter = new PandoraBridgedAssembler(ProjectManager, AnimSetDataManager, AnimDataManager);
+		pandoraConverter = new PandoraBridgedAssembler(
+			ProjectManager,
+			AnimSetDataManager,
+			AnimDataManager
+		);
 	}
-	public NemesisAssembler(IMetaDataExporter<PackFile> ioManager, ProjectManager projManager, AnimSetDataManager animSDManager, AnimDataManager animDManager)
+
+	public NemesisAssembler(
+		IMetaDataExporter<PackFile> ioManager,
+		ProjectManager projManager,
+		AnimSetDataManager animSDManager,
+		AnimDataManager animDManager
+	)
 	{
 		exporter = ioManager;
 		ProjectManager = projManager;
 		AnimSetDataManager = animSDManager;
 		AnimDataManager = animDManager;
-		pandoraConverter = new PandoraBridgedAssembler(ProjectManager, AnimSetDataManager, AnimDataManager);
+		pandoraConverter = new PandoraBridgedAssembler(
+			ProjectManager,
+			AnimSetDataManager,
+			AnimDataManager
+		);
 	}
 
 	public void SetOutputPath(DirectoryInfo baseOutputDirectory)
 	{
-		var outputMeshDirectory = new DirectoryInfo(Path.Join(baseOutputDirectory.FullName, "meshes"));
+		var outputMeshDirectory = new DirectoryInfo(
+			Path.Join(baseOutputDirectory.FullName, "meshes")
+		);
 
 		ProjectManager.SetOutputPath(baseOutputDirectory);
 		AnimDataManager.SetOutputPath(outputMeshDirectory);
@@ -80,15 +120,15 @@ public class NemesisAssembler
 	public void LoadResources()
 	{
 		throw new NotImplementedException();
-
-
 	}
+
 	public void GetPostMessages(StringBuilder builder)
 	{
 		ProjectManager.GetFNISInfo(builder);
 		ProjectManager.GetAnimationInfo(builder);
 		ProjectManager.GetExportInfo(builder);
 	}
+
 	public async Task LoadResourcesAsync()
 	{
 		var projectLoadTask = Task.Run(ProjectManager.LoadTrackedProjects);
@@ -106,7 +146,8 @@ public class NemesisAssembler
 
 		foreach (DirectoryInfo subFolder in subFolders)
 		{
-			if (AssemblePackFilePatch(subFolder, modInfo)) continue;
+			if (AssemblePackFilePatch(subFolder, modInfo))
+				continue;
 			if (subFolder.Name.StartsWith("animationsetdata"))
 			{
 				AssembleAnimSetDataPatch(subFolder);
@@ -117,47 +158,71 @@ public class NemesisAssembler
 				AssembleAnimDataPatch(subFolder);
 				continue;
 			}
-			if (subFolder.Name.StartsWith("plugin"))
-			{
-
-			}
-
+			if (subFolder.Name.StartsWith("plugin")) { }
 		}
 	}
+
 	public void AssemblePatch(IModInfo modInfo, DirectoryInfo folder)
 	{
 		DirectoryInfo[] subFolders = folder.GetDirectories();
 		foreach (DirectoryInfo subFolder in subFolders)
 		{
-			if (AssemblePackFilePatch(subFolder, modInfo)) continue;
-			if (subFolder.Name.StartsWith("animationsetdata")) AssembleAnimSetDataPatch(subFolder);
-			if (subFolder.Name.StartsWith("animationdata")) AssembleAnimDataPatch(subFolder);
-
+			if (AssemblePackFilePatch(subFolder, modInfo))
+				continue;
+			if (subFolder.Name.StartsWith("animationsetdata"))
+				AssembleAnimSetDataPatch(subFolder);
+			if (subFolder.Name.StartsWith("animationdata"))
+				AssembleAnimDataPatch(subFolder);
 		}
 	}
+
 	public bool ApplyPatches() => true;
+
 	public Task QueueNativePatchesAsync()
 	{
 		return Task.Run(() => pandoraConverter.QueueNativePatches());
 	}
+
 	public Task LoadMetaDataAsync()
 	{
-		return Task.Run(() => { exporter.LoadMetaData(); });
+		return Task.Run(() =>
+		{
+			exporter.LoadMetaData();
+		});
 	}
+
 	public Task SaveMetaDataAsync()
 	{
-		return Task.Run(() => { exporter.SaveMetaData(ProjectManager.ActivePackFiles); });
+		return Task.Run(() =>
+		{
+			exporter.SaveMetaData(ProjectManager.ActivePackFiles);
+		});
 	}
+
 	public async Task ApplyNativePatchesAsync(RunOrder order)
 	{
-		await Task.Run(() => { pandoraConverter.ApplyNativePatches(RuntimeMode.Serial, order); });
-		await Task.Run(() => { pandoraConverter.ApplyNativePatches(RuntimeMode.Parallel, order); });
+		await Task.Run(() =>
+		{
+			pandoraConverter.ApplyNativePatches(RuntimeMode.Serial, order);
+		});
+		await Task.Run(() =>
+		{
+			pandoraConverter.ApplyNativePatches(RuntimeMode.Parallel, order);
+		});
 	}
+
 	public async Task MergeAllAnimationDataAsync()
 	{
-		await Task.Run(() => { AnimSetDataManager.MergeAnimSetDataSingleFile(); });
-		await Task.Run(() => { AnimDataManager.MergeAnimDataSingleFile(); });
+		await Task.Run(() =>
+		{
+			AnimSetDataManager.MergeAnimSetDataSingleFile();
+		});
+		await Task.Run(() =>
+		{
+			AnimDataManager.MergeAnimDataSingleFile();
+		});
 	}
+
 	public async Task<bool> ApplyPatchesAsync()
 	{
 		var queueNativeTask = QueueNativePatchesAsync();
@@ -172,6 +237,7 @@ public class NemesisAssembler
 		var saveMetaDataTask = SaveMetaDataAsync();
 		await allAnimDataTask;
 		await saveMetaDataTask;
+		Debug.WriteLine("Thread");
 		return mainTask && exportSuccess;
 	}
 
@@ -182,14 +248,16 @@ public class NemesisAssembler
 			AssembleProjectAnimDataPatch(subFolder);
 		}
 	}
+
 	public void AssembleProjectAnimDataPatch(DirectoryInfo folder)
 	{
-
 		var projectName = folder.Name.Split('~')[0];
 
-		if (!ProjectManager.TryGetProject(projectName, out var project) ||
-			project.AnimData == null ||
-			project.AnimData.BoundMotionDataProject == null)
+		if (
+			!ProjectManager.TryGetProject(projectName, out var project)
+			|| project.AnimData == null
+			|| project.AnimData.BoundMotionDataProject == null
+		)
 		{
 			return;
 		}
@@ -201,15 +269,20 @@ public class NemesisAssembler
 			{
 				continue;
 			}
-			FileInfo motionDataFile = new(Path.Combine(clipDataFile.DirectoryName!, $"{clipDataBlock.ClipID}.txt"));
-			if (!motionDataFile.Exists || !ClipMotionDataBlock.TryReadBlock(motionDataFile, out var motionDataBlock))
+			FileInfo motionDataFile = new(
+				Path.Combine(clipDataFile.DirectoryName!, $"{clipDataBlock.ClipID}.txt")
+			);
+			if (
+				!motionDataFile.Exists
+				|| !ClipMotionDataBlock.TryReadBlock(motionDataFile, out var motionDataBlock)
+			)
 			{
 				continue;
 			}
 			project.AnimData.AddClipData(clipDataBlock, motionDataBlock);
 		}
-
 	}
+
 	public void AssembleAnimSetDataPatch(DirectoryInfo directoryInfo)
 	{
 		pandoraConverter.AssembleAnimSetDataPatch(directoryInfo);
@@ -222,17 +295,23 @@ public class NemesisAssembler
 		{
 			return false;
 		}
-		lock (targetPackFile) targetPackFile.Dispatcher.AddChangeSet(NemesisParser.ParsePackFileChanges(targetPackFile, modInfo, folder));
+		lock (targetPackFile)
+			targetPackFile.Dispatcher.AddChangeSet(
+				NemesisParser.ParsePackFileChanges(targetPackFile, modInfo, folder)
+			);
 		return true;
 	}
+
 	private bool AssemblePackFilePatch(DirectoryInfo folder, IModInfo modInfo)
 	{
 		PackFile targetPackFile;
 		if (!ProjectManager.TryActivatePackFilePriority(folder.Name, out targetPackFile!))
 		{
 			Project targetProject;
-			if (!ProjectManager.TryLookupProjectFolder(folder.Name, out targetProject!)) { return false; }
-
+			if (!ProjectManager.TryLookupProjectFolder(folder.Name, out targetProject!))
+			{
+				return false;
+			}
 
 			DirectoryInfo[] subFolders = folder.GetDirectories();
 			foreach (DirectoryInfo subFolder in subFolders)
@@ -241,7 +320,10 @@ public class NemesisAssembler
 			}
 			return true;
 		}
-		lock (targetPackFile) targetPackFile.Dispatcher.AddChangeSet(NemesisParser.ParsePackFileChanges(targetPackFile, modInfo, folder));
+		lock (targetPackFile)
+			targetPackFile.Dispatcher.AddChangeSet(
+				NemesisParser.ParsePackFileChanges(targetPackFile, modInfo, folder)
+			);
 		return true;
 	}
 
@@ -250,7 +332,12 @@ public class NemesisAssembler
 		List<(FileInfo inFile, FileInfo outFile)> exportFiles = [];
 		foreach (PackFile packFile in ProjectManager.ActivePackFiles)
 		{
-			exportFiles.Add((packFile.InputHandle, new FileInfo(Path.Join(Environment.CurrentDirectory, packFile.InputHandle.Name))));
+			exportFiles.Add(
+				(
+					packFile.InputHandle,
+					new FileInfo(Path.Join(Environment.CurrentDirectory, packFile.InputHandle.Name))
+				)
+			);
 		}
 		return exportFiles;
 	}

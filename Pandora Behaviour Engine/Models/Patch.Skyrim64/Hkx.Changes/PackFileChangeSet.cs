@@ -1,24 +1,30 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using NLog;
-using Pandora.API.Patch;
-using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using NLog;
+using Pandora.API.Patch;
+using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
 namespace Pandora.Models.Patch.Skyrim64.Hkx.Changes;
+
 using ChangeType = IPackFileChange.ChangeType;
 
 public class PackFileChangeSet : IPackFileChangeOwner
 {
 	private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-	private Dictionary<string, Dictionary<ChangeType, List<IPackFileChange>>> nodeScopedChangeMap = new(StringComparer.OrdinalIgnoreCase);
+	private Dictionary<string, Dictionary<ChangeType, List<IPackFileChange>>> nodeScopedChangeMap =
+		new(StringComparer.OrdinalIgnoreCase);
 
-	private static readonly IOrderedEnumerable<ChangeType> orderedChangeTypes = Enum.GetValues(typeof(ChangeType)).Cast<ChangeType>().OrderBy(t => t);
+	private static readonly IOrderedEnumerable<ChangeType> orderedChangeTypes = Enum.GetValues(
+			typeof(ChangeType)
+		)
+		.Cast<ChangeType>()
+		.OrderBy(t => t);
 
 	public IModInfo Origin { get; set; }
 
@@ -33,25 +39,34 @@ public class PackFileChangeSet : IPackFileChangeOwner
 		//foreach (ChangeType changeType in orderedChangeTypes) { changes.Add(changeType, new List<IPackFileChange>()); }
 		Origin = packFileChangeSet.Origin;
 	}
+
 	//public void AddElementAsChange(XElement element) => AddChange(new PushElementChange(PackFile.ROOT_CONTAINER_NAME, element));
 
 	public void AddElementAsChange(XElement element)
 	{
 		return;
 	}
+
 	//public void AddChange(IPackFileChange change) => changes[change.Type].Add(change);
 	public void AddChange(IPackFileChange change)
 	{
-		if (nodeScopedChangeMap.TryGetValue(change.Target, out var changeTypedMap))
+		lock (nodeScopedChangeMap)
 		{
+			if (nodeScopedChangeMap.TryGetValue(change.Target, out var changeTypedMap))
+			{
+				changeTypedMap[change.Type].Add(change);
+				return;
+			}
+			changeTypedMap = [];
+			foreach (ChangeType changeType in orderedChangeTypes)
+			{
+				changeTypedMap.Add(changeType, []);
+			}
 			changeTypedMap[change.Type].Add(change);
-			return;
+			nodeScopedChangeMap.Add(change.Target, changeTypedMap);
 		}
-		changeTypedMap = [];
-		foreach (ChangeType changeType in orderedChangeTypes) { changeTypedMap.Add(changeType, []); }
-		changeTypedMap[change.Type].Add(change);
-		nodeScopedChangeMap.Add(change.Target, changeTypedMap);
 	}
+
 	public static void ApplyInOrder(PackFile packFile, List<PackFileChangeSet> changeSetList)
 	{
 		foreach (ChangeType changeType in orderedChangeTypes)
@@ -62,13 +77,19 @@ public class PackFileChangeSet : IPackFileChangeOwner
 			}
 		}
 	}
-	public static void ApplyForNode(string nodeName, PackFile packFile, List<PackFileChangeSet> changeSetList)
+
+	public static void ApplyForNode(
+		string nodeName,
+		PackFile packFile,
+		List<PackFileChangeSet> changeSetList
+	)
 	{
 		foreach (var changeSet in changeSetList)
 		{
 			changeSet.ApplyForNode(nodeName, packFile);
 		}
 	}
+
 	public void ApplyInOrder(PackFile packFile)
 	{
 		foreach (var changeType in orderedChangeTypes)
@@ -76,6 +97,7 @@ public class PackFileChangeSet : IPackFileChangeOwner
 			ApplyForType(packFile, changeType);
 		}
 	}
+
 	public void ApplyForNode(string nodeName, PackFile packFile)
 	{
 		if (!nodeScopedChangeMap.TryGetValue(nodeName, out var changeTypedMap))
@@ -88,11 +110,17 @@ public class PackFileChangeSet : IPackFileChangeOwner
 			for (int i = changeList.Count - 1; i >= 0; i--)
 			{
 				IPackFileChange? change = changeList[i];
-				if (!change.Apply(packFile)) { Logger.Warn($"Dispatcher > \"{Origin.Name}\" > {packFile.ParentProject?.Identifier}~{packFile.Name} > {change.Type} > {change.AssociatedType} > {change.Path} > FAILED"); }
+				if (!change.Apply(packFile))
+				{
+					Logger.Warn(
+						$"Dispatcher > \"{Origin.Name}\" > {packFile.ParentProject?.Identifier}~{packFile.Name} > {change.Type} > {change.AssociatedType} > {change.Path} > FAILED"
+					);
+				}
 				changeList.RemoveAt(i);
 			}
 		}
 	}
+
 	public void ApplyForType(PackFile packFile, ChangeType changeType)
 	{
 		foreach (var changeTypedMap in nodeScopedChangeMap.Values)
@@ -100,11 +128,16 @@ public class PackFileChangeSet : IPackFileChangeOwner
 			var changeList = changeTypedMap[changeType];
 			foreach (var change in changeList)
 			{
-				if (!change.Apply(packFile)) { Logger.Warn($"Dispatcher > \"{Origin.Name}\" > {packFile.ParentProject?.Identifier}~{packFile.Name} > {change.Type} > {change.AssociatedType} > {change.Path} > FAILED"); }
+				if (!change.Apply(packFile))
+				{
+					Logger.Warn(
+						$"Dispatcher > \"{Origin.Name}\" > {packFile.ParentProject?.Identifier}~{packFile.Name} > {change.Type} > {change.AssociatedType} > {change.Path} > FAILED"
+					);
+				}
 			}
 		}
-
 	}
+
 	public void Apply(PackFile packFile)
 	{
 		foreach (ChangeType changeType in orderedChangeTypes)
@@ -114,12 +147,15 @@ public class PackFileChangeSet : IPackFileChangeOwner
 				var changeList = changeTypedMap[changeType];
 				foreach (var change in changeList)
 				{
-					if (!change.Apply(packFile)) { Logger.Warn($"Dispatcher > \"{Origin.Name}\" > {packFile.ParentProject?.Identifier}~{packFile.Name} > {change.Type} > {change.AssociatedType} > {change.Path} > FAILED"); }
+					if (!change.Apply(packFile))
+					{
+						Logger.Warn(
+							$"Dispatcher > \"{Origin.Name}\" > {packFile.ParentProject?.Identifier}~{packFile.Name} > {change.Type} > {change.AssociatedType} > {change.Path} > FAILED"
+						);
+					}
 				}
 			}
-
 		}
-
 	}
 
 	public void Validate(PackFile packFile, PackFileValidator validator)
@@ -130,7 +166,6 @@ public class PackFileChangeSet : IPackFileChangeOwner
 			{
 				validator.Validate(packFile, changeTypedMap[changeType]);
 			}
-
 		}
 	}
 }
