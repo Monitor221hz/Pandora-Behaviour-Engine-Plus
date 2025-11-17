@@ -32,16 +32,26 @@ public class NemesisParser
 		new XStep(XmlNodeType.Comment, "CLOSE")
 	);
 
+	/// <summary>
+	/// Parse and add a replace edit to the change owner.
+	/// </summary>
+	/// <param name="nodeName">The name of the node.</param>
+	/// <param name="match">Assumes success</param>
+	/// <param name="changeSet">The changeset to be added to.</param>
+	/// <param name="lookup">The XPath lookup.</param>
 	public static void ParseReplaceEdit(
 		string nodeName,
 		XMatch match,
-		PackFileChangeSet changeSet,
-		XPathLookup lookup
+		IPackFileChangeOwner changeSet,
+		IXPathLookup lookup
 	)
 	{
 		List<XNode> newNodes = [];
 		int separatorIndex = match.Count;
-
+		if (match[0].NodeType != XmlNodeType.Comment)
+		{
+			return;
+		}
 		XNode? previousNode = match[0].PreviousNode;
 
 		for (int i = 1; i < separatorIndex; i++)
@@ -160,6 +170,22 @@ public class NemesisParser
 			switch (node.NodeType)
 			{
 				case XmlNodeType.Text:
+					uint skipCharCount = 0;
+					while (previousNode != null)
+					{
+						if (previousNode.NodeType == XmlNodeType.Text)
+						{
+							skipCharCount += (uint)((XText)previousNode).Value.Length;
+						}
+						if (previousNode.NodeType == XmlNodeType.Element)
+						{
+							break;
+						}
+						previousNode = previousNode.PreviousNode;
+					}
+					changeSet.AddChange(
+						new RemoveTextChange(nodeName, lookup.LookupPath(node), skipCharCount)
+					);
 					break;
 				case XmlNodeType.Element:
 					//packFile.Editor.QueueRemoveElement(lookup.LookupPath(node));
@@ -175,8 +201,8 @@ public class NemesisParser
 	public static void ParseInsertEdit(
 		string nodeName,
 		XMatch match,
-		PackFileChangeSet changeSet,
-		XPathLookup lookup
+		IPackFileChangeOwner changeSet,
+		IXPathLookup lookup
 	)
 	{
 		List<XNode> newNodes = match.nodes;
@@ -190,12 +216,10 @@ public class NemesisParser
 		foreach (XNode node in newNodes)
 		{
 			string nodePath = lookup.LookupPath(node);
-			//if (node.Parent != null) node.Remove();
 			switch (node.NodeType)
 			{
 				case XmlNodeType.Text:
 
-					//packFile.Editor.QueueInsertText(lookup.LookupPath(node), ((XText)node).Value);
 					if (!isTextInsert)
 					{
 						changeSet.AddChange(
@@ -254,11 +278,9 @@ public class NemesisParser
 					changeSet.AddChange(
 						new InsertTextChange(nodeName, nodePath, preText, ((XText)node).Value)
 					);
-
-					//lock (packFile.edits) packFile.edits.AddChange(new InsertTextChange(nodePath, ((XText)node).Value, modInfo));
 					break;
 				case XmlNodeType.Element:
-					//packFile.Editor.QueueInsertElement(lookup.LookupPath(node), (XElement)node);
+
 					changeSet.AddChange(
 						new AppendElementChange(
 							nodeName,
@@ -276,8 +298,8 @@ public class NemesisParser
 	public static bool MatchReplacePattern(
 		string nodeName,
 		IEnumerable<XNode> nodes,
-		PackFileChangeSet changeSet,
-		XPathLookup lookup
+		IPackFileChangeOwner changeSet,
+		IXPathLookup lookup
 	)
 	{
 		XMatchCollection matchCollection = replacePattern.Matches(nodes);
@@ -285,6 +307,10 @@ public class NemesisParser
 			return false;
 		foreach (XMatch match in matchCollection)
 		{
+			if (!match.Success)
+			{
+				continue;
+			}
 			ParseReplaceEdit(nodeName, match, changeSet, lookup);
 		}
 		return true;
@@ -294,7 +320,7 @@ public class NemesisParser
 		string nodeName,
 		IEnumerable<XNode> nodes,
 		PackFileChangeSet changeSet,
-		XPathLookup lookup
+		IXPathLookup lookup
 	)
 	{
 		XMatchCollection matchCollection = insertPattern.Matches(nodes);
@@ -302,6 +328,10 @@ public class NemesisParser
 			return false;
 		foreach (XMatch match in matchCollection)
 		{
+			if (!match.Success)
+			{
+				continue;
+			}
 			ParseInsertEdit(nodeName, match, changeSet, lookup);
 		}
 		return true;

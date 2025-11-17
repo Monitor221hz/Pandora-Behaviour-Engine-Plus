@@ -57,9 +57,9 @@ public class PandoraParser
 
 				if (preTextAttribute == null)
 				{
-					changeSet.AddChange(
-						new RemoveTextChange(nodeName, pathAttribute.Value, textAttribute.Value)
-					);
+					//changeSet.AddChange(
+					//	new RemoveTextChange(nodeName, pathAttribute.Value, textAttribute.Value)
+					//);
 					break;
 				}
 				changeSet.AddChange(

@@ -2,6 +2,7 @@
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
 using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using Pandora.Models.Extensions;
@@ -140,13 +141,15 @@ public partial class PackFileEditor
 		element.SetValue(source);
 	}
 
-	public static void RemoveText(IXMap xmap, string path, string value)
+	public static void RemoveText(IXMap xmap, string path, string value, uint findFrom)
 	{
 		XElement element = xmap.NavigateTo(path);
 		if (string.IsNullOrWhiteSpace(value))
 			return;
 		string source = element.Value;
-		source = NormalizeStringValue(source.Replace(value, string.Empty, true));
+		source = NormalizeStringValue(
+			source.Substring((int)findFrom).Replace(value, string.Empty, true)
+		);
 		element.SetValue(source);
 	}
 }
