@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
+using System;
 using System.Globalization;
 using System.IO;
 using Avalonia;
@@ -8,7 +9,9 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
+using Microsoft.Extensions.DependencyInjection;
 using Pandora.Logging;
+using Pandora.Services;
 using Pandora.Utils;
 using Pandora.ViewModels;
 using Pandora.Views;
@@ -27,7 +30,6 @@ public partial class App : Application
 	{
 		SetupCultureInfo();
 		SetupAppTheme();
-
 		if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
 		{
 			LaunchOptions.Parse(desktop.Args, caseInsensitive: true);
@@ -36,6 +38,10 @@ public partial class App : Application
 			// Without this line you will get duplicate validations from both Avalonia and CT
 			BindingPlugins.DataValidators.RemoveAt(0);
 			desktop.MainWindow = new MainWindow { DataContext = new MainWindowViewModel() };
+			var services = new ServiceCollection();
+			services.AddPandoraServices(desktop)
+
+			Services = services.BuildServiceProvider();
 		}
 
 		base.OnFrameworkInitializationCompleted();
@@ -76,4 +82,9 @@ public partial class App : Application
 
 		NLog.LogManager.Configuration = config;
 	}
+
+	/// <summary>
+	/// Gets the <see cref="IServiceProvider"/> instance to resolve application services.
+	/// </summary>
+	public IServiceProvider? Services { get; private set; }
 }
