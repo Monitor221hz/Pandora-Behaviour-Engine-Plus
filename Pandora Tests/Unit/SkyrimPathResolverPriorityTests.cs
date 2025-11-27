@@ -10,9 +10,10 @@ using Pandora.Utils.Platform.Windows;
 using Pandora.Utils.Skyrim;
 using Testably.Abstractions.Testing;
 
-namespace PandoraTests;
+namespace PandoraTests.Unit;
 
 [SupportedOSPlatform("windows")]
+[SupportedOSPlatform("linux")]
 public class SkyrimPathResolverPriorityTests : IDisposable
 {
     private readonly ITestOutputHelper _output;
