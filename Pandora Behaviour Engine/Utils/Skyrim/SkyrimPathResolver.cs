@@ -7,10 +7,17 @@ using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Avalonia.Controls.Shapes;
+using GameFinder.RegistryUtils;
+using GameFinder.StoreHandlers.GOG;
+using GameFinder.StoreHandlers.Steam;
+using GameFinder.StoreHandlers.Steam.Models.ValueTypes;
 using Microsoft.Win32;
+using NexusMods.Paths;
 using NLog;
 using Pandora.Logging;
-using Pandora.Utils.Platform.Windows;
+using ISysFileSystem = System.IO.Abstractions.IFileSystem;
+using ISysRegistry = Pandora.Utils.Platform.Windows.IRegistry;
 
 namespace Pandora.Utils.Skyrim;
 
@@ -32,14 +39,22 @@ public sealed class SkyrimPathResolver
 	private delegate IDirectoryInfo? PathProvider();
 
 	private readonly IRuntimeEnvironment _environment;
-	private readonly IRegistry? _registry;
-	private readonly IFileSystem _fileSystem;
+	private readonly ISysRegistry? _registry;
+	private readonly ISysFileSystem _fileSystem;
 	private readonly IDirectoryInfo _currentDirectory;
+
+	private readonly uint[] steamAppIDs = new uint[]
+	{
+		489830, // SSE/AE (Steam)
+		611670, // VR (Steam)
+	};
+
+	private readonly uint gogAppID = 711230643; // SSE/AE (GOG)
 
 	public SkyrimPathResolver(
 		IRuntimeEnvironment environment,
-		IRegistry? registry,
-		IFileSystem fileSystem
+		ISysRegistry? registry,
+		ISysFileSystem fileSystem
 	)
 	{
 		_environment = environment;
@@ -62,7 +77,7 @@ public sealed class SkyrimPathResolver
 		[
 			TryGetDataPathFromCommandLine,
 			TryGetDataPathFromCurrentDirectory,
-			() => TryGetDataPathFromRegistry(),
+			() => TryGetDataPathFromGameFinder() ?? TryGetDataPathFromRegistry(),
 		];
 
 		var resolvedPath = providers
@@ -122,6 +137,44 @@ public sealed class SkyrimPathResolver
 			_currentDirectory.FullName
 		);
 		return NormalizeToDataDirectory(_currentDirectory);
+	}
+
+	public IDirectoryInfo? TryGetDataPathFromGameFinder()
+	{
+		var realFileSystem = FileSystem.Shared;
+
+		SteamHandler steamHandler;
+		if (OperatingSystem.IsWindows())
+		{
+			var windowsRegistry = WindowsRegistry.Shared;
+			steamHandler = new SteamHandler(realFileSystem, windowsRegistry);
+			foreach (var appId in steamAppIDs)
+			{
+				var game = steamHandler.FindOneGameById(AppId.From(appId), out var steamErrors);
+				if (game == null || !game.Path.DirectoryExists())
+					continue;
+				return NormalizeToDataDirectory(_fileSystem.DirectoryInfo.New(game.Path.Directory));
+			}
+			var gogHandler = new GOGHandler(windowsRegistry, realFileSystem);
+			var gogGame = gogHandler.FindOneGameById(GOGGameId.From(711230643), out var gogErrors);
+			if (gogGame == null || !gogGame.Path.DirectoryExists())
+			{
+				return null;
+			}
+			return NormalizeToDataDirectory(_fileSystem.DirectoryInfo.New(gogGame.Path.Directory));
+		}
+		if (OperatingSystem.IsLinux())
+		{
+			steamHandler = new SteamHandler(realFileSystem, null);
+			foreach (var appId in steamAppIDs)
+			{
+				var game = steamHandler.FindOneGameById(AppId.From(appId), out var steamErrors);
+				if (game == null || !game.Path.DirectoryExists())
+					continue;
+				return NormalizeToDataDirectory(_fileSystem.DirectoryInfo.New(game.Path.Directory));
+			}
+		}
+		return null;
 	}
 
 	/// <summary>
