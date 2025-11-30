@@ -1,12 +1,14 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Linq;
 using Pandora.API.Patch;
 using Pandora.API.Patch.IOManagers;
+using Pandora.API.Patch.Skyrim64;
+using Pandora.API.Patch.Skyrim64.AnimData;
+using Pandora.API.Patch.Skyrim64.AnimSetData;
 using Pandora.Models.Patch.IO.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.AnimData;
 using Pandora.Models.Patch.Skyrim64.AnimSetData;
@@ -36,16 +38,21 @@ public class PandoraAssembler
 	private readonly PandoraNativePatchManager nativeManager = new();
 	private readonly IMetaDataExporter<PackFile> exporter = new PackFileExporter();
 
-	public ProjectManager ProjectManager { get; private set; }
-	public AnimDataManager AnimDataManager { get; private set; }
-	public AnimSetDataManager AnimSetDataManager { get; private set; }
+	public IProjectManager ProjectManager { get; private set; }
+	public IAnimDataManager AnimDataManager { get; private set; }
+	public IAnimSetDataManager AnimSetDataManager { get; private set; }
 
-	public PandoraAssembler(IMetaDataExporter<PackFile> exporter)
+	public PandoraAssembler(
+		IMetaDataExporter<PackFile> exporter,
+		IProjectManager projectManager,
+		IAnimDataManager animDataManager,
+		IAnimSetDataManager animSetDataManager
+	)
 	{
 		this.exporter = exporter;
-		ProjectManager = new ProjectManager(templateFolder, defaultOutputMeshFolder);
-		AnimSetDataManager = new AnimSetDataManager(templateFolder, defaultOutputMeshFolder);
-		AnimDataManager = new AnimDataManager(templateFolder, defaultOutputMeshFolder);
+		ProjectManager = projectManager;
+		AnimSetDataManager = animSetDataManager;
+		AnimDataManager = animDataManager;
 	}
 
 	public PandoraAssembler(IMetaDataExporter<PackFile> exporter, NemesisAssembler nemesisAssembler)
@@ -57,9 +64,9 @@ public class PandoraAssembler
 	}
 
 	public PandoraAssembler(
-		ProjectManager projManager,
-		AnimSetDataManager animSDManager,
-		AnimDataManager animDManager
+		IProjectManager projManager,
+		IAnimSetDataManager animSDManager,
+		IAnimDataManager animDManager
 	)
 	{
 		ProjectManager = projManager;
@@ -169,7 +176,7 @@ public class PandoraAssembler
 
 	public void AssembleAnimSetDataPatch(DirectoryInfo directoryInfo) //not exactly Nemesis format but this format is just simpler
 	{
-		ProjectAnimSetData? targetAnimSetData;
+		IProjectAnimSetData? targetAnimSetData;
 
 		foreach (DirectoryInfo subDirInfo in directoryInfo.GetDirectories())
 		{
@@ -187,7 +194,7 @@ public class PandoraAssembler
 				if (
 					!targetAnimSetData.AnimSetsByName.TryGetValue(
 						patchFile.Name,
-						out AnimSet? targetAnimSet
+						out IAnimSet? targetAnimSet
 					)
 				)
 					continue;
@@ -204,7 +211,7 @@ public class PandoraAssembler
 
 							string animationName = Path.GetFileNameWithoutExtension(expectedPath);
 							string folder = Path.GetDirectoryName(expectedPath)!;
-							var animInfo = SetCachedAnimInfo.Encode(folder, animationName);
+							var animInfo = new SetCachedAnimInfo().Encode(folder, animationName);
 							targetAnimSet.AddAnimInfo(animInfo);
 						}
 					}
@@ -220,7 +227,7 @@ public class PandoraAssembler
 				)
 			)
 				continue;
-			List<SetCachedAnimInfo> animInfos = [];
+			List<ISetCachedAnimInfo> animInfos = [];
 			using (var readStream = patchFile.OpenRead())
 			{
 				using (var reader = new StreamReader(readStream))
@@ -233,7 +240,7 @@ public class PandoraAssembler
 
 						string animationName = Path.GetFileNameWithoutExtension(expectedPath);
 						string folder = Path.GetDirectoryName(expectedPath)!;
-						var animInfo = SetCachedAnimInfo.Encode(folder, animationName);
+						var animInfo = new SetCachedAnimInfo().Encode(folder, animationName);
 						animInfos.Add(animInfo);
 					}
 				}

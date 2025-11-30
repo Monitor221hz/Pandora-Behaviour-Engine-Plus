@@ -5,11 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using NLog;
+using Pandora.API.Patch.Skyrim64.AnimSetData;
 using Pandora.Models.Extensions;
+using Pandora.Utils.Skyrim;
 
 namespace Pandora.Models.Patch.Skyrim64.AnimSetData;
 
-public class AnimSetDataManager
+public class AnimSetDataManager : IAnimSetDataManager
 {
 	private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -31,19 +33,19 @@ public class AnimSetDataManager
 	);
 
 	private IList<string> projectPaths = [];
-	private IList<ProjectAnimSetData> animSetDataList = [];
+	private IList<IProjectAnimSetData> animSetDataList = [];
 
-	public Dictionary<string, ProjectAnimSetData> AnimSetDataMap { get; private set; } = [];
+	public Dictionary<string, IProjectAnimSetData> AnimSetDataMap { get; private set; } = [];
 
-	public AnimSetDataManager(DirectoryInfo templateFolder, DirectoryInfo outputMeshFolder)
+	public AnimSetDataManager(IPathResolver pathResolver)
 	{
-		this.templateFolder = templateFolder;
+		this.templateFolder = pathResolver.GetTemplateFolder();
 
 		vanillaHkxFiles = new FileInfo(
 			Path.Join(templateFolder.FullName, VANILLA_HKXPATHS_FILENAME)
 		);
 
-		this.outputMeshFolder = outputMeshFolder;
+		this.outputMeshFolder = pathResolver.GetOutputMeshFolder();
 	}
 
 	public void SetOutputPath(DirectoryInfo outputMeshFolder)

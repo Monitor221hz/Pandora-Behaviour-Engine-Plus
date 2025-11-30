@@ -6,17 +6,29 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
+using Pandora.API.Patch.Skyrim64.AnimSetData;
 using Pandora.Models.Extensions;
 
 namespace Pandora.Models.Patch.Skyrim64.AnimSetData;
 
-public class ProjectAnimSetData
+public class ProjectAnimSetDataFactory : IStreamReaderFactory<IProjectAnimSetData>
+{
+	public bool TryCreate(
+		StreamReader reader,
+		[NotNullWhen(true)] out IProjectAnimSetData? animSetData
+	)
+	{
+		return ProjectAnimSetData.TryRead(reader, out animSetData);
+	}
+}
+
+public class ProjectAnimSetData : IProjectAnimSetData
 {
 	public ProjectAnimSetData(
 		int numSets,
 		IList<string> animSetFileNames,
-		IList<AnimSet> animSets,
-		Dictionary<string, AnimSet> animSetsByName
+		IList<IAnimSet> animSets,
+		Dictionary<string, IAnimSet> animSetsByName
 	)
 	{
 		NumSets = numSets;
@@ -29,13 +41,13 @@ public class ProjectAnimSetData
 
 	public IList<string> AnimSetFileNames { get; private set; } = [];
 
-	public IList<AnimSet> AnimSets { get; private set; } = [];
+	public IList<IAnimSet> AnimSets { get; private set; } = [];
 
-	public Dictionary<string, AnimSet> AnimSetsByName { get; private set; } = [];
+	public Dictionary<string, IAnimSet> AnimSetsByName { get; private set; } = [];
 
 	public static bool TryRead(
 		StreamReader reader,
-		[NotNullWhen(true)] out ProjectAnimSetData? setData
+		[NotNullWhen(true)] out IProjectAnimSetData? setData
 	)
 	{
 		setData = null;
@@ -45,8 +57,11 @@ public class ProjectAnimSetData
 		}
 
 		string[] animSetFileNames = new string[numSets];
-		AnimSet[] animSets = new AnimSet[numSets];
-		Dictionary<string, AnimSet> animSetNameMap = new(numSets, StringComparer.OrdinalIgnoreCase);
+		IAnimSet[] animSets = new IAnimSet[numSets];
+		Dictionary<string, IAnimSet> animSetNameMap = new(
+			numSets,
+			StringComparer.OrdinalIgnoreCase
+		);
 		for (int i = 0; i < numSets; i++)
 		{
 			if (!reader.TryReadLine(out var fileName))
@@ -64,7 +79,7 @@ public class ProjectAnimSetData
 			animSets[i] = animSet;
 			animSetNameMap.Add(animSetFileNames[i], animSet);
 		}
-		setData = new(numSets, animSetFileNames, animSets, animSetNameMap);
+		setData = new ProjectAnimSetData(numSets, animSetFileNames, animSets, animSetNameMap);
 		return true;
 	}
 

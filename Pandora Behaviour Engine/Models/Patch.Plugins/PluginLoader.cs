@@ -3,7 +3,7 @@
 
 using System.IO;
 using System.Reflection;
-using Pandora.Models.Patch.Engine.Plugins;
+using Pandora.API.Patch.Plugins;
 
 namespace Pandora.Models.Patch.Plugins;
 

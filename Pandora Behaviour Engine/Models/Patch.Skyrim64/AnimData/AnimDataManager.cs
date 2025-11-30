@@ -4,22 +4,25 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Pandora.API.Patch.Skyrim64;
+using Pandora.API.Patch.Skyrim64.AnimData;
+using Pandora.Utils.Skyrim;
 
 namespace Pandora.Models.Patch.Skyrim64.AnimData;
 
-public class AnimDataManager
+public class AnimDataManager : IAnimDataManager
 {
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 	private const string ANIMDATA_FILENAME = "animationdatasinglefile.txt";
 
 	private HashSet<int> usedClipIDs = [];
-	public int numClipIDs { get; private set; } = 0;
+	public int NumClipIDs { get; private set; } = 0;
 
 	private List<string> projectNames = [];
 	private Dictionary<string, Dictionary<int, int>> MotionBlockIndexes { get; set; } = [];
-	private List<ProjectAnimData> animDataList { get; set; } = [];
-	private List<MotionData> motionDataList { get; set; } = [];
+	private List<IProjectAnimData> animDataList { get; set; } = [];
+	private List<IMotionData> motionDataList { get; set; } = [];
 
 	private DirectoryInfo templateFolder;
 	private DirectoryInfo outputMeshFolder;
@@ -31,10 +34,10 @@ public class AnimDataManager
 
 	private int LastID { get; set; } = 32767;
 
-	public AnimDataManager(DirectoryInfo templateFolder, DirectoryInfo outputMeshFolder)
+	public AnimDataManager(IPathResolver pathResolver)
 	{
-		this.templateFolder = templateFolder;
-		this.outputMeshFolder = outputMeshFolder;
+		this.templateFolder = pathResolver.GetTemplateFolder();
+		this.outputMeshFolder = pathResolver.GetOutputMeshFolder();
 	}
 
 	public void SetOutputPath(DirectoryInfo outputMeshFolder)
@@ -68,7 +71,7 @@ public class AnimDataManager
 		return LastID;
 	}
 
-	public void SplitAnimDataSingleFile(ProjectManager projectManager)
+	public void SplitAnimDataSingleFile(IProjectManager projectManager)
 	{
 		LastID = 32767;
 
@@ -87,9 +90,9 @@ public class AnimDataManager
 					logger.Info(
 						$"Reading TemplateAnimData file {TemplateAnimDataSingleFile.Name}, found {NumProjects} projects."
 					);
-					Project? activeProject = null;
-					ProjectAnimData? animData = null;
-					MotionData? motionData;
+					IProject? activeProject = null;
+					IProjectAnimData? animData = null;
+					IMotionData? motionData;
 					while ((expectedLine = reader.ReadLine()) != null)
 					{
 						if (expectedLine.Contains(".txt"))

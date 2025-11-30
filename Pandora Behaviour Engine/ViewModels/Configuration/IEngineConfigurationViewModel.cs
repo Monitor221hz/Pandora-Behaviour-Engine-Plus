@@ -4,7 +4,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Reactive;
-using Pandora.API.Patch.Engine.Config;
+using Pandora.API.Patch.Config;
 using ReactiveUI;
 
 namespace Pandora.ViewModels;

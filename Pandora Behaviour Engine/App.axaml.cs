@@ -37,11 +37,16 @@ public partial class App : Application
 			// Line below is needed to remove Avalonia data validation.
 			// Without this line you will get duplicate validations from both Avalonia and CT
 			BindingPlugins.DataValidators.RemoveAt(0);
-			desktop.MainWindow = new MainWindow { DataContext = new MainWindowViewModel() };
-			var services = new ServiceCollection();
-			services.AddPandoraServices(desktop)
 
-			Services = services.BuildServiceProvider();
+			var serviceCollection = new ServiceCollection();
+			var mainWindow = new MainWindow();
+
+			serviceCollection.AddPandoraServices(new() { MainWindow = mainWindow });
+			serviceCollection.AddViewModels();
+			Services = serviceCollection.BuildServiceProvider();
+
+			mainWindow.DataContext = Services.GetRequiredService<MainWindowViewModel>();
+			desktop.MainWindow = mainWindow;
 		}
 
 		base.OnFrameworkInitializationCompleted();
@@ -82,6 +87,8 @@ public partial class App : Application
 
 		NLog.LogManager.Configuration = config;
 	}
+
+	public static new App? Current => Application.Current as App;
 
 	/// <summary>
 	/// Gets the <see cref="IServiceProvider"/> instance to resolve application services.

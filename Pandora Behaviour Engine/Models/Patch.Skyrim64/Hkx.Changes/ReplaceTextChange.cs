@@ -2,6 +2,7 @@
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
 using System.Xml;
+using Pandora.API.Patch.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
 namespace Pandora.Models.Patch.Skyrim64.Hkx.Changes;
@@ -36,7 +37,7 @@ public class ReplaceTextChange : IPackFileChange
 		this.preValue = preValue;
 	}
 
-	public bool Apply(PackFile packFile)
+	public bool Apply(IPackFile packFile)
 	{
 		if (!packFile.TryGetXMap(Target, out var xmap))
 		{

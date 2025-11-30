@@ -133,7 +133,7 @@ public class SkyrimPathResolverPriorityTests : IDisposable
 
         var sut = new SkyrimPathResolver(_mockEnvironment, registryToUse, _mockFileSystem);
 
-        var result = sut.Resolve();
+        var result = sut.ResolveGameDataPath();
         _output.WriteLine($"\nResolved path: {result.FullName}");
 
         Assert.Equal(expectedPath, result.FullName);

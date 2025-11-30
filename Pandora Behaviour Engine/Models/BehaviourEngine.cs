@@ -5,21 +5,18 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Abstractions;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Pandora.API;
 using Pandora.API.Patch;
+using Pandora.API.Patch.Config;
 using Pandora.API.Patch.Engine.Config;
 using Pandora.Models.Patch.Configs;
 using Pandora.Models.Patch.Plugins;
-using Pandora.Utils;
-using Pandora.Utils.Platform.Windows;
 using Pandora.Utils.Skyrim;
-using Testably.Abstractions;
 
 namespace Pandora.Models;
 
-public class BehaviourEngine
+public class BehaviourEngine : IBehaviourEngine
 {
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -36,33 +33,21 @@ public class BehaviourEngine
 	);
 
 	public static readonly DirectoryInfo CurrentDirectory = new(Environment.CurrentDirectory!);
-	public static readonly DirectoryInfo SkyrimGameDirectory;
 	public static readonly List<IEngineConfigurationPlugin> EngineConfigurations = [];
 
 	public bool IsExternalOutput = false;
 
 	public IEngineConfiguration Configuration { get; private set; } = new SkyrimConfiguration();
-	public static DirectoryInfo OutputPath { get; private set; } =
-		new(Environment.CurrentDirectory);
+	public DirectoryInfo OutputPath { get; private set; } = new(Environment.CurrentDirectory);
 
-	static BehaviourEngine()
+	public BehaviourEngine(IPathResolver skyrimPathResolver)
 	{
 		PluginManager.LoadAllPlugins(AssemblyDirectory);
-		var runtimeEnvironment = new PandoraRuntimeEnvironment();
-		var registry = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-			? new WindowsRegistry()
-			: null;
-		var fileSystem = new RealFileSystem();
-		var skyrimPathResolver = new SkyrimPathResolver(runtimeEnvironment, registry, fileSystem);
-
-		IDirectoryInfo abstractSkyrimDir = skyrimPathResolver.Resolve();
-
-		SkyrimGameDirectory = new DirectoryInfo(abstractSkyrimDir.FullName);
 	}
 
 	public BehaviourEngine() { }
 
-	public BehaviourEngine SetOutputPath(DirectoryInfo outputPath)
+	public IBehaviourEngine SetOutputPath(DirectoryInfo outputPath)
 	{
 		OutputPath = outputPath!;
 		IsExternalOutput = CurrentDirectory != OutputPath;
@@ -70,7 +55,7 @@ public class BehaviourEngine
 		return this;
 	}
 
-	public BehaviourEngine SetConfiguration(IEngineConfiguration? configuration)
+	public IBehaviourEngine SetConfiguration(IEngineConfiguration? configuration)
 	{
 		Configuration = configuration ?? new SkyrimConfiguration();
 		return this;

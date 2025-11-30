@@ -3,7 +3,6 @@
 
 using System.Collections.ObjectModel;
 using System.Reactive;
-using Pandora.API.Patch.Engine.Config;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 

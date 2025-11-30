@@ -11,6 +11,9 @@ using System.Xml;
 using NLog;
 using Pandora.API.Patch;
 using Pandora.API.Patch.IOManagers;
+using Pandora.API.Patch.Skyrim64;
+using Pandora.API.Patch.Skyrim64.AnimData;
+using Pandora.API.Patch.Skyrim64.AnimSetData;
 using Pandora.Models.Patch.IO.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.AnimData;
 using Pandora.Models.Patch.Skyrim64.AnimSetData;
@@ -21,7 +24,7 @@ using XmlCake.Linq.Expressions;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.Nemesis;
 
-public class NemesisAssembler
+public class NemesisAssembler : IPatchAssembler
 {
 	private static readonly Logger Logger = LogManager.GetCurrentClassLogger(); //to do: move logger into inheritable base class
 
@@ -57,15 +60,19 @@ public class NemesisAssembler
 
 	List<PackFile> packFiles = [];
 
-	public ProjectManager ProjectManager { get; private set; }
-	public AnimDataManager AnimDataManager { get; private set; }
-	public AnimSetDataManager AnimSetDataManager { get; private set; }
+	public IProjectManager ProjectManager { get; private set; }
+	public IAnimDataManager AnimDataManager { get; private set; }
+	public IAnimSetDataManager AnimSetDataManager { get; private set; }
 
-	public NemesisAssembler()
+	public NemesisAssembler(
+		IProjectManager projectManager,
+		IAnimDataManager animDataManager,
+		IAnimSetDataManager animSetDataManager
+	)
 	{
-		ProjectManager = new ProjectManager(templateFolder, outputFolder);
-		AnimSetDataManager = new AnimSetDataManager(templateFolder, defaultOutputMeshFolder);
-		AnimDataManager = new AnimDataManager(templateFolder, defaultOutputMeshFolder);
+		ProjectManager = projectManager;
+		AnimSetDataManager = animSetDataManager;
+		AnimDataManager = animDataManager;
 
 		pandoraConverter = new PandoraBridgedAssembler(
 			ProjectManager,
@@ -74,10 +81,14 @@ public class NemesisAssembler
 		);
 	}
 
-	public NemesisAssembler(IMetaDataExporter<PackFile> ioManager)
+	public NemesisAssembler(
+		IMetaDataExporter<PackFile> ioManager,
+		IProjectManager projectManager,
+		IAnimSetDataManager animSetDataManager
+	)
 	{
 		exporter = ioManager;
-		ProjectManager = new ProjectManager(templateFolder, outputFolder);
+		ProjectManager = projectManager;
 		AnimSetDataManager = new AnimSetDataManager(templateFolder, defaultOutputMeshFolder);
 		AnimDataManager = new AnimDataManager(templateFolder, defaultOutputMeshFolder);
 

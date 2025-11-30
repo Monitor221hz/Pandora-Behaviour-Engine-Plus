@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Xml.Linq;
 using HKX2E;
 using Pandora.API.Patch;
+using Pandora.API.Patch.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.Hkx.Changes;
 
 namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;

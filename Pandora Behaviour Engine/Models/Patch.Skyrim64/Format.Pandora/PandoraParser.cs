@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using Pandora.API.Patch.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.Hkx.Changes;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 

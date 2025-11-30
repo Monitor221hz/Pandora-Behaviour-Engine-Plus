@@ -3,6 +3,7 @@
 
 using System.Xml;
 using System.Xml.Linq;
+using Pandora.API.Patch.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
 namespace Pandora.Models.Patch.Skyrim64.Hkx.Changes;
@@ -24,7 +25,7 @@ public class InsertElementChange : IPackFileChange
 		this.element = element;
 	}
 
-	public bool Apply(PackFile packFile)
+	public bool Apply(IPackFile packFile)
 	{
 		if (!packFile.TryGetXMap(Target, out var xmap))
 		{

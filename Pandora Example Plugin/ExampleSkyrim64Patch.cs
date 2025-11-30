@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Pandora.API.Patch;
-using Pandora.API.Patch.Engine.Skyrim64;
+using Pandora.API.Patch.Skyrim64;
 
 namespace ExamplePlugin;
 

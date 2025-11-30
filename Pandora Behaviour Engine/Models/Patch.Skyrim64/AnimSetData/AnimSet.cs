@@ -5,11 +5,12 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
+using Pandora.API.Patch.Skyrim64.AnimSetData;
 using Pandora.Models.Extensions;
 
 namespace Pandora.Models.Patch.Skyrim64.AnimSetData;
 
-public class AnimSet
+public class AnimSet : IAnimSet
 {
 	public AnimSet(
 		string versionName,
@@ -18,9 +19,9 @@ public class AnimSet
 		int numAttackEntries,
 		int numAnimationInfos,
 		IList<string> triggers,
-		IList<SetCondition> conditions,
-		IList<SetAttackEntry> attackEntries,
-		IList<SetCachedAnimInfo> animInfos
+		IList<ISetCondition> conditions,
+		IList<ISetAttackEntry> attackEntries,
+		IList<ISetCachedAnimInfo> animInfos
 	)
 	{
 		VersionName = versionName;
@@ -45,15 +46,15 @@ public class AnimSet
 
 	public IList<string> Triggers { get; private set; } = [];
 
-	public IList<SetCondition> Conditions { get; private set; } = [];
+	public IList<ISetCondition> Conditions { get; private set; } = [];
 
-	public IList<SetAttackEntry> AttackEntries { get; private set; } = [];
+	public IList<ISetAttackEntry> AttackEntries { get; private set; } = [];
 
-	public IList<SetCachedAnimInfo> AnimInfos { get; private set; } = [];
+	public IList<ISetCachedAnimInfo> AnimInfos { get; private set; } = [];
 
-	public void AddAnimInfo(SetCachedAnimInfo animInfo) => AnimInfos.Add(animInfo);
+	public void AddAnimInfo(ISetCachedAnimInfo animInfo) => AnimInfos.Add(animInfo);
 
-	public static bool TryRead(StreamReader reader, [NotNullWhen(true)] out AnimSet? animSet)
+	public static bool TryRead(StreamReader reader, [NotNullWhen(true)] out IAnimSet? animSet)
 	{
 		animSet = null;
 		if (!reader.TryReadLine(out var versionName))
@@ -79,7 +80,7 @@ public class AnimSet
 		{
 			return false;
 		}
-		List<SetCondition> conditions = new(numConditions);
+		List<ISetCondition> conditions = new(numConditions);
 		for (int i = 0; i < numConditions; i++)
 		{
 			if (!SetCondition.TryRead(reader, out var value))
@@ -93,7 +94,7 @@ public class AnimSet
 		{
 			return false;
 		}
-		List<SetAttackEntry> attacks = new(numAttacks);
+		List<ISetAttackEntry> attacks = new(numAttacks);
 		for (int i = 0; i < numAttacks; i++)
 		{
 			if (!SetAttackEntry.TryRead(reader, out var value))
@@ -107,7 +108,7 @@ public class AnimSet
 		{
 			return false;
 		}
-		List<SetCachedAnimInfo> animationInfos = new(numAnimationInfos);
+		List<ISetCachedAnimInfo> animationInfos = new(numAnimationInfos);
 		for (int i = 0; i < numAnimationInfos; i++)
 		{
 			if (!SetCachedAnimInfo.TryRead(reader, out var value))
@@ -117,7 +118,7 @@ public class AnimSet
 			animationInfos.Add(value);
 		}
 
-		animSet = new(
+		animSet = new AnimSet(
 			versionName,
 			numTriggers,
 			numConditions,

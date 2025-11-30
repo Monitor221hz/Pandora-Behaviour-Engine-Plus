@@ -18,7 +18,8 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using DynamicData;
 using DynamicData.Binding;
-using Pandora.API.Patch.Engine.Config;
+using Pandora.API;
+using Pandora.API.Patch.Config;
 using Pandora.Data;
 using Pandora.Logging;
 using Pandora.Models;
@@ -75,7 +76,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 
 	public static string OutputFolderUri => PandoraPaths.OutputPath.FullName;
 
-	public BehaviourEngine Engine { get; private set; } = new BehaviourEngine();
+	public IBehaviourEngine Engine { get; private set; }
 	public DataGridOptionsViewModel DataGridOptions { get; } = new();
 	public Interaction<AboutDialogViewModel, Unit> ShowAboutDialog { get; } = new();
 	public SettingsViewModel SettingsApp { get; } = new();
@@ -85,10 +86,10 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 	[];
 	public ObservableCollectionExtended<ModInfoViewModel> SourceMods { get; } = [];
 
-	public EngineViewModel()
+	public EngineViewModel(IBehaviourEngine engine)
 	{
 		var startup = StartupService.Handle(LaunchOptions.Current);
-
+		Engine = engine;
 		_autoRun = startup.AutoRun;
 		_autoClose = startup.AutoClose;
 		_isOutputFolderCustomSet = startup.IsCustomSet;
