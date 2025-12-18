@@ -328,6 +328,16 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 			);
 	}
 
+	public bool Equals(IPackFile? other)
+	{
+		if (other == null)
+			return false;
+		return other.InputHandle.FullName.Equals(
+			InputHandle.FullName,
+			StringComparison.OrdinalIgnoreCase
+		);
+	}
+
 	public override int GetHashCode()
 	{
 		return InputHandle.FullName.GetHashCode(StringComparison.OrdinalIgnoreCase);

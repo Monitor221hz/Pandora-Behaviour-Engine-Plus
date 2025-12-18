@@ -12,7 +12,6 @@ using Pandora.API.Patch.Skyrim64.AnimSetData;
 using Pandora.Models.Patch.IO.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.AnimData;
 using Pandora.Models.Patch.Skyrim64.AnimSetData;
-using Pandora.Models.Patch.Skyrim64.Format.Nemesis;
 using Pandora.Models.Patch.Skyrim64.Hkx.Changes;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 using Pandora.Utils;
@@ -36,14 +35,14 @@ public class PandoraAssembler
 	);
 
 	private readonly PandoraNativePatchManager nativeManager = new();
-	private readonly IMetaDataExporter<PackFile> exporter = new PackFileExporter();
+	private readonly IMetaDataExporter<IPackFile> exporter = new PackFileExporter();
 
 	public IProjectManager ProjectManager { get; private set; }
 	public IAnimDataManager AnimDataManager { get; private set; }
 	public IAnimSetDataManager AnimSetDataManager { get; private set; }
 
 	public PandoraAssembler(
-		IMetaDataExporter<PackFile> exporter,
+		IMetaDataExporter<IPackFile> exporter,
 		IProjectManager projectManager,
 		IAnimDataManager animDataManager,
 		IAnimSetDataManager animSetDataManager
@@ -55,7 +54,7 @@ public class PandoraAssembler
 		AnimDataManager = animDataManager;
 	}
 
-	public PandoraAssembler(IMetaDataExporter<PackFile> exporter, NemesisAssembler nemesisAssembler)
+	public PandoraAssembler(IMetaDataExporter<IPackFile> exporter, IPatchAssembler nemesisAssembler)
 	{
 		this.exporter = exporter;
 		ProjectManager = nemesisAssembler.ProjectManager;
@@ -87,7 +86,7 @@ public class PandoraAssembler
 	public bool AssemblePackFilePatch(FileInfo file, IModInfo modInfo)
 	{
 		var name = Path.GetFileNameWithoutExtension(file.Name);
-		PackFile targetPackFile;
+		IPackFile targetPackFile;
 		if (!ProjectManager.TryActivatePackFilePriority(name, out targetPackFile!))
 		{
 			return false;
@@ -153,7 +152,7 @@ public class PandoraAssembler
 				!file.Exists
 				|| !ProjectManager.TryGetProject(
 					Path.GetFileNameWithoutExtension(file.Name.ToLower()),
-					out Project? targetProject
+					out IProject? targetProject
 				)
 			)
 				continue;

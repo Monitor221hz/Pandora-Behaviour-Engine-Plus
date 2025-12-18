@@ -3,13 +3,17 @@
 
 using System.IO;
 using HKX2E;
-using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
+using Pandora.API.Patch.Skyrim64;
+using Pandora.Utils.Skyrim;
 
 namespace Pandora.Models.Patch.IO.Skyrim64;
 
 public class DebugPackFileExporter : BasePackFileExporter
 {
-	public override bool Export(PackFile packFile)
+	public DebugPackFileExporter(IPathResolver pathResolver)
+		: base(pathResolver) { }
+
+	public override bool Export(IPackFile packFile)
 	{
 		var outputHandle = packFile.RebaseOutput(ExportDirectory);
 
@@ -37,11 +41,6 @@ public class DebugPackFileExporter : BasePackFileExporter
 				element.Save(writeStream);
 			}
 		}
-		//var debugOuputHandle = new FileInfo(outputHandle.DirectoryName + "\\pre_" + outputHandle.Name + ".xml");
-		//using (var writeStream = debugOuputHandle.Create())
-		//{
-		//	packFile.Map.Save(writeStream);
-		//}
 		using (var writeStream = outputHandle.Create())
 		{
 			var binaryWriter = new BinaryWriterEx(writeStream);

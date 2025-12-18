@@ -36,13 +36,11 @@ public class NemesisAssembler : IPatchAssembler
 			"Template"
 		)
 	);
-	private static readonly DirectoryInfo outputFolder = PandoraPaths.OutputPath;
-	private static readonly DirectoryInfo defaultOutputMeshFolder = new(
-		Path.Join(outputFolder.FullName, "meshes")
-	);
+	private readonly DirectoryInfo _outputFolder;
+	private readonly DirectoryInfo _defaultOutputMeshFolder;
 
 	private readonly PandoraBridgedAssembler pandoraConverter;
-	private readonly IMetaDataExporter<PackFile> exporter = new PackFileExporter();
+	private readonly IMetaDataExporter<IPackFile> exporter = new PackFileExporter();
 
 	private static readonly IXExpression replacePattern = new XSkipWrapExpression(
 		new XStep(XmlNodeType.Comment, "CLOSE"),
@@ -82,34 +80,17 @@ public class NemesisAssembler : IPatchAssembler
 	}
 
 	public NemesisAssembler(
-		IMetaDataExporter<PackFile> ioManager,
+		IMetaDataExporter<IPackFile> ioManager,
 		IProjectManager projectManager,
-		IAnimSetDataManager animSetDataManager
+		IAnimSetDataManager animSetDataManager,
+		IAnimDataManager animDataManager
 	)
 	{
 		exporter = ioManager;
 		ProjectManager = projectManager;
-		AnimSetDataManager = new AnimSetDataManager(templateFolder, defaultOutputMeshFolder);
-		AnimDataManager = new AnimDataManager(templateFolder, defaultOutputMeshFolder);
+		AnimSetDataManager = animSetDataManager;
+		AnimDataManager = animDataManager;
 
-		pandoraConverter = new PandoraBridgedAssembler(
-			ProjectManager,
-			AnimSetDataManager,
-			AnimDataManager
-		);
-	}
-
-	public NemesisAssembler(
-		IMetaDataExporter<PackFile> ioManager,
-		ProjectManager projManager,
-		AnimSetDataManager animSDManager,
-		AnimDataManager animDManager
-	)
-	{
-		exporter = ioManager;
-		ProjectManager = projManager;
-		AnimSetDataManager = animSDManager;
-		AnimDataManager = animDManager;
 		pandoraConverter = new PandoraBridgedAssembler(
 			ProjectManager,
 			AnimSetDataManager,
@@ -299,9 +280,9 @@ public class NemesisAssembler : IPatchAssembler
 		pandoraConverter.AssembleAnimSetDataPatch(directoryInfo);
 	}
 
-	private bool AssemblePackFilePatch(DirectoryInfo folder, Project project, IModInfo modInfo)
+	private bool AssemblePackFilePatch(DirectoryInfo folder, IProject project, IModInfo modInfo)
 	{
-		PackFile targetPackFile;
+		IPackFile targetPackFile;
 		if (!ProjectManager.TryActivatePackFilePriority(folder.Name, project, out targetPackFile!))
 		{
 			return false;
@@ -315,10 +296,10 @@ public class NemesisAssembler : IPatchAssembler
 
 	private bool AssemblePackFilePatch(DirectoryInfo folder, IModInfo modInfo)
 	{
-		PackFile targetPackFile;
+		IPackFile targetPackFile;
 		if (!ProjectManager.TryActivatePackFilePriority(folder.Name, out targetPackFile!))
 		{
-			Project targetProject;
+			IProject targetProject;
 			if (!ProjectManager.TryLookupProjectFolder(folder.Name, out targetProject!))
 			{
 				return false;

@@ -37,10 +37,13 @@ public class BehaviourEngine : IBehaviourEngine
 
 	public bool IsExternalOutput = false;
 
-	public IEngineConfiguration Configuration { get; private set; } = new SkyrimConfiguration();
+	public IEngineConfiguration Configuration { get; private set; }
 	public DirectoryInfo OutputPath { get; private set; } = new(Environment.CurrentDirectory);
 
-	public BehaviourEngine(IPathResolver skyrimPathResolver)
+	public BehaviourEngine(
+		IPathResolver skyrimPathResolver,
+		IEngineConfiguration engineConfiguration
+	)
 	{
 		PluginManager.LoadAllPlugins(AssemblyDirectory);
 	}
@@ -57,7 +60,7 @@ public class BehaviourEngine : IBehaviourEngine
 
 	public IBehaviourEngine SetConfiguration(IEngineConfiguration? configuration)
 	{
-		Configuration = configuration ?? new SkyrimConfiguration();
+		Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 		return this;
 	}
 

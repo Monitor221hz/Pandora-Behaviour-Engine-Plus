@@ -9,8 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Pandora.API.Patch;
 using Pandora.API.Patch.IOManagers;
+using Pandora.API.Patch.Skyrim64;
 using Pandora.Models.Patch.IO.Skyrim64;
-using Pandora.Models.Patch.Skyrim64.Format.Nemesis;
 using Pandora.Models.Patch.Skyrim64.Format.Pandora;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 using Pandora.Utils;
@@ -76,9 +76,9 @@ public class SkyrimPatcher : IPatcher
 
 	public void SetTarget(List<IModInfo> mods) => activeMods = mods;
 
-	private IMetaDataExporter<PackFile> exporter = new PackFileExporter();
+	private IMetaDataExporter<IPackFile> exporter = new PackFileExporter();
 
-	public NemesisAssembler NemesisAssembler { get; set; }
+	public IPatchAssembler NemesisAssembler { get; set; }
 	public PandoraAssembler PandoraAssembler { get; set; }
 
 	public PatcherFlags Flags { get; private set; } = PatcherFlags.None;
@@ -87,10 +87,10 @@ public class SkyrimPatcher : IPatcher
 
 	public string GetVersionString() => AppInfo.Version;
 
-	public SkyrimPatcher(IMetaDataExporter<PackFile> manager)
+	public SkyrimPatcher(IMetaDataExporter<IPackFile> manager, IPatchAssembler nemesisAssembler)
 	{
 		exporter = manager;
-		NemesisAssembler = new NemesisAssembler(manager);
+		NemesisAssembler = nemesisAssembler;
 		PandoraAssembler = new PandoraAssembler(manager, NemesisAssembler);
 	}
 

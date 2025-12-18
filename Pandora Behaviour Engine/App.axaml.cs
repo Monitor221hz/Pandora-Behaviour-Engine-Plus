@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Pandora.Logging;
 using Pandora.Services;
 using Pandora.Utils;
+using Pandora.Utils.Skyrim;
 using Pandora.ViewModels;
 using Pandora.Views;
 
@@ -20,9 +21,10 @@ namespace Pandora;
 
 public partial class App : Application
 {
+	private AppExceptionHandler? _appExceptionHandler;
+
 	public override void Initialize()
 	{
-		AppExceptionHandler.Register();
 		AvaloniaXamlLoader.Load(this);
 	}
 
@@ -33,7 +35,7 @@ public partial class App : Application
 		if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
 		{
 			LaunchOptions.Parse(desktop.Args, caseInsensitive: true);
-			SetupNLogConfig();
+
 			// Line below is needed to remove Avalonia data validation.
 			// Without this line you will get duplicate validations from both Avalonia and CT
 			BindingPlugins.DataValidators.RemoveAt(0);
@@ -44,7 +46,7 @@ public partial class App : Application
 			serviceCollection.AddPandoraServices(new() { MainWindow = mainWindow });
 			serviceCollection.AddViewModels();
 			Services = serviceCollection.BuildServiceProvider();
-
+			SetupNLogConfig();
 			mainWindow.DataContext = Services.GetRequiredService<MainWindowViewModel>();
 			desktop.MainWindow = mainWindow;
 		}
@@ -71,13 +73,23 @@ public partial class App : Application
 		};
 	}
 
-	private static void SetupNLogConfig()
+	private void SetupExceptionHandler()
+	{
+		_appExceptionHandler = new AppExceptionHandler(
+			Services.GetRequiredService<IPathResolver>()
+		);
+	}
+
+	private void SetupNLogConfig()
 	{
 		var config = new NLog.Config.LoggingConfiguration();
 
 		var fileTarget = new NLog.Targets.FileTarget("Engine Log")
 		{
-			FileName = Path.Combine(PandoraPaths.OutputPath.FullName, "Engine.log"),
+			FileName = Path.Combine(
+				Services.GetRequiredService<IPathResolver>().GetOutputFolder().FullName,
+				"Engine.log"
+			),
 			DeleteOldFileOnStartup = true,
 			Layout = "${level:uppercase=true} : ${message}",
 		};
@@ -93,5 +105,5 @@ public partial class App : Application
 	/// <summary>
 	/// Gets the <see cref="IServiceProvider"/> instance to resolve application services.
 	/// </summary>
-	public IServiceProvider? Services { get; private set; }
+	public IServiceProvider Services { get; private set; }
 }

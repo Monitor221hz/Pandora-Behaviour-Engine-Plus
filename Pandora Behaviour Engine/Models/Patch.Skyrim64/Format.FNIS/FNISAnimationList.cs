@@ -6,6 +6,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Pandora.API.Patch;
+using Pandora.API.Patch.Skyrim64;
 using Pandora.Models.Patch.Mod;
 using Pandora.Models.Patch.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.Format.FNIS;
@@ -78,13 +79,13 @@ public partial class FNISAnimationList
 		return animlist;
 	}
 
-	public void BuildAllAnimations(Project project, ProjectManager projectManager)
+	public void BuildAllAnimations(IProject project, IProjectManager projectManager)
 	{
 		if (project.Sibling == null)
 		{
 			foreach (BasicAnimation animation in Animations)
 			{
-				lock (project.CharacterPackFile.uniqueAnimationLock)
+				lock (project.CharacterPackFile.GetUniqueAnimationLock())
 					animation.BuildAnimation(project, projectManager);
 			}
 		}
@@ -92,7 +93,7 @@ public partial class FNISAnimationList
 		{
 			foreach (BasicAnimation animation in Animations)
 			{
-				lock (project.CharacterPackFile.uniqueAnimationLock)
+				lock (project.CharacterPackFile.GetUniqueAnimationLock())
 				{
 					animation.BuildAnimation(project, projectManager);
 					animation.BuildAnimation(project.Sibling, projectManager);
@@ -131,7 +132,7 @@ public partial class FNISAnimationList
 		);
 	}
 
-	public bool BuildAllBehaviors(Project project, ProjectManager projectManager)
+	public bool BuildAllBehaviors(IProject project, IProjectManager projectManager)
 	{
 		FNISAnimationListBuildContext buildContext = new(project, projectManager, ModInfo);
 		foreach (BasicAnimation animation in Animations)

@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using HKX2E;
+using Pandora.API.Patch.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
@@ -22,7 +23,7 @@ public class OffsetArmAnimation : BasicAnimation
 	)
 		: base(templateType, flags, graphEvent, animationFilePath, animationObjectNames) { }
 
-	public override bool BuildBehavior(FNISAnimationListBuildContext buildContext)
+	public override bool BuildBehavior(IFNISAnimationListBuildContext buildContext)
 	{
 		var project = buildContext.TargetProject;
 		var projectManager = buildContext.ProjectManager;

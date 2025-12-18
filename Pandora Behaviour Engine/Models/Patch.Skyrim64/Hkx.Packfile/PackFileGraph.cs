@@ -34,7 +34,7 @@ public class PackFileGraph : PackFile, IEquatable<PackFileGraph>, IPackFileGraph
 		StringComparer.OrdinalIgnoreCase
 	);
 
-	public PackFileGraph(FileInfo file, Project? project)
+	public PackFileGraph(FileInfo file, IProject? project)
 		: base(file, project)
 	{
 		Load();
@@ -144,6 +144,11 @@ public class PackFileGraph : PackFile, IEquatable<PackFileGraph>, IPackFileGraph
 			}
 		}
 		return index;
+	}
+
+	public bool Equals(IPackFileGraph? other)
+	{
+		return base.Equals(other);
 	}
 
 	public bool Equals(PackFileGraph? other)

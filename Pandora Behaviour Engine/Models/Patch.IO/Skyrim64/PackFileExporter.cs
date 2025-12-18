@@ -4,13 +4,18 @@
 using System;
 using HKX2E;
 using NLog;
+using Pandora.API.Patch.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
+using Pandora.Utils.Skyrim;
 
 namespace Pandora.Models.Patch.IO.Skyrim64;
 
 public class PackFileExporter : BasePackFileExporter
 {
-	public override bool Export(PackFile packFile)
+	public PackFileExporter(IPathResolver pathResolver)
+		: base(pathResolver) { }
+
+	public override bool Export(IPackFile packFile)
 	{
 		var outputHandle = packFile.RebaseOutput(ExportDirectory);
 

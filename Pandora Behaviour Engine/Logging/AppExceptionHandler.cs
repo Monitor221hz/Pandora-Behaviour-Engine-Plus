@@ -7,12 +7,21 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Pandora.Utils;
+using Pandora.Utils.Skyrim;
 
 namespace Pandora.Logging;
 
-public static class AppExceptionHandler
+public class AppExceptionHandler
 {
-	public static void Register()
+	private IPathResolver _pathResolver;
+
+	public AppExceptionHandler(IPathResolver pathResolver)
+	{
+		_pathResolver = pathResolver;
+		Register();
+	}
+
+	public void Register()
 	{
 		AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 		TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
@@ -25,10 +34,7 @@ public static class AppExceptionHandler
 	/// </summary>
 	/// <param name="sender"></param>
 	/// <param name="e"></param>
-	private static void CurrentDomain_UnhandledException(
-		object sender,
-		UnhandledExceptionEventArgs e
-	)
+	private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
 	{
 		var ex = e.ExceptionObject as Exception;
 		// NOTE:
@@ -44,7 +50,7 @@ public static class AppExceptionHandler
 	/// </summary>
 	/// <param name="sender"></param>
 	/// <param name="e"></param>
-	private static void TaskScheduler_UnobservedTaskException(
+	private void TaskScheduler_UnobservedTaskException(
 		object? sender,
 		UnobservedTaskExceptionEventArgs e
 	)
@@ -54,14 +60,14 @@ public static class AppExceptionHandler
 		e.SetObserved();
 	}
 
-	private static void WriteCrashLog(string fileName, string log)
+	private void WriteCrashLog(string fileName, string log)
 	{
 		try
 		{
-			var dir = PandoraPaths.OutputPath.Exists
-				? PandoraPaths.OutputPath.FullName
-				: Path.GetDirectoryName(Process.GetCurrentProcess().MainModule?.FileName)!;
-
+			//var dir = PandoraPaths.OutputPath.Exists
+			//	? PandoraPaths.OutputPath.FullName
+			//	: Path.GetDirectoryName(Process.GetCurrentProcess().MainModule?.FileName)!;
+			var dir = _pathResolver.GetOutputFolder().FullName;
 			Directory.CreateDirectory(dir);
 			var outputLogPath = Path.Combine(dir, fileName);
 			File.WriteAllText(outputLogPath, log, Encoding.UTF8);
@@ -72,7 +78,7 @@ public static class AppExceptionHandler
 		}
 	}
 
-	private static string BuildLog(string type, string content)
+	private string BuildLog(string type, string content)
 	{
 		var sb = new StringBuilder();
 		sb.AppendLine("[ Pandora Critical Crash Log ]");

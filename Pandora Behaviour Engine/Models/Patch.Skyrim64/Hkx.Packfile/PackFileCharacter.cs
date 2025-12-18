@@ -34,7 +34,18 @@ public class PackFileCharacter : PackFile, IEquatable<PackFileCharacter>, IPackF
 	private HashSet<string> uniqueBaseAnimations = new(StringComparer.OrdinalIgnoreCase);
 	private HashSet<string> uniqueAnimations = new(StringComparer.OrdinalIgnoreCase);
 
-	public object UniqueAnimationLock { get; set; } = new();
+	private object _uniqueAnimationLock = new();
+
+	public object GetUniqueAnimationLock()
+	{
+		return _uniqueAnimationLock;
+	}
+
+	public object AttachUniqueAnimationLock(IPackFileCharacter character)
+	{
+		_uniqueAnimationLock = character.GetUniqueAnimationLock();
+		return _uniqueAnimationLock;
+	}
 
 	private void CacheUniqueBaseAnimations()
 	{
@@ -59,7 +70,7 @@ public class PackFileCharacter : PackFile, IEquatable<PackFileCharacter>, IPackF
 		PopObjectAsXml(StringData);
 	}
 
-	public override void ApplyPriorityChanges(PackFileDispatcher dispatcher)
+	public override void ApplyPriorityChanges(IPackFileDispatcher dispatcher)
 	{
 		base.ApplyPriorityChanges(dispatcher);
 		dispatcher.ApplyChangesForNode(Data, this);

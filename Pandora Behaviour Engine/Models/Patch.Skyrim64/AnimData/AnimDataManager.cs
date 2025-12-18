@@ -47,9 +47,9 @@ public class AnimDataManager : IAnimDataManager
 
 	private void MapProjectAnimData(ProjectAnimData animData)
 	{
-		foreach (ClipDataBlock block in animData.Blocks)
+		foreach (string clipId in animData.GetClipIDs())
 		{
-			usedClipIDs.Add(int.Parse(block.ClipID));
+			usedClipIDs.Add(int.Parse(clipId));
 		}
 	}
 
