@@ -12,9 +12,9 @@ using System.Threading.Tasks;
 using NLog;
 using Pandora.API.Patch;
 using Pandora.API.Patch.Skyrim64;
+using Pandora.API.Utils;
 using Pandora.Models.Patch.Skyrim64.Format.FNIS;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
-using Pandora.Utils.Skyrim;
 
 namespace Pandora.Models.Patch.Skyrim64;
 
@@ -38,10 +38,7 @@ public class ProjectManager : IProjectManager
 
 	private const string VANILLA_PROJECTPATHS_FILENAME = "vanilla_projectpaths.txt";
 
-	private readonly DirectoryInfo _templateFolder;
-	private DirectoryInfo _outputFolder;
-	private DirectoryInfo _gameFolder;
-
+	private readonly IPathResolver _pathResolver;
 	private IPackFileCache packFileCache = new PackFileConcurrentCache();
 
 	private readonly IFNISParser _fnisParser;
@@ -50,12 +47,10 @@ public class ProjectManager : IProjectManager
 
 	public HashSet<IPackFile> ActivePackFiles { get; private set; } = [];
 
-	public ProjectManager(IPathResolver skyrimPathResolver, IFNISParser fnisParser)
+	public ProjectManager(IPathResolver skyrimPathResolver)
 	{
-		this._templateFolder = skyrimPathResolver.GetTemplateFolder();
-		_outputFolder = skyrimPathResolver.GetOutputFolder();
-		_gameFolder = skyrimPathResolver.GetGameDataFolder();
-		_fnisParser = fnisParser;
+		_pathResolver = skyrimPathResolver;
+		_fnisParser = new FNISParser(_pathResolver, this);
 	}
 
 	public void GetExportInfo(StringBuilder builder)
@@ -114,7 +109,7 @@ public class ProjectManager : IProjectManager
 	public void LoadTrackedProjects()
 	{
 		FileInfo projectList = new(
-			Path.Join(_templateFolder.FullName, VANILLA_PROJECTPATHS_FILENAME)
+			Path.Join(_pathResolver.GetTemplateFolder().FullName, VANILLA_PROJECTPATHS_FILENAME)
 		);
 		string? expectedLine = null;
 		List<string> projectPaths = [];
@@ -223,7 +218,9 @@ public class ProjectManager : IProjectManager
 		lock (projectMap)
 		{
 			var project = Project.Load(
-				new FileInfo(Path.Join(_templateFolder.FullName, projectFilePath)),
+				new FileInfo(
+					Path.Join(_pathResolver.GetTemplateFolder().FullName, projectFilePath)
+				),
 				packFileCache
 			);
 
@@ -242,7 +239,9 @@ public class ProjectManager : IProjectManager
 		{
 			var project = new Project(
 				packFileCache.LoadPackFile(
-					new FileInfo(Path.Join(_templateFolder.FullName, projectFilePath))
+					new FileInfo(
+						Path.Join(_pathResolver.GetTemplateFolder().FullName, projectFilePath)
+					)
 				)
 			);
 
@@ -255,8 +254,7 @@ public class ProjectManager : IProjectManager
 	public bool TryLoadOutputPackFile<T>(IPackFile packFile, [NotNullWhen(true)] out T? outPackFile)
 		where T : class, IPackFile
 	{
-		var fileInfo =
-			_gameFolder != null ? packFile.GetOutputHandle(_gameFolder) : packFile.OutputHandle;
+		var fileInfo = packFile.GetOutputHandle(_pathResolver.GetGameDataFolder());
 		if (!fileInfo.Exists)
 		{
 			outPackFile = default;
@@ -275,11 +273,7 @@ public class ProjectManager : IProjectManager
 	{
 		var fileInfo = new FileInfo(
 			Path.ChangeExtension(
-				(
-					_gameFolder != null
-						? packFile.GetOutputHandle(_gameFolder)
-						: packFile.OutputHandle
-				).FullName,
+				(packFile.GetOutputHandle(_pathResolver.GetGameDataFolder())).FullName,
 				extension
 			)
 		);
@@ -498,9 +492,9 @@ public class ProjectManager : IProjectManager
 
 	public void SetOutputPath(DirectoryInfo baseDirectory)
 	{
-		_outputFolder = baseDirectory;
+		//_outputFolder = baseDirectory;
 		_fnisParser.SetOutputPath(baseDirectory);
 	}
 
-	public DirectoryInfo GetOutputDirectory() => _outputFolder;
+	public DirectoryInfo GetOutputDirectory() => _pathResolver.GetOutputFolder();
 }

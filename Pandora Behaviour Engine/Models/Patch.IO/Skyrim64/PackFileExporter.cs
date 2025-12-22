@@ -5,8 +5,8 @@ using System;
 using HKX2E;
 using NLog;
 using Pandora.API.Patch.Skyrim64;
+using Pandora.API.Utils;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
-using Pandora.Utils.Skyrim;
 
 namespace Pandora.Models.Patch.IO.Skyrim64;
 

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using Pandora.API.Patch.Skyrim64;
 using Pandora.API.Patch.Skyrim64.AnimData;
-using Pandora.Utils.Skyrim;
+using Pandora.API.Utils;
 
 namespace Pandora.Models.Patch.Skyrim64.AnimData;
 
@@ -24,25 +24,27 @@ public class AnimDataManager : IAnimDataManager
 	private List<IProjectAnimData> animDataList { get; set; } = [];
 	private List<IMotionData> motionDataList { get; set; } = [];
 
-	private DirectoryInfo templateFolder;
-	private DirectoryInfo outputMeshFolder;
+	private readonly IPathResolver _pathResolver;
 
-	public FileInfo OutputAnimDataSingleFile =>
-		new(Path.Join(outputMeshFolder.FullName, ANIMDATA_FILENAME));
-	public FileInfo TemplateAnimDataSingleFile =>
-		new(Path.Join(templateFolder.FullName, ANIMDATA_FILENAME));
+	public FileInfo OutputAnimDataSingleFile { get; }
+	public FileInfo TemplateAnimDataSingleFile { get; }
 
 	private int LastID { get; set; } = 32767;
 
 	public AnimDataManager(IPathResolver pathResolver)
 	{
-		this.templateFolder = pathResolver.GetTemplateFolder();
-		this.outputMeshFolder = pathResolver.GetOutputMeshFolder();
+		_pathResolver = pathResolver;
+		OutputAnimDataSingleFile = new(
+			Path.Join(_pathResolver.GetOutputMeshFolder().FullName, ANIMDATA_FILENAME)
+		);
+		TemplateAnimDataSingleFile = new(
+			Path.Join(_pathResolver.GetTemplateFolder().FullName, ANIMDATA_FILENAME)
+		);
 	}
 
 	public void SetOutputPath(DirectoryInfo outputMeshFolder)
 	{
-		this.outputMeshFolder = outputMeshFolder;
+		//this.outputMeshFolder = outputMeshFolder;
 	}
 
 	private void MapProjectAnimData(ProjectAnimData animData)

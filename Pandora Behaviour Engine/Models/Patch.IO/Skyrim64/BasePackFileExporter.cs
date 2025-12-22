@@ -7,21 +7,23 @@ using System.IO;
 using NLog;
 using Pandora.API.Patch.IOManagers;
 using Pandora.API.Patch.Skyrim64;
+using Pandora.API.Utils;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 using Pandora.Utils;
-using Pandora.Utils.Skyrim;
 
 namespace Pandora.Models.Patch.IO.Skyrim64;
 
 public abstract class BasePackFileExporter : IMetaDataExporter<IPackFile>
 {
-	protected static readonly FileInfo PreviousOutputFile = PandoraPaths.PreviousOutputFile;
 	protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
+	private IPathResolver _pathResolver;
 	public DirectoryInfo ExportDirectory { get; set; }
+	protected FileInfo PreviousOutputFile => _pathResolver.GetPreviousOutputFile();
 
 	protected BasePackFileExporter(IPathResolver pathResolver)
 	{
+		_pathResolver = pathResolver;
 		ExportDirectory = pathResolver.GetOutputFolder();
 	}
 

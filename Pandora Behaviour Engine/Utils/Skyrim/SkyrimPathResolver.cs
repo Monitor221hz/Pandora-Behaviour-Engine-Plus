@@ -6,13 +6,18 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
+using System.Threading.Tasks;
 using GameFinder.RegistryUtils;
 using GameFinder.StoreHandlers.GOG;
 using GameFinder.StoreHandlers.Steam;
 using GameFinder.StoreHandlers.Steam.Models.ValueTypes;
 using NexusMods.Paths;
 using NLog;
+using Pandora.API.Services;
+using Pandora.API.Utils;
 using Pandora.Logging;
+using Pandora.Services;
 
 namespace Pandora.Utils.Skyrim;
 
@@ -25,6 +30,11 @@ namespace Pandora.Utils.Skyrim;
 /// </returns>
 public sealed class SkyrimPathResolver : IPathResolver
 {
+	private const string ACTIVE_MODS_FILENAME = "ActiveMods.json";
+	private const string PATH_CONFIG_FILENAME = "Paths.json";
+	private const string PREVIOUS_OUTPUT_FILENAME = "PreviousOutput.txt";
+	private const string PANDORA_ENGINE_FOLDERNAME = "Pandora_Engine";
+
 	private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
 	private delegate DirectoryInfo? PathProvider();
@@ -34,9 +44,21 @@ public sealed class SkyrimPathResolver : IPathResolver
 			?? throw new NullReferenceException("Main process not found.")
 	);
 	private DirectoryInfo _currentDirectory;
-	private DirectoryInfo? _gameDirectory;
-	private DirectoryInfo? _templateDirectory;
-	private DirectoryInfo? _outputDirectory;
+
+	private Lazy<DirectoryInfo> _gameDirectory;
+	private Lazy<DirectoryInfo> _outputDirectory;
+
+	private readonly Lazy<DirectoryInfo> _templateDirectory;
+	private readonly Lazy<DirectoryInfo> _outputMeshDirectory;
+	private readonly Lazy<DirectoryInfo> _pandoraEngineDirectory;
+
+	private readonly Lazy<FileInfo> _activeModsFile;
+	private readonly Lazy<FileInfo> _previousOutputFile;
+	private readonly Lazy<FileInfo> _pathsConfigFile;
+
+	private Lazy<SkyrimPathsConfiguration?> _pathsConfiguration;
+
+	private readonly JsonSerializerOptions _jsonSerializerOptions;
 
 	private readonly uint[] steamAppIDs = new uint[]
 	{
@@ -54,11 +76,91 @@ public sealed class SkyrimPathResolver : IPathResolver
 		_fileSystem = fileSystem;
 		_registry = registry;
 		_currentDirectory = new(Environment.CurrentDirectory);
+		_pathsConfiguration = new(() => ResolvePathsConfiguration());
+		_gameDirectory = new(() => ResolveGameDataDirectory());
+		_templateDirectory = new(() => ResolveTemplateDirectory());
+		_outputDirectory = new(() => ResolveOutputDirectory());
+		_outputMeshDirectory = new(() => ResolveOutputMeshDirectory());
+		_pandoraEngineDirectory = new(() => ResolvePandoraEngineDirectory());
+		_activeModsFile = new(() => ResolveActiveModsFile());
+		_previousOutputFile = new(() => ResolvePreviousOutputFile());
+		_pathsConfigFile = new(() => ResolvePathsConfigFile());
+
+		_jsonSerializerOptions = new JsonSerializerOptions() { WriteIndented = true };
+		_jsonSerializerOptions.Converters.Add(Converters.DirectoryInfoJsonConverter.Instance);
+		_jsonSerializerOptions.Converters.Add(Converters.FileInfoJsonConverter.Instance);
+	}
+
+	public void SetGameDataFolder(DirectoryInfo gameDataFolder)
+	{
+		_gameDirectory = new(() => gameDataFolder);
+		if (_pathsConfiguration.Value == null)
+		{
+			_pathsConfiguration = new(() => new SkyrimPathsConfiguration());
+		}
+		_pathsConfiguration.Value!.GameDataDirectory = gameDataFolder;
+	}
+
+	public void SetOutputFolder(DirectoryInfo outputFolder)
+	{
+		_outputDirectory = new(() => outputFolder);
+		if (_pathsConfiguration.Value == null)
+		{
+			_pathsConfiguration = new(() => new SkyrimPathsConfiguration());
+		}
+		_pathsConfiguration.Value!.OutputDirectory = outputFolder;
+	}
+
+	public void SavePathsConfiguration()
+	{
+		if (_pathsConfiguration.Value == null)
+		{
+			return;
+		}
+		var configFile = _pathsConfigFile.Value;
+		using var stream = configFile.Create();
+		JsonSerializer.Serialize<SkyrimPathsConfiguration>(
+			stream,
+			_pathsConfiguration.Value!,
+			_jsonSerializerOptions
+		);
+		_pathsConfiguration = new(() => ResolvePathsConfiguration());
+	}
+
+	public DirectoryInfo ResolvePandoraEngineDirectory()
+	{
+		var dir = new DirectoryInfo(
+			Path.Combine(GetGameDataFolder().FullName, PANDORA_ENGINE_FOLDERNAME)
+		);
+		dir.Create();
+		return dir;
 	}
 
 	public DirectoryInfo GetGameDataFolder()
 	{
-		return _gameDirectory ?? ResolveGameDataDirectory();
+		return _gameDirectory.Value;
+	}
+
+	private FileInfo ResolvePreviousOutputFile()
+	{
+		return new FileInfo(Path.Join(GetPandoraEngineFolder().FullName, PREVIOUS_OUTPUT_FILENAME));
+	}
+
+	private FileInfo ResolveActiveModsFile()
+	{
+		return new FileInfo(Path.Join(GetPandoraEngineFolder().FullName, ACTIVE_MODS_FILENAME));
+	}
+
+	private DirectoryInfo ResolveOutputMeshDirectory()
+	{
+		return new DirectoryInfo(Path.Join(GetOutputFolder().FullName, "meshes"));
+	}
+
+	private FileInfo ResolvePathsConfigFile()
+	{
+		return new FileInfo(
+			Path.Join(GetAssemblyFolder().FullName, PANDORA_ENGINE_FOLDERNAME, PATH_CONFIG_FILENAME)
+		);
 	}
 
 	/// <summary>
@@ -73,9 +175,10 @@ public sealed class SkyrimPathResolver : IPathResolver
 	{
 		PathProvider[] providers =
 		[
+			TryGetDataPathFromPathsConfiguration,
 			TryGetDataPathFromCommandLine,
+			TryGetDataPathFromGameFinder, // add file dialog after this; file dialog must not fail!
 			TryGetDataPathFromCurrentDirectory,
-			() => TryGetDataPathFromGameFinder(), // add file dialog later
 		];
 
 		var resolvedPath = providers
@@ -85,28 +188,38 @@ public sealed class SkyrimPathResolver : IPathResolver
 		if (resolvedPath is not null)
 		{
 			Logger.Info($"Found valid Skyrim 'Data' directory at: {resolvedPath.FullName}");
-			_gameDirectory = resolvedPath;
 			return resolvedPath;
 		}
 
 		string msg =
-			$"Could not find a valid Skyrim 'Data' directory. Current directory {Environment.CurrentDirectory}";
+			$"Could not find a valid Skyrim 'Data' directory. Using directory {_assemblyDirectory.FullName}";
 		EngineLoggerAdapter.AppendLine($"WARN: {msg}");
+
 		Logger.Warn(msg);
-		return _currentDirectory;
+		return _assemblyDirectory!;
 	}
 
 	private DirectoryInfo ResolveTemplateDirectory()
 	{
-		_templateDirectory = new(
-			Path.Join(_assemblyDirectory.FullName, "Pandora_Engine", "Skyrim", "Template")
-		);
-		return _templateDirectory;
+		return new(Path.Join(_assemblyDirectory.FullName, "Pandora_Engine", "Skyrim", "Template"));
 	}
 
 	private DirectoryInfo ResolveOutputDirectory()
 	{
-		throw new NotImplementedException();
+		return LaunchOptions.Current?.OutputDirectory
+			?? TryGetOutputPathFromPathsConfiguration()
+			?? GetGameDataFolder()
+			?? GetAssemblyFolder();
+	}
+
+	private DirectoryInfo? TryGetDataPathFromPathsConfiguration()
+	{
+		return _pathsConfiguration.Value?.GameDataDirectory;
+	}
+
+	private DirectoryInfo? TryGetOutputPathFromPathsConfiguration()
+	{
+		return _pathsConfiguration.Value?.OutputDirectory;
 	}
 
 	/// <summary>
@@ -117,7 +230,7 @@ public sealed class SkyrimPathResolver : IPathResolver
 	/// A <see cref="DirectoryInfo"/> representing the "Data" directory within the specified path if provided;
 	/// otherwise, null if no path is specified in the command-line arguments.
 	/// </returns>
-	private DirectoryInfo? TryGetDataPathFromCommandLine()
+	private static DirectoryInfo? TryGetDataPathFromCommandLine()
 	{
 		var gameDir = LaunchOptions.Current?.SkyrimGameDirectory;
 		if (gameDir is not null)
@@ -159,19 +272,28 @@ public sealed class SkyrimPathResolver : IPathResolver
 			var game = steamHandler.FindOneGameById(AppId.From(appId), out var steamErrors);
 			if (game == null || !game.Path.DirectoryExists())
 				continue;
-			return NormalizeToDataDirectory(new DirectoryInfo(game.Path.Directory));
+			return NormalizeToDataDirectory(new DirectoryInfo(game.Path.GetFullPath()));
 		}
 		if (_registry == null)
 		{
 			return null;
 		}
 		var gogHandler = new GOGHandler(_registry, _fileSystem);
-		var gogGame = gogHandler.FindOneGameById(GOGGameId.From(711230643), out var gogErrors);
+		var gogGame = gogHandler.FindOneGameById(GOGGameId.From(gogAppID), out var gogErrors);
 		if (gogGame == null || !gogGame.Path.DirectoryExists())
 		{
 			return null;
 		}
-		return NormalizeToDataDirectory(new DirectoryInfo(gogGame.Path.Directory));
+		return NormalizeToDataDirectory(new DirectoryInfo(gogGame.Path.GetFullPath()));
+	}
+
+	private SkyrimPathsConfiguration? ResolvePathsConfiguration()
+	{
+		var configFile = _pathsConfigFile.Value;
+		if (!configFile.Exists)
+			return null;
+		using var stream = configFile.OpenRead();
+		return JsonSerializer.Deserialize<SkyrimPathsConfiguration>(stream, _jsonSerializerOptions);
 	}
 
 	private bool IsValidSkyrimDataDirectory([NotNullWhen(true)] DirectoryInfo? dataDirectory)
@@ -192,7 +314,7 @@ public sealed class SkyrimPathResolver : IPathResolver
 		return File.Exists(exePath) || File.Exists(launcherPath);
 	}
 
-	private DirectoryInfo NormalizeToDataDirectory(DirectoryInfo directory)
+	private static DirectoryInfo NormalizeToDataDirectory(DirectoryInfo directory)
 	{
 		if (directory.Name.Equals("Data", StringComparison.OrdinalIgnoreCase))
 			return directory;
@@ -200,10 +322,19 @@ public sealed class SkyrimPathResolver : IPathResolver
 		return new DirectoryInfo(Path.Combine(directory.FullName, "Data"));
 	}
 
-	public DirectoryInfo GetTemplateFolder() => _templateDirectory ??= ResolveTemplateDirectory();
+	public DirectoryInfo GetCurrentFolder() => _currentDirectory;
 
-	public DirectoryInfo GetOutputFolder() => _outputDirectory ??= ResolveOutputDirectory();
+	public DirectoryInfo GetTemplateFolder() => _templateDirectory.Value;
 
-	public DirectoryInfo GetOutputMeshFolder() =>
-		new(Path.Join(GetOutputFolder().FullName, "meshes"));
+	public DirectoryInfo GetOutputFolder() => _outputDirectory.Value;
+
+	public DirectoryInfo GetOutputMeshFolder() => _outputMeshDirectory.Value;
+
+	public DirectoryInfo GetPandoraEngineFolder() => _pandoraEngineDirectory.Value;
+
+	public DirectoryInfo GetAssemblyFolder() => _assemblyDirectory;
+
+	public FileInfo GetActiveModsFile() => _activeModsFile.Value;
+
+	public FileInfo GetPreviousOutputFile() => _previousOutputFile.Value;
 }

@@ -12,9 +12,9 @@ using System.Threading.Tasks;
 using HKX2E;
 using Pandora.API.Patch;
 using Pandora.API.Patch.Skyrim64;
+using Pandora.API.Utils;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 using Pandora.Patch.Patchers.Skyrim.FNIS;
-using Pandora.Utils.Skyrim;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
 
@@ -114,6 +114,8 @@ public class FNISParser : IFNISParser
 		"defaultmale",
 		"defaultfemale",
 	};
+
+	private readonly IPathResolver _pathResolver;
 	private readonly HashSet<PackFile> parsedBehaviorFiles = [];
 	private readonly HashSet<Project> skipAnimlistProjects = [];
 	private readonly Dictionary<string, FNISAnimationList> animListFileMap = new(
@@ -121,14 +123,11 @@ public class FNISParser : IFNISParser
 	);
 
 	private readonly HashSet<string> parsedFiles = new(StringComparer.OrdinalIgnoreCase) { };
-	private DirectoryInfo _outputDirectory;
-	private readonly DirectoryInfo _gameDataDirectory;
 	public HashSet<IModInfo> ModInfos { get; private set; } = [];
 
-	public FNISParser(IProjectManager manager, IPathResolver pathResolver)
+	public FNISParser(IPathResolver pathResolver, IProjectManager manager)
 	{
-		_outputDirectory = pathResolver.GetOutputFolder();
-		_gameDataDirectory = pathResolver.GetGameDataFolder();
+		_pathResolver = pathResolver;
 		projectManager = manager;
 	}
 
@@ -275,7 +274,10 @@ public class FNISParser : IFNISParser
 	public void ScanProjectAnimlist(IProject project)
 	{
 		var currentDirectory = new DirectoryInfo(
-			Path.Join(_gameDataDirectory.FullName, project.ProjectFile.RelativeOutputDirectoryPath)
+			Path.Join(
+				_pathResolver.GetGameDataFolder().FullName,
+				project.ProjectFile.RelativeOutputDirectoryPath
+			)
 		);
 
 		ScanProjectAnimations(project, currentDirectory);
@@ -443,6 +445,6 @@ public class FNISParser : IFNISParser
 
 	public void SetOutputPath(DirectoryInfo outputPath)
 	{
-		_outputDirectory = outputPath;
+		//_outputDirectory = outputPath;
 	}
 }

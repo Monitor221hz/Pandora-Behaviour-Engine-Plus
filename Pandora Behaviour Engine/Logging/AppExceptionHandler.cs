@@ -6,8 +6,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Pandora.API.Utils;
 using Pandora.Utils;
-using Pandora.Utils.Skyrim;
 
 namespace Pandora.Logging;
 

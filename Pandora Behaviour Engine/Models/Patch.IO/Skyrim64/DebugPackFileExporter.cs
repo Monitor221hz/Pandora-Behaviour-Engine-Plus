@@ -4,7 +4,7 @@
 using System.IO;
 using HKX2E;
 using Pandora.API.Patch.Skyrim64;
-using Pandora.Utils.Skyrim;
+using Pandora.API.Utils;
 
 namespace Pandora.Models.Patch.IO.Skyrim64;
 

@@ -10,9 +10,9 @@ using Pandora.API;
 using Pandora.API.Patch;
 using Pandora.API.Patch.Config;
 using Pandora.API.Patch.Engine.Config;
+using Pandora.API.Utils;
 using Pandora.Models.Patch.Configs;
 using Pandora.Models.Patch.Plugins;
-using Pandora.Utils.Skyrim;
 
 namespace Pandora.Models;
 

@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
-using Pandora.API.Service;
+using Pandora.API.Services;
 
 namespace Pandora.Services;
 
@@ -16,14 +16,10 @@ public class DiskDialogService : IDiskDialogService
 		_window = window;
 	}
 
-	public async Task<DirectoryInfo?> OpenFolderAsync()
+	public async Task<DirectoryInfo?> OpenFolderAsync(string title)
 	{
 		var folders = await _window.StorageProvider.OpenFolderPickerAsync(
-			new FolderPickerOpenOptions
-			{
-				Title = "Select Folder Containing Game Exe",
-				AllowMultiple = false,
-			}
+			new FolderPickerOpenOptions { Title = title, AllowMultiple = false }
 		);
 		if (folders == null)
 		{
@@ -33,16 +29,16 @@ public class DiskDialogService : IDiskDialogService
 		return folders.Count > 0 ? new DirectoryInfo(localPath ?? string.Empty) : null;
 	}
 
-	public async Task<FileInfo?> OpenFileAsync()
+	public async Task<FileInfo?> OpenFileAsync(string title, params string[] patterns)
 	{
 		var files = await _window.StorageProvider.OpenFilePickerAsync(
 			new FilePickerOpenOptions
 			{
-				Title = "Select Game Executable",
+				Title = title,
 				AllowMultiple = false,
 				FileTypeFilter = new List<FilePickerFileType>
 				{
-					new FilePickerFileType("Executables") { Patterns = new[] { "*.exe" } },
+					new FilePickerFileType(title) { Patterns = patterns },
 				},
 			}
 		);

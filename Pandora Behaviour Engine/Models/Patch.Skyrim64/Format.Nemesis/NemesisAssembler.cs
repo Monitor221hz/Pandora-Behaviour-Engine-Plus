@@ -14,6 +14,7 @@ using Pandora.API.Patch.IOManagers;
 using Pandora.API.Patch.Skyrim64;
 using Pandora.API.Patch.Skyrim64.AnimData;
 using Pandora.API.Patch.Skyrim64.AnimSetData;
+using Pandora.API.Utils;
 using Pandora.Models.Patch.IO.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.AnimData;
 using Pandora.Models.Patch.Skyrim64.AnimSetData;
@@ -36,11 +37,10 @@ public class NemesisAssembler : IPatchAssembler
 			"Template"
 		)
 	);
-	private readonly DirectoryInfo _outputFolder;
-	private readonly DirectoryInfo _defaultOutputMeshFolder;
+	private readonly IPathResolver _pathResolver;
 
 	private readonly PandoraBridgedAssembler pandoraConverter;
-	private readonly IMetaDataExporter<IPackFile> exporter = new PackFileExporter();
+	private readonly IMetaDataExporter<IPackFile> _exporter;
 
 	private static readonly IXExpression replacePattern = new XSkipWrapExpression(
 		new XStep(XmlNodeType.Comment, "CLOSE"),
@@ -63,16 +63,22 @@ public class NemesisAssembler : IPatchAssembler
 	public IAnimSetDataManager AnimSetDataManager { get; private set; }
 
 	public NemesisAssembler(
+		IPathResolver pathResolver,
+		IMetaDataExporter<IPackFile> exporter,
 		IProjectManager projectManager,
 		IAnimDataManager animDataManager,
 		IAnimSetDataManager animSetDataManager
 	)
 	{
+		_pathResolver = pathResolver;
+		_exporter = exporter;
 		ProjectManager = projectManager;
 		AnimSetDataManager = animSetDataManager;
 		AnimDataManager = animDataManager;
 
 		pandoraConverter = new PandoraBridgedAssembler(
+			_pathResolver,
+			_exporter,
 			ProjectManager,
 			AnimSetDataManager,
 			AnimDataManager
@@ -80,18 +86,22 @@ public class NemesisAssembler : IPatchAssembler
 	}
 
 	public NemesisAssembler(
-		IMetaDataExporter<IPackFile> ioManager,
+		IPathResolver pathResolver,
+		IMetaDataExporter<IPackFile> exporter,
 		IProjectManager projectManager,
 		IAnimSetDataManager animSetDataManager,
 		IAnimDataManager animDataManager
 	)
 	{
-		exporter = ioManager;
+		_pathResolver = pathResolver;
+		_exporter = exporter;
 		ProjectManager = projectManager;
 		AnimSetDataManager = animSetDataManager;
 		AnimDataManager = animDataManager;
 
 		pandoraConverter = new PandoraBridgedAssembler(
+			_pathResolver,
+			_exporter,
 			ProjectManager,
 			AnimSetDataManager,
 			AnimDataManager
@@ -179,7 +189,7 @@ public class NemesisAssembler : IPatchAssembler
 	{
 		return Task.Run(() =>
 		{
-			exporter.LoadMetaData();
+			_exporter.LoadMetaData();
 		});
 	}
 
@@ -187,7 +197,7 @@ public class NemesisAssembler : IPatchAssembler
 	{
 		return Task.Run(() =>
 		{
-			exporter.SaveMetaData(ProjectManager.ActivePackFiles);
+			_exporter.SaveMetaData(ProjectManager.ActivePackFiles);
 		});
 	}
 
@@ -225,7 +235,7 @@ public class NemesisAssembler : IPatchAssembler
 		await ApplyNativePatchesAsync(RunOrder.PostLaunch);
 		var allAnimDataTask = MergeAllAnimationDataAsync();
 		await loadMetaDataTask;
-		bool exportSuccess = exporter.ExportParallel(ProjectManager.ActivePackFiles);
+		bool exportSuccess = _exporter.ExportParallel(ProjectManager.ActivePackFiles);
 		var saveMetaDataTask = SaveMetaDataAsync();
 		await allAnimDataTask;
 		await saveMetaDataTask;

@@ -9,6 +9,7 @@ using Pandora.API.Patch.IOManagers;
 using Pandora.API.Patch.Skyrim64;
 using Pandora.API.Patch.Skyrim64.AnimData;
 using Pandora.API.Patch.Skyrim64.AnimSetData;
+using Pandora.API.Utils;
 using Pandora.Models.Patch.IO.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.AnimData;
 using Pandora.Models.Patch.Skyrim64.AnimSetData;
@@ -30,44 +31,52 @@ public class PandoraAssembler
 			"Template"
 		)
 	);
-	private readonly DirectoryInfo defaultOutputMeshFolder = new(
-		Path.Join(PandoraPaths.OutputPath.FullName, "meshes")
-	);
-
 	private readonly PandoraNativePatchManager nativeManager = new();
-	private readonly IMetaDataExporter<IPackFile> exporter = new PackFileExporter();
+	private readonly IPathResolver _pathResolver;
+	private readonly IMetaDataExporter<IPackFile> _packFileExporter;
 
 	public IProjectManager ProjectManager { get; private set; }
 	public IAnimDataManager AnimDataManager { get; private set; }
 	public IAnimSetDataManager AnimSetDataManager { get; private set; }
 
 	public PandoraAssembler(
+		IPathResolver pathResolver,
 		IMetaDataExporter<IPackFile> exporter,
 		IProjectManager projectManager,
 		IAnimDataManager animDataManager,
 		IAnimSetDataManager animSetDataManager
 	)
 	{
-		this.exporter = exporter;
+		_pathResolver = pathResolver;
+		_packFileExporter = exporter;
 		ProjectManager = projectManager;
 		AnimSetDataManager = animSetDataManager;
 		AnimDataManager = animDataManager;
 	}
 
-	public PandoraAssembler(IMetaDataExporter<IPackFile> exporter, IPatchAssembler nemesisAssembler)
+	public PandoraAssembler(
+		IPathResolver pathResolver,
+		IMetaDataExporter<IPackFile> exporter,
+		IPatchAssembler nemesisAssembler
+	)
 	{
-		this.exporter = exporter;
+		_pathResolver = pathResolver;
+		_packFileExporter = exporter;
 		ProjectManager = nemesisAssembler.ProjectManager;
 		AnimSetDataManager = nemesisAssembler.AnimSetDataManager;
 		AnimDataManager = nemesisAssembler.AnimDataManager;
 	}
 
 	public PandoraAssembler(
+		IPathResolver pathResolver,
+		IMetaDataExporter<IPackFile> exporter,
 		IProjectManager projManager,
 		IAnimSetDataManager animSDManager,
 		IAnimDataManager animDManager
 	)
 	{
+		_pathResolver = pathResolver;
+		_packFileExporter = exporter;
 		ProjectManager = projManager;
 		AnimSetDataManager = animSDManager;
 		AnimDataManager = animDManager;
