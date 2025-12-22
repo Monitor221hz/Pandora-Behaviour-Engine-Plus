@@ -17,7 +17,7 @@ public class PackFileExporter : BasePackFileExporter
 
 	public override bool Export(IPackFile packFile)
 	{
-		var outputHandle = packFile.RebaseOutput(ExportDirectory);
+		var outputHandle = packFile.RebaseOutput(GetExportDirectory());
 
 		if (outputHandle.Directory == null)
 			return false;

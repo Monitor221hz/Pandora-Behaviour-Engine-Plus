@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using GameFinder.Common;
 using GameFinder.RegistryUtils;
 using GameFinder.StoreHandlers.GOG;
 using GameFinder.StoreHandlers.Steam;
@@ -34,6 +35,9 @@ public sealed class SkyrimPathResolver : IPathResolver
 	private const string PATH_CONFIG_FILENAME = "Paths.json";
 	private const string PREVIOUS_OUTPUT_FILENAME = "PreviousOutput.txt";
 	private const string PANDORA_ENGINE_FOLDERNAME = "Pandora_Engine";
+
+	private readonly AHandler<SteamGame, AppId> _steamHandler;
+	private readonly AHandler<GOGGame, GOGGameId> _gogHandler;
 
 	private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -71,8 +75,15 @@ public sealed class SkyrimPathResolver : IPathResolver
 	private readonly IRegistry? _registry;
 	private readonly IFileSystem _fileSystem;
 
-	public SkyrimPathResolver(IRegistry? registry, IFileSystem fileSystem)
+	public SkyrimPathResolver(
+		IRegistry? registry,
+		IFileSystem fileSystem,
+		AHandler<SteamGame, AppId> steamHandler,
+		AHandler<GOGGame, GOGGameId> gogHandler
+	)
 	{
+		_steamHandler = steamHandler;
+		_gogHandler = gogHandler;
 		_fileSystem = fileSystem;
 		_registry = registry;
 		_currentDirectory = new(Environment.CurrentDirectory);
@@ -99,6 +110,7 @@ public sealed class SkyrimPathResolver : IPathResolver
 			_pathsConfiguration = new(() => new SkyrimPathsConfiguration());
 		}
 		_pathsConfiguration.Value!.GameDataDirectory = gameDataFolder;
+		_gameDirectory = new(() => ResolveGameDataDirectory());
 	}
 
 	public void SetOutputFolder(DirectoryInfo outputFolder)
@@ -109,6 +121,7 @@ public sealed class SkyrimPathResolver : IPathResolver
 			_pathsConfiguration = new(() => new SkyrimPathsConfiguration());
 		}
 		_pathsConfiguration.Value!.OutputDirectory = outputFolder;
+		_outputDirectory = new(() => ResolveOutputDirectory());
 	}
 
 	public void SavePathsConfiguration()

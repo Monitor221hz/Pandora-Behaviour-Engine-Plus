@@ -10,5 +10,7 @@ public class ExampleConfigurationInjection : IEngineConfigurationPlugin
 {
     public string MenuPath { get; } = "Skyrim 64/Behavior/Patch";
 
+    public string DisplayName { get; } = "Example";
+
     public IEngineConfigurationFactory Factory { get; } = new EngineConfigurationFactory();
 }

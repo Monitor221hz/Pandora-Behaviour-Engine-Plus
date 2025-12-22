@@ -53,11 +53,6 @@ public class NemesisPatcher : IPatcher
 		throw new NotImplementedException();
 	}
 
-	public void SetOutputPath(DirectoryInfo directoryInfo)
-	{
-		throw new NotImplementedException();
-	}
-
 	public void SetTarget(List<IModInfo> mods)
 	{
 		throw new NotImplementedException();
@@ -182,31 +177,6 @@ public class SkyrimPatcher : IPatcher
 	public async Task PreloadAsync()
 	{
 		await NemesisAssembler.LoadResourcesAsync();
-	}
-
-	public void SetOutputPath(DirectoryInfo directoryInfo)
-	{
-		exporter.ExportDirectory = directoryInfo;
-		if (
-			!string.Equals(
-				directoryInfo.FullName,
-				Environment.CurrentDirectory,
-				StringComparison.OrdinalIgnoreCase
-			)
-		)
-		{
-			var FNISPlugin = new FileInfo(Path.Combine(Environment.CurrentDirectory, "FNIS.esp"));
-			var outputFNISPlugin = new FileInfo(Path.Combine(directoryInfo.FullName, "FNIS.esp"));
-
-			if (FNISPlugin.Exists && !outputFNISPlugin.Exists)
-			{
-				outputFNISPlugin.Directory?.Create();
-				FNISPlugin.CopyTo(outputFNISPlugin.FullName);
-			}
-		}
-
-		NemesisAssembler.SetOutputPath(directoryInfo);
-		PandoraAssembler.SetOutputPath(directoryInfo);
 	}
 
 	public string GetPostUpdateMessages()

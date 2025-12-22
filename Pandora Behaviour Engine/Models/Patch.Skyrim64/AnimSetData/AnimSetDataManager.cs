@@ -49,11 +49,6 @@ public class AnimSetDataManager : IAnimSetDataManager
 		);
 	}
 
-	public void SetOutputPath(DirectoryInfo outputMeshFolder)
-	{
-		//this.outputMeshFolder = outputMeshFolder;
-	}
-
 	public bool SplitAnimSetDataSingleFile()
 	{
 		try

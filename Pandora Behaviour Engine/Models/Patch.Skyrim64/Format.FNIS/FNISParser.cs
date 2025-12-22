@@ -442,9 +442,4 @@ public class FNISParser : IFNISParser
 			ModInfos.Add(animList.ModInfo);
 		}
 	}
-
-	public void SetOutputPath(DirectoryInfo outputPath)
-	{
-		//_outputDirectory = outputPath;
-	}
 }

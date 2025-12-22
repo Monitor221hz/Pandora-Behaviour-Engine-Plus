@@ -82,16 +82,6 @@ public class PandoraAssembler
 		AnimDataManager = animDManager;
 	}
 
-	public void SetOutputPath(DirectoryInfo baseOutputDirectory)
-	{
-		var outputMeshDirectory = new DirectoryInfo(
-			Path.Join(baseOutputDirectory.FullName, "meshes")
-		);
-		ProjectManager.SetOutputPath(baseOutputDirectory);
-		AnimDataManager.SetOutputPath(outputMeshDirectory);
-		AnimSetDataManager.SetOutputPath(outputMeshDirectory);
-	}
-
 	public bool AssemblePackFilePatch(FileInfo file, IModInfo modInfo)
 	{
 		var name = Path.GetFileNameWithoutExtension(file.Name);

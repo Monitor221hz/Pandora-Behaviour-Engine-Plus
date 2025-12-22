@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -28,8 +29,12 @@ public class DiskDialogService : IDiskDialogService
 		{
 			return null;
 		}
+		if (folders.Count == 0)
+		{
+			return null;
+		}
 		var localPath = folders[0].TryGetLocalPath();
-		return folders.Count > 0 ? new DirectoryInfo(localPath ?? string.Empty) : null;
+		return new DirectoryInfo(localPath ?? Environment.CurrentDirectory);
 	}
 
 	public async Task<FileInfo?> OpenFileAsync(string title, params string[] patterns)
@@ -51,6 +56,6 @@ public class DiskDialogService : IDiskDialogService
 		}
 		var localPath = files[0].TryGetLocalPath();
 
-		return files.Count > 0 ? new FileInfo(files[0].TryGetLocalPath() ?? string.Empty) : null;
+		return new FileInfo(localPath!);
 	}
 }

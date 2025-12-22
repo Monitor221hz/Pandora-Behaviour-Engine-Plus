@@ -42,11 +42,6 @@ public class AnimDataManager : IAnimDataManager
 		);
 	}
 
-	public void SetOutputPath(DirectoryInfo outputMeshFolder)
-	{
-		//this.outputMeshFolder = outputMeshFolder;
-	}
-
 	private void MapProjectAnimData(ProjectAnimData animData)
 	{
 		foreach (string clipId in animData.GetClipIDs())

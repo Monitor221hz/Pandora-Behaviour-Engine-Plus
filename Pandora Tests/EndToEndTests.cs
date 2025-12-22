@@ -1,7 +1,11 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
+using Microsoft.Extensions.DependencyInjection;
+using NSubstitute;
+using Pandora.API.Patch.Config;
 using Pandora.API.Patch.IOManagers;
+using Pandora.API.Utils;
 using Pandora.Data;
 using Pandora.Models;
 using Pandora.Models.Patch.Configs;
@@ -9,24 +13,48 @@ using Pandora.Models.Patch.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 using Pandora.Services;
 using Pandora.Utils;
+using Testably.Abstractions.Testing;
 
 namespace PandoraTests;
 
-public class EndToEndTests
+public sealed class DependencyInjectedCluster : IDisposable
+{
+    public IServiceProvider ServiceProvider { get; }
+
+    public DependencyInjectedCluster()
+    {
+        var serviceCollection = new ServiceCollection();
+
+        serviceCollection.AddPandoraServices(Substitute.For<PandoraServiceContext>());
+        serviceCollection.AddSingleton<IPathResolver, TestPathResolver>();
+        ServiceProvider = serviceCollection.BuildServiceProvider();
+    }
+
+    public void Dispose() { }
+}
+
+public class EndToEndTests : IClassFixture<DependencyInjectedCluster>
 {
     private readonly ITestOutputHelper _output;
+    private readonly IServiceProvider _serviceProvider;
 
-    public EndToEndTests(ITestOutputHelper output)
+    public EndToEndTests(DependencyInjectedCluster cluster, ITestOutputHelper output)
     {
+        _serviceProvider = cluster.ServiceProvider;
         _output = output;
     }
 
     [Fact]
     public async Task EngineOutputTest()
     {
+        var pathResolver = _serviceProvider.GetRequiredService<IPathResolver>();
         _output.WriteLine(
             $"Starting EngineOutputTest. OutputDirectory: {Resources.OutputDirectory.FullName}"
         );
+        var modLoader = _serviceProvider.GetRequiredService<IModLoader>();
+        var configurationFactory = _serviceProvider.GetRequiredService<
+            IEngineConfigurationFactory<SkyrimDebugConfiguration>
+        >();
 
         // Loading mods
         var modInfoProviders = new List<IModInfoProvider>
@@ -39,19 +67,17 @@ public class EndToEndTests
             BehaviourEngine.AssemblyDirectory,
             new(Path.Combine(Environment.CurrentDirectory, "Data")),
         };
-        var activeModsFilePath = PandoraPaths.ActiveModsFile;
+        var activeModsFilePath = pathResolver.GetActiveModsFile();
         _output.WriteLine(
             $"Loading mods from directories: {string.Join(", ", directories.Select(d => d.FullName))}"
         );
-        var mods = await ModLoader.LoadModsAsync(modInfoProviders, directories);
+        var mods = await modLoader.LoadModsAsync(modInfoProviders, directories);
         _output.WriteLine($"Loaded {mods.Count} mods");
 
         Assert.NotEmpty(mods);
 
         // Initialization Engine and Launch
-        BehaviourEngine engine = new BehaviourEngine()
-            .SetConfiguration(new SkyrimDebugConfiguration())
-            .SetOutputPath(Resources.OutputDirectory); // SetOutputPath() must be after configuration initialization
+        BehaviourEngine engine = new BehaviourEngine(pathResolver, configurationFactory.Create()!);
         _output.WriteLine(
             $"BehaviourEngine configured with OutputPath: {Resources.OutputDirectory.FullName}"
         );
@@ -81,7 +107,7 @@ public class EndToEndTests
         }
 
         // Checking for meshes with .hkx files
-        var meshesPath = Path.Combine(Resources.OutputDirectory.FullName, "meshes");
+        var meshesPath = pathResolver.GetOutputMeshFolder().FullName;
         Assert.True(Directory.Exists(meshesPath), $"Meshes directory does NOT exist: {meshesPath}");
         _output.WriteLine($"Meshes directory exists: {meshesPath}");
 
@@ -92,21 +118,6 @@ public class EndToEndTests
         foreach (var file in meshFiles)
         {
             _output.WriteLine($"Found mesh file: {file}");
-        }
-
-        // Checking for the presence of an exporter
-        var exporterField = typeof(SkyrimPatcher).GetField(
-            "exporter",
-            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance
-        );
-        if (exporterField?.GetValue(skyrimPatcher) is IMetaDataExporter<PackFile> exporter)
-        {
-            Assert.NotNull(exporter.ExportDirectory);
-            _output.WriteLine($"Exporter ExportDirectory: {exporter.ExportDirectory.FullName}");
-        }
-        else
-        {
-            Assert.Fail("Exporter is null or inaccessible");
         }
     }
 }

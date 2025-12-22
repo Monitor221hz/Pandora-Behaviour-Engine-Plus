@@ -22,6 +22,8 @@ public class BehaviourEngine : IBehaviourEngine
 
 	private static readonly PluginLoader pluginLoader = new();
 
+	private readonly IPathResolver _pathResolver;
+
 	/// <summary>
 	/// Gets the real file system path to the folder containing the running executable.
 	///
@@ -38,24 +40,12 @@ public class BehaviourEngine : IBehaviourEngine
 	public bool IsExternalOutput = false;
 
 	public IEngineConfiguration Configuration { get; private set; }
-	public DirectoryInfo OutputPath { get; private set; } = new(Environment.CurrentDirectory);
 
-	public BehaviourEngine(
-		IPathResolver skyrimPathResolver,
-		IEngineConfiguration engineConfiguration
-	)
+	public BehaviourEngine(IPathResolver skyrimPathResolver, IEngineConfiguration configuration)
 	{
+		_pathResolver = skyrimPathResolver;
+		Configuration = configuration;
 		PluginManager.LoadAllPlugins(AssemblyDirectory);
-	}
-
-	public BehaviourEngine() { }
-
-	public IBehaviourEngine SetOutputPath(DirectoryInfo outputPath)
-	{
-		OutputPath = outputPath!;
-		IsExternalOutput = CurrentDirectory != OutputPath;
-		Configuration.Patcher.SetOutputPath(outputPath);
-		return this;
 	}
 
 	public IBehaviourEngine SetConfiguration(IEngineConfiguration? configuration)
@@ -70,8 +60,8 @@ public class BehaviourEngine : IBehaviourEngine
 		logger.Info($"Launching with patcher version {Configuration.Patcher.GetVersionString()}");
 		Configuration.Patcher.SetTarget(mods);
 
-		if (!OutputPath.Exists)
-			OutputPath.Create();
+		if (!_pathResolver.GetOutputFolder().Exists)
+			_pathResolver.GetOutputFolder().Create();
 
 		if (!await Configuration.Patcher.UpdateAsync())
 			return false;

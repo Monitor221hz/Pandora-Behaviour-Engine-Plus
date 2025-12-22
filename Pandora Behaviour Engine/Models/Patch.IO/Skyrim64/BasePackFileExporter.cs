@@ -18,13 +18,11 @@ public abstract class BasePackFileExporter : IMetaDataExporter<IPackFile>
 	protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
 	private IPathResolver _pathResolver;
-	public DirectoryInfo ExportDirectory { get; set; }
 	protected FileInfo PreviousOutputFile => _pathResolver.GetPreviousOutputFile();
 
 	protected BasePackFileExporter(IPathResolver pathResolver)
 	{
 		_pathResolver = pathResolver;
-		ExportDirectory = pathResolver.GetOutputFolder();
 	}
 
 	public abstract bool Export(IPackFile packFile);
@@ -95,5 +93,10 @@ public abstract class BasePackFileExporter : IMetaDataExporter<IPackFile>
 				}
 			}
 		}
+	}
+
+	public DirectoryInfo GetExportDirectory()
+	{
+		return _pathResolver.GetOutputFolder();
 	}
 }

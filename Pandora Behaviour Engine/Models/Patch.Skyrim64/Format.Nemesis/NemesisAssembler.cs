@@ -108,17 +108,6 @@ public class NemesisAssembler : IPatchAssembler
 		);
 	}
 
-	public void SetOutputPath(DirectoryInfo baseOutputDirectory)
-	{
-		var outputMeshDirectory = new DirectoryInfo(
-			Path.Join(baseOutputDirectory.FullName, "meshes")
-		);
-
-		ProjectManager.SetOutputPath(baseOutputDirectory);
-		AnimDataManager.SetOutputPath(outputMeshDirectory);
-		AnimSetDataManager.SetOutputPath(outputMeshDirectory);
-	}
-
 	public void LoadResources()
 	{
 		throw new NotImplementedException();

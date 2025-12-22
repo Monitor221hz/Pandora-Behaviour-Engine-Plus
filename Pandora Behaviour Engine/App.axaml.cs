@@ -58,9 +58,10 @@ public partial class App : Application
 
 	private static void SetupCultureInfo()
 	{
-		CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
-		CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CreateSpecificCulture("en-US");
-		CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+		CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
+		CultureInfo.DefaultThreadCurrentCulture = culture;
+		CultureInfo.DefaultThreadCurrentUICulture = culture;
+		CultureInfo.CurrentCulture = culture;
 	}
 
 	private static void SetupAppTheme()

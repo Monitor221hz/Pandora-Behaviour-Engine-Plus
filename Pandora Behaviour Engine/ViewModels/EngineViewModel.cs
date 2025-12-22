@@ -105,7 +105,9 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		_diskDialogService = diskDialogService;
 		_autoRun = startup.AutoRun;
 		_autoClose = startup.AutoClose;
-		_isOutputFolderCustomSet = startup.IsCustomSet;
+		_isOutputFolderCustomSet =
+			startup.IsCustomSet
+			|| !_pathResolver.GetOutputFolder().Equals(_pathResolver.GetAssemblyFolder());
 		_outputDirectoryMessage = startup.Message;
 
 		_configService.Initialize(startup.UseSkyrimDebug64, SetEngineConfigCommand);
@@ -161,9 +163,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 			{
 				var factory = _configService.CurrentFactory;
 
-				Engine = new BehaviourEngine()
-					.SetConfiguration(factory.Create())
-					.SetOutputPath(_pathResolver.GetOutputFolder()); // is this still needed with path resolver?
+				Engine = new BehaviourEngine(_pathResolver, factory.Create());
 
 				_preloadTask = Engine.PreloadAsync();
 				await _preloadTask.ConfigureAwait(false);

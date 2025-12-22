@@ -2,12 +2,17 @@
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
 using System;
+using GameFinder.Common;
 using GameFinder.RegistryUtils;
+using GameFinder.StoreHandlers.GOG;
+using GameFinder.StoreHandlers.Steam;
+using GameFinder.StoreHandlers.Steam.Models.ValueTypes;
 using Microsoft.Extensions.DependencyInjection;
 using NexusMods.Paths;
 using Pandora.API;
 using Pandora.API.Patch;
 using Pandora.API.Patch.Config;
+using Pandora.API.Patch.Engine.Config;
 using Pandora.API.Patch.IOManagers;
 using Pandora.API.Patch.Skyrim64;
 using Pandora.API.Patch.Skyrim64.AnimData;
@@ -64,14 +69,22 @@ public static class ServiceCollectionExtensions
 
 		serviceCollection.AddTransient<SkyrimConfiguration>();
 		serviceCollection.AddTransient<SkyrimDebugConfiguration>();
-
+#if DEBUG
+		serviceCollection.AddTransient<IEngineConfiguration, SkyrimDebugConfiguration>();
+#else
+		serviceCollection.AddTransient<IEngineConfiguration, SkyrimConfiguration>();
+#endif
 		serviceCollection.AddSingleton<Func<SkyrimDebugConfiguration>>(sp =>
 			() => sp.GetRequiredService<SkyrimDebugConfiguration>()
 		);
 		serviceCollection.AddSingleton<Func<SkyrimConfiguration>>(sp =>
 			() => sp.GetRequiredService<SkyrimConfiguration>()
 		);
+
+		serviceCollection.AddTransient<AHandler<SteamGame, AppId>, SteamHandler>();
+		serviceCollection.AddTransient<AHandler<GOGGame, GOGGameId>, GOGHandler>();
 		serviceCollection.AddSingleton<IPathResolver, SkyrimPathResolver>();
+
 		serviceCollection.AddSingleton<IEngineConfigurationService, EngineConfigurationService>();
 		serviceCollection.AddSingleton<
 			IEngineConfigurationFactory<SkyrimConfiguration>,

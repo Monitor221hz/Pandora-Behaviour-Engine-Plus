@@ -490,11 +490,5 @@ public class ProjectManager : IProjectManager
 		return true;
 	}
 
-	public void SetOutputPath(DirectoryInfo baseDirectory)
-	{
-		//_outputFolder = baseDirectory;
-		_fnisParser.SetOutputPath(baseDirectory);
-	}
-
 	public DirectoryInfo GetOutputDirectory() => _pathResolver.GetOutputFolder();
 }

@@ -19,9 +19,9 @@ public class ExampleSkyrim64Patch : ISkyrim64Patch
 
     public void Run(IProjectManager projectManager)
     {
-        if (projectManager.TryGetProjectEx("defaultmale", out var ex))
+        if (projectManager.TryGetProject("defaultmale", out var ex))
         {
-            var characterPackFile = ex!.GetCharacterPackFile()!;
+            var characterPackFile = ex!.CharacterPackFile!;
             characterPackFile.AddUniqueAnimation("exampleanimation");
         }
     }
