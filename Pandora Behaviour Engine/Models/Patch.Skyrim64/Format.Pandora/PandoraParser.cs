@@ -5,8 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using Pandora.API.Patch.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.Hkx.Changes;
-using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.Pandora;
 
@@ -23,8 +23,8 @@ public class PandoraParser
 	public static void ParseEdit(
 		ChangeType changeType,
 		XElement element,
-		PackFile packFile,
-		PackFileChangeSet changeSet
+		IPackFile packFile,
+		IPackFileChangeOwner changeSet
 	)
 	{
 		XAttribute? pathAttribute = element.Attribute("path");
@@ -221,8 +221,8 @@ public class PandoraParser
 	public static void ParseTypedEdits(
 		ChangeType changeType,
 		XElement container,
-		PackFile packFile,
-		PackFileChangeSet changeSet
+		IPackFile packFile,
+		IPackFileChangeOwner changeSet
 	)
 	{
 		foreach (var element in container.Elements())
@@ -233,8 +233,8 @@ public class PandoraParser
 
 	public static void ParseEdits(
 		XElement container,
-		PackFile packFile,
-		PackFileChangeSet changeSet
+		IPackFile packFile,
+		IPackFileChangeOwner changeSet
 	)
 	{
 		if (!container.HasElements)

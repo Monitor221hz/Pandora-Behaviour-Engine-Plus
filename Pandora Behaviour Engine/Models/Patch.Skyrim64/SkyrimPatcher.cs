@@ -9,8 +9,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Pandora.API.Patch;
 using Pandora.API.Patch.IOManagers;
+using Pandora.API.Patch.Skyrim64;
+using Pandora.API.Utils;
 using Pandora.Models.Patch.IO.Skyrim64;
-using Pandora.Models.Patch.Skyrim64.Format.Nemesis;
 using Pandora.Models.Patch.Skyrim64.Format.Pandora;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 using Pandora.Utils;
@@ -52,11 +53,6 @@ public class NemesisPatcher : IPatcher
 		throw new NotImplementedException();
 	}
 
-	public void SetOutputPath(DirectoryInfo directoryInfo)
-	{
-		throw new NotImplementedException();
-	}
-
 	public void SetTarget(List<IModInfo> mods)
 	{
 		throw new NotImplementedException();
@@ -76,9 +72,9 @@ public class SkyrimPatcher : IPatcher
 
 	public void SetTarget(List<IModInfo> mods) => activeMods = mods;
 
-	private IMetaDataExporter<PackFile> exporter = new PackFileExporter();
+	private IMetaDataExporter<IPackFile> exporter;
 
-	public NemesisAssembler NemesisAssembler { get; set; }
+	public IPatchAssembler NemesisAssembler { get; set; }
 	public PandoraAssembler PandoraAssembler { get; set; }
 
 	public PatcherFlags Flags { get; private set; } = PatcherFlags.None;
@@ -87,11 +83,15 @@ public class SkyrimPatcher : IPatcher
 
 	public string GetVersionString() => AppInfo.Version;
 
-	public SkyrimPatcher(IMetaDataExporter<PackFile> manager)
+	public SkyrimPatcher(
+		IPathResolver pathResolver,
+		IMetaDataExporter<IPackFile> manager,
+		IPatchAssembler nemesisAssembler
+	)
 	{
 		exporter = manager;
-		NemesisAssembler = new NemesisAssembler(manager);
-		PandoraAssembler = new PandoraAssembler(manager, NemesisAssembler);
+		NemesisAssembler = nemesisAssembler;
+		PandoraAssembler = new PandoraAssembler(pathResolver, manager, NemesisAssembler);
 	}
 
 	public string GetPostRunMessages()
@@ -177,31 +177,6 @@ public class SkyrimPatcher : IPatcher
 	public async Task PreloadAsync()
 	{
 		await NemesisAssembler.LoadResourcesAsync();
-	}
-
-	public void SetOutputPath(DirectoryInfo directoryInfo)
-	{
-		exporter.ExportDirectory = directoryInfo;
-		if (
-			!string.Equals(
-				directoryInfo.FullName,
-				Environment.CurrentDirectory,
-				StringComparison.OrdinalIgnoreCase
-			)
-		)
-		{
-			var FNISPlugin = new FileInfo(Path.Combine(Environment.CurrentDirectory, "FNIS.esp"));
-			var outputFNISPlugin = new FileInfo(Path.Combine(directoryInfo.FullName, "FNIS.esp"));
-
-			if (FNISPlugin.Exists && !outputFNISPlugin.Exists)
-			{
-				outputFNISPlugin.Directory?.Create();
-				FNISPlugin.CopyTo(outputFNISPlugin.FullName);
-			}
-		}
-
-		NemesisAssembler.SetOutputPath(directoryInfo);
-		PandoraAssembler.SetOutputPath(directoryInfo);
 	}
 
 	public string GetPostUpdateMessages()

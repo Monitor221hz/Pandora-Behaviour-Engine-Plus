@@ -11,6 +11,10 @@ using System.Xml;
 using NLog;
 using Pandora.API.Patch;
 using Pandora.API.Patch.IOManagers;
+using Pandora.API.Patch.Skyrim64;
+using Pandora.API.Patch.Skyrim64.AnimData;
+using Pandora.API.Patch.Skyrim64.AnimSetData;
+using Pandora.API.Utils;
 using Pandora.Models.Patch.IO.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.AnimData;
 using Pandora.Models.Patch.Skyrim64.AnimSetData;
@@ -21,7 +25,7 @@ using XmlCake.Linq.Expressions;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.Nemesis;
 
-public class NemesisAssembler
+public class NemesisAssembler : IPatchAssembler
 {
 	private static readonly Logger Logger = LogManager.GetCurrentClassLogger(); //to do: move logger into inheritable base class
 
@@ -33,13 +37,10 @@ public class NemesisAssembler
 			"Template"
 		)
 	);
-	private static readonly DirectoryInfo outputFolder = PandoraPaths.OutputPath;
-	private static readonly DirectoryInfo defaultOutputMeshFolder = new(
-		Path.Join(outputFolder.FullName, "meshes")
-	);
+	private readonly IPathResolver _pathResolver;
 
 	private readonly PandoraBridgedAssembler pandoraConverter;
-	private readonly IMetaDataExporter<PackFile> exporter = new PackFileExporter();
+	private readonly IMetaDataExporter<IPackFile> _exporter;
 
 	private static readonly IXExpression replacePattern = new XSkipWrapExpression(
 		new XStep(XmlNodeType.Comment, "CLOSE"),
@@ -57,31 +58,27 @@ public class NemesisAssembler
 
 	List<PackFile> packFiles = [];
 
-	public ProjectManager ProjectManager { get; private set; }
-	public AnimDataManager AnimDataManager { get; private set; }
-	public AnimSetDataManager AnimSetDataManager { get; private set; }
+	public IProjectManager ProjectManager { get; private set; }
+	public IAnimDataManager AnimDataManager { get; private set; }
+	public IAnimSetDataManager AnimSetDataManager { get; private set; }
 
-	public NemesisAssembler()
+	public NemesisAssembler(
+		IPathResolver pathResolver,
+		IMetaDataExporter<IPackFile> exporter,
+		IProjectManager projectManager,
+		IAnimDataManager animDataManager,
+		IAnimSetDataManager animSetDataManager
+	)
 	{
-		ProjectManager = new ProjectManager(templateFolder, outputFolder);
-		AnimSetDataManager = new AnimSetDataManager(templateFolder, defaultOutputMeshFolder);
-		AnimDataManager = new AnimDataManager(templateFolder, defaultOutputMeshFolder);
+		_pathResolver = pathResolver;
+		_exporter = exporter;
+		ProjectManager = projectManager;
+		AnimSetDataManager = animSetDataManager;
+		AnimDataManager = animDataManager;
 
 		pandoraConverter = new PandoraBridgedAssembler(
-			ProjectManager,
-			AnimSetDataManager,
-			AnimDataManager
-		);
-	}
-
-	public NemesisAssembler(IMetaDataExporter<PackFile> ioManager)
-	{
-		exporter = ioManager;
-		ProjectManager = new ProjectManager(templateFolder, outputFolder);
-		AnimSetDataManager = new AnimSetDataManager(templateFolder, defaultOutputMeshFolder);
-		AnimDataManager = new AnimDataManager(templateFolder, defaultOutputMeshFolder);
-
-		pandoraConverter = new PandoraBridgedAssembler(
+			_pathResolver,
+			_exporter,
 			ProjectManager,
 			AnimSetDataManager,
 			AnimDataManager
@@ -89,32 +86,26 @@ public class NemesisAssembler
 	}
 
 	public NemesisAssembler(
-		IMetaDataExporter<PackFile> ioManager,
-		ProjectManager projManager,
-		AnimSetDataManager animSDManager,
-		AnimDataManager animDManager
+		IPathResolver pathResolver,
+		IMetaDataExporter<IPackFile> exporter,
+		IProjectManager projectManager,
+		IAnimSetDataManager animSetDataManager,
+		IAnimDataManager animDataManager
 	)
 	{
-		exporter = ioManager;
-		ProjectManager = projManager;
-		AnimSetDataManager = animSDManager;
-		AnimDataManager = animDManager;
+		_pathResolver = pathResolver;
+		_exporter = exporter;
+		ProjectManager = projectManager;
+		AnimSetDataManager = animSetDataManager;
+		AnimDataManager = animDataManager;
+
 		pandoraConverter = new PandoraBridgedAssembler(
+			_pathResolver,
+			_exporter,
 			ProjectManager,
 			AnimSetDataManager,
 			AnimDataManager
 		);
-	}
-
-	public void SetOutputPath(DirectoryInfo baseOutputDirectory)
-	{
-		var outputMeshDirectory = new DirectoryInfo(
-			Path.Join(baseOutputDirectory.FullName, "meshes")
-		);
-
-		ProjectManager.SetOutputPath(baseOutputDirectory);
-		AnimDataManager.SetOutputPath(outputMeshDirectory);
-		AnimSetDataManager.SetOutputPath(outputMeshDirectory);
 	}
 
 	public void LoadResources()
@@ -187,7 +178,7 @@ public class NemesisAssembler
 	{
 		return Task.Run(() =>
 		{
-			exporter.LoadMetaData();
+			_exporter.LoadMetaData();
 		});
 	}
 
@@ -195,7 +186,7 @@ public class NemesisAssembler
 	{
 		return Task.Run(() =>
 		{
-			exporter.SaveMetaData(ProjectManager.ActivePackFiles);
+			_exporter.SaveMetaData(ProjectManager.ActivePackFiles);
 		});
 	}
 
@@ -233,7 +224,7 @@ public class NemesisAssembler
 		await ApplyNativePatchesAsync(RunOrder.PostLaunch);
 		var allAnimDataTask = MergeAllAnimationDataAsync();
 		await loadMetaDataTask;
-		bool exportSuccess = exporter.ExportParallel(ProjectManager.ActivePackFiles);
+		bool exportSuccess = _exporter.ExportParallel(ProjectManager.ActivePackFiles);
 		var saveMetaDataTask = SaveMetaDataAsync();
 		await allAnimDataTask;
 		await saveMetaDataTask;
@@ -288,9 +279,9 @@ public class NemesisAssembler
 		pandoraConverter.AssembleAnimSetDataPatch(directoryInfo);
 	}
 
-	private bool AssemblePackFilePatch(DirectoryInfo folder, Project project, IModInfo modInfo)
+	private bool AssemblePackFilePatch(DirectoryInfo folder, IProject project, IModInfo modInfo)
 	{
-		PackFile targetPackFile;
+		IPackFile targetPackFile;
 		if (!ProjectManager.TryActivatePackFilePriority(folder.Name, project, out targetPackFile!))
 		{
 			return false;
@@ -304,10 +295,10 @@ public class NemesisAssembler
 
 	private bool AssemblePackFilePatch(DirectoryInfo folder, IModInfo modInfo)
 	{
-		PackFile targetPackFile;
+		IPackFile targetPackFile;
 		if (!ProjectManager.TryActivatePackFilePriority(folder.Name, out targetPackFile!))
 		{
-			Project targetProject;
+			IProject targetProject;
 			if (!ProjectManager.TryLookupProjectFolder(folder.Name, out targetProject!))
 			{
 				return false;

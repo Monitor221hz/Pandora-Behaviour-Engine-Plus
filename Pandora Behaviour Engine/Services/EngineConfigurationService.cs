@@ -6,21 +6,30 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
+using Pandora.API.Patch.Config;
 using Pandora.API.Patch.Engine.Config;
 using Pandora.Models;
 using Pandora.Models.Patch.Configs;
 using Pandora.ViewModels;
+using Pandora.ViewModels.Configuration;
 using ReactiveUI;
 
 namespace Pandora.Services;
 
-public class EngineConfigurationService
+public class EngineConfigurationService(
+	IEngineConfigurationFactory<SkyrimConfiguration> skyrimFactory,
+	IEngineConfigurationFactory<SkyrimDebugConfiguration> skyrimDebugFactory
+) : IEngineConfigurationService
 {
+	private readonly IEngineConfigurationFactory<SkyrimConfiguration> _skyrimFactory =
+		skyrimFactory;
+	private readonly IEngineConfigurationFactory<SkyrimDebugConfiguration> _skyrimDebugFactory =
+		skyrimDebugFactory;
+
 	private readonly ObservableCollection<IEngineConfigurationViewModel> _configurations = [];
 	private readonly char[] _pathSeparators = ['/', '\\'];
 
-	private IEngineConfigurationFactory _currentFactory =
-		new ConstEngineConfigurationFactory<SkyrimConfiguration>("Normal");
+	private IEngineConfigurationFactory _currentFactory = skyrimFactory;
 	public IEngineConfigurationFactory CurrentFactory => _currentFactory;
 
 	public void SetCurrentFactory(IEngineConfigurationFactory factory) => _currentFactory = factory;
@@ -31,9 +40,7 @@ public class EngineConfigurationService
 	)
 	{
 		if (useSkyrimDebug64)
-			_currentFactory = new ConstEngineConfigurationFactory<SkyrimDebugConfiguration>(
-				"Debug"
-			);
+			_currentFactory = _skyrimDebugFactory;
 
 		_configurations.Clear();
 		var root = new EngineConfigurationViewModelContainer(
@@ -42,12 +49,10 @@ public class EngineConfigurationService
 				"Behavior",
 				new EngineConfigurationViewModelContainer(
 					"Patch",
+					new EngineConfigurationViewModel(_skyrimFactory, "Lean", setCommand),
 					new EngineConfigurationViewModel(
-						new ConstEngineConfigurationFactory<SkyrimConfiguration>("Normal"),
-						setCommand
-					),
-					new EngineConfigurationViewModel(
-						new ConstEngineConfigurationFactory<SkyrimDebugConfiguration>("Debug"),
+						_skyrimDebugFactory,
+						"Include Debug",
 						setCommand
 					)
 				)
@@ -71,7 +76,9 @@ public class EngineConfigurationService
 	{
 		if (string.IsNullOrWhiteSpace(plugin.MenuPath))
 		{
-			_configurations.Add(new EngineConfigurationViewModel(plugin.Factory, setCommand));
+			_configurations.Add(
+				new EngineConfigurationViewModel(plugin.Factory, plugin.DisplayName, setCommand)
+			);
 			return;
 		}
 
@@ -98,7 +105,7 @@ public class EngineConfigurationService
 		}
 
 		currentContainer?.NestedViewModels.Add(
-			new EngineConfigurationViewModel(plugin.Factory, setCommand)
+			new EngineConfigurationViewModel(plugin.Factory, plugin.DisplayName, setCommand)
 		);
 	}
 
@@ -108,10 +115,10 @@ public class EngineConfigurationService
 		return FlattenConfigurations(_configurations)
 			.OfType<EngineConfigurationViewModel>()
 			.Select(vm => vm.Factory)
-			.FirstOrDefault(factory => factory.Config is T);
+			.FirstOrDefault(factory => factory.Create() is T);
 	}
 
-	public static IEnumerable<IEngineConfigurationViewModel> FlattenConfigurations(
+	public IEnumerable<IEngineConfigurationViewModel> FlattenConfigurations(
 		IEnumerable<IEngineConfigurationViewModel> configs
 	)
 	{

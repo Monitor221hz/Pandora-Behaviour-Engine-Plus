@@ -11,7 +11,8 @@ using System.Text;
 using System.Threading.Tasks;
 using NLog;
 using Pandora.API.Patch;
-using Pandora.API.Patch.Engine.Skyrim64;
+using Pandora.API.Patch.Skyrim64;
+using Pandora.API.Utils;
 using Pandora.Models.Patch.Skyrim64.Format.FNIS;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
@@ -21,38 +22,35 @@ public class ProjectManager : IProjectManager
 {
 	private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-	private Dictionary<string, Project> projectMap = new Dictionary<string, Project>(
+	private Dictionary<string, IProject> projectMap = new Dictionary<string, IProject>(
 		StringComparer.OrdinalIgnoreCase
 	);
-	private Dictionary<string, Project> fileProjectMap = new Dictionary<string, Project>(
+	private Dictionary<string, IProject> fileProjectMap = new Dictionary<string, IProject>(
 		StringComparer.OrdinalIgnoreCase
 	);
-	private Dictionary<string, Project> folderProjectMap = new Dictionary<string, Project>(
+	private Dictionary<string, IProject> folderProjectMap = new Dictionary<string, IProject>(
 		StringComparer.OrdinalIgnoreCase
 	);
-	private Dictionary<string, List<Project>> linkedProjectMap = new Dictionary<
+	private Dictionary<string, List<IProject>> linkedProjectMap = new Dictionary<
 		string,
-		List<Project>
+		List<IProject>
 	>(StringComparer.OrdinalIgnoreCase);
 
 	private const string VANILLA_PROJECTPATHS_FILENAME = "vanilla_projectpaths.txt";
 
-	private readonly DirectoryInfo templateFolder;
-	private DirectoryInfo baseOutputFolder;
-
+	private readonly IPathResolver _pathResolver;
 	private IPackFileCache packFileCache = new PackFileConcurrentCache();
 
-	private FNISParser fnisParser;
+	private readonly IFNISParser _fnisParser;
 
 	private bool CompleteExportSuccess = true;
 
-	public HashSet<PackFile> ActivePackFiles { get; private set; } = [];
+	public HashSet<IPackFile> ActivePackFiles { get; private set; } = [];
 
-	public ProjectManager(DirectoryInfo templateFolder, DirectoryInfo outputFolder)
+	public ProjectManager(IPathResolver skyrimPathResolver)
 	{
-		this.templateFolder = templateFolder;
-		baseOutputFolder = outputFolder;
-		fnisParser = new FNISParser(this, baseOutputFolder);
+		_pathResolver = skyrimPathResolver;
+		_fnisParser = new FNISParser(_pathResolver, this);
 	}
 
 	public void GetExportInfo(StringBuilder builder)
@@ -95,7 +93,7 @@ public class ProjectManager : IProjectManager
 	{
 		uint fnisModCount = 0;
 		builder.AppendLine();
-		foreach (IModInfo modInfo in fnisParser.ModInfos)
+		foreach (IModInfo modInfo in _fnisParser.ModInfos)
 		{
 			fnisModCount++;
 			builder.AppendLine($"FNIS Mod {fnisModCount} : {modInfo.Code}");
@@ -103,21 +101,15 @@ public class ProjectManager : IProjectManager
 		}
 	}
 
-	public bool TryGetProject(string name, [NotNullWhen(true)] out Project? project) =>
+	public bool TryGetProject(string name, [NotNullWhen(true)] out IProject? project) =>
 		projectMap.TryGetValue(name, out project);
-
-	public bool TryGetProjectEx(string name, [NotNullWhen(true)] out IProject? project)
-	{
-		project = TryGetProject(name, out var exProject) ? exProject as IProject : null;
-		return project != null;
-	}
 
 	public bool ProjectExists(string name) => projectMap.ContainsKey(name);
 
 	public void LoadTrackedProjects()
 	{
 		FileInfo projectList = new(
-			Path.Join(templateFolder.FullName, VANILLA_PROJECTPATHS_FILENAME)
+			Path.Join(_pathResolver.GetTemplateFolder().FullName, VANILLA_PROJECTPATHS_FILENAME)
 		);
 		string? expectedLine = null;
 		List<string> projectPaths = [];
@@ -159,7 +151,7 @@ public class ProjectManager : IProjectManager
 
 	public void LoadProjects(List<string> projectPaths)
 	{
-		Dictionary<string, Project> directoryProjectPaths = [];
+		Dictionary<string, IProject> directoryProjectPaths = [];
 		foreach (var projectPath in projectPaths)
 		{
 			var project = LoadProject(projectPath);
@@ -173,10 +165,9 @@ public class ProjectManager : IProjectManager
 			{
 				existingProject.Sibling = project;
 				project.Sibling = existingProject;
-				project.CharacterPackFile.uniqueAnimationLock = project
-					.Sibling
-					.CharacterPackFile
-					.uniqueAnimationLock;
+				project.CharacterPackFile.AttachUniqueAnimationLock(
+					project.Sibling.CharacterPackFile
+				);
 			}
 			else
 			{
@@ -188,7 +179,7 @@ public class ProjectManager : IProjectManager
 	public void LoadProjectsParallel(List<string> projectPaths)
 	{
 		packFileCache = new PackFileConcurrentCache();
-		ConcurrentDictionary<string, Project> directoryProjectPaths = new();
+		ConcurrentDictionary<string, IProject> directoryProjectPaths = new();
 		Partitioner<string> partitioner = Partitioner.Create(projectPaths, true);
 		ParallelOptions options = new() { MaxDegreeOfParallelism = Environment.ProcessorCount / 2 };
 		Parallel.ForEach(
@@ -207,10 +198,9 @@ public class ProjectManager : IProjectManager
 				{
 					existingProject.Sibling = project;
 					project.Sibling = existingProject;
-					project.CharacterPackFile.uniqueAnimationLock = project
-						.Sibling
-						.CharacterPackFile
-						.uniqueAnimationLock;
+					project.CharacterPackFile.AttachUniqueAnimationLock(
+						project.Sibling.CharacterPackFile
+					);
 				}
 				else
 				{
@@ -220,7 +210,7 @@ public class ProjectManager : IProjectManager
 		);
 	}
 
-	public Project? LoadProject(string projectFilePath)
+	public IProject? LoadProject(string projectFilePath)
 	{
 		if (string.IsNullOrWhiteSpace(projectFilePath))
 			return null;
@@ -228,7 +218,9 @@ public class ProjectManager : IProjectManager
 		lock (projectMap)
 		{
 			var project = Project.Load(
-				new FileInfo(Path.Join(templateFolder.FullName, projectFilePath)),
+				new FileInfo(
+					Path.Join(_pathResolver.GetTemplateFolder().FullName, projectFilePath)
+				),
 				packFileCache
 			);
 
@@ -239,10 +231,7 @@ public class ProjectManager : IProjectManager
 		}
 	}
 
-	public IProject? LoadProjectEx(string projectFilePath) =>
-		LoadProject(projectFilePath) as IProject;
-
-	public Project? LoadProjectHeader(string projectFilePath)
+	public IProject? LoadProjectHeader(string projectFilePath)
 	{
 		if (string.IsNullOrEmpty(projectFilePath))
 			return null;
@@ -250,7 +239,9 @@ public class ProjectManager : IProjectManager
 		{
 			var project = new Project(
 				packFileCache.LoadPackFile(
-					new FileInfo(Path.Join(templateFolder.FullName, projectFilePath))
+					new FileInfo(
+						Path.Join(_pathResolver.GetTemplateFolder().FullName, projectFilePath)
+					)
 				)
 			);
 
@@ -260,16 +251,10 @@ public class ProjectManager : IProjectManager
 		}
 	}
 
-	public IProject? LoadProjectHeaderEx(string projectFilePath) =>
-		LoadProjectHeader(projectFilePath) as IProject;
-
 	public bool TryLoadOutputPackFile<T>(IPackFile packFile, [NotNullWhen(true)] out T? outPackFile)
 		where T : class, IPackFile
 	{
-		var fileInfo =
-			BehaviourEngine.SkyrimGameDirectory != null
-				? packFile.GetOutputHandle(BehaviourEngine.SkyrimGameDirectory)
-				: packFile.OutputHandle;
+		var fileInfo = packFile.GetOutputHandle(_pathResolver.GetGameDataFolder());
 		if (!fileInfo.Exists)
 		{
 			outPackFile = default;
@@ -288,11 +273,7 @@ public class ProjectManager : IProjectManager
 	{
 		var fileInfo = new FileInfo(
 			Path.ChangeExtension(
-				(
-					BehaviourEngine.SkyrimGameDirectory != null
-						? packFile.GetOutputHandle(BehaviourEngine.SkyrimGameDirectory)
-						: packFile.OutputHandle
-				).FullName,
+				(packFile.GetOutputHandle(_pathResolver.GetGameDataFolder())).FullName,
 				extension
 			)
 		);
@@ -305,7 +286,7 @@ public class ProjectManager : IProjectManager
 		return true;
 	}
 
-	private void ExtractProject(Project project)
+	private void ExtractProject(IProject project)
 	{
 		lock (fileProjectMap)
 		{
@@ -321,19 +302,18 @@ public class ProjectManager : IProjectManager
 		}
 	}
 
-	private bool TryLookupNestedPackFile(string name, out PackFile? packFile)
+	private bool TryLookupNestedPackFile(string name, out IPackFile? packFile)
 	{
 		packFile = null;
 		string[] sections = name.Split('~');
-		Project project;
-		if (!projectMap.TryGetValue(sections[0], out project!))
+		if (!projectMap.TryGetValue(sections[0], out var project))
 		{
 			return false;
 		}
 		return project.TryLookupPackFile(name, out packFile);
 	}
 
-	private PackFile LookupNestedPackFile(string name)
+	private IPackFile LookupNestedPackFile(string name)
 	{
 		string[] sections = name.Split('~');
 
@@ -345,9 +325,7 @@ public class ProjectManager : IProjectManager
 	{
 		string[] sections = name.Split('~');
 
-		Project targetProject;
-
-		if (!projectMap.TryGetValue(sections[0], out targetProject!))
+		if (!projectMap.TryGetValue(sections[0], out var targetProject))
 			return false;
 
 		return targetProject.ContainsPackFile(sections[1]);
@@ -355,13 +333,12 @@ public class ProjectManager : IProjectManager
 
 	public bool ProjectLoaded(string name) => projectMap.ContainsKey(name);
 
-	public Project LookupProject(string name) => projectMap[name];
+	public IProject LookupProject(string name) => projectMap[name];
 
-	public bool TryLookupPackFile(string projectName, string packFileName, out PackFile? packFile)
+	public bool TryLookupPackFile(string projectName, string packFileName, out IPackFile? packFile)
 	{
 		packFile = null;
-		Project project;
-		if (!projectMap.TryGetValue(projectName, out project!))
+		if (!projectMap.TryGetValue(projectName, out var project))
 		{
 			return false;
 		}
@@ -376,7 +353,7 @@ public class ProjectManager : IProjectManager
 		return packFile != null;
 	}
 
-	public bool TryLookupPackFile(string name, out PackFile? packFile)
+	public bool TryLookupPackFile(string name, out IPackFile? packFile)
 	{
 		name = name.ToLower();
 		packFile = null;
@@ -384,8 +361,7 @@ public class ProjectManager : IProjectManager
 		{
 			return TryLookupNestedPackFile(name, out packFile);
 		}
-		Project project;
-		if (!fileProjectMap.TryGetValue(name, out project!))
+		if (!fileProjectMap.TryGetValue(name, out var project))
 		{
 			return false;
 		}
@@ -393,13 +369,7 @@ public class ProjectManager : IProjectManager
 		return project.TryLookupPackFile(name, out packFile);
 	}
 
-	public bool TryLookupPackFileEx(string name, out IPackFile? packFile)
-	{
-		packFile = TryLookupPackFile(name, out var exPackFile) ? exPackFile as IPackFile : null;
-		return packFile != null;
-	}
-
-	public bool TryLookupProjectFolder(string folderName, out Project? project)
+	public bool TryLookupProjectFolder(string folderName, out IProject? project)
 	{
 		return folderProjectMap.TryGetValue(folderName, out project);
 	}
@@ -412,7 +382,7 @@ public class ProjectManager : IProjectManager
 		return project != null;
 	}
 
-	public bool TryActivatePackFilePriority(string name, Project project, out PackFile? packFile)
+	public bool TryActivatePackFilePriority(string name, IProject project, out IPackFile? packFile)
 	{
 		packFile = null;
 		if (!project.TryLookupPackFile(name, out packFile))
@@ -433,7 +403,7 @@ public class ProjectManager : IProjectManager
 		return true;
 	}
 
-	public bool TryActivatePackFilePriority(string name, out PackFile? packFile)
+	public bool TryActivatePackFilePriority(string name, out IPackFile? packFile)
 	{
 		packFile = null;
 		if (!TryLookupPackFile(name, out packFile!))
@@ -454,7 +424,7 @@ public class ProjectManager : IProjectManager
 		return true;
 	}
 
-	public bool TryActivatePackFile(PackFile packFile)
+	public bool TryActivatePackFile(IPackFile packFile)
 	{
 		lock (ActivePackFiles)
 			lock (packFile)
@@ -466,9 +436,6 @@ public class ProjectManager : IProjectManager
 			}
 		return false;
 	}
-
-	public bool TryActivatePackFileEx(IPackFile packFile) =>
-		TryActivatePackFile((PackFile)packFile);
 
 	public bool ApplyPatches()
 	{
@@ -504,7 +471,7 @@ public class ProjectManager : IProjectManager
 				projectMap.Values,
 				project =>
 				{
-					fnisParser.ScanProjectAnimlist(project);
+					_fnisParser.ScanProjectAnimlist(project);
 				}
 			);
 		}
@@ -523,11 +490,5 @@ public class ProjectManager : IProjectManager
 		return true;
 	}
 
-	public void SetOutputPath(DirectoryInfo baseDirectory)
-	{
-		baseOutputFolder = baseDirectory;
-		fnisParser.SetOutputPath(baseDirectory);
-	}
-
-	public DirectoryInfo GetOutputDirectory() => baseOutputFolder;
+	public DirectoryInfo GetOutputDirectory() => _pathResolver.GetOutputFolder();
 }

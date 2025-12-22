@@ -5,8 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
 using System.Text.Json;
-using Pandora.API.Patch.Engine.Plugins;
-using Pandora.Models.Patch.Engine.Plugins;
+using Pandora.API.Patch.Plugins;
 
 namespace Pandora.Models.Patch.Plugins;
 

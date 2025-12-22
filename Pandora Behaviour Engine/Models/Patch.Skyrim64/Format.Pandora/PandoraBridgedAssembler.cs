@@ -3,6 +3,11 @@
 
 using System.IO;
 using Pandora.API.Patch;
+using Pandora.API.Patch.IOManagers;
+using Pandora.API.Patch.Skyrim64;
+using Pandora.API.Patch.Skyrim64.AnimData;
+using Pandora.API.Patch.Skyrim64.AnimSetData;
+using Pandora.API.Utils;
 using Pandora.Models.Patch.Skyrim64.AnimData;
 using Pandora.Models.Patch.Skyrim64.AnimSetData;
 using Pandora.Models.Patch.Skyrim64.Hkx.Changes;
@@ -15,10 +20,19 @@ public class PandoraBridgedAssembler
 	private PandoraAssembler assembler;
 
 	public PandoraBridgedAssembler(
-		ProjectManager projManager,
-		AnimSetDataManager animSDManager,
-		AnimDataManager animDManager
-	) => assembler = new PandoraAssembler(projManager, animSDManager, animDManager);
+		IPathResolver pathResolver,
+		IMetaDataExporter<IPackFile> exporter,
+		IProjectManager projManager,
+		IAnimSetDataManager animSDManager,
+		IAnimDataManager animDManager
+	) =>
+		assembler = new PandoraAssembler(
+			pathResolver,
+			exporter,
+			projManager,
+			animSDManager,
+			animDManager
+		);
 
 	public void TryGraphInjection(
 		DirectoryInfo folder,

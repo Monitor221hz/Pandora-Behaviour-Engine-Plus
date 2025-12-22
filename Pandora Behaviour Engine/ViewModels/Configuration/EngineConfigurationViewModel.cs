@@ -3,6 +3,7 @@
 
 using System.Collections.ObjectModel;
 using System.Reactive;
+using Pandora.API.Patch.Config;
 using Pandora.API.Patch.Engine.Config;
 using ReactiveUI;
 
@@ -16,9 +17,7 @@ public partial class EngineConfigurationViewModel
 	private readonly IEngineConfigurationFactory engineConfigurationFactory;
 	public IEngineConfigurationFactory Factory => engineConfigurationFactory;
 
-	public string Name => engineConfigurationFactory.Name;
-
-	public IEngineConfiguration? Config => engineConfigurationFactory.Config;
+	public string Name { get; init; }
 
 	public ObservableCollection<IEngineConfigurationViewModel> NestedViewModels { get; } = [];
 
@@ -26,10 +25,17 @@ public partial class EngineConfigurationViewModel
 
 	public EngineConfigurationViewModel(
 		IEngineConfigurationFactory factory,
+		string name,
 		ReactiveCommand<IEngineConfigurationFactory, Unit> setCommand
 	)
 	{
 		engineConfigurationFactory = factory;
+		Name = name;
 		SetCommand = setCommand;
+	}
+
+	public IEngineConfiguration? Create()
+	{
+		return engineConfigurationFactory.Create();
 	}
 }

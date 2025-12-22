@@ -1,19 +1,19 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
+using System;
+using Pandora.API.Patch;
+using Pandora.API.Patch.Config;
 using Pandora.API.Patch.Engine.Config;
+using Pandora.Models.Patch.Configs;
 
-namespace Pandora.ViewModels;
+namespace Pandora.ViewModels.Configuration;
 
-public class ConstEngineConfigurationFactory<T> : IEngineConfigurationFactory
-	where T : class, IEngineConfiguration, new()
+public class ConstEngineConfigurationFactory<T>(Func<T> producer) : IEngineConfigurationFactory<T>
+	where T : class, IEngineConfiguration
 {
-	public ConstEngineConfigurationFactory(string name)
-	{
-		Name = name;
-	}
+	private readonly Func<T> _producer = producer;
+	public string Name { get; } = $"Const Configuration Factory ({nameof(T)})";
 
-	public string Name { get; set; }
-
-	public IEngineConfiguration? Config => new T();
+	public IEngineConfiguration? Create() => _producer();
 }

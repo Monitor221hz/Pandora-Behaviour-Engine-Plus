@@ -5,50 +5,48 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using NLog;
+using Pandora.API.Patch.Skyrim64.AnimSetData;
+using Pandora.API.Utils;
 using Pandora.Models.Extensions;
 
 namespace Pandora.Models.Patch.Skyrim64.AnimSetData;
 
-public class AnimSetDataManager
+public class AnimSetDataManager : IAnimSetDataManager
 {
 	private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
 	private const string ANIMSETDATA_FILENAME = "animationsetdatasinglefile.txt";
 	private const string VANILLA_HKXPATHS_FILENAME = "vanilla_hkxpaths.txt";
 
-	private DirectoryInfo templateFolder;
-	private DirectoryInfo outputMeshFolder;
+	private readonly IPathResolver _pathResolver;
 
-	public FileInfo TemplateAnimSetDataSingleFile =>
-		new(Path.Join(templateFolder.FullName, ANIMSETDATA_FILENAME));
-	public FileInfo OutputAnimSetDataSingleFile =>
-		new(Path.Join(outputMeshFolder.FullName, ANIMSETDATA_FILENAME));
+	public FileInfo TemplateAnimSetDataSingleFile { get; }
+	public FileInfo OutputAnimSetDataSingleFile { get; }
 
-	private FileInfo vanillaHkxFiles;
+	private readonly FileInfo _vanillaHkxFiles;
 
 	private HashSet<string> vanillaAnimationPaths = new HashSet<string>(
 		StringComparer.OrdinalIgnoreCase
 	);
 
 	private IList<string> projectPaths = [];
-	private IList<ProjectAnimSetData> animSetDataList = [];
+	private readonly IList<IProjectAnimSetData> animSetDataList = [];
 
-	public Dictionary<string, ProjectAnimSetData> AnimSetDataMap { get; private set; } = [];
+	public Dictionary<string, IProjectAnimSetData> AnimSetDataMap { get; private set; } = [];
 
-	public AnimSetDataManager(DirectoryInfo templateFolder, DirectoryInfo outputMeshFolder)
+	public AnimSetDataManager(IPathResolver pathResolver)
 	{
-		this.templateFolder = templateFolder;
+		_pathResolver = pathResolver;
 
-		vanillaHkxFiles = new FileInfo(
-			Path.Join(templateFolder.FullName, VANILLA_HKXPATHS_FILENAME)
+		_vanillaHkxFiles = new FileInfo(
+			Path.Join(pathResolver.GetTemplateFolder().FullName, VANILLA_HKXPATHS_FILENAME)
 		);
-
-		this.outputMeshFolder = outputMeshFolder;
-	}
-
-	public void SetOutputPath(DirectoryInfo outputMeshFolder)
-	{
-		this.outputMeshFolder = outputMeshFolder;
+		TemplateAnimSetDataSingleFile = new(
+			Path.Join(_pathResolver.GetTemplateFolder().FullName, ANIMSETDATA_FILENAME)
+		);
+		OutputAnimSetDataSingleFile = new(
+			Path.Join(_pathResolver.GetTemplateFolder().FullName, ANIMSETDATA_FILENAME)
+		);
 	}
 
 	public bool SplitAnimSetDataSingleFile()

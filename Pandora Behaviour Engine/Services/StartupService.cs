@@ -3,7 +3,6 @@
 
 using Pandora.API.ModManager;
 using Pandora.Logging;
-using Pandora.Models;
 using Pandora.Models.Patch.Plugins;
 using Pandora.Utils;
 

@@ -18,7 +18,10 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using DynamicData;
 using DynamicData.Binding;
-using Pandora.API.Patch.Engine.Config;
+using Pandora.API;
+using Pandora.API.Patch.Config;
+using Pandora.API.Services;
+using Pandora.API.Utils;
 using Pandora.Data;
 using Pandora.Logging;
 using Pandora.Models;
@@ -35,10 +38,13 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 {
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-	private static readonly EngineConfigurationService _configService = new();
+	private readonly IEngineConfigurationService _configService;
 
-	private static DirectoryInfo DataOrCurrentDirectory =>
-		BehaviourEngine.SkyrimGameDirectory ?? BehaviourEngine.CurrentDirectory;
+	private readonly IDiskDialogService _diskDialogService;
+
+	private readonly IPathResolver _pathResolver;
+
+	private readonly IModLoader _modLoader;
 
 	[BindableDerivedList]
 	private readonly ReadOnlyObservableCollection<ModInfoViewModel> _modViewModels;
@@ -73,9 +79,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 	[ObservableAsProperty(ReadOnly = false)]
 	private bool _engineRunning;
 
-	public static string OutputFolderUri => PandoraPaths.OutputPath.FullName;
-
-	public BehaviourEngine Engine { get; private set; } = new BehaviourEngine();
+	public IBehaviourEngine Engine { get; private set; }
 	public DataGridOptionsViewModel DataGridOptions { get; } = new();
 	public Interaction<AboutDialogViewModel, Unit> ShowAboutDialog { get; } = new();
 	public SettingsViewModel SettingsApp { get; } = new();
@@ -85,13 +89,25 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 	[];
 	public ObservableCollectionExtended<ModInfoViewModel> SourceMods { get; } = [];
 
-	public EngineViewModel()
+	public EngineViewModel(
+		IModLoader modLoader,
+		IPathResolver pathResolver,
+		IEngineConfigurationService configService,
+		IDiskDialogService diskDialogService,
+		IBehaviourEngine engine
+	)
 	{
 		var startup = StartupService.Handle(LaunchOptions.Current);
-
+		Engine = engine;
+		_modLoader = modLoader;
+		_pathResolver = pathResolver;
+		_configService = configService;
+		_diskDialogService = diskDialogService;
 		_autoRun = startup.AutoRun;
 		_autoClose = startup.AutoClose;
-		_isOutputFolderCustomSet = startup.IsCustomSet;
+		_isOutputFolderCustomSet =
+			startup.IsCustomSet
+			|| !_pathResolver.GetOutputFolder().Equals(_pathResolver.GetAssemblyFolder());
 		_outputDirectoryMessage = startup.Message;
 
 		_configService.Initialize(startup.UseSkyrimDebug64, SetEngineConfigCommand);
@@ -147,9 +163,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 			{
 				var factory = _configService.CurrentFactory;
 
-				Engine = new BehaviourEngine()
-					.SetConfiguration(factory.Config)
-					.SetOutputPath(PandoraPaths.OutputPath);
+				Engine = new BehaviourEngine(_pathResolver, factory.Create());
 
 				_preloadTask = Engine.PreloadAsync();
 				await _preloadTask.ConfigureAwait(false);
@@ -161,8 +175,8 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		}
 		catch (Exception ex)
 		{
-			logger.Error(ex, "Preload failed.");
-			EngineLoggerAdapter.AppendLine("Error: Preload failed. See logs for details.");
+			logger.Error($"Preload failed: {ex.ToString()}");
+			EngineLoggerAdapter.AppendLine($"Error: Preload failed. See logs for details.");
 		}
 		finally
 		{
@@ -181,12 +195,12 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 			};
 			var uniqueDirectories = new List<DirectoryInfo>
 			{
-				BehaviourEngine.AssemblyDirectory,
-				BehaviourEngine.CurrentDirectory,
-				DataOrCurrentDirectory,
+				_pathResolver.GetAssemblyFolder(),
+				_pathResolver.GetCurrentFolder(),
+				_pathResolver.GetGameDataFolder(),
 			};
 
-			var loadModsTask = ModLoader.LoadModsVMAsync(
+			var loadModsTask = _modLoader.LoadModsVMAsync(
 				SourceMods,
 				uniqueDirectories,
 				modProviders
@@ -267,7 +281,10 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 			mainWindow?.SetVisualState(WindowVisualState.Idle);
 			mainWindow?.FlashUntilFocused();
 
-			await JsonModSettingsStore.SaveAsync(SourceMods, PandoraPaths.ActiveModsFile.FullName);
+			await JsonModSettingsStore.SaveAsync(
+				SourceMods,
+				_pathResolver.GetActiveModsFile().FullName
+			);
 
 			if (
 				Application.Current?.ApplicationLifetime
@@ -308,7 +325,6 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 				$"Launch finished in {timer.Elapsed.TotalSeconds:F2} seconds."
 			);
 			await HandleLaunchResultAsync(success, mainWindow);
-
 			_ = PreloadEngineAsync();
 		}
 		finally
@@ -339,6 +355,45 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 	}
 
 	[ReactiveCommand]
+	private async Task PickGameDirectory()
+	{
+		var file = await _diskDialogService.OpenFileAsync("Select Game Executable (.exe)", "*.exe");
+		if (file == null || !file.Exists)
+			return;
+		var folder = file.Directory;
+		if (folder == null || !folder.Exists)
+			return;
+		switch (file.Name.ToLowerInvariant())
+		{
+			case "skyrimse.exe":
+			case "skyrimvr.exe":
+			case "skyrimselauncher.exe":
+				_pathResolver.SetGameDataFolder(
+					new DirectoryInfo(Path.Join(folder.FullName, "Data"))
+				);
+				break;
+			default:
+				EngineLoggerAdapter.AppendLine(
+					"Warning: The selected executable does not appear to be Skyrim 64."
+				);
+				break;
+		}
+		_pathResolver.SavePathsConfiguration();
+	}
+
+	[ReactiveCommand]
+	private async Task PickOutputDirectory()
+	{
+		var folder = await _diskDialogService.OpenFolderAsync("Select Output Directory");
+		if (folder == null || !folder.Exists)
+			return;
+		_pathResolver.SetOutputFolder(folder);
+		_isOutputFolderCustomSet = true;
+		OutputDirectoryMessage = $"Custom output directory set to {folder.FullName}";
+		_pathResolver.SavePathsConfiguration();
+	}
+
+	[ReactiveCommand]
 	private async Task ShowAboutDialogAsync() =>
 		await ShowAboutDialog.Handle(new AboutDialogViewModel());
 
@@ -362,4 +417,6 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 
 		ModUtils.SetModsActiveState(SourceMods, check);
 	}
+
+	public string OutputFolderUri => _pathResolver.GetOutputFolder().FullName;
 }

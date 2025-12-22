@@ -11,12 +11,14 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HKX2E;
 using Pandora.API.Patch;
+using Pandora.API.Patch.Skyrim64;
+using Pandora.API.Utils;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 using Pandora.Patch.Patchers.Skyrim.FNIS;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
 
-public class FNISParser
+public class FNISParser : IFNISParser
 {
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -112,6 +114,8 @@ public class FNISParser
 		"defaultmale",
 		"defaultfemale",
 	};
+
+	private readonly IPathResolver _pathResolver;
 	private readonly HashSet<PackFile> parsedBehaviorFiles = [];
 	private readonly HashSet<Project> skipAnimlistProjects = [];
 	private readonly Dictionary<string, FNISAnimationList> animListFileMap = new(
@@ -119,22 +123,21 @@ public class FNISParser
 	);
 
 	private readonly HashSet<string> parsedFiles = new(StringComparer.OrdinalIgnoreCase) { };
-	private DirectoryInfo outputDirectory;
 	public HashSet<IModInfo> ModInfos { get; private set; } = [];
 
-	public FNISParser(ProjectManager manager, DirectoryInfo outputPath)
+	public FNISParser(IPathResolver pathResolver, IProjectManager manager)
 	{
-		outputDirectory = outputPath;
+		_pathResolver = pathResolver;
 		projectManager = manager;
 	}
 
-	private ProjectManager projectManager;
+	private IProjectManager projectManager;
 
 	private void ProcessFNISAnimationsHumanoid(
 		DirectoryInfo modFolder,
 		DirectoryInfo behaviorFolder,
-		Project project,
-		ProjectManager projectManager
+		IProject project,
+		IProjectManager projectManager
 	)
 	{
 		if (
@@ -157,8 +160,8 @@ public class FNISParser
 		string creatureName,
 		DirectoryInfo modFolder,
 		DirectoryInfo behaviorFolder,
-		Project project,
-		ProjectManager projectManager
+		IProject project,
+		IProjectManager projectManager
 	)
 	{
 		if (
@@ -176,7 +179,7 @@ public class FNISParser
 		}
 	}
 
-	public void ScanProjectAnimations(Project project, DirectoryInfo absoluteOutputDirectory)
+	public void ScanProjectAnimations(IProject project, DirectoryInfo absoluteOutputDirectory)
 	{
 		//lock (skipAnimlistProjects)
 		//{
@@ -268,11 +271,11 @@ public class FNISParser
 		);
 	}
 
-	public void ScanProjectAnimlist(Project project)
+	public void ScanProjectAnimlist(IProject project)
 	{
 		var currentDirectory = new DirectoryInfo(
 			Path.Join(
-				BehaviourEngine.SkyrimGameDirectory.FullName,
+				_pathResolver.GetGameDataFolder().FullName,
 				project.ProjectFile.RelativeOutputDirectoryPath
 			)
 		);
@@ -316,7 +319,7 @@ public class FNISParser
 
 	private static bool TryFindAnimlistHumanoid(
 		DirectoryInfo folder,
-		Project project,
+		IProject project,
 		[NotNullWhen(true)] out FileInfo? animListFile
 	)
 	{
@@ -327,7 +330,7 @@ public class FNISParser
 	private static bool TryFindAnimlistCreature(
 		string creatureName,
 		DirectoryInfo folder,
-		Project project,
+		IProject project,
 		[NotNullWhen(true)] out FileInfo? animListFile
 	)
 	{
@@ -357,7 +360,7 @@ public class FNISParser
 		//return true;
 	}
 
-	private bool InjectGraphReference(FileInfo sourceFile, PackFileGraph destPackFile)
+	private bool InjectGraphReference(FileInfo sourceFile, IPackFileGraph destPackFile)
 	{
 		lock (parsedFiles)
 		{
@@ -403,8 +406,8 @@ public class FNISParser
 
 	private void ParseAnimlist(
 		FileInfo animListFile,
-		Project project,
-		ProjectManager projectManager
+		IProject project,
+		IProjectManager projectManager
 	)
 	{
 		lock (parsedFiles)
@@ -438,10 +441,5 @@ public class FNISParser
 		{
 			ModInfos.Add(animList.ModInfo);
 		}
-	}
-
-	public void SetOutputPath(DirectoryInfo outputPath)
-	{
-		outputDirectory = outputPath;
 	}
 }

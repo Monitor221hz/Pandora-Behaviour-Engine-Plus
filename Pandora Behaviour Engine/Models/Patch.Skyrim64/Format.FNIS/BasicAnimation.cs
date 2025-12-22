@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using HKX2E;
+using Pandora.API.Patch.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
@@ -136,8 +137,8 @@ public partial class BasicAnimation : IFNISAnimation
 	}
 
 	public virtual void BuildFlags(
-		FNISAnimationListBuildContext buildContext,
-		PackFileGraph graph,
+		IFNISAnimationListBuildContext buildContext,
+		IPackFileGraph graph,
 		hkbStateMachineStateInfo stateInfo,
 		hkbClipGenerator clip
 	)
@@ -244,7 +245,7 @@ public partial class BasicAnimation : IFNISAnimation
 		}
 	}
 
-	public virtual void BuildAnimation(Project project, ProjectManager projectManager)
+	public virtual void BuildAnimation(IProject project, IProjectManager projectManager)
 	{
 		if (project.Sibling != null)
 		{
@@ -254,7 +255,7 @@ public partial class BasicAnimation : IFNISAnimation
 		project.CharacterPackFile.AddUniqueAnimation(AnimationFilePath);
 	}
 
-	public virtual bool BuildBehavior(FNISAnimationListBuildContext buildContext)
+	public virtual bool BuildBehavior(IFNISAnimationListBuildContext buildContext)
 	{
 		//var project = buildContext.TargetProject;
 		//var projectManager = buildContext.ProjectManager;

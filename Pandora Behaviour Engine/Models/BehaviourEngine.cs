@@ -5,25 +5,24 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Abstractions;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Pandora.API;
 using Pandora.API.Patch;
+using Pandora.API.Patch.Config;
 using Pandora.API.Patch.Engine.Config;
+using Pandora.API.Utils;
 using Pandora.Models.Patch.Configs;
 using Pandora.Models.Patch.Plugins;
-using Pandora.Utils;
-using Pandora.Utils.Platform.Windows;
-using Pandora.Utils.Skyrim;
-using Testably.Abstractions;
 
 namespace Pandora.Models;
 
-public class BehaviourEngine
+public class BehaviourEngine : IBehaviourEngine
 {
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 	private static readonly PluginLoader pluginLoader = new();
+
+	private readonly IPathResolver _pathResolver;
 
 	/// <summary>
 	/// Gets the real file system path to the folder containing the running executable.
@@ -36,43 +35,22 @@ public class BehaviourEngine
 	);
 
 	public static readonly DirectoryInfo CurrentDirectory = new(Environment.CurrentDirectory!);
-	public static readonly DirectoryInfo SkyrimGameDirectory;
 	public static readonly List<IEngineConfigurationPlugin> EngineConfigurations = [];
 
 	public bool IsExternalOutput = false;
 
-	public IEngineConfiguration Configuration { get; private set; } = new SkyrimConfiguration();
-	public static DirectoryInfo OutputPath { get; private set; } =
-		new(Environment.CurrentDirectory);
+	public IEngineConfiguration Configuration { get; private set; }
 
-	static BehaviourEngine()
+	public BehaviourEngine(IPathResolver skyrimPathResolver, IEngineConfiguration configuration)
 	{
+		_pathResolver = skyrimPathResolver;
+		Configuration = configuration;
 		PluginManager.LoadAllPlugins(AssemblyDirectory);
-		var runtimeEnvironment = new PandoraRuntimeEnvironment();
-		var registry = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-			? new WindowsRegistry()
-			: null;
-		var fileSystem = new RealFileSystem();
-		var skyrimPathResolver = new SkyrimPathResolver(runtimeEnvironment, registry, fileSystem);
-
-		IDirectoryInfo abstractSkyrimDir = skyrimPathResolver.Resolve();
-
-		SkyrimGameDirectory = new DirectoryInfo(abstractSkyrimDir.FullName);
 	}
 
-	public BehaviourEngine() { }
-
-	public BehaviourEngine SetOutputPath(DirectoryInfo outputPath)
+	public IBehaviourEngine SetConfiguration(IEngineConfiguration? configuration)
 	{
-		OutputPath = outputPath!;
-		IsExternalOutput = CurrentDirectory != OutputPath;
-		Configuration.Patcher.SetOutputPath(outputPath);
-		return this;
-	}
-
-	public BehaviourEngine SetConfiguration(IEngineConfiguration? configuration)
-	{
-		Configuration = configuration ?? new SkyrimConfiguration();
+		Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 		return this;
 	}
 
@@ -82,8 +60,8 @@ public class BehaviourEngine
 		logger.Info($"Launching with patcher version {Configuration.Patcher.GetVersionString()}");
 		Configuration.Patcher.SetTarget(mods);
 
-		if (!OutputPath.Exists)
-			OutputPath.Create();
+		if (!_pathResolver.GetOutputFolder().Exists)
+			_pathResolver.GetOutputFolder().Create();
 
 		if (!await Configuration.Patcher.UpdateAsync())
 			return false;

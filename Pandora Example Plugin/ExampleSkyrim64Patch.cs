@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Pandora.API.Patch;
-using Pandora.API.Patch.Engine.Skyrim64;
+using Pandora.API.Patch.Skyrim64;
 
 namespace ExamplePlugin;
 
@@ -19,9 +19,9 @@ public class ExampleSkyrim64Patch : ISkyrim64Patch
 
     public void Run(IProjectManager projectManager)
     {
-        if (projectManager.TryGetProjectEx("defaultmale", out var ex))
+        if (projectManager.TryGetProject("defaultmale", out var ex))
         {
-            var characterPackFile = ex!.GetCharacterPackFile()!;
+            var characterPackFile = ex!.CharacterPackFile!;
             characterPackFile.AddUniqueAnimation("exampleanimation");
         }
     }

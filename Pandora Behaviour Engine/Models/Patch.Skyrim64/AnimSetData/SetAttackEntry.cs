@@ -5,11 +5,12 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
+using Pandora.API.Patch.Skyrim64.AnimSetData;
 using Pandora.Models.Extensions;
 
 namespace Pandora.Models.Patch.Skyrim64.AnimSetData;
 
-public class SetAttackEntry
+public class SetAttackEntry : ISetAttackEntry
 {
 	public SetAttackEntry(string attackTrigger, int unk, int numClips, IList<string> clipNames)
 	{
@@ -27,7 +28,7 @@ public class SetAttackEntry
 
 	public IList<string> ClipNames { get; private set; } = ["attackClip"];
 
-	public static bool TryRead(StreamReader reader, [NotNullWhen(true)] out SetAttackEntry? entry)
+	public static bool TryRead(StreamReader reader, [NotNullWhen(true)] out ISetAttackEntry? entry)
 	{
 		entry = null;
 		if (
@@ -48,7 +49,7 @@ public class SetAttackEntry
 			clips[i] = value;
 		}
 
-		entry = new(attackTrigger, unk, numClips, clips);
+		entry = new SetAttackEntry(attackTrigger, unk, numClips, clips);
 		return true;
 	}
 

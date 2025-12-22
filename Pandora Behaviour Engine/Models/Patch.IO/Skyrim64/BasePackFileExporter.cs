@@ -6,26 +6,28 @@ using System.Collections.Generic;
 using System.IO;
 using NLog;
 using Pandora.API.Patch.IOManagers;
+using Pandora.API.Patch.Skyrim64;
+using Pandora.API.Utils;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 using Pandora.Utils;
 
 namespace Pandora.Models.Patch.IO.Skyrim64;
 
-public abstract class BasePackFileExporter : IMetaDataExporter<PackFile>
+public abstract class BasePackFileExporter : IMetaDataExporter<IPackFile>
 {
-	protected static readonly FileInfo PreviousOutputFile = PandoraPaths.PreviousOutputFile;
 	protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-	public DirectoryInfo ExportDirectory { get; set; }
+	private IPathResolver _pathResolver;
+	protected FileInfo PreviousOutputFile => _pathResolver.GetPreviousOutputFile();
 
-	protected BasePackFileExporter()
+	protected BasePackFileExporter(IPathResolver pathResolver)
 	{
-		ExportDirectory = PandoraPaths.OutputPath;
+		_pathResolver = pathResolver;
 	}
 
-	public abstract bool Export(PackFile packFile);
+	public abstract bool Export(IPackFile packFile);
 
-	public virtual PackFile Import(FileInfo file) => throw new NotImplementedException();
+	public virtual IPackFile Import(FileInfo file) => throw new NotImplementedException();
 
 	public virtual void LoadMetaData()
 	{
@@ -68,7 +70,7 @@ public abstract class BasePackFileExporter : IMetaDataExporter<PackFile>
 		}
 	}
 
-	public virtual void SaveMetaData(IEnumerable<PackFile> packFiles)
+	public virtual void SaveMetaData(IEnumerable<IPackFile> packFiles)
 	{
 		PreviousOutputFile.Directory?.Create();
 
@@ -91,5 +93,10 @@ public abstract class BasePackFileExporter : IMetaDataExporter<PackFile>
 				}
 			}
 		}
+	}
+
+	public DirectoryInfo GetExportDirectory()
+	{
+		return _pathResolver.GetOutputFolder();
 	}
 }

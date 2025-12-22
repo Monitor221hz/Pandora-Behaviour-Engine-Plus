@@ -2,7 +2,6 @@
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
 using System;
-using System.Collections.Generic;
 using System.CommandLine;
 using System.IO;
 using System.Linq;
