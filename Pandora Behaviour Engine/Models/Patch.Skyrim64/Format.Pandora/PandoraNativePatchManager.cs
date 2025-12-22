@@ -8,8 +8,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Pandora.API.Patch;
-using Pandora.API.Patch.Engine.Skyrim64;
-using Pandora.Models.Patch.Engine.Plugins;
+using Pandora.API.Patch.Plugins;
+using Pandora.API.Patch.Skyrim64;
 using Pandora.Models.Patch.Plugins;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.Pandora;

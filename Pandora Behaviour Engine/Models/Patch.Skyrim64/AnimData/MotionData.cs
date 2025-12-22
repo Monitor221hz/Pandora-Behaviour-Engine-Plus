@@ -6,23 +6,23 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Pandora.API.Patch.Engine.Skyrim64.AnimData;
+using Pandora.API.Patch.Skyrim64.AnimData;
 
 namespace Pandora.Models.Patch.Skyrim64.AnimData;
 
 public class MotionData : IMotionData
 {
 	public MotionData(
-		IList<ClipMotionDataBlock> blocks,
-		Dictionary<int, ClipMotionDataBlock> blocksByID
+		IList<IClipMotionDataBlock> blocks,
+		Dictionary<int, IClipMotionDataBlock> blocksByID
 	)
 	{
 		Blocks = blocks;
 		BlocksByID = blocksByID;
 	}
 
-	public IList<ClipMotionDataBlock> Blocks { get; private set; } = [];
-	public Dictionary<int, ClipMotionDataBlock> BlocksByID { get; private set; } = [];
+	public IList<IClipMotionDataBlock> Blocks { get; private set; } = [];
+	public Dictionary<int, IClipMotionDataBlock> BlocksByID { get; private set; } = [];
 
 	public bool TryGetBlock(int id, [NotNullWhen(true)] out IClipMotionDataBlock? block)
 	{
@@ -34,7 +34,7 @@ public class MotionData : IMotionData
 
 	public IList<IClipMotionDataBlock> GetBlocks() => Blocks.Cast<IClipMotionDataBlock>().ToList();
 
-	public void AddClipMotionData(ClipMotionDataBlock block)
+	public void AddClipMotionData(IClipMotionDataBlock block)
 	{
 		lock (Blocks)
 		{
@@ -53,14 +53,14 @@ public class MotionData : IMotionData
 	public static bool TryReadProject(
 		StreamReader reader,
 		int lineLimit,
-		[NotNullWhen(true)] out MotionData? motionData
+		[NotNullWhen(true)] out IMotionData? motionData
 	)
 	{
 		motionData = null;
 		lineLimit -= 1;
 		string? whitespace = string.Empty;
-		List<ClipMotionDataBlock> blocks = [];
-		Dictionary<int, ClipMotionDataBlock> blocksById = [];
+		List<IClipMotionDataBlock> blocks = [];
+		Dictionary<int, IClipMotionDataBlock> blocksById = [];
 		while (whitespace != null && lineLimit > 0)
 		{
 			if (
@@ -77,7 +77,7 @@ public class MotionData : IMotionData
 			whitespace = reader.ReadLine();
 			lineLimit--;
 		}
-		motionData = new(blocks, blocksById);
+		motionData = new MotionData(blocks, blocksById);
 		return true;
 	}
 

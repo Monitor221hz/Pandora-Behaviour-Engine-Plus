@@ -7,13 +7,13 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using HKX2E;
-using Pandora.API.Patch.Engine.Skyrim64;
+using Pandora.API.Patch.Skyrim64;
 
 namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
 public class PackFileCharacter : PackFile, IEquatable<PackFileCharacter>, IPackFileCharacter
 {
-	public PackFileCharacter(FileInfo file, Project? project)
+	public PackFileCharacter(FileInfo file, IProject? project)
 		: base(file, project)
 	{
 		Load();
@@ -34,7 +34,18 @@ public class PackFileCharacter : PackFile, IEquatable<PackFileCharacter>, IPackF
 	private HashSet<string> uniqueBaseAnimations = new(StringComparer.OrdinalIgnoreCase);
 	private HashSet<string> uniqueAnimations = new(StringComparer.OrdinalIgnoreCase);
 
-	public object uniqueAnimationLock = new();
+	private object _uniqueAnimationLock = new();
+
+	public object GetUniqueAnimationLock()
+	{
+		return _uniqueAnimationLock;
+	}
+
+	public object AttachUniqueAnimationLock(IPackFileCharacter character)
+	{
+		_uniqueAnimationLock = character.GetUniqueAnimationLock();
+		return _uniqueAnimationLock;
+	}
 
 	private void CacheUniqueBaseAnimations()
 	{
@@ -59,7 +70,7 @@ public class PackFileCharacter : PackFile, IEquatable<PackFileCharacter>, IPackF
 		PopObjectAsXml(StringData);
 	}
 
-	public override void ApplyPriorityChanges(PackFileDispatcher dispatcher)
+	public override void ApplyPriorityChanges(IPackFileDispatcher dispatcher)
 	{
 		base.ApplyPriorityChanges(dispatcher);
 		dispatcher.ApplyChangesForNode(Data, this);
@@ -102,5 +113,10 @@ public class PackFileCharacter : PackFile, IEquatable<PackFileCharacter>, IPackF
 			return true;
 		}
 		return false;
+	}
+
+	public bool Equals(IPackFileCharacter? other)
+	{
+		return base.Equals(other);
 	}
 }

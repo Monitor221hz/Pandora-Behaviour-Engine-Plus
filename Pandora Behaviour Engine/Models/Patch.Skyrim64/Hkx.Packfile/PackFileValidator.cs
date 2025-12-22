@@ -7,12 +7,12 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using HKX2E;
-using Pandora.Models.Patch.Skyrim64.Hkx.Changes;
+using Pandora.API.Patch.Skyrim64;
 using XmlCake.Linq;
 
 namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
-public class PackFileValidator
+public class PackFileValidator : IPackFileValidator
 {
 	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -66,7 +66,7 @@ public class PackFileValidator
 		return index;
 	}
 
-	public bool ValidateEventsAndVariables(PackFileGraph graph)
+	public bool ValidateEventsAndVariables(IPackFileGraph graph)
 	{
 		var initialEventNames = graph.StringData.eventNames.ToArray();
 		var initialEventInfos = graph.Data.eventInfos.ToArray();
@@ -245,7 +245,7 @@ public class PackFileValidator
 		}
 	}
 
-	public void Validate(PackFile packFile, params ReadOnlySpan<List<IPackFileChange>> changeLists)
+	public void Validate(IPackFile packFile, params ReadOnlySpan<List<IPackFileChange>> changeLists)
 	{
 		//if (!ValidateEventsAndVariables(packFile)) return;
 

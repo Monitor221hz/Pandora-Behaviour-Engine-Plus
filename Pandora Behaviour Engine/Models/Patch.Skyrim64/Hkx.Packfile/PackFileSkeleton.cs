@@ -5,13 +5,13 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using HKX2E;
-using Pandora.API.Patch.Engine.Skyrim64;
+using Pandora.API.Patch.Skyrim64;
 
 namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
 public class PackFileSkeleton : PackFile, IPackFileSkeleton
 {
-	public PackFileSkeleton(FileInfo file, Project? project)
+	public PackFileSkeleton(FileInfo file, IProject? project)
 		: base(file, project)
 	{
 		Load();
@@ -108,5 +108,10 @@ public class PackFileSkeleton : PackFile, IPackFileSkeleton
 		{
 			PushXmlAsObject(skeletonMapper);
 		}
+	}
+
+	public bool Equals(IPackFileSkeleton? other)
+	{
+		return base.Equals(other);
 	}
 }

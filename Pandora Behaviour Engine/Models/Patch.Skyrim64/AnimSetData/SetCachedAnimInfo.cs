@@ -4,10 +4,11 @@
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
+using Pandora.API.Patch.Skyrim64.AnimSetData;
 
 namespace Pandora.Models.Patch.Skyrim64.AnimSetData;
 
-public class SetCachedAnimInfo
+public class SetCachedAnimInfo : ISetCachedAnimInfo
 {
 	public const uint ENCODED_EXTENSION_DEFAULT = 7891816;
 	public const uint ENCODED_PATH_VANILLA = 3064642194;
@@ -22,13 +23,18 @@ public class SetCachedAnimInfo
 		EncodedExtension = encodedExtension;
 	}
 
+	public SetCachedAnimInfo() { }
+
 	public SetCachedAnimInfo(uint encodedPath, uint encodedFileName)
 		: this(encodedPath, encodedFileName, ENCODED_EXTENSION_DEFAULT) { }
 
 	public SetCachedAnimInfo(uint encodedFileName)
 		: this(ENCODED_PATH_VANILLA, encodedFileName, ENCODED_EXTENSION_DEFAULT) { }
 
-	public static bool TryRead(StreamReader reader, [NotNullWhen(true)] out SetCachedAnimInfo? info)
+	public static bool TryRead(
+		StreamReader reader,
+		[NotNullWhen(true)] out ISetCachedAnimInfo? info
+	)
 	{
 		info = null;
 		if (
@@ -39,17 +45,15 @@ public class SetCachedAnimInfo
 		{
 			return false;
 		}
-		info = new(encodedPath, encodedFileName, encodedExtension);
+		info = new SetCachedAnimInfo(encodedPath, encodedFileName, encodedExtension);
 		return true;
 	}
 
-	public static SetCachedAnimInfo Encode(string folderPath, string fileName) //filename without extension
+	public ISetCachedAnimInfo Encode(string folderPath, string fileName) //filename without extension
 	{
-		var animInfo = new SetCachedAnimInfo(
-			BSCRC32.GetValueUInt32(folderPath.ToLower()),
-			BSCRC32.GetValueUInt32(fileName.ToLower())
-		);
-		return animInfo;
+		EncodedPath = BSCRC32.GetValueUInt32(folderPath.ToLower());
+		EncodedFileName = BSCRC32.GetValueUInt32(fileName.ToLower());
+		return this;
 	}
 
 	public override string ToString()

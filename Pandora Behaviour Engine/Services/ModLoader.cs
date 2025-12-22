@@ -9,19 +9,20 @@ using System.Threading.Tasks;
 using DynamicData.Binding;
 using NLog;
 using Pandora.API.Patch;
+using Pandora.API.Utils;
 using Pandora.Data;
 using Pandora.Logging;
-using Pandora.Models;
 using Pandora.Utils;
 using Pandora.ViewModels;
 
 namespace Pandora.Services;
 
-public static class ModLoader
+public class ModLoader(IPathResolver pathResolver) : IModLoader
 {
+	private readonly IPathResolver _pathResolver = pathResolver;
 	private static readonly NLog.Logger logger = LogManager.GetCurrentClassLogger();
 
-	public static async Task<HashSet<IModInfo>> LoadModsAsync(
+	public async Task<HashSet<IModInfo>> LoadModsAsync(
 		IEnumerable<IModInfoProvider> providers,
 		IEnumerable<DirectoryInfo> directories
 	)
@@ -59,7 +60,7 @@ public static class ModLoader
 		return modInfos;
 	}
 
-	public static async Task LoadModsVMAsync(
+	public async Task LoadModsVMAsync(
 		ObservableCollectionExtended<ModInfoViewModel> mods,
 		IEnumerable<DirectoryInfo> directories,
 		IEnumerable<IModInfoProvider> providers
@@ -75,7 +76,10 @@ public static class ModLoader
 		var modInfos = await LoadModsAsync(providers, uniqueDirectories);
 		var modViewModels = modInfos.Select(m => new ModInfoViewModel(m)).ToList();
 
-		await JsonModSettingsStore.ApplyAsync(modViewModels, PandoraPaths.ActiveModsFile.FullName);
+		await JsonModSettingsStore.ApplyAsync(
+			modViewModels,
+			_pathResolver.GetActiveModsFile().FullName
+		);
 
 		mods.AddRange(modViewModels);
 		EngineLoggerAdapter.AppendLine($"Mods loaded.");

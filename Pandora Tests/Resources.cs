@@ -14,10 +14,19 @@ public static class Resources
         Path.Combine(Environment.CurrentDirectory, "Output")
     );
     public static readonly DirectoryInfo CurrentDirectory = new(Environment.CurrentDirectory);
+    public static readonly DirectoryInfo DataDirectory = new(
+        Path.Combine(Environment.CurrentDirectory, "Data")
+    );
+
+    public static readonly DirectoryInfo OutputMeshDirectory = new DirectoryInfo(
+        Path.Combine(Resources.OutputDirectory.FullName, "meshes")
+    );
 
     static Resources()
     {
         OutputDirectory.Create();
         TemplateDirectory.Create();
+        DataDirectory.Create();
+        OutputMeshDirectory.Create();
     }
 }

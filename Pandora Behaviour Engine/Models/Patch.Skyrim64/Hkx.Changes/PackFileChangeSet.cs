@@ -7,7 +7,7 @@ using System.Linq;
 using System.Xml.Linq;
 using NLog;
 using Pandora.API.Patch;
-using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
+using Pandora.API.Patch.Skyrim64;
 
 namespace Pandora.Models.Patch.Skyrim64.Hkx.Changes;
 
@@ -67,7 +67,7 @@ public class PackFileChangeSet : IPackFileChangeOwner
 		}
 	}
 
-	public static void ApplyInOrder(PackFile packFile, List<PackFileChangeSet> changeSetList)
+	public static void ApplyInOrder(IPackFile packFile, List<IPackFileChangeOwner> changeSetList)
 	{
 		foreach (ChangeType changeType in orderedChangeTypes)
 		{
@@ -80,8 +80,8 @@ public class PackFileChangeSet : IPackFileChangeOwner
 
 	public static void ApplyForNode(
 		string nodeName,
-		PackFile packFile,
-		List<PackFileChangeSet> changeSetList
+		IPackFile packFile,
+		List<IPackFileChangeOwner> changeSetList
 	)
 	{
 		foreach (var changeSet in changeSetList)
@@ -90,7 +90,7 @@ public class PackFileChangeSet : IPackFileChangeOwner
 		}
 	}
 
-	public void ApplyInOrder(PackFile packFile)
+	public void ApplyInOrder(IPackFile packFile)
 	{
 		foreach (var changeType in orderedChangeTypes)
 		{
@@ -98,7 +98,7 @@ public class PackFileChangeSet : IPackFileChangeOwner
 		}
 	}
 
-	public void ApplyForNode(string nodeName, PackFile packFile)
+	public void ApplyForNode(string nodeName, IPackFile packFile)
 	{
 		if (!nodeScopedChangeMap.TryGetValue(nodeName, out var changeTypedMap))
 		{
@@ -121,7 +121,7 @@ public class PackFileChangeSet : IPackFileChangeOwner
 		}
 	}
 
-	public void ApplyForType(PackFile packFile, ChangeType changeType)
+	public void ApplyForType(IPackFile packFile, ChangeType changeType)
 	{
 		foreach (var changeTypedMap in nodeScopedChangeMap.Values)
 		{
@@ -138,7 +138,7 @@ public class PackFileChangeSet : IPackFileChangeOwner
 		}
 	}
 
-	public void Apply(PackFile packFile)
+	public void Apply(IPackFile packFile)
 	{
 		foreach (ChangeType changeType in orderedChangeTypes)
 		{
@@ -158,7 +158,7 @@ public class PackFileChangeSet : IPackFileChangeOwner
 		}
 	}
 
-	public void Validate(PackFile packFile, PackFileValidator validator)
+	public void Validate(IPackFile packFile, IPackFileValidator validator)
 	{
 		foreach (ChangeType changeType in orderedChangeTypes)
 		{

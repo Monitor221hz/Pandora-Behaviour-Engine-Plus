@@ -4,12 +4,13 @@
 using System;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using Pandora.API.Patch.Skyrim64;
 using Pandora.Models.Extensions;
 using XmlCake.Linq;
 
 namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
-public partial class PackFileEditor
+public partial class PackFileEditor : IPackFileEditor
 {
 	private static readonly char[] trimChars = ['\t', '\r', '\n', ')', '('];
 

@@ -5,11 +5,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using HKX2E;
+using Pandora.API.Patch.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.Hkx.Changes;
 
 namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
-public class PackFileDispatcher
+public class PackFileDispatcher : IPackFileDispatcher
 {
 	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -17,55 +18,55 @@ public class PackFileDispatcher
 
 	private List<IPackFileChange> textChanges { get; set; } = [];
 
-	private List<PackFileChangeSet> changeSets { get; set; } = [];
+	private List<IPackFileChangeOwner> changeOwners { get; set; } = [];
 
-	private PackFileValidator packFileValidator { get; set; } = new PackFileValidator();
+	private IPackFileValidator packFileValidator { get; set; } = new PackFileValidator();
 
-	public void TrackPotentialNode(PackFile packFile, string nodeName, XElement element)
+	public void TrackPotentialNode(IPackFile packFile, string nodeName, XElement element)
 	{
 		packFile.XmlDeserializer.Collect(nodeName, element);
 		packFileValidator.TrackElement(element);
 	}
 
-	public void AddChangeSet(PackFileChangeSet changeSet)
+	public void AddChangeSet(IPackFileChangeOwner changeOwner)
 	{
-		lock (changeSets)
+		lock (changeOwners)
 		{
-			changeSets.Add(changeSet);
+			changeOwners.Add(changeOwner);
 		}
 	}
 
 	public void SortChangeSets()
 	{
-		changeSets = changeSets.OrderBy(s => s.Origin.Priority).ToList();
+		changeOwners = changeOwners.OrderBy(s => s.Origin.Priority).ToList();
 	}
 
-	public void ApplyChangesForNode(IHavokObject obj, PackFile packFile)
+	public void ApplyChangesForNode(IHavokObject obj, IPackFile packFile)
 	{
 		if (!packFile.Serializer.TryGetName(obj, out var nodeName))
 		{
 			return;
 		}
-		PackFileChangeSet.ApplyForNode(nodeName, packFile, changeSets);
+		PackFileChangeSet.ApplyForNode(nodeName, packFile, changeOwners);
 	}
 
-	public void ApplyChanges(PackFile packFile)
+	public void ApplyChanges(IPackFile packFile)
 	{
 		SortChangeSets();
 		packFile.ApplyPriorityChanges(this);
 		packFile.PushPriorityObjects();
 		packFile.Load();
 		bool isGraph = false;
-		if (packFile is PackFileGraph graph)
+		if (packFile is IPackFileGraph graph)
 		{
 			isGraph = true;
 			packFileValidator.ValidateEventsAndVariables(graph);
 		}
-		PackFileChangeSet.ApplyInOrder(packFile, changeSets);
+		PackFileChangeSet.ApplyInOrder(packFile, changeOwners);
 		packFileValidator.ValidateTrackedElements();
 		if (isGraph)
 		{
-			foreach (var changeSet in changeSets)
+			foreach (var changeSet in changeOwners)
 			{
 				changeSet.Validate(packFile, packFileValidator);
 			}

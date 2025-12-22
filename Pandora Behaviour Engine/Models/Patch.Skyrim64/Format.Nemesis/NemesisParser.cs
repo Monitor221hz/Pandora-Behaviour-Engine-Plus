@@ -9,8 +9,8 @@ using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using Pandora.API.Patch;
+using Pandora.API.Patch.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.Hkx.Changes;
-using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 using XmlCake.Linq;
 using XmlCake.Linq.Expressions;
 
@@ -35,7 +35,7 @@ public class NemesisParser
 	public static void ParseReplaceEdit(
 		string nodeName,
 		XMatch match,
-		PackFileChangeSet changeSet,
+		IPackFileChangeOwner changeSet,
 		XPathLookup lookup
 	)
 	{
@@ -175,7 +175,7 @@ public class NemesisParser
 	public static void ParseInsertEdit(
 		string nodeName,
 		XMatch match,
-		PackFileChangeSet changeSet,
+		IPackFileChangeOwner changeSet,
 		XPathLookup lookup
 	)
 	{
@@ -276,7 +276,7 @@ public class NemesisParser
 	public static bool MatchReplacePattern(
 		string nodeName,
 		IEnumerable<XNode> nodes,
-		PackFileChangeSet changeSet,
+		IPackFileChangeOwner changeSet,
 		XPathLookup lookup
 	)
 	{
@@ -293,7 +293,7 @@ public class NemesisParser
 	public static bool MatchInsertPattern(
 		string nodeName,
 		IEnumerable<XNode> nodes,
-		PackFileChangeSet changeSet,
+		IPackFileChangeOwner changeSet,
 		XPathLookup lookup
 	)
 	{
@@ -308,7 +308,7 @@ public class NemesisParser
 	}
 
 	public static PackFileChangeSet ParsePackFileChanges(
-		PackFile packFile,
+		IPackFile packFile,
 		IModInfo modInfo,
 		DirectoryInfo folder
 	)

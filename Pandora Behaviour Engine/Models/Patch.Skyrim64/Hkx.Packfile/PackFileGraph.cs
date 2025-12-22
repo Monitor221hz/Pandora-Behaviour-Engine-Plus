@@ -7,11 +7,11 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using HKX2E;
-using Pandora.API.Patch.Engine.Skyrim64;
+using Pandora.API.Patch.Skyrim64;
 
 namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
-public class PackFileGraph : PackFile, IPackFileGraph, IEquatable<PackFileGraph>
+public class PackFileGraph : PackFile, IEquatable<PackFileGraph>, IPackFileGraph
 {
 	public uint InitialEventCount { get; private set; } = 0;
 	public uint InitialVariableCount { get; private set; } = 0;
@@ -34,7 +34,7 @@ public class PackFileGraph : PackFile, IPackFileGraph, IEquatable<PackFileGraph>
 		StringComparer.OrdinalIgnoreCase
 	);
 
-	public PackFileGraph(FileInfo file, Project? project)
+	public PackFileGraph(FileInfo file, IProject? project)
 		: base(file, project)
 	{
 		Load();
@@ -55,7 +55,7 @@ public class PackFileGraph : PackFile, IPackFileGraph, IEquatable<PackFileGraph>
 		VariableValueSet = Data.variableInitialValues!;
 	}
 
-	public override void ApplyPriorityChanges(PackFileDispatcher dispatcher)
+	public override void ApplyPriorityChanges(IPackFileDispatcher dispatcher)
 	{
 		dispatcher.ApplyChangesForNode(Data, this);
 		dispatcher.ApplyChangesForNode(StringData, this);
@@ -144,6 +144,11 @@ public class PackFileGraph : PackFile, IPackFileGraph, IEquatable<PackFileGraph>
 			}
 		}
 		return index;
+	}
+
+	public bool Equals(IPackFileGraph? other)
+	{
+		return base.Equals(other);
 	}
 
 	public bool Equals(PackFileGraph? other)

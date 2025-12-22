@@ -4,49 +4,49 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Pandora.API.Patch.Skyrim64;
+using Pandora.API.Patch.Skyrim64.AnimData;
+using Pandora.API.Utils;
 
 namespace Pandora.Models.Patch.Skyrim64.AnimData;
 
-public class AnimDataManager
+public class AnimDataManager : IAnimDataManager
 {
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 	private const string ANIMDATA_FILENAME = "animationdatasinglefile.txt";
 
 	private HashSet<int> usedClipIDs = [];
-	public int numClipIDs { get; private set; } = 0;
+	public int NumClipIDs { get; private set; } = 0;
 
 	private List<string> projectNames = [];
 	private Dictionary<string, Dictionary<int, int>> MotionBlockIndexes { get; set; } = [];
-	private List<ProjectAnimData> animDataList { get; set; } = [];
-	private List<MotionData> motionDataList { get; set; } = [];
+	private List<IProjectAnimData> animDataList { get; set; } = [];
+	private List<IMotionData> motionDataList { get; set; } = [];
 
-	private DirectoryInfo templateFolder;
-	private DirectoryInfo outputMeshFolder;
+	private readonly IPathResolver _pathResolver;
 
-	public FileInfo OutputAnimDataSingleFile =>
-		new(Path.Join(outputMeshFolder.FullName, ANIMDATA_FILENAME));
-	public FileInfo TemplateAnimDataSingleFile =>
-		new(Path.Join(templateFolder.FullName, ANIMDATA_FILENAME));
+	public FileInfo OutputAnimDataSingleFile { get; }
+	public FileInfo TemplateAnimDataSingleFile { get; }
 
 	private int LastID { get; set; } = 32767;
 
-	public AnimDataManager(DirectoryInfo templateFolder, DirectoryInfo outputMeshFolder)
+	public AnimDataManager(IPathResolver pathResolver)
 	{
-		this.templateFolder = templateFolder;
-		this.outputMeshFolder = outputMeshFolder;
-	}
-
-	public void SetOutputPath(DirectoryInfo outputMeshFolder)
-	{
-		this.outputMeshFolder = outputMeshFolder;
+		_pathResolver = pathResolver;
+		OutputAnimDataSingleFile = new(
+			Path.Join(_pathResolver.GetOutputMeshFolder().FullName, ANIMDATA_FILENAME)
+		);
+		TemplateAnimDataSingleFile = new(
+			Path.Join(_pathResolver.GetTemplateFolder().FullName, ANIMDATA_FILENAME)
+		);
 	}
 
 	private void MapProjectAnimData(ProjectAnimData animData)
 	{
-		foreach (ClipDataBlock block in animData.Blocks)
+		foreach (string clipId in animData.GetClipIDs())
 		{
-			usedClipIDs.Add(int.Parse(block.ClipID));
+			usedClipIDs.Add(int.Parse(clipId));
 		}
 	}
 
@@ -68,7 +68,7 @@ public class AnimDataManager
 		return LastID;
 	}
 
-	public void SplitAnimDataSingleFile(ProjectManager projectManager)
+	public void SplitAnimDataSingleFile(IProjectManager projectManager)
 	{
 		LastID = 32767;
 
@@ -87,9 +87,9 @@ public class AnimDataManager
 					logger.Info(
 						$"Reading TemplateAnimData file {TemplateAnimDataSingleFile.Name}, found {NumProjects} projects."
 					);
-					Project? activeProject = null;
-					ProjectAnimData? animData = null;
-					MotionData? motionData;
+					IProject? activeProject = null;
+					IProjectAnimData? animData = null;
+					IMotionData? motionData;
 					while ((expectedLine = reader.ReadLine()) != null)
 					{
 						if (expectedLine.Contains(".txt"))

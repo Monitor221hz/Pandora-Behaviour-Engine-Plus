@@ -5,8 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using Pandora.API.Patch.Engine.Config;
-using Pandora.Models.Patch.Engine.Plugins;
+using Pandora.API.Patch.Config;
+using Pandora.API.Patch.Plugins;
 
 namespace Pandora.Models.Patch.Plugins;
 

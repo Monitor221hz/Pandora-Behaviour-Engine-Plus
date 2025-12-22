@@ -9,8 +9,7 @@ using System.Linq;
 using System.Xml.Linq;
 using HKX2E;
 using HKX2E.Mapper;
-using Pandora.API.Patch.Engine.Skyrim64;
-using Pandora.Utils;
+using Pandora.API.Patch.Skyrim64;
 using XmlCake.Linq;
 
 namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
@@ -55,9 +54,9 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 
 	public static bool DebugFiles { get; set; } = false;
 
-	public PackFileEditor Editor { get; private set; } = new PackFileEditor();
+	public IPackFileEditor Editor { get; private set; } = new PackFileEditor();
 
-	public PackFileDispatcher Dispatcher { get; private set; } = new PackFileDispatcher();
+	public IPackFileDispatcher Dispatcher { get; private set; } = new PackFileDispatcher();
 
 	public bool ExportSuccess { get; private set; } = true;
 
@@ -71,7 +70,7 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 
 	public IEnumerable<XElement> IndexedElements => objectElementMap.Values;
 
-	public Project? ParentProject
+	public IProject? ParentProject
 	{
 		get => parentProject;
 		set
@@ -80,16 +79,13 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 			UniqueName = $"{ParentProject?.Identifier}~{Name}";
 		}
 	}
-
-	public IProject GetProject() => ParentProject as IProject;
-
 	protected ILookup<string, XElement>? classLookup = null;
 	public int NodeCount => classLookup == null ? 0 : classLookup.Count;
 
 	private bool active = false;
-	private Project? parentProject;
+	private IProject? parentProject;
 
-	public PackFile(FileInfo file, Project? project)
+	public PackFile(FileInfo file, IProject? project)
 	{
 		InputHandle = file;
 		OutputHandle = file;
@@ -296,7 +292,7 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 		}
 	}
 
-	public virtual void ApplyPriorityChanges(PackFileDispatcher dispatcher) { }
+	public virtual void ApplyPriorityChanges(IPackFileDispatcher dispatcher) { }
 
 	public virtual void PushPriorityObjects() { }
 
@@ -330,6 +326,16 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 				InputHandle.FullName,
 				StringComparison.OrdinalIgnoreCase
 			);
+	}
+
+	public bool Equals(IPackFile? other)
+	{
+		if (other == null)
+			return false;
+		return other.InputHandle.FullName.Equals(
+			InputHandle.FullName,
+			StringComparison.OrdinalIgnoreCase
+		);
 	}
 
 	public override int GetHashCode()

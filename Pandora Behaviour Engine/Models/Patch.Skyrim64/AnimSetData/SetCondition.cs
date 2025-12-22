@@ -4,11 +4,12 @@
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
+using Pandora.API.Patch.Skyrim64.AnimSetData;
 using Pandora.Models.Extensions;
 
 namespace Pandora.Models.Patch.Skyrim64.AnimSetData;
 
-public class SetCondition
+public class SetCondition : ISetCondition
 {
 	public SetCondition(string variableName, int value1, int value2)
 	{
@@ -23,7 +24,10 @@ public class SetCondition
 
 	public int Value2 { get; private set; } = 0;
 
-	public static bool TryRead(StreamReader reader, [NotNullWhen(true)] out SetCondition? condition)
+	public static bool TryRead(
+		StreamReader reader,
+		[NotNullWhen(true)] out ISetCondition? condition
+	)
 	{
 		condition = null;
 		if (
@@ -34,7 +38,7 @@ public class SetCondition
 		{
 			return false;
 		}
-		condition = new(variableName, value1, value2);
+		condition = new SetCondition(variableName, value1, value2);
 		return true;
 	}
 

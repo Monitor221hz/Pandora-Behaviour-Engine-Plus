@@ -2,6 +2,7 @@
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
 using HKX2E;
+using Pandora.API.Patch.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
 namespace PandoraTests;
@@ -15,8 +16,8 @@ public class PackFileAssert
     /// <param name="sibling"></param>
     /// <returns></returns>
     public static void ValidSiblingAnimations(
-        PackFileCharacter character,
-        PackFileCharacter sibling
+        IPackFileCharacter character,
+        IPackFileCharacter sibling
     )
     {
         for (int i = 0; i < character.AnimationNames.Count; i++)
@@ -29,7 +30,7 @@ public class PackFileAssert
         }
     }
 
-    public static void ValidPackFile(PackFileGraph graph)
+    public static void ValidPackFile(IPackFileGraph graph)
     {
         Assert.NotEmpty(graph.Container.namedVariants);
 
@@ -40,7 +41,7 @@ public class PackFileAssert
         HavokAssert.NotNullValid(root);
     }
 
-    public static void ValidPackFile(PackFileCharacter character)
+    public static void ValidPackFile(IPackFileCharacter character)
     {
         Assert.NotNull(character.ParentProject);
 
@@ -53,19 +54,19 @@ public class PackFileAssert
         }
     }
 
-    public static void ValidPackFile(PackFileSkeleton skeleton) { }
+    public static void ValidPackFile(IPackFileSkeleton skeleton) { }
 
-    public static void DowncastValidPackFile(PackFile packFile)
+    public static void DowncastValidPackFile(IPackFile packFile)
     {
         switch (packFile)
         {
-            case PackFileSkeleton skeleton:
+            case IPackFileSkeleton skeleton:
                 ValidPackFile(skeleton);
                 break;
-            case PackFileGraph graph:
+            case IPackFileGraph graph:
                 ValidPackFile(graph);
                 break;
-            case PackFileCharacter character:
+            case IPackFileCharacter character:
                 ValidPackFile(character);
                 break;
             default:
