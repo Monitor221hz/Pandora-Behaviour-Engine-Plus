@@ -34,9 +34,6 @@ public class AnimDataManager : IAnimDataManager
 	public AnimDataManager(IPathResolver pathResolver)
 	{
 		_pathResolver = pathResolver;
-		OutputAnimDataSingleFile = new(
-			Path.Join(_pathResolver.GetOutputMeshFolder().FullName, ANIMDATA_FILENAME)
-		);
 		TemplateAnimDataSingleFile = new(
 			Path.Join(_pathResolver.GetTemplateFolder().FullName, ANIMDATA_FILENAME)
 		);
@@ -184,16 +181,19 @@ public class AnimDataManager : IAnimDataManager
 	{
 		try
 		{
+			var outputAnimDataSingleFile = new FileInfo(
+				Path.Join(_pathResolver.GetOutputMeshFolder().FullName, ANIMDATA_FILENAME)
+			);
 			if (
-				OutputAnimDataSingleFile.Directory != null
-				&& !OutputAnimDataSingleFile.Directory.Exists
+				outputAnimDataSingleFile.Directory != null
+				&& !outputAnimDataSingleFile.Directory.Exists
 			)
 			{
-				OutputAnimDataSingleFile.Directory.Create();
+				outputAnimDataSingleFile.Directory.Create();
 				logger.Debug($"Created directory for OutputAnimData output");
 			}
 
-			using (var writeStream = OutputAnimDataSingleFile.Create())
+			using (var writeStream = outputAnimDataSingleFile.Create())
 			using (var writer = new StreamWriter(writeStream))
 			{
 				writer.WriteLine(projectNames.Count);
