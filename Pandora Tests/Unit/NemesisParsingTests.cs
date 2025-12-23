@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Linq;
 using NSubstitute;
 using Pandora.API.Patch;
+using Pandora.API.Patch.Skyrim64;
 using Pandora.Models.Patch.Mod;
 using Pandora.Models.Patch.Skyrim64.Format.Nemesis;
 using Pandora.Models.Patch.Skyrim64.Hkx.Changes;
@@ -178,6 +179,65 @@ namespace PandoraTests.Unit
         }
 
         [Fact]
-        public void ParseInsertEdit_WhenEditElements_AddsA
+        public void ParseInsertEdit_WhenEditElements_AddsAppendChange()
+        {
+            string nodeName = "#0069";
+            var match = new XMatch([
+                new XComment("OPEN"),
+                new XElement("NewElement"),
+                new XComment("CLOSE"),
+            ]);
+            IPackFileChangeOwner changeSet = Substitute.For<IPackFileChangeOwner>();
+            var lookup = Substitute.For<IXPathLookup>();
+            lookup.LookupPath(Arg.Any<XNode>()).Returns("#0069/property");
+            NemesisParser.ParseInsertEdit(nodeName, match, changeSet, lookup);
+            changeSet.Received().AddChange(Arg.Any<AppendElementChange>());
+        }
+
+        [Fact]
+        public void ParseInsertEdit_WhenEditText_AddsInsertChange()
+        {
+            string nodeName = "#0069";
+            var element = new XElement(
+                "property",
+                new XText("Some preceding text "),
+                new XComment("OPEN"),
+                new XText("NewText"),
+                new XComment("CLOSE"),
+                new XText("Some other text")
+            );
+            var children = element.Nodes().ToList();
+            var match = new XMatch([children[1], children[2], children[3]]);
+            IPackFileChangeOwner changeSet = Substitute.For<IPackFileChangeOwner>();
+            var lookup = Substitute.For<IXPathLookup>();
+            NemesisParser.ParseInsertEdit(nodeName, match, changeSet, lookup);
+            changeSet.Received().AddChange(Arg.Any<InsertTextChange>());
+        }
+
+        [Fact]
+        public void ParseInsertEdit_WhenEditTextWithReplaceEdit_AddsInsertChange()
+        {
+            string nodeName = "#0069";
+            var element = new XElement(
+                "element",
+                new XText("Some preceding text "),
+                new XComment("OPEN"),
+                new XText("NewText"),
+                new XComment("ORIGINAL"),
+                new XText("OldText"),
+                new XComment("CLOSE"),
+                new XText(" Some following text"),
+                new XComment("OPEN"),
+                new XText("Another NewText"),
+                new XComment("CLOSE"),
+                new XText(" Some following text")
+            );
+            var children = element.Nodes().ToList();
+            var match = new XMatch([children[7], children[8], children[9]]);
+            IPackFileChangeOwner changeSet = Substitute.For<IPackFileChangeOwner>();
+            var lookup = Substitute.For<IXPathLookup>();
+            NemesisParser.ParseInsertEdit(nodeName, match, changeSet, lookup);
+            changeSet.Received().AddChange(Arg.Any<InsertTextChange>());
+        }
     }
 }
