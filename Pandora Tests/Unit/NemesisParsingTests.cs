@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Linq;
+using DynamicData;
 using NSubstitute;
 using Pandora.API.Patch;
 using Pandora.API.Patch.Skyrim64;
