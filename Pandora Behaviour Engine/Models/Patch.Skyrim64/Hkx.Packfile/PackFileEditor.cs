@@ -11,7 +11,7 @@ using XmlCake.Linq;
 
 namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
-public partial class PackFileEditor : IPackFileEditor
+public partial class PackFileEditor
 {
 	private static readonly char[] trimChars = ['\t', '\r', '\n', ')', '('];
 
@@ -55,7 +55,7 @@ public partial class PackFileEditor : IPackFileEditor
 	public static bool ReplaceText(
 		IXMap xmap,
 		string path,
-		string preValue,
+		int skipChars,
 		string oldValue,
 		string newValue
 	)
@@ -64,42 +64,34 @@ public partial class PackFileEditor : IPackFileEditor
 		if (string.IsNullOrWhiteSpace(oldValue))
 			return false;
 
-		string source = NormalizeElementValue(element);
-		//if (String.IsNullOrWhiteSpace(newValue))
-		//{
-
-		//	int index = source.IndexOf(oldValue, StringComparison.Ordinal);
-		//	newValue = (index < 0) ? source : source.Remove(index, oldValue.Length);
-		//	element.SetValue(newValue);
-		//	return true;
-		//}
-		//preValue = NormalizeStringValue(preValue);
-		//oldValue = NormalizeStringValue(oldValue);
-		oldValue = WhiteSpaceRegex.Replace(EscapeRegex.Replace(oldValue, "\\$&"), "\\s*");
-
-		//ReadOnlySpan<char> headSpan = source.AsSpan(0, preValue.Length);
-		//ReadOnlySpan<char> tailSpan = source.AsSpan(preValue.Length+oldValue.Length+1);
-
-		Regex targetRegex = new(oldValue);
-		int targetMatchIndex = targetRegex.Count(preValue);
-		int matchIndex = -1;
-		for (var match = targetRegex.Match(source); match.Success; match = match.NextMatch())
-		{
-			matchIndex++;
-			if (matchIndex == targetMatchIndex)
-			{
-				source = string.Concat(
-					source.AsSpan(0, match.Index),
-					newValue,
-					source.AsSpan(match.Index + match.Length)
-				);
-				break;
-			}
-		}
-		if (matchIndex == -1)
+		var source = NormalizeElementValue(element);
+		if (string.IsNullOrWhiteSpace(source) || skipChars >= source.Length)
 		{
 			return false;
 		}
+		var tail = source.AsSpan(skipChars);
+		var head = source.AsSpan(0, skipChars);
+
+		var replaceIndex = tail.IndexOf(oldValue, StringComparison.Ordinal);
+		if (replaceIndex == -1)
+		{
+			return false;
+		}
+		// A B C D E F G H I
+		// 0 1 2 3 4 5 6 7 8
+
+		// replace EF with Z
+		// skipChars = 4
+		// head = ABCD
+		// tail = EFGHI
+
+		// replaceIndex = 0
+		source = String.Concat(
+			head,
+			(replaceIndex > 0 ? tail.Slice(0, replaceIndex) : string.Empty.AsSpan()),
+			newValue,
+			tail.Slice(replaceIndex + oldValue.Length)
+		);
 		element.SetValue(source);
 
 		return true;
@@ -112,23 +104,28 @@ public partial class PackFileEditor : IPackFileEditor
 		return true;
 	}
 
-	public static bool InsertText(IXMap xmap, string path, string markerValue, string newValue)
+	public static bool InsertText(IXMap xmap, string path, int index, string newValue)
 	{
 		XElement element = xmap.NavigateTo(path);
 		string source = NormalizeElementValue(element);
 
-		markerValue = NormalizeStringValue(markerValue);
-		var match = Regex.Match(source, markerValue);
-		if (!match.Success)
+		if (string.IsNullOrWhiteSpace(source) || index >= source.Length)
 		{
 			return false;
 		}
-		source = string.Concat(source.AsSpan(0, match.Index), newValue, source.AsSpan(match.Index));
+		var tail = source.AsSpan(index);
+		var head = source.AsSpan(0, index);
+		// A B C D E F G H I
+		// 0 1 2 3 4 5 6 7 8
 
-		//var headSpan = source.AsSpan(0,markerValue.Length);
-		//var tailSpan = source.AsSpan(markerValue.Length + 1);
+		// insert Z at index 7 (H)
+		// index = 8
+		// head = ABCDEFGH
+		// tail = I
+
+		// replaceIndex = 0
+		source = String.Concat(head, newValue, " ".AsSpan(), tail);
 		element.SetValue(source);
-
 		return true;
 	}
 
@@ -142,15 +139,30 @@ public partial class PackFileEditor : IPackFileEditor
 		element.SetValue(source);
 	}
 
-	public static void RemoveText(IXMap xmap, string path, string value, uint findFrom)
+	public static bool RemoveText(IXMap xmap, string path, string value, int findFrom)
 	{
 		XElement element = xmap.NavigateTo(path);
 		if (string.IsNullOrWhiteSpace(value))
-			return;
-		string source = element.Value;
-		source = NormalizeStringValue(
-			source.Substring((int)findFrom).Replace(value, string.Empty, true)
+			return false;
+		string source = NormalizeElementValue(element);
+		if (string.IsNullOrWhiteSpace(source) || findFrom >= source.Length)
+		{
+			return false;
+		}
+		var head = source.AsSpan(0, findFrom);
+		var tail = source.AsSpan(findFrom);
+		var removeIndex = tail.IndexOf(value, StringComparison.Ordinal);
+		if (removeIndex < 0)
+		{
+			return false;
+		}
+		source = String.Concat(
+			head,
+			(removeIndex > 0 ? tail.Slice(0, removeIndex) : string.Empty.AsSpan()),
+			tail.Slice(removeIndex + value.Length)
 		);
 		element.SetValue(source);
+
+		return true;
 	}
 }
