@@ -44,9 +44,6 @@ public class AnimSetDataManager : IAnimSetDataManager
 		TemplateAnimSetDataSingleFile = new(
 			Path.Join(_pathResolver.GetTemplateFolder().FullName, ANIMSETDATA_FILENAME)
 		);
-		OutputAnimSetDataSingleFile = new(
-			Path.Join(_pathResolver.GetTemplateFolder().FullName, ANIMSETDATA_FILENAME)
-		);
 	}
 
 	public bool SplitAnimSetDataSingleFile()
@@ -118,16 +115,19 @@ public class AnimSetDataManager : IAnimSetDataManager
 	{
 		try
 		{
+			var outputAnimSetDataSingleFile = new FileInfo(
+				Path.Join(_pathResolver.GetTemplateFolder().FullName, ANIMSETDATA_FILENAME)
+			);
 			if (
-				OutputAnimSetDataSingleFile.Directory != null
-				&& !OutputAnimSetDataSingleFile.Directory.Exists
+				outputAnimSetDataSingleFile.Directory != null
+				&& !outputAnimSetDataSingleFile.Directory.Exists
 			)
 			{
-				OutputAnimSetDataSingleFile.Directory.Create();
+				outputAnimSetDataSingleFile.Directory.Create();
 				Logger.Debug($"Created directory for OutputAnimSetData output");
 			}
 
-			using (var writeStream = OutputAnimSetDataSingleFile.Create())
+			using (var writeStream = outputAnimSetDataSingleFile.Create())
 			using (var writer = new StreamWriter(writeStream))
 			{
 				writer.WriteLine(projectPaths.Count);
