@@ -38,7 +38,7 @@ public static class Resources
                 "hkparam",
                 new XAttribute("name", "generators"),
                 new XAttribute("numelements", "5"),
-                new XText("#0001\n#0002\n#0003\n#0004\n#0005\n#0005\n#0005")
+                new XText("#0001 #0002 #0003 #0004 #0005 #0005 #0005")
             ),
             new XElement(
                 "hkparam",

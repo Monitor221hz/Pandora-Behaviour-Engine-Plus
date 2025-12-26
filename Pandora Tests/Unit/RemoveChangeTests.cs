@@ -89,7 +89,7 @@ public class RemoveChangeTests
         Assert.False(change.Apply(packFile));
         var elements = mapElement.Elements();
         var generatorsValue = elements.First(e => e.Attribute("name")?.Value == "generators").Value;
-        Assert.Contains("#0005\n#0005\n#0005", generatorsValue);
+        Assert.Contains("#0005 #0005 #0005", generatorsValue);
     }
 
     [Fact]
@@ -109,7 +109,7 @@ public class RemoveChangeTests
         Assert.False(change.Apply(packFile));
         var elements = mapElement.Elements();
         var generatorsValue = elements.First(e => e.Attribute("name")?.Value == "generators").Value;
-        Assert.Contains("#0005\n#0005\n#0005", generatorsValue);
+        Assert.Contains("#0005 #0005 #0005", generatorsValue);
     }
 
     [Fact]
@@ -129,6 +129,6 @@ public class RemoveChangeTests
         Assert.False(change.Apply(packFile));
         var elements = mapElement.Elements();
         var generatorsValue = elements.First(e => e.Attribute("name")?.Value == "generators").Value;
-        Assert.Contains("#0005\n#0005\n#0005", generatorsValue);
+        Assert.Contains("#0005 #0005 #0005", generatorsValue);
     }
 }

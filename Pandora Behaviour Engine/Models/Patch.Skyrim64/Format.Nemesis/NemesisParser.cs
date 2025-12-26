@@ -18,6 +18,46 @@ namespace Pandora.Models.Patch.Skyrim64.Format.Nemesis;
 
 public class NemesisParser
 {
+	private static int CountNormalizedWhitespace(string value)
+	{
+		if (string.IsNullOrEmpty(value))
+			return 0;
+
+		int start = 0;
+		int end = value.Length - 1;
+
+		while (start <= end && char.IsWhiteSpace(value[start]))
+			start++;
+
+		while (end >= start && char.IsWhiteSpace(value[end]))
+			end--;
+
+		if (start > end)
+			return 0;
+
+		int count = 0;
+		bool isInWhitespaceRun = false;
+
+		for (int i = start; i <= end; i++)
+		{
+			if (char.IsWhiteSpace(value[i]))
+			{
+				if (!isInWhitespaceRun)
+				{
+					count++;
+					isInWhitespaceRun = true;
+				}
+			}
+			else
+			{
+				count++;
+				isInWhitespaceRun = false;
+			}
+		}
+
+		return count;
+	}
+
 	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger(); //to do: move logger into inheritable base class
 
 	private static readonly XSkipWrapExpression replacePattern = new(
@@ -81,7 +121,9 @@ public class NemesisParser
 						{
 							if (previousNode.NodeType == XmlNodeType.Text)
 							{
-								skipCharCount += ((XText)previousNode).Value.Length;
+								skipCharCount += CountNormalizedWhitespace(
+									((XText)previousNode).Value
+								);
 							}
 							if (previousNode.NodeType == XmlNodeType.Element)
 							{
@@ -133,7 +175,7 @@ public class NemesisParser
 					{
 						if (previousNode.NodeType == XmlNodeType.Text)
 						{
-							skipCharCount += ((XText)previousNode).Value.Length;
+							skipCharCount += CountNormalizedWhitespace(((XText)previousNode).Value);
 						}
 						if (previousNode.NodeType == XmlNodeType.Element)
 						{
@@ -141,7 +183,7 @@ public class NemesisParser
 						}
 						previousNode = previousNode.PreviousNode;
 					}
-					var targetText = ((XText)node).Value.Trim();
+					var targetText = ((XText)node).Value;
 					changeSet.AddChange(
 						new RemoveTextChange(
 							nodeName,
@@ -197,7 +239,7 @@ public class NemesisParser
 					{
 						if (previousNode.NodeType == XmlNodeType.Text)
 						{
-							skipCharCount += ((XText)previousNode).Value.Length;
+							skipCharCount += CountNormalizedWhitespace(((XText)previousNode).Value);
 						}
 						if (previousNode.NodeType == XmlNodeType.Element)
 						{
@@ -280,7 +322,7 @@ public class NemesisParser
 		foreach (FileInfo editFile in editFiles)
 		{
 			IEnumerable<XNode> nodes;
-			string nodeName = Path.GetFileNameWithoutExtension(editFile.Name);
+			//string nodeName = Path.GetFileNameWithoutExtension(editFile.Name);
 			XElement element;
 			try
 			{
@@ -291,6 +333,11 @@ public class NemesisParser
 				Logger.Error(
 					$"Nemesis Parser > {modInfo.Name} > File {editFile.FullName} > Load > FAILED > {e.Message}"
 				);
+				continue;
+			}
+			string? nodeName = element.FirstAttribute?.Value;
+			if (nodeName == null)
+			{
 				continue;
 			}
 			nodes = lookup.MapFromElement(element);
