@@ -3,7 +3,7 @@
 
 using Pandora.Utils;
 
-namespace PandoraTests;
+namespace PandoraTests.Unit;
 
 public class ArgumentsParsingTests : IDisposable
 {

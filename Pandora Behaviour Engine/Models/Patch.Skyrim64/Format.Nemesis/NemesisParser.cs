@@ -18,6 +18,46 @@ namespace Pandora.Models.Patch.Skyrim64.Format.Nemesis;
 
 public class NemesisParser
 {
+	private static int CountNormalizedWhitespace(string value)
+	{
+		if (string.IsNullOrEmpty(value))
+			return 0;
+
+		int start = 0;
+		int end = value.Length - 1;
+
+		while (start <= end && char.IsWhiteSpace(value[start]))
+			start++;
+
+		while (end >= start && char.IsWhiteSpace(value[end]))
+			end--;
+
+		if (start > end)
+			return 0;
+
+		int count = 0;
+		bool isInWhitespaceRun = false;
+
+		for (int i = start; i <= end; i++)
+		{
+			if (char.IsWhiteSpace(value[i]))
+			{
+				if (!isInWhitespaceRun)
+				{
+					count++;
+					isInWhitespaceRun = true;
+				}
+			}
+			else
+			{
+				count++;
+				isInWhitespaceRun = false;
+			}
+		}
+
+		return count;
+	}
+
 	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger(); //to do: move logger into inheritable base class
 
 	private static readonly XSkipWrapExpression replacePattern = new(
@@ -32,16 +72,26 @@ public class NemesisParser
 		new XStep(XmlNodeType.Comment, "CLOSE")
 	);
 
+	/// <summary>
+	/// Parse and add a replace edit to the change owner.
+	/// </summary>
+	/// <param name="nodeName">The name of the node.</param>
+	/// <param name="match">Assumes success</param>
+	/// <param name="changeSet">The changeset to be added to.</param>
+	/// <param name="lookup">The XPath lookup.</param>
 	public static void ParseReplaceEdit(
 		string nodeName,
 		XMatch match,
 		IPackFileChangeOwner changeSet,
-		XPathLookup lookup
+		IXPathLookup lookup
 	)
 	{
 		List<XNode> newNodes = [];
 		int separatorIndex = match.Count;
-
+		if (match[0].NodeType != XmlNodeType.Comment)
+		{
+			return;
+		}
 		XNode? previousNode = match[0].PreviousNode;
 
 		for (int i = 1; i < separatorIndex; i++)
@@ -65,62 +115,22 @@ public class NemesisParser
 				switch (node.NodeType)
 				{
 					case XmlNodeType.Text:
-
-						StringBuilder previousTextBuilder = new();
-						StringBuilder bufferTextBuilder = new();
-						bool skipText = false;
 						previousNode = newNode.PreviousNode?.PreviousNode;
+						int skipCharCount = 0;
 						while (previousNode != null)
 						{
-							if (previousNode.NodeType == XmlNodeType.Comment)
+							if (previousNode.NodeType == XmlNodeType.Text)
 							{
-								var comment = (XComment)previousNode;
-								if (
-									comment.Value.Contains(
-										"close",
-										StringComparison.OrdinalIgnoreCase
-									)
-								)
-								{
-									skipText = true;
-								}
-								else if (
-									comment.Value.Contains(
-										"open",
-										StringComparison.OrdinalIgnoreCase
-									)
-								)
-								{
-									skipText = false;
-									previousTextBuilder.Insert(0, bufferTextBuilder);
-									bufferTextBuilder = bufferTextBuilder.Clear();
-								}
-								else if (
-									comment.Value.Contains(
-										"original",
-										StringComparison.OrdinalIgnoreCase
-									)
-								)
-								{
-									skipText = false;
-									bufferTextBuilder = bufferTextBuilder.Clear();
-								}
-								previousNode = previousNode.PreviousNode;
-								continue;
+								skipCharCount += CountNormalizedWhitespace(
+									((XText)previousNode).Value
+								);
 							}
-							if (skipText)
+							if (previousNode.NodeType == XmlNodeType.Element)
 							{
-								bufferTextBuilder.Insert(0, '\n');
-								bufferTextBuilder.Insert(0, previousNode.ToString());
-								previousNode = previousNode.PreviousNode;
-								continue;
+								break;
 							}
-							previousTextBuilder.Insert(0, '\n');
-							previousTextBuilder.Insert(0, previousNode.ToString());
 							previousNode = previousNode.PreviousNode;
 						}
-
-						string preText = previousTextBuilder.ToString();
 						string oldText = ((XText)node).Value;
 						string newText = ((XText)newNode).Value;
 						//packFile.Editor.QueueReplaceText(lookup.LookupPath(node), ((XText)node).Value, ((XText)newNodes[i - separatorIndex - 1]).Value);
@@ -129,7 +139,7 @@ public class NemesisParser
 							new ReplaceTextChange(
 								nodeName,
 								lookup.LookupPath(node),
-								preText,
+								skipCharCount,
 								oldText,
 								newText
 							)
@@ -160,6 +170,28 @@ public class NemesisParser
 			switch (node.NodeType)
 			{
 				case XmlNodeType.Text:
+					int skipCharCount = 0;
+					while (previousNode != null)
+					{
+						if (previousNode.NodeType == XmlNodeType.Text)
+						{
+							skipCharCount += CountNormalizedWhitespace(((XText)previousNode).Value);
+						}
+						if (previousNode.NodeType == XmlNodeType.Element)
+						{
+							break;
+						}
+						previousNode = previousNode.PreviousNode;
+					}
+					var targetText = ((XText)node).Value;
+					changeSet.AddChange(
+						new RemoveTextChange(
+							nodeName,
+							lookup.LookupPath(node),
+							targetText,
+							skipCharCount
+						)
+					);
 					break;
 				case XmlNodeType.Element:
 					//packFile.Editor.QueueRemoveElement(lookup.LookupPath(node));
@@ -176,7 +208,7 @@ public class NemesisParser
 		string nodeName,
 		XMatch match,
 		IPackFileChangeOwner changeSet,
-		XPathLookup lookup
+		IXPathLookup lookup
 	)
 	{
 		List<XNode> newNodes = match.nodes;
@@ -190,12 +222,10 @@ public class NemesisParser
 		foreach (XNode node in newNodes)
 		{
 			string nodePath = lookup.LookupPath(node);
-			//if (node.Parent != null) node.Remove();
 			switch (node.NodeType)
 			{
 				case XmlNodeType.Text:
 
-					//packFile.Editor.QueueInsertText(lookup.LookupPath(node), ((XText)node).Value);
 					if (!isTextInsert)
 					{
 						changeSet.AddChange(
@@ -203,62 +233,26 @@ public class NemesisParser
 						);
 						break;
 					}
-
-					StringBuilder previousTextBuilder = new();
-					StringBuilder bufferTextBuilder = new();
-					bool skipText = false;
 					previousNode = node.PreviousNode?.PreviousNode;
+					int skipCharCount = 0;
 					while (previousNode != null)
 					{
-						if (previousNode.NodeType == XmlNodeType.Comment)
+						if (previousNode.NodeType == XmlNodeType.Text)
 						{
-							var comment = (XComment)previousNode;
-							if (comment.Value.Contains("close", StringComparison.OrdinalIgnoreCase))
-							{
-								skipText = true;
-							}
-							else if (
-								comment.Value.Contains("open", StringComparison.OrdinalIgnoreCase)
-							)
-							{
-								skipText = false;
-								previousTextBuilder.Insert(0, bufferTextBuilder);
-								bufferTextBuilder = bufferTextBuilder.Clear();
-							}
-							else if (
-								comment.Value.Contains(
-									"original",
-									StringComparison.OrdinalIgnoreCase
-								)
-							)
-							{
-								skipText = false;
-								bufferTextBuilder = bufferTextBuilder.Clear();
-							}
-							previousNode = previousNode.PreviousNode;
-							continue;
+							skipCharCount += CountNormalizedWhitespace(((XText)previousNode).Value);
 						}
-						if (skipText)
+						if (previousNode.NodeType == XmlNodeType.Element)
 						{
-							bufferTextBuilder.Insert(0, '\n');
-							bufferTextBuilder.Insert(0, previousNode.ToString());
-							previousNode = previousNode.PreviousNode;
-							continue;
+							break;
 						}
-						previousTextBuilder.Insert(0, '\n');
-						previousTextBuilder.Insert(0, previousNode.ToString());
 						previousNode = previousNode.PreviousNode;
 					}
-
-					string preText = previousTextBuilder.ToString();
 					changeSet.AddChange(
-						new InsertTextChange(nodeName, nodePath, preText, ((XText)node).Value)
+						new InsertTextChange(nodeName, nodePath, skipCharCount, ((XText)node).Value)
 					);
-
-					//lock (packFile.edits) packFile.edits.AddChange(new InsertTextChange(nodePath, ((XText)node).Value, modInfo));
 					break;
 				case XmlNodeType.Element:
-					//packFile.Editor.QueueInsertElement(lookup.LookupPath(node), (XElement)node);
+
 					changeSet.AddChange(
 						new AppendElementChange(
 							nodeName,
@@ -277,7 +271,7 @@ public class NemesisParser
 		string nodeName,
 		IEnumerable<XNode> nodes,
 		IPackFileChangeOwner changeSet,
-		XPathLookup lookup
+		IXPathLookup lookup
 	)
 	{
 		XMatchCollection matchCollection = replacePattern.Matches(nodes);
@@ -285,6 +279,10 @@ public class NemesisParser
 			return false;
 		foreach (XMatch match in matchCollection)
 		{
+			if (!match.Success)
+			{
+				continue;
+			}
 			ParseReplaceEdit(nodeName, match, changeSet, lookup);
 		}
 		return true;
@@ -293,8 +291,8 @@ public class NemesisParser
 	public static bool MatchInsertPattern(
 		string nodeName,
 		IEnumerable<XNode> nodes,
-		IPackFileChangeOwner changeSet,
-		XPathLookup lookup
+		PackFileChangeSet changeSet,
+		IXPathLookup lookup
 	)
 	{
 		XMatchCollection matchCollection = insertPattern.Matches(nodes);
@@ -302,6 +300,10 @@ public class NemesisParser
 			return false;
 		foreach (XMatch match in matchCollection)
 		{
+			if (!match.Success)
+			{
+				continue;
+			}
 			ParseInsertEdit(nodeName, match, changeSet, lookup);
 		}
 		return true;
@@ -320,7 +322,7 @@ public class NemesisParser
 		foreach (FileInfo editFile in editFiles)
 		{
 			IEnumerable<XNode> nodes;
-			string nodeName = Path.GetFileNameWithoutExtension(editFile.Name);
+			//string nodeName = Path.GetFileNameWithoutExtension(editFile.Name);
 			XElement element;
 			try
 			{
@@ -331,6 +333,11 @@ public class NemesisParser
 				Logger.Error(
 					$"Nemesis Parser > {modInfo.Name} > File {editFile.FullName} > Load > FAILED > {e.Message}"
 				);
+				continue;
+			}
+			string? nodeName = element.FirstAttribute?.Value;
+			if (nodeName == null)
+			{
 				continue;
 			}
 			nodes = lookup.MapFromElement(element);

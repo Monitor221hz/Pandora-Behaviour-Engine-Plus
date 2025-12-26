@@ -206,7 +206,7 @@ public sealed class SkyrimPathResolver : IPathResolver
 
 		string msg =
 			$"Could not find a valid Skyrim 'Data' directory. Using directory {_assemblyDirectory.FullName}";
-		EngineLoggerAdapter.AppendLine($"WARN: {msg}");
+		EngineLoggerAdapter.AppendLine($"{msg}");
 
 		Logger.Warn(msg);
 		return _assemblyDirectory!;

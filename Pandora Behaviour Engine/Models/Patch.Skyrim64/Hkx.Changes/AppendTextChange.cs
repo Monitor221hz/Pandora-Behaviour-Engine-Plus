@@ -28,7 +28,6 @@ public class AppendTextChange : IPackFileChange
 		{
 			return false;
 		}
-		PackFileEditor.AppendText(xmap!, Path, value);
-		return true;
+		return PackFileEditor.AppendText(xmap!, Path, value);
 	}
 }

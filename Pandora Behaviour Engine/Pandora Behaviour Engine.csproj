@@ -12,7 +12,6 @@
     <GenerateAssemblyInformationalVersionAttribute>true</GenerateAssemblyInformationalVersionAttribute>
     <CETCompat>false</CETCompat>
   </PropertyGroup>
-
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
     <AvaloniaXaml Remove="Data\Skyrim64\**" />
@@ -21,13 +20,17 @@
     <None Remove="Data\Skyrim64\**" />
     <Content Include="Assets\pandora.ico" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.3.10" />
     <PackageReference Include="Avalonia.Desktop" Version="11.3.10" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.10" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.10" />
+    <PackageReference
+      Condition="'$(Configuration)' == 'Debug'"
+      Include="Avalonia.Diagnostics"
+      Version="11.3.6"
+    />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.6" />
     <PackageReference Include="GameFinder" Version="4.9.0" />
     <PackageReference Include="GameFinder.StoreHandlers.GOG" Version="4.9.0" />
     <PackageReference Include="GameFinder.StoreHandlers.Steam" Version="4.9.0" />
@@ -49,18 +52,15 @@
     </PackageReference>
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.1" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Pandora API\HKX2-Enhanced-Library\HKX2\HKX2E.csproj" />
     <ProjectReference Include="..\Pandora API\Pandora API\Pandora API.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <AvaloniaResource Update="Assets\Icons.axaml">
       <SubType>Designer</SubType>
     </AvaloniaResource>
   </ItemGroup>
-
   <ItemGroup>
     <Compile Update="Properties\GUISettings.Designer.cs">
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -118,21 +118,17 @@
       <LastGenOutput>GUISettings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
-
   <ItemGroup>
     <EditorConfigFiles Remove="C:\Users\minth\Source\Repos\Pandora\Pandora Behaviour Engine\.editorconfig" />
   </ItemGroup>
-
   <ItemGroup>
     <AvaloniaResource Include="Themes\DataGrid\*.axaml">
       <SubType>Designer</SubType>
     </AvaloniaResource>
   </ItemGroup>
-
   <ItemGroup>
     <AvaloniaResource Include="Themes\PandoraStyles.axaml" />
   </ItemGroup>
-
   <ItemGroup>
     <None Include="C:\Users\minth\Source\Repos\Pandora\Pandora Behaviour Engine\.editorconfig" />
   </ItemGroup>
