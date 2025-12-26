@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,6 +30,7 @@ using Pandora.Services;
 using Pandora.Utils;
 using Pandora.Views;
 using ReactiveUI;
+using ReactiveUI.Avalonia;
 using ReactiveUI.SourceGenerators;
 using Splat;
 
@@ -315,8 +317,11 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		{
 			var timer = Stopwatch.StartNew();
 
-			await WaitForPreloadAsync().ConfigureAwait(false);
-			var success = await ExecuteEngineAsync().ConfigureAwait(false);
+			await Task.Run(async () => await WaitForPreloadAsync().ConfigureAwait(false));
+
+			var success = await Task.Run(async () =>
+				await ExecuteEngineAsync().ConfigureAwait(false)
+			);
 
 			timer.Stop();
 

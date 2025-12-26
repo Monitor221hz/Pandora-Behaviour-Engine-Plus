@@ -2,8 +2,8 @@
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
 using Avalonia.Controls;
-using Avalonia.ReactiveUI;
 using Pandora.ViewModels;
+using ReactiveUI.Avalonia;
 
 namespace Pandora.Views;
 
