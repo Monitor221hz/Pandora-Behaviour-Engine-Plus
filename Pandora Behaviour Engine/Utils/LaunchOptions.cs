@@ -74,9 +74,7 @@ public class LaunchOptions
 		});
 
 		PreprocessArguments(args, _rootCommand, caseInsensitive);
-
-		var config = new CommandLineConfiguration(_rootCommand);
-		var parseResult = config.Parse(args);
+		var parseResult = _rootCommand.Parse(args);
 
 		if (parseResult.Errors.Any())
 		{
