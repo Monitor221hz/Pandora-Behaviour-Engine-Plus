@@ -75,62 +75,20 @@ public class NemesisParser
 				switch (node.NodeType)
 				{
 					case XmlNodeType.Text:
-
-						StringBuilder previousTextBuilder = new();
-						StringBuilder bufferTextBuilder = new();
-						bool skipText = false;
 						previousNode = newNode.PreviousNode?.PreviousNode;
+						int skipCharCount = 0;
 						while (previousNode != null)
 						{
-							if (previousNode.NodeType == XmlNodeType.Comment)
+							if (previousNode.NodeType == XmlNodeType.Text)
 							{
-								var comment = (XComment)previousNode;
-								if (
-									comment.Value.Contains(
-										"close",
-										StringComparison.OrdinalIgnoreCase
-									)
-								)
-								{
-									skipText = true;
-								}
-								else if (
-									comment.Value.Contains(
-										"open",
-										StringComparison.OrdinalIgnoreCase
-									)
-								)
-								{
-									skipText = false;
-									previousTextBuilder.Insert(0, bufferTextBuilder);
-									bufferTextBuilder = bufferTextBuilder.Clear();
-								}
-								else if (
-									comment.Value.Contains(
-										"original",
-										StringComparison.OrdinalIgnoreCase
-									)
-								)
-								{
-									skipText = false;
-									bufferTextBuilder = bufferTextBuilder.Clear();
-								}
-								previousNode = previousNode.PreviousNode;
-								continue;
+								skipCharCount += ((XText)previousNode).Value.Length;
 							}
-							if (skipText)
+							if (previousNode.NodeType == XmlNodeType.Element)
 							{
-								bufferTextBuilder.Insert(0, '\n');
-								bufferTextBuilder.Insert(0, previousNode.ToString());
-								previousNode = previousNode.PreviousNode;
-								continue;
+								break;
 							}
-							previousTextBuilder.Insert(0, '\n');
-							previousTextBuilder.Insert(0, previousNode.ToString());
 							previousNode = previousNode.PreviousNode;
 						}
-
-						string preText = previousTextBuilder.ToString();
 						string oldText = ((XText)node).Value;
 						string newText = ((XText)newNode).Value;
 						//packFile.Editor.QueueReplaceText(lookup.LookupPath(node), ((XText)node).Value, ((XText)newNodes[i - separatorIndex - 1]).Value);
@@ -139,7 +97,7 @@ public class NemesisParser
 							new ReplaceTextChange(
 								nodeName,
 								lookup.LookupPath(node),
-								preText,
+								skipCharCount,
 								oldText,
 								newText
 							)
@@ -170,12 +128,12 @@ public class NemesisParser
 			switch (node.NodeType)
 			{
 				case XmlNodeType.Text:
-					uint skipCharCount = 0;
+					int skipCharCount = 0;
 					while (previousNode != null)
 					{
 						if (previousNode.NodeType == XmlNodeType.Text)
 						{
-							skipCharCount += (uint)((XText)previousNode).Value.Length;
+							skipCharCount += ((XText)previousNode).Value.Length;
 						}
 						if (previousNode.NodeType == XmlNodeType.Element)
 						{
@@ -185,7 +143,12 @@ public class NemesisParser
 					}
 					var targetText = ((XText)node).Value.Trim();
 					changeSet.AddChange(
-						new RemoveTextChange(targetText, lookup.LookupPath(node), skipCharCount)
+						new RemoveTextChange(
+							nodeName,
+							lookup.LookupPath(node),
+							targetText,
+							skipCharCount
+						)
 					);
 					break;
 				case XmlNodeType.Element:
@@ -228,56 +191,22 @@ public class NemesisParser
 						);
 						break;
 					}
-
-					StringBuilder previousTextBuilder = new();
-					StringBuilder bufferTextBuilder = new();
-					bool skipText = false;
 					previousNode = node.PreviousNode?.PreviousNode;
+					int skipCharCount = 0;
 					while (previousNode != null)
 					{
-						if (previousNode.NodeType == XmlNodeType.Comment)
+						if (previousNode.NodeType == XmlNodeType.Text)
 						{
-							var comment = (XComment)previousNode;
-							if (comment.Value.Contains("close", StringComparison.OrdinalIgnoreCase))
-							{
-								skipText = true;
-							}
-							else if (
-								comment.Value.Contains("open", StringComparison.OrdinalIgnoreCase)
-							)
-							{
-								skipText = false;
-								previousTextBuilder.Insert(0, bufferTextBuilder);
-								bufferTextBuilder = bufferTextBuilder.Clear();
-							}
-							else if (
-								comment.Value.Contains(
-									"original",
-									StringComparison.OrdinalIgnoreCase
-								)
-							)
-							{
-								skipText = false;
-								bufferTextBuilder = bufferTextBuilder.Clear();
-							}
-							previousNode = previousNode.PreviousNode;
-							continue;
+							skipCharCount += ((XText)previousNode).Value.Length;
 						}
-						if (skipText)
+						if (previousNode.NodeType == XmlNodeType.Element)
 						{
-							bufferTextBuilder.Insert(0, '\n');
-							bufferTextBuilder.Insert(0, previousNode.ToString());
-							previousNode = previousNode.PreviousNode;
-							continue;
+							break;
 						}
-						previousTextBuilder.Insert(0, '\n');
-						previousTextBuilder.Insert(0, previousNode.ToString());
 						previousNode = previousNode.PreviousNode;
 					}
-
-					string preText = previousTextBuilder.ToString();
 					changeSet.AddChange(
-						new InsertTextChange(nodeName, nodePath, preText, ((XText)node).Value)
+						new InsertTextChange(nodeName, nodePath, skipCharCount, ((XText)node).Value)
 					);
 					break;
 				case XmlNodeType.Element:
