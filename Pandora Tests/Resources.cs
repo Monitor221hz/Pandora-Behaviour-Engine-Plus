@@ -38,7 +38,24 @@ public static class Resources
                 "hkparam",
                 new XAttribute("name", "generators"),
                 new XAttribute("numelements", "5"),
-                new XText("#0001\n#0002\n#0003\n#0004\n#0005")
+                new XText("#0001\n#0002\n#0003\n#0004\n#0005\n#0005\n#0005")
+            ),
+            new XElement(
+                "hkparam",
+                new XAttribute("name", "children"),
+                new XAttribute("numelements", "3"),
+                new XElement(
+                    "hkobject",
+                    new XElement("hkparam", new XAttribute("name", "value"), new XText("0"))
+                ),
+                new XElement(
+                    "hkobject",
+                    new XElement("hkparam", new XAttribute("name", "value"), new XText("1"))
+                ),
+                new XElement(
+                    "hkobject",
+                    new XElement("hkparam", new XAttribute("name", "value"), new XText("2"))
+                )
             )
         );
 

@@ -9,10 +9,10 @@ using XmlCake.Linq;
 
 namespace PandoraTests.Unit;
 
-public class ReplaceChangeTests
+public class RemoveChangeTests
 {
     [Fact]
-    public void ApplyReplaceChange_Element_Succeeds()
+    public void ApplyRemoveChange_Element_Succeeds()
     {
         XElement originalElement = Resources.TestElement;
         XMapElement mapElement = new(originalElement);
@@ -25,16 +25,14 @@ public class ReplaceChangeTests
                 s[1] = mapElement;
                 return true;
             });
-
-        var newElement = new XElement("replaced");
-        var change = new ReplaceElementChange("#0069", "generators", newElement);
-        var elements = mapElement.Elements();
+        var change = new RemoveElementChange("#0069", "children/Element2");
+        var elements = mapElement.Descendants();
         Assert.True(change.Apply(packFile));
-        Assert.Contains<XElement>(newElement, elements);
+        Assert.DoesNotContain<XElement>(elements, e => e.Value == "2");
     }
 
     [Fact]
-    public void ApplyReplaceChange_ElementPathMissing_FailsUnchanged()
+    public void ApplyRemoveChange_ElementPathMissing_FailsUnchanged()
     {
         XElement originalElement = Resources.TestElement;
         XMapElement mapElement = new(originalElement);
@@ -47,16 +45,14 @@ public class ReplaceChangeTests
                 s[1] = mapElement;
                 return true;
             });
-
-        var newElement = new XElement("replaced");
-        var change = new ReplaceElementChange("#0069", "nonexistant", newElement);
-        var elements = mapElement.Elements();
+        var change = new RemoveElementChange("#0069", "nonexistant");
+        var elements = mapElement.Descendants();
         Assert.False(change.Apply(packFile));
-        Assert.DoesNotContain<XElement>(newElement, elements);
+        Assert.Contains<XElement>(elements, e => e.Value == "2");
     }
 
     [Fact]
-    public void ApplyReplaceChange_Text_Succeeds()
+    public void ApplyRemoveChange_Text_Succeeds()
     {
         XMapElement mapElement = new(Resources.TestElement);
         mapElement.MapAll();
@@ -68,16 +64,16 @@ public class ReplaceChangeTests
                 s[1] = mapElement;
                 return true;
             });
-        var change = new ReplaceTextChange("#0069", "generators", 30, "#0005 #0005", "#5000");
+        var change = new RemoveTextChange("#0069", "generators", "#0005", 35);
         Assert.True(change.Apply(packFile));
         var elements = mapElement.Elements();
         var generatorsValue = elements.First(e => e.Attribute("name")?.Value == "generators").Value;
-        Assert.Contains("#5000", generatorsValue);
-        Assert.Contains("#0005", generatorsValue);
+        Assert.DoesNotContain("#0005 #0005 #0005", generatorsValue);
+        Assert.Contains("#0005 #0005", generatorsValue);
     }
 
     [Fact]
-    public void ApplyReplaceChange_TextPathMissing_FailsUnchanged()
+    public void ApplyRemoveChange_TextPathMissing_FailsUnchanged()
     {
         XMapElement mapElement = new(Resources.TestElement);
         mapElement.MapAll();
@@ -89,16 +85,15 @@ public class ReplaceChangeTests
                 s[1] = mapElement;
                 return true;
             });
-        var change = new ReplaceTextChange("#0069", "something", 30, "#0005 #0005", "#5000");
+        var change = new RemoveTextChange("#0069", "something", "#0005", 35);
         Assert.False(change.Apply(packFile));
         var elements = mapElement.Elements();
         var generatorsValue = elements.First(e => e.Attribute("name")?.Value == "generators").Value;
-        Assert.DoesNotContain("#5000", generatorsValue);
         Assert.Contains("#0005\n#0005\n#0005", generatorsValue);
     }
 
     [Fact]
-    public void ApplyReplaceChange_ValueMissing_FailsUnchanged()
+    public void ApplyRemoveChange_TextValueMissing_FailsUnchanged()
     {
         XMapElement mapElement = new(Resources.TestElement);
         mapElement.MapAll();
@@ -110,16 +105,15 @@ public class ReplaceChangeTests
                 s[1] = mapElement;
                 return true;
             });
-        var change = new ReplaceTextChange("#0069", "generators", 30, "#6969", "#5000");
+        var change = new RemoveTextChange("#0069", "generators", "#6969", 35);
         Assert.False(change.Apply(packFile));
         var elements = mapElement.Elements();
         var generatorsValue = elements.First(e => e.Attribute("name")?.Value == "generators").Value;
-        Assert.DoesNotContain("#5000", generatorsValue);
         Assert.Contains("#0005\n#0005\n#0005", generatorsValue);
     }
 
     [Fact]
-    public void ApplyReplaceChange_IndexOutOfRange_FailsUnchanged()
+    public void ApplyRemoveChange_TextIndexOutOfRange_FailsUnchanged()
     {
         XMapElement mapElement = new(Resources.TestElement);
         mapElement.MapAll();
@@ -131,11 +125,10 @@ public class ReplaceChangeTests
                 s[1] = mapElement;
                 return true;
             });
-        var change = new ReplaceTextChange("#0069", "generators", 999, "#0005 #0005", "#5000");
+        var change = new RemoveTextChange("#0069", "generators", "#0005", 999);
         Assert.False(change.Apply(packFile));
         var elements = mapElement.Elements();
         var generatorsValue = elements.First(e => e.Attribute("name")?.Value == "generators").Value;
-        Assert.DoesNotContain("#5000", generatorsValue);
         Assert.Contains("#0005\n#0005\n#0005", generatorsValue);
     }
 }
