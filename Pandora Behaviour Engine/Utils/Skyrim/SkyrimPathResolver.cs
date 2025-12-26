@@ -323,8 +323,9 @@ public sealed class SkyrimPathResolver : IPathResolver
 
 		var exePath = Path.Combine(gameRoot.FullName, "SkyrimSE.exe");
 		var launcherPath = Path.Combine(gameRoot.FullName, "SkyrimSELauncher.exe");
+		var vrPath = Path.Combine(gameRoot.FullName, "SkyrimVR.exe");
 
-		return File.Exists(exePath) || File.Exists(launcherPath);
+		return File.Exists(exePath) || File.Exists(launcherPath) || File.Exists(vrPath);
 	}
 
 	private static DirectoryInfo NormalizeToDataDirectory(DirectoryInfo directory)
