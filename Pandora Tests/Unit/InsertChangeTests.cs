@@ -103,7 +103,7 @@ public class InsertChangeTests
     }
 
     [Fact]
-    public void ApplyInsertChange_IndexOutOfRange_FailsUnchanged()
+    public void ApplyInsertChange_TextIndexOutOfRange_FailsUnchanged()
     {
         XMapElement mapElement = new(Resources.TestElement);
         mapElement.MapAll();

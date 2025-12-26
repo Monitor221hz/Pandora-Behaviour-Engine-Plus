@@ -23,6 +23,10 @@ public partial class PackFileEditor
 
 	private static string NormalizeElementValue(XElement element)
 	{
+		if (string.IsNullOrEmpty(element.Value))
+		{
+			return element.Value;
+		}
 		var value = WhiteSpaceRegex.Replace(element.Value.Trim(trimChars), " ");
 		return value;
 	}
@@ -129,14 +133,24 @@ public partial class PackFileEditor
 		return true;
 	}
 
-	public static void AppendText(IXMap xmap, string path, string newValue)
+	public static bool AppendText(IXMap xmap, string path, string newValue)
 	{
+		if (!xmap.PathExists(path))
+		{
+			return false;
+		}
 		XElement element = xmap.NavigateTo(path);
 		string source = NormalizeElementValue(element);
+		if (string.IsNullOrEmpty(newValue))
+		{
+			return false;
+		}
 
 		newValue = NormalizeStringValue(newValue);
-		source = NormalizeStringValue(string.Concat(source, " ", newValue, " "));
+		source = string.Concat(source, " ", newValue, " ");
 		element.SetValue(source);
+
+		return true;
 	}
 
 	public static bool RemoveText(IXMap xmap, string path, string value, int findFrom)
