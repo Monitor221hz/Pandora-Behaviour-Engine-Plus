@@ -62,15 +62,15 @@ public class PandoraParser
 					//);
 					break;
 				}
-				changeSet.AddChange(
-					new ReplaceTextChange(
-						nodeName,
-						pathAttribute.Value,
-						preTextAttribute.Value,
-						textAttribute.Value,
-						string.Empty
-					)
-				);
+				//changeSet.AddChange(
+				//	new ReplaceTextChange(
+				//		nodeName,
+				//		pathAttribute.Value,
+				//		preTextAttribute.Value,
+				//		textAttribute.Value,
+				//		string.Empty
+				//	)
+				//);
 
 				break;
 
@@ -112,14 +112,14 @@ public class PandoraParser
 					break;
 				}
 
-				changeSet.AddChange(
-					new InsertTextChange(
-						nodeName,
-						pathAttribute.Value,
-						textAttribute.Value,
-						element.Value
-					)
-				);
+				//changeSet.AddChange(
+				//	new InsertTextChange(
+				//		nodeName,
+				//		pathAttribute.Value,
+				//		textAttribute.Value,
+				//		element.Value
+				//	)
+				//);
 
 				break;
 			case ChangeType.Append:
@@ -189,28 +189,29 @@ public class PandoraParser
 				{
 					break;
 				}
-				if (preTextAttribute == null)
-				{
-					changeSet.AddChange(
-						new ReplaceTextChange(
-							nodeName,
-							pathAttribute.Value,
-							string.Empty,
-							textAttribute.Value,
-							element.Value
-						)
-					);
-					break;
-				}
-				changeSet.AddChange(
-					new ReplaceTextChange(
-						nodeName,
-						pathAttribute.Value,
-						preTextAttribute.Value,
-						textAttribute.Value,
-						element.Value
-					)
-				);
+				//if (preTextAttribute == null)
+				//{
+				//	changeSet.AddChange(
+				//		new ReplaceTextChange(
+				//			nodeName,
+				//			pathAttribute.Value,
+				//			string.Empty,
+				//			textAttribute.Value,
+				//			element.Value
+				//		)
+				//	);
+				//	break;
+				//}
+
+				//changeSet.AddChange(
+				//	new ReplaceTextChange(
+				//		nodeName,
+				//		pathAttribute.Value,
+				//		preTextAttribute.Value,
+				//		textAttribute.Value,
+				//		element.Value
+				//	)
+				//);
 				break;
 
 			default:
