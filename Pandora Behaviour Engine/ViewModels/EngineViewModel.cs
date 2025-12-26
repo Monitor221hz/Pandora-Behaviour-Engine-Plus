@@ -318,7 +318,10 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 			var timer = Stopwatch.StartNew();
 
 			await Task.Run(async () => await WaitForPreloadAsync().ConfigureAwait(false));
-			var success = await ExecuteEngineAsync().ConfigureAwait(false);
+
+			var success = await Task.Run(async () =>
+				await ExecuteEngineAsync().ConfigureAwait(false)
+			);
 
 			timer.Stop();
 
