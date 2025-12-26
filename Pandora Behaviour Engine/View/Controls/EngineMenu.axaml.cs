@@ -4,10 +4,10 @@
 using System.Reactive;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.ReactiveUI;
 using FluentAvalonia.UI.Windowing;
 using Pandora.ViewModels;
 using ReactiveUI;
+using ReactiveUI.Avalonia;
 
 namespace Pandora.Views;
 

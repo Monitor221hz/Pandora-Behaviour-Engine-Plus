@@ -3,8 +3,8 @@
 
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.ReactiveUI;
 using Pandora.ViewModels;
+using ReactiveUI.Avalonia;
 
 namespace Pandora.Views;
 
