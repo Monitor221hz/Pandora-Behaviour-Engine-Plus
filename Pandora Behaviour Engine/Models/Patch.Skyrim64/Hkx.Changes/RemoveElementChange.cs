@@ -31,6 +31,6 @@ public class RemoveElementChange : IPackFileChange
 			return false;
 		}
 		element = PackFileEditor.RemoveElement(xmap!, Path);
-		return !xmap!.PathExists(Path);
+		return element != null && !xmap.PathExists(Path);
 	}
 }
