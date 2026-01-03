@@ -29,7 +29,7 @@
       <BehaviorCollectionTemplate>
         <BehaviorCollection>
           <ContextDropBehavior Handler="{StaticResource ModsDataGridDropHandler}" />
-          <b:KeyboardModMoveBehavior DropHandler="{StaticResource ModsDataGridDropHandler}" />
+					<b:KeyboardModMoveBehavior />
         </BehaviorCollection>
       </BehaviorCollectionTemplate>
     </Setter>
@@ -79,7 +79,7 @@
             <ChangePropertyAction TargetObject="ModInfoDataGrid" PropertyName="RowHeight" Value="26" />
           </DataTrigger>
           <ContextDropBehavior Handler="{StaticResource ModsDataGridDropHandler}" />
-          <b:KeyboardModMoveBehavior DropHandler="{StaticResource ModsDataGridDropHandler}" />
+					<b:KeyboardModMoveBehavior />
         </BehaviorCollection>
       </BehaviorCollectionTemplate>
     </Setter>

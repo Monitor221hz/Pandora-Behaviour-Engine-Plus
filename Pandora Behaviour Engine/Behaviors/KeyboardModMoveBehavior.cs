@@ -1,6 +1,4 @@
-﻿// SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
-
+﻿// Pandora/Behaviors/KeyboardModMoveBehavior.cs
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Xaml.Interactivity;
@@ -8,38 +6,46 @@ using Pandora.ViewModels;
 
 namespace Pandora.Behaviors;
 
-public class KeyboardModMoveBehavior : StyledElementBehavior<DataGrid>
+public sealed class KeyboardModMoveBehavior : Behavior<DataGrid>
 {
-	public ModsDataGridDropHandler? DropHandler { get; set; }
-
 	protected override void OnAttached()
 	{
 		base.OnAttached();
-		AssociatedObject!.KeyDown += OnKeyDown;
+		AssociatedObject?.KeyDown += OnKeyDown;
 	}
 
 	protected override void OnDetaching()
 	{
 		base.OnDetaching();
-		AssociatedObject!.KeyDown -= OnKeyDown;
+		AssociatedObject?.KeyDown -= OnKeyDown;
 	}
 
 	private void OnKeyDown(object? sender, KeyEventArgs e)
 	{
-		if (AssociatedObject.DataContext is not EngineViewModel vm || DropHandler is null)
+		var dataGrid = AssociatedObject;
+		if (dataGrid?.DataContext is not EngineViewModel vm ||
+			dataGrid.SelectedItem is not ModInfoViewModel selectedMod)
 			return;
 
-		bool isCtrl = (e.KeyModifiers & KeyModifiers.Control) == KeyModifiers.Control;
+		bool handled = false;
 
-		if (e.Key == Key.Add || e.Key == Key.OemPlus || (isCtrl && e.Key == Key.Down))
+		if (e.Key == Key.OemMinus || e.Key == Key.Subtract)
 		{
-			DropHandler.MoveDown(AssociatedObject, vm);
-			e.Handled = true;
+			vm.MoveModStep(selectedMod, -1);
+			handled = true;
 		}
-		else if (e.Key == Key.Subtract || e.Key == Key.OemMinus || (isCtrl && e.Key == Key.Up))
+		else if (e.Key == Key.OemPlus || e.Key == Key.Add)
 		{
-			DropHandler.MoveUp(AssociatedObject, vm);
+			vm.MoveModStep(selectedMod, 1);
+			handled = true;
+		}
+
+		if (handled)
+		{
 			e.Handled = true;
+
+			dataGrid.SelectedItem = selectedMod;
+			dataGrid.ScrollIntoView(selectedMod, null);
 		}
 	}
 }

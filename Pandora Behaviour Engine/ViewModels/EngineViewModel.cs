@@ -424,4 +424,66 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 	}
 
 	public string OutputFolderUri => _pathResolver.GetOutputFolder().FullName;
+
+
+	public void MoveModStep(ModInfoViewModel mod, int direction)
+	{
+		var sortedList = _modViewModels.ToList();
+
+		if (ModUtils.IsModLocked(mod, sortedList))
+			return;
+
+		var currentIndex = sortedList.IndexOf(mod);
+		if (currentIndex < 0)
+			return;
+
+		var newIndex = currentIndex + direction;
+		if (newIndex < 0 || newIndex >= sortedList.Count)
+			return;
+		if (direction > 0 && newIndex == sortedList.Count - 1)
+			return;
+
+		var neighbor = sortedList[newIndex];
+		(mod.Priority, neighbor.Priority) = (neighbor.Priority, mod.Priority);
+
+		if (mod.Priority == neighbor.Priority)
+		{
+			ModUtils.RecalculatePriorities(sortedList);
+		}
+	}
+
+	public void ReorderMod(ModInfoViewModel modToMove, ModInfoViewModel targetMod)
+	{
+		if (modToMove == targetMod) 
+			return;
+
+		var sortedList = _modViewModels.ToList();
+
+		if (ModUtils.IsModLocked(modToMove, sortedList)) 
+			return;
+
+		int oldIndex = sortedList.IndexOf(modToMove);
+		int originalTargetIndex = sortedList.IndexOf(targetMod);
+
+		sortedList.Remove(modToMove);
+
+		int currentTargetIndex = sortedList.IndexOf(targetMod);
+
+		bool isTargetLocked = ModUtils.IsModLocked(targetMod, _modViewModels.ToList());
+
+		if (isTargetLocked)
+		{
+			sortedList.Insert(currentTargetIndex, modToMove);
+		}
+		else if (oldIndex < originalTargetIndex)
+		{
+			sortedList.Insert(currentTargetIndex + 1, modToMove);
+		}
+		else
+		{
+			sortedList.Insert(currentTargetIndex, modToMove);
+		}
+
+		ModUtils.RecalculatePriorities(sortedList);
+	}
 }

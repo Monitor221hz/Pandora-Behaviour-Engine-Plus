@@ -136,4 +136,24 @@ public static class ModUtils
 			sortAction(column);
 		}
 	}
+
+	public static void RecalculatePriorities(List<ModInfoViewModel> sortedList)
+	{
+		for (int i = 0; i < sortedList.Count; i++)
+		{
+			uint expectedPriority = (uint)(i + 1);
+
+			if (sortedList[i].Priority != expectedPriority)
+			{
+				sortedList[i].Priority = expectedPriority;
+			}
+		}
+	}
+
+	public static bool IsModLocked(ModInfoViewModel mod, IList<ModInfoViewModel> sortedList)
+	{
+		if (sortedList.Count == 0) return false;
+
+		return mod == sortedList[sortedList.Count - 1];
+	}
 }
