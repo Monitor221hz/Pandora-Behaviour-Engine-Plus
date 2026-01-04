@@ -28,6 +28,7 @@ using Pandora.Logging;
 using Pandora.Models;
 using Pandora.Services;
 using Pandora.Utils;
+using Pandora.Utils.Extensions;
 using Pandora.Views;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
@@ -261,7 +262,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 
 	private async Task<bool> ExecuteEngineAsync()
 	{
-		var activeMods = ModUtils.GetSortedActiveMods(SourceMods);
+		var activeMods = SourceMods.GetSortedActiveMods();
 		bool success;
 		try
 		{
@@ -404,15 +405,15 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 
 	[ReactiveCommand]
 	private void SortAscending(DataGridColumnHeader? header) =>
-		ModUtils.ApplySortToColumn(header, c => c.Sort(ListSortDirection.Ascending));
+		header.ApplySortToColumn(c => c.Sort(ListSortDirection.Ascending));
 
 	[ReactiveCommand]
 	private void SortDescending(DataGridColumnHeader? header) =>
-		ModUtils.ApplySortToColumn(header, c => c.Sort(ListSortDirection.Descending));
+		header.ApplySortToColumn(c => c.Sort(ListSortDirection.Descending));
 
 	[ReactiveCommand]
 	private void ClearSort(DataGridColumnHeader? header) =>
-		ModUtils.ApplySortToColumn(header, c => c.ClearSort());
+		header.ApplySortToColumn(c => c.ClearSort());
 
 	[ReactiveCommand]
 	private void ToggleSelectAll(bool? isChecked)
@@ -420,70 +421,8 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		if (isChecked is not bool check)
 			return;
 
-		ModUtils.SetModsActiveState(SourceMods, check);
+		SourceMods.SetModsActiveState(check);
 	}
 
 	public string OutputFolderUri => _pathResolver.GetOutputFolder().FullName;
-
-
-	public void MoveModStep(ModInfoViewModel mod, int direction)
-	{
-		var sortedList = _modViewModels.ToList();
-
-		if (ModUtils.IsModLocked(mod, sortedList))
-			return;
-
-		var currentIndex = sortedList.IndexOf(mod);
-		if (currentIndex < 0)
-			return;
-
-		var newIndex = currentIndex + direction;
-		if (newIndex < 0 || newIndex >= sortedList.Count)
-			return;
-		if (direction > 0 && newIndex == sortedList.Count - 1)
-			return;
-
-		var neighbor = sortedList[newIndex];
-		(mod.Priority, neighbor.Priority) = (neighbor.Priority, mod.Priority);
-
-		if (mod.Priority == neighbor.Priority)
-		{
-			ModUtils.RecalculatePriorities(sortedList);
-		}
-	}
-
-	public void ReorderMod(ModInfoViewModel modToMove, ModInfoViewModel targetMod)
-	{
-		if (modToMove == targetMod) 
-			return;
-
-		var sortedList = _modViewModels.ToList();
-
-		if (ModUtils.IsModLocked(modToMove, sortedList)) 
-			return;
-
-		int oldIndex = sortedList.IndexOf(modToMove);
-		int originalTargetIndex = sortedList.IndexOf(targetMod);
-
-		sortedList.Remove(modToMove);
-
-		int currentTargetIndex = sortedList.IndexOf(targetMod);
-
-		bool isTargetLocked = ModUtils.IsModLocked(targetMod, _modViewModels.ToList());
-
-		if (isTargetLocked)
-		{
-			sortedList.Insert(currentTargetIndex, modToMove);
-		}
-		else if (oldIndex < originalTargetIndex)
-		{
-			sortedList.Insert(currentTargetIndex + 1, modToMove);
-		}
-		else
-		{
-			sortedList.Insert(currentTargetIndex, modToMove);
-		}
-
-		ModUtils.RecalculatePriorities(sortedList);
-	}
 }

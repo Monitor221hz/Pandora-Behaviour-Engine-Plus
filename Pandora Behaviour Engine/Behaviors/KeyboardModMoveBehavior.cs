@@ -1,7 +1,10 @@
-﻿// Pandora/Behaviors/KeyboardModMoveBehavior.cs
+﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
+
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Xaml.Interactivity;
+using Pandora.Utils.Extensions;
 using Pandora.ViewModels;
 
 namespace Pandora.Behaviors;
@@ -22,25 +25,21 @@ public sealed class KeyboardModMoveBehavior : Behavior<DataGrid>
 
 	private void OnKeyDown(object? sender, KeyEventArgs e)
 	{
+		int direction = 0;
+		if (e.Key == Key.OemMinus || e.Key == Key.Subtract) direction = -1;
+		else if (e.Key == Key.OemPlus || e.Key == Key.Add) direction = 1;
+
+		if (direction == 0) return;
+
 		var dataGrid = AssociatedObject;
+
 		if (dataGrid?.DataContext is not EngineViewModel vm ||
 			dataGrid.SelectedItem is not ModInfoViewModel selectedMod)
 			return;
 
-		bool handled = false;
+		bool moved = vm.ModViewModels.TryMoveAndRecalculate(selectedMod, direction);
 
-		if (e.Key == Key.OemMinus || e.Key == Key.Subtract)
-		{
-			vm.MoveModStep(selectedMod, -1);
-			handled = true;
-		}
-		else if (e.Key == Key.OemPlus || e.Key == Key.Add)
-		{
-			vm.MoveModStep(selectedMod, 1);
-			handled = true;
-		}
-
-		if (handled)
+		if (moved)
 		{
 			e.Handled = true;
 

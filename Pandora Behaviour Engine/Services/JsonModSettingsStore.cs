@@ -1,15 +1,15 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
+using NLog;
+using Pandora.Utils.Extensions;
+using Pandora.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using NLog;
-using Pandora.Utils;
-using Pandora.ViewModels;
 
 namespace Pandora.Services;
 
@@ -63,7 +63,7 @@ public static class JsonModSettingsStore
 		if (!success || settings.Count == 0)
 		{
 			logger.Warn("Settings file missing or invalid. Assigning priorities alphanumerically.");
-			ModUtils.SetAlphanumericPriorities(modList);
+			modList.ResetToAlphanumeric();
 			logger.Info("Mod settings applied successfully.");
 			return;
 		}
@@ -77,8 +77,8 @@ public static class JsonModSettingsStore
 			}
 		}
 
-		ModUtils.NormalizeModPriorities(modList);
-		ModUtils.EnsurePandoraModActive(modList, (uint)modList.Count);
+		modList.NormalizePriorities();
+		modList.EnsurePandoraActive();
 		logger.Info("Mod settings applied successfully.");
 	}
 
@@ -86,7 +86,7 @@ public static class JsonModSettingsStore
 	{
 		try
 		{
-			var settings = mods.Where(m => !ModUtils.IsPandoraMod(m))
+			var settings = mods.Where(m => !m.IsPandora)
 				.OrderBy(m => m.Priority)
 				.ToDictionary(
 					m => m.Code,

@@ -86,7 +86,7 @@ public class ModLoader(IPathResolver pathResolver) : IModLoader
 	}
 }
 
-public record ModSaveEntry
+public class ModSaveEntry
 {
 	public uint Priority { get; init; }
 	public bool Active { get; init; }

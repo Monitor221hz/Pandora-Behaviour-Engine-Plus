@@ -5,30 +5,49 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.VisualTree;
 using Avalonia.Xaml.Interactions.DragAndDrop;
+using Pandora.Utils.Extensions;
 using Pandora.ViewModels;
-using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Pandora.Behaviors;
 
 public sealed class ModsDataGridDropHandler : BaseDataGridDropHandler<ModInfoViewModel>
 {
-	protected override ModInfoViewModel MakeCopy(ObservableCollection<ModInfoViewModel> parentCollection, ModInfoViewModel dragItem) => throw new NotImplementedException();
+	protected override ModInfoViewModel MakeCopy(ObservableCollection<ModInfoViewModel> parentCollection, ModInfoViewModel item)
+		=> throw new System.NotImplementedException();
 
 	protected override bool Validate(DataGrid dg, DragEventArgs e, object? sourceContext, object? targetContext, bool execute)
 	{
 		if (sourceContext is not ModInfoViewModel sourceItem
-			|| targetContext is not EngineViewModel vm
-			|| dg.GetVisualAt(e.GetPosition(dg)) is not Control targetControl
-			|| targetControl.DataContext is not ModInfoViewModel targetItem)
+		 || targetContext is not EngineViewModel vm
+		 || dg.GetVisualAt(e.GetPosition(dg)) is not Control targetControl
+		 || targetControl.DataContext is not ModInfoViewModel targetItem)
 		{
 			return false;
 		}
 
-		if (!execute) return true;
+		if (sourceItem.IsPandora) 
+			return false;
 
-		vm.ReorderMod(sourceItem, targetItem);
+		if (!execute) 
+			return true;
 
-		return true;
+		var proxyCollection = new ObservableCollection<ModInfoViewModel>(vm.ModViewModels);
+
+		bool result = RunDropAction(dg, e, true, sourceItem, targetItem, proxyCollection);
+
+		if (result)
+		{
+			var lastItem = vm.ModViewModels.Last();
+			if (proxyCollection.Last() != lastItem)
+			{
+				return false;
+			}
+
+			proxyCollection.RecalculatePriorities();
+		}
+
+		return result;
 	}
 }
