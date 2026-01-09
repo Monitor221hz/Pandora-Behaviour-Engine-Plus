@@ -1,138 +1,60 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
+using Pandora.API.DTOs;
+using Pandora.API.Patch.Config;
+using Pandora.API.Services;
+using Pandora.Models.Patch.Configs;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Reactive;
-using Pandora.API.Patch.Config;
-using Pandora.API.Patch.Engine.Config;
-using Pandora.Models;
-using Pandora.Models.Patch.Configs;
-using Pandora.ViewModels;
-using Pandora.ViewModels.Configuration;
-using ReactiveUI;
+using System.Reactive.Subjects;
 
 namespace Pandora.Services;
 
-public class EngineConfigurationService(
-	IEngineConfigurationFactory<SkyrimConfiguration> skyrimFactory,
-	IEngineConfigurationFactory<SkyrimDebugConfiguration> skyrimDebugFactory
-) : IEngineConfigurationService
+public class EngineConfigurationService : IEngineConfigurationService
 {
-	private readonly IEngineConfigurationFactory<SkyrimConfiguration> _skyrimFactory =
-		skyrimFactory;
-	private readonly IEngineConfigurationFactory<SkyrimDebugConfiguration> _skyrimDebugFactory =
-		skyrimDebugFactory;
+	private readonly IEngineConfigurationFactory<SkyrimConfiguration> _skyrimFactory;
+	private readonly IEngineConfigurationFactory<SkyrimDebugConfiguration> _skyrimDebugFactory;
 
-	private readonly ObservableCollection<IEngineConfigurationViewModel> _configurations = [];
-	private readonly char[] _pathSeparators = ['/', '\\'];
+	private IEngineConfigurationFactory _currentFactory;
+	private readonly List<EngineConfigDescriptor> _availableConfigs = [];
 
-	private IEngineConfigurationFactory _currentFactory = skyrimFactory;
+	private readonly BehaviorSubject<IEngineConfigurationFactory> _factorySubject;
+	public IObservable<IEngineConfigurationFactory> CurrentFactoryChanged => _factorySubject;
+
 	public IEngineConfigurationFactory CurrentFactory => _currentFactory;
 
-	public void SetCurrentFactory(IEngineConfigurationFactory factory) => _currentFactory = factory;
-
-	public void Initialize(
-		bool useSkyrimDebug64,
-		ReactiveCommand<IEngineConfigurationFactory, Unit> setCommand
-	)
+	public EngineConfigurationService(
+		IEngineConfigurationFactory<SkyrimConfiguration> skyrimFactory,
+		IEngineConfigurationFactory<SkyrimDebugConfiguration> skyrimDebugFactory)
 	{
+		_skyrimFactory = skyrimFactory;
+		_skyrimDebugFactory = skyrimDebugFactory;
+		_currentFactory = skyrimFactory;
+		_factorySubject = new BehaviorSubject<IEngineConfigurationFactory>(_currentFactory);
+	}
+
+	public void Initialize(bool useSkyrimDebug64)
+	{
+		_availableConfigs.Clear();
+
+		_availableConfigs.Add(new EngineConfigDescriptor(_skyrimFactory, "Lean", "Skyrim 64/Behavior/Patch"));
+		_availableConfigs.Add(new EngineConfigDescriptor(_skyrimDebugFactory, "Include Debug", "Skyrim 64/Behavior/Patch"));
+
 		if (useSkyrimDebug64)
-			_currentFactory = _skyrimDebugFactory;
-
-		_configurations.Clear();
-		var root = new EngineConfigurationViewModelContainer(
-			"Skyrim 64",
-			new EngineConfigurationViewModelContainer(
-				"Behavior",
-				new EngineConfigurationViewModelContainer(
-					"Patch",
-					new EngineConfigurationViewModel(_skyrimFactory, "Lean", setCommand),
-					new EngineConfigurationViewModel(
-						_skyrimDebugFactory,
-						"Include Debug",
-						setCommand
-					)
-				)
-			)
-		);
-		_configurations.Add(root);
-
-		foreach (var plugin in BehaviourEngine.EngineConfigurations)
 		{
-			RegisterPlugin(plugin, setCommand);
+			SetCurrentFactory(_skyrimDebugFactory);
 		}
 	}
 
-	public IReadOnlyCollection<IEngineConfigurationViewModel> GetConfigurations() =>
-		_configurations;
-
-	private void RegisterPlugin(
-		IEngineConfigurationPlugin plugin,
-		ReactiveCommand<IEngineConfigurationFactory, Unit> setCommand
-	)
+	public void SetCurrentFactory(IEngineConfigurationFactory factory)
 	{
-		if (string.IsNullOrWhiteSpace(plugin.MenuPath))
+		if (factory != null && _currentFactory != factory)
 		{
-			_configurations.Add(
-				new EngineConfigurationViewModel(plugin.Factory, plugin.DisplayName, setCommand)
-			);
-			return;
-		}
-
-		var pathSegments = plugin.MenuPath.Split(
-			_pathSeparators,
-			StringSplitOptions.RemoveEmptyEntries
-		);
-
-		EngineConfigurationViewModelContainer? currentContainer = null;
-		foreach (var segment in pathSegments)
-		{
-			var children = currentContainer?.NestedViewModels ?? _configurations;
-			var existing = children
-				.OfType<EngineConfigurationViewModelContainer>()
-				.FirstOrDefault(c => c.Name.Equals(segment, StringComparison.OrdinalIgnoreCase));
-
-			if (existing is null)
-			{
-				existing = new EngineConfigurationViewModelContainer(segment);
-				children.Add(existing);
-			}
-
-			currentContainer = existing;
-		}
-
-		currentContainer?.NestedViewModels.Add(
-			new EngineConfigurationViewModel(plugin.Factory, plugin.DisplayName, setCommand)
-		);
-	}
-
-	public IEngineConfigurationFactory? GetFactoryByType<T>()
-		where T : IEngineConfiguration
-	{
-		return FlattenConfigurations(_configurations)
-			.OfType<EngineConfigurationViewModel>()
-			.Select(vm => vm.Factory)
-			.FirstOrDefault(factory => factory.Create() is T);
-	}
-
-	public IEnumerable<IEngineConfigurationViewModel> FlattenConfigurations(
-		IEnumerable<IEngineConfigurationViewModel> configs
-	)
-	{
-		foreach (var config in configs)
-		{
-			yield return config;
-
-			if (config is EngineConfigurationViewModelContainer container)
-			{
-				foreach (var nested in FlattenConfigurations(container.NestedViewModels))
-				{
-					yield return nested;
-				}
-			}
+			_currentFactory = factory;
+			_factorySubject.OnNext(factory);
 		}
 	}
+
+	public IReadOnlyCollection<EngineConfigDescriptor> GetAvailableConfigurations() => _availableConfigs;
 }

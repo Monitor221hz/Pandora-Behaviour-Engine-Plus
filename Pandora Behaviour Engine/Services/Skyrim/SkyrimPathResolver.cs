@@ -1,13 +1,6 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using System;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Linq;
-using System.Text.Json;
-using System.Threading.Tasks;
 using GameFinder.Common;
 using GameFinder.RegistryUtils;
 using GameFinder.StoreHandlers.GOG;
@@ -15,12 +8,17 @@ using GameFinder.StoreHandlers.Steam;
 using GameFinder.StoreHandlers.Steam.Models.ValueTypes;
 using NexusMods.Paths;
 using NLog;
+using Pandora.API.DTOs;
 using Pandora.API.Services;
-using Pandora.API.Utils;
 using Pandora.Logging;
-using Pandora.Services;
+using System;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
 
-namespace Pandora.Utils.Skyrim;
+namespace Pandora.Services.Skyrim;
 
 /// <summary>
 /// Resolves the installation path of Skyrim Special Edition, prioritizing a manually specified path via command-line arguments.
@@ -36,18 +34,20 @@ public sealed class SkyrimPathResolver : IPathResolver
 	private const string PREVIOUS_OUTPUT_FILENAME = "PreviousOutput.txt";
 	private const string PANDORA_ENGINE_FOLDERNAME = "Pandora_Engine";
 
+	private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+	private readonly LaunchOptions _launchOptions;
+
 	private readonly AHandler<SteamGame, AppId> _steamHandler;
 	private readonly AHandler<GOGGame, GOGGameId> _gogHandler;
 
-	private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
 	private delegate DirectoryInfo? PathProvider();
 
-	private DirectoryInfo _assemblyDirectory = new(
+	private readonly DirectoryInfo _assemblyDirectory = new(
 		Path.GetDirectoryName(Process.GetCurrentProcess().MainModule?.FileName)
 			?? throw new NullReferenceException("Main process not found.")
 	);
-	private DirectoryInfo _currentDirectory;
+	private readonly DirectoryInfo _currentDirectory;
 
 	private Lazy<DirectoryInfo> _gameDirectory;
 	private Lazy<DirectoryInfo> _outputDirectory;
@@ -79,9 +79,11 @@ public sealed class SkyrimPathResolver : IPathResolver
 		IRegistry? registry,
 		IFileSystem fileSystem,
 		AHandler<SteamGame, AppId> steamHandler,
-		AHandler<GOGGame, GOGGameId> gogHandler
+		AHandler<GOGGame, GOGGameId> gogHandler,
+		LaunchOptions launchOptions
 	)
 	{
+		_launchOptions = launchOptions;
 		_steamHandler = steamHandler;
 		_gogHandler = gogHandler;
 		_fileSystem = fileSystem;
@@ -149,11 +151,6 @@ public sealed class SkyrimPathResolver : IPathResolver
 		return dir;
 	}
 
-	public DirectoryInfo GetGameDataFolder()
-	{
-		return _gameDirectory.Value;
-	}
-
 	private FileInfo ResolvePreviousOutputFile()
 	{
 		return new FileInfo(Path.Join(GetPandoraEngineFolder().FullName, PREVIOUS_OUTPUT_FILENAME));
@@ -219,7 +216,7 @@ public sealed class SkyrimPathResolver : IPathResolver
 
 	private DirectoryInfo ResolveOutputDirectory()
 	{
-		return LaunchOptions.Current?.OutputDirectory
+		return _launchOptions.OutputDirectory
 			?? TryGetOutputPathFromPathsConfiguration()
 			?? GetGameDataFolder()
 			?? GetAssemblyFolder();
@@ -243,9 +240,9 @@ public sealed class SkyrimPathResolver : IPathResolver
 	/// A <see cref="DirectoryInfo"/> representing the "Data" directory within the specified path if provided;
 	/// otherwise, null if no path is specified in the command-line arguments.
 	/// </returns>
-	private static DirectoryInfo? TryGetDataPathFromCommandLine()
+	private DirectoryInfo? TryGetDataPathFromCommandLine()
 	{
-		var gameDir = LaunchOptions.Current?.SkyrimGameDirectory;
+		var gameDir = _launchOptions.SkyrimGameDirectory;
 		if (gameDir is not null)
 		{
 			Logger.Debug(
@@ -259,15 +256,7 @@ public sealed class SkyrimPathResolver : IPathResolver
 		return null;
 	}
 
-	/// <summary>
-	/// Try to get path from current working directory.
-	/// This is needed in case the path of the current directory coincides with the directory to Data.
-	/// Such cases are set via MO2/Vortex using Start In.
-	/// </summary>
-	/// <returns>
-	/// A <see cref="DirectoryInfo"/> representing the "Data" directory within the installation folder if found;
-	/// otherwise <see cref="Environment.CurrentDirectory"/>.
-	/// </returns>
+
 	private DirectoryInfo? TryGetDataPathFromCurrentDirectory()
 	{
 		Logger.Debug(
@@ -279,7 +268,7 @@ public sealed class SkyrimPathResolver : IPathResolver
 
 	private DirectoryInfo? TryGetDataPathFromGameFinder()
 	{
-		SteamHandler steamHandler = new SteamHandler(_fileSystem, _registry);
+		var steamHandler = new SteamHandler(_fileSystem, _registry);
 		foreach (var appId in steamAppIDs)
 		{
 			var game = steamHandler.FindOneGameById(AppId.From(appId), out var steamErrors);
@@ -291,6 +280,7 @@ public sealed class SkyrimPathResolver : IPathResolver
 		{
 			return null;
 		}
+
 		var gogHandler = new GOGHandler(_registry, _fileSystem);
 		var gogGame = gogHandler.FindOneGameById(GOGGameId.From(gogAppID), out var gogErrors);
 		if (gogGame == null || !gogGame.Path.DirectoryExists())
@@ -347,6 +337,8 @@ public sealed class SkyrimPathResolver : IPathResolver
 	public DirectoryInfo GetPandoraEngineFolder() => _pandoraEngineDirectory.Value;
 
 	public DirectoryInfo GetAssemblyFolder() => _assemblyDirectory;
+
+	public DirectoryInfo GetGameDataFolder() => _gameDirectory.Value;
 
 	public FileInfo GetActiveModsFile() => _activeModsFile.Value;
 

@@ -1,81 +1,57 @@
-﻿// SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
-
-using System;
-using System.Collections.Generic;
+﻿// Copyright (c) Wiesław Šoltés. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for details.
 using System.Collections.ObjectModel;
-using System.Linq;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 using Avalonia.Xaml.Interactions.DragAndDrop;
-using Pandora.Utils;
-using Pandora.ViewModels;
 
-namespace Pandora.Behaviors;
+namespace Avalonia.Xaml.Interactions.DragAndDrop;
 
-public abstract class BaseDataGridDropHandler<T>(Action<T, uint> setPriority) : DropHandlerBase
-	where T : ViewModelBase
+/// <summary>
+/// Provides common drag-and-drop logic for <see cref="DataGrid"/> row manipulations.
+/// </summary>
+/// <typeparam name="T">The item type contained by the target <see cref="DataGrid"/>.</typeparam>
+public abstract class BaseDataGridDropHandler<T> : DropHandlerBase
+	where T : class
 {
-	private const string rowDraggingUpStyleClass = "DraggingUp";
-	private const string rowDraggingDownStyleClass = "DraggingDown";
+	private const string RowDraggingUpStyleClass = "DraggingUp";
+	private const string RowDraggingDownStyleClass = "DraggingDown";
 
-	private readonly Action<T, uint> _setPriority =
-		setPriority ?? throw new ArgumentNullException(nameof(setPriority));
-
-	protected virtual void AssignPriorities(IEnumerable<T> orderedItems)
-	{
-		var itemsList = orderedItems.ToList();
-		uint priority = 1;
-		foreach (var item in itemsList)
-		{
-			if (item is ModInfoViewModel mod && ModUtils.IsPandoraMod(mod))
-				continue;
-
-			_setPriority(item, priority++);
-		}
-		if (
-			itemsList.FirstOrDefault(item =>
-				item is ModInfoViewModel mod && ModUtils.IsPandoraMod(mod)
-			)
-			is T pandora
-		)
-		{
-			_setPriority(pandora, priority);
-		}
-	}
-
+	/// <summary>
+	/// Creates a copy of the source item for copy operations.
+	/// </summary>
+	/// <param name="parentCollection">The collection owning the original item.</param>
+	/// <param name="item">The item to clone.</param>
 	protected abstract T MakeCopy(ObservableCollection<T> parentCollection, T item);
 
-	protected abstract bool Validate(
-		DataGrid dg,
-		DragEventArgs e,
-		object? sourceContext,
-		object? targetContext,
-		bool bExecute
-	);
+	/// <summary>
+	/// Validates a pending drag operation and optionally executes it.
+	/// </summary>
+	/// <param name="dg">The target data grid.</param>
+	/// <param name="e">The drag event data.</param>
+	/// <param name="sourceContext">The source context.</param>
+	/// <param name="targetContext">The target context.</param>
+	/// <param name="execute">When true, the handler should execute the drop logic.</param>
+	protected abstract bool Validate(DataGrid dg, DragEventArgs e, object? sourceContext, object? targetContext, bool execute);
 
-	public override bool Validate(
-		object? sender,
-		DragEventArgs e,
-		object? sourceContext,
-		object? targetContext,
-		object? state
-	)
+	/// <inheritdoc />
+	public override bool Validate(object? sender, DragEventArgs e, object? sourceContext, object? targetContext, object? state)
 	{
 		if (e.Source is Control c && sender is DataGrid dg)
 		{
-			bool valid = Validate(dg, e, sourceContext, targetContext, false);
+			var valid = Validate(dg, e, sourceContext, targetContext, false);
 			if (valid)
 			{
 				var row = FindDataGridRowFromChildView(c);
-				string direction = e.Data.Contains("direction")
-					? (string)e.Data.Get("direction")!
-					: "down";
-				ApplyDraggingStyleToRow(row!, direction);
+				if (row is not null)
+				{
+					var isDirectionUp = e.GetPosition(row).Y < row.Bounds.Height / 2;
+					ApplyDraggingStyleToRow(row, isDirectionUp);
+				}
 				ClearDraggingStyleFromAllRows(sender, exceptThis: row);
 			}
 			return valid;
@@ -84,13 +60,8 @@ public abstract class BaseDataGridDropHandler<T>(Action<T, uint> setPriority) : 
 		return false;
 	}
 
-	public override bool Execute(
-		object? sender,
-		DragEventArgs e,
-		object? sourceContext,
-		object? targetContext,
-		object? state
-	)
+	/// <inheritdoc />
+	public override bool Execute(object? sender, DragEventArgs e, object? sourceContext, object? targetContext, object? state)
 	{
 		ClearDraggingStyleFromAllRows(sender);
 		if (e.Source is Control && sender is DataGrid dg)
@@ -100,66 +71,89 @@ public abstract class BaseDataGridDropHandler<T>(Action<T, uint> setPriority) : 
 		return false;
 	}
 
+	/// <inheritdoc />
 	public override void Cancel(object? sender, RoutedEventArgs e)
 	{
 		base.Cancel(sender, e);
-		// this is necessary to clear adorner borders when mouse leaves DataGrid
-		// they would remain even after changing screens
+		// Clear adorner borders when the pointer leaves the DataGrid.
 		ClearDraggingStyleFromAllRows(sender);
 	}
 
-	protected bool RunDropAction(
-		DataGrid dg,
-		DragEventArgs e,
-		bool bExecute,
-		T sourceItem,
-		T targetItem,
-		ObservableCollection<T> items
-	)
+	/// <summary>
+	/// Executes a drop action against the provided <paramref name="items"/> collection.
+	/// </summary>
+	/// <param name="dg">The owning data grid.</param>
+	/// <param name="e">The drag event arguments.</param>
+	/// <param name="execute">True to perform the operation; false to validate only.</param>
+	/// <param name="sourceItem">The item being dragged.</param>
+	/// <param name="targetItem">The item currently under the pointer.</param>
+	/// <param name="items">The backing collection.</param>
+	/// <returns><c>true</c> when the operation is valid; otherwise <c>false</c>.</returns>
+	protected bool RunDropAction(DataGrid dg, DragEventArgs e, bool execute, T sourceItem, T targetItem, ObservableCollection<T> items)
 	{
-		if (sourceItem.Equals(targetItem))
+		var sourceIndex = items.IndexOf(sourceItem);
+		var targetIndex = items.IndexOf(targetItem);
+
+		if (sourceIndex < 0 || targetIndex < 0)
+		{
 			return false;
-
-		var currentOrder = items
-			.OrderBy(item => (item as ModInfoViewModel)?.Priority ?? 0)
-			.ToList();
-
-		currentOrder.Remove(sourceItem);
-
-		int newTargetIndex = currentOrder.IndexOf(targetItem);
-
-		string direction = e.Data.Contains("direction") ? (string)e.Data.Get("direction")! : "down";
-
-		if (direction == "up")
-		{
-			currentOrder.Insert(newTargetIndex, sourceItem);
-		}
-		else // "down"
-		{
-			currentOrder.Insert(newTargetIndex + 1, sourceItem);
 		}
 
-		if (bExecute)
+		var insertIndex = targetIndex;
+
+		if (e.Source is Control c)
 		{
-			AssignPriorities(currentOrder);
-			dg.SelectedItem = sourceItem;
+			var row = FindDataGridRowFromChildView(c);
+			if (row is not null && e.GetPosition(row).Y > row.Bounds.Height / 2)
+			{
+				insertIndex = targetIndex + 1;
+			}
 		}
-		return true;
+
+		var adjustedTargetIndex = insertIndex;
+		if (adjustedTargetIndex > sourceIndex)
+		{
+			adjustedTargetIndex--;
+		}
+
+		switch (e.DragEffects)
+		{
+			case DragDropEffects.Copy:
+				{
+					if (execute)
+					{
+						var clone = MakeCopy(items, sourceItem);
+						InsertItem(items, clone, insertIndex);
+						dg.SelectedIndex = insertIndex;
+					}
+					return true;
+				}
+			case DragDropEffects.Move:
+				{
+					if (execute)
+					{
+						MoveItem(items, sourceIndex, adjustedTargetIndex);
+						dg.SelectedIndex = adjustedTargetIndex;
+					}
+					return true;
+				}
+			case DragDropEffects.Link:
+				{
+					if (execute)
+					{
+						SwapItem(items, sourceIndex, adjustedTargetIndex);
+						dg.SelectedIndex = adjustedTargetIndex;
+					}
+					return true;
+				}
+			default:
+				return false;
+		}
 	}
 
 	private static DataGridRow? FindDataGridRowFromChildView(StyledElement sourceChild)
 	{
-		int maxDepth = 16;
-		DataGridRow? row = null;
-		StyledElement? current = sourceChild;
-		while (maxDepth-- > 0 || row is null)
-		{
-			if (current is DataGridRow dgr)
-				row = dgr;
-
-			current = current?.Parent;
-		}
-		return row;
+		return sourceChild.FindLogicalAncestorOfType<DataGridRow>();
 	}
 
 	private static DataGridRowsPresenter? GetRowsPresenter(Visual v)
@@ -174,10 +168,10 @@ public abstract class BaseDataGridDropHandler<T>(Action<T, uint> setPriority) : 
 		return null;
 	}
 
-	private static void ClearDraggingStyleFromAllRows(
-		object? sender,
-		DataGridRow? exceptThis = null
-	)
+	/// <summary>
+	/// Removes drag styling from all materialized rows except the provided instance.
+	/// </summary>
+	private static void ClearDraggingStyleFromAllRows(object? sender, DataGridRow? exceptThis = null)
 	{
 		if (sender is DataGrid dg)
 		{
@@ -190,41 +184,26 @@ public abstract class BaseDataGridDropHandler<T>(Action<T, uint> setPriority) : 
 				if (r == exceptThis)
 					continue;
 
-				if (r!.Classes.Contains(rowDraggingUpStyleClass))
-				{
-					r?.Classes?.Remove(rowDraggingUpStyleClass);
-				}
-				if (r!.Classes.Contains(rowDraggingDownStyleClass))
-				{
-					r?.Classes?.Remove(rowDraggingDownStyleClass);
-				}
+				r?.Classes?.Remove(RowDraggingUpStyleClass);
+				r?.Classes?.Remove(RowDraggingDownStyleClass);
 			}
 		}
 	}
 
-	private static void ApplyDraggingStyleToRow(DataGridRow row, string direction)
+	/// <summary>
+	/// Applies the drag styling for the given direction to the specified row.
+	/// </summary>
+	private static void ApplyDraggingStyleToRow(DataGridRow row, bool isDirectionUp)
 	{
-		if (direction == "up")
+		if (isDirectionUp)
 		{
-			if (row.Classes.Contains(rowDraggingDownStyleClass) == true)
-			{
-				row.Classes.Remove(rowDraggingDownStyleClass);
-			}
-			if (row.Classes.Contains(rowDraggingUpStyleClass) == false)
-			{
-				row.Classes.Add(rowDraggingUpStyleClass);
-			}
+			row.Classes.Remove(RowDraggingDownStyleClass);
+			row.Classes.Add(RowDraggingUpStyleClass);
 		}
-		else if (direction == "down")
+		else
 		{
-			if (row.Classes.Contains(rowDraggingUpStyleClass) == true)
-			{
-				row.Classes.Remove(rowDraggingUpStyleClass);
-			}
-			if (row.Classes.Contains(rowDraggingDownStyleClass) == false)
-			{
-				row.Classes.Add(rowDraggingDownStyleClass);
-			}
+			row.Classes.Remove(RowDraggingUpStyleClass);
+			row.Classes.Add(RowDraggingDownStyleClass);
 		}
 	}
 }

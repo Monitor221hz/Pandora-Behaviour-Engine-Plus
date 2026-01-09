@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using HKX2E;
 using Pandora.API.Patch;
 using Pandora.API.Patch.Skyrim64;
-using Pandora.API.Utils;
+using Pandora.API.Services;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 using Pandora.Patch.Patchers.Skyrim.FNIS;
 
@@ -116,6 +116,7 @@ public class FNISParser : IFNISParser
 	};
 
 	private readonly IPathResolver _pathResolver;
+	private readonly IProjectManager _projectManager;
 	private readonly HashSet<PackFile> parsedBehaviorFiles = [];
 	private readonly HashSet<Project> skipAnimlistProjects = [];
 	private readonly Dictionary<string, FNISAnimationList> animListFileMap = new(
@@ -128,10 +129,8 @@ public class FNISParser : IFNISParser
 	public FNISParser(IPathResolver pathResolver, IProjectManager manager)
 	{
 		_pathResolver = pathResolver;
-		projectManager = manager;
+		_projectManager = manager;
 	}
-
-	private IProjectManager projectManager;
 
 	private void ProcessFNISAnimationsHumanoid(
 		DirectoryInfo modFolder,
@@ -223,7 +222,7 @@ public class FNISParser : IFNISParser
 				modAnimationFolders,
 				folder =>
 				{
-					ProcessFNISAnimationsHumanoid(folder, behaviorFolder, project, projectManager);
+					ProcessFNISAnimationsHumanoid(folder, behaviorFolder, project, _projectManager);
 				}
 			);
 			return;
@@ -251,14 +250,14 @@ public class FNISParser : IFNISParser
 						folder,
 						behaviorFolder,
 						project,
-						projectManager
+						_projectManager
 					)
 					&& !ProcessFNISAnimationsCreature(
 						project.Identifier.Replace("project", string.Empty),
 						folder,
 						behaviorFolder,
 						project,
-						projectManager
+						_projectManager
 					)
 				)
 				{
@@ -374,7 +373,7 @@ public class FNISParser : IFNISParser
 		{
 			return false;
 		} //thread safe
-		projectManager.TryActivatePackFile(destPackFile);
+		_projectManager.TryActivatePackFile(destPackFile);
 		string nameWithoutExtension = Path.GetFileNameWithoutExtension(sourceFile.Name);
 		string graphPath =
 			$"{destPackFile.InputHandle.Directory?.Name}\\{nameWithoutExtension}.hkx";

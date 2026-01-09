@@ -4,42 +4,47 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Xaml.Interactivity;
+using Pandora.Utils;
 using Pandora.ViewModels;
 
 namespace Pandora.Behaviors;
 
-public class KeyboardModMoveBehavior : StyledElementBehavior<DataGrid>
+public sealed class KeyboardModMoveBehavior : Behavior<DataGrid>
 {
-	public ModsDataGridDropHandler? DropHandler { get; set; }
-
 	protected override void OnAttached()
 	{
 		base.OnAttached();
-		AssociatedObject!.KeyDown += OnKeyDown;
+		AssociatedObject?.KeyDown += OnKeyDown;
 	}
 
 	protected override void OnDetaching()
 	{
 		base.OnDetaching();
-		AssociatedObject!.KeyDown -= OnKeyDown;
+		AssociatedObject?.KeyDown -= OnKeyDown;
 	}
 
 	private void OnKeyDown(object? sender, KeyEventArgs e)
 	{
-		if (AssociatedObject.DataContext is not EngineViewModel vm || DropHandler is null)
+		int direction = 0;
+		if (e.Key == Key.OemMinus || e.Key == Key.Subtract) direction = -1;
+		else if (e.Key == Key.OemPlus || e.Key == Key.Add) direction = 1;
+
+		if (direction == 0) return;
+
+		var dataGrid = AssociatedObject;
+
+		if (dataGrid?.DataContext is not EngineViewModel vm ||
+			dataGrid.SelectedItem is not ModInfoViewModel selectedMod)
 			return;
 
-		bool isCtrl = (e.KeyModifiers & KeyModifiers.Control) == KeyModifiers.Control;
+		bool moved = vm.ModViewModels.TryMoveAndRecalculate(selectedMod, direction);
 
-		if (e.Key == Key.Add || e.Key == Key.OemPlus || (isCtrl && e.Key == Key.Down))
+		if (moved)
 		{
-			DropHandler.MoveDown(AssociatedObject, vm);
 			e.Handled = true;
-		}
-		else if (e.Key == Key.Subtract || e.Key == Key.OemMinus || (isCtrl && e.Key == Key.Up))
-		{
-			DropHandler.MoveUp(AssociatedObject, vm);
-			e.Handled = true;
+
+			dataGrid.SelectedItem = selectedMod;
+			dataGrid.ScrollIntoView(selectedMod, null);
 		}
 	}
 }

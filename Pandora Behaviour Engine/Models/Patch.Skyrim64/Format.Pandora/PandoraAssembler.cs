@@ -9,7 +9,7 @@ using Pandora.API.Patch.IOManagers;
 using Pandora.API.Patch.Skyrim64;
 using Pandora.API.Patch.Skyrim64.AnimData;
 using Pandora.API.Patch.Skyrim64.AnimSetData;
-using Pandora.API.Utils;
+using Pandora.API.Services;
 using Pandora.Models.Patch.IO.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.AnimData;
 using Pandora.Models.Patch.Skyrim64.AnimSetData;
@@ -23,14 +23,6 @@ public class PandoraAssembler
 {
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-	private readonly DirectoryInfo templateFolder = new(
-		Path.Join(
-			BehaviourEngine.AssemblyDirectory.FullName,
-			"Pandora_Engine",
-			"Skyrim",
-			"Template"
-		)
-	);
 	private readonly PandoraNativePatchManager nativeManager = new();
 	private readonly IPathResolver _pathResolver;
 	private readonly IMetaDataExporter<IPackFile> _packFileExporter;
@@ -54,33 +46,19 @@ public class PandoraAssembler
 		AnimDataManager = animDataManager;
 	}
 
-	public PandoraAssembler(
-		IPathResolver pathResolver,
-		IMetaDataExporter<IPackFile> exporter,
-		IPatchAssembler nemesisAssembler
-	)
-	{
-		_pathResolver = pathResolver;
-		_packFileExporter = exporter;
-		ProjectManager = nemesisAssembler.ProjectManager;
-		AnimSetDataManager = nemesisAssembler.AnimSetDataManager;
-		AnimDataManager = nemesisAssembler.AnimDataManager;
-	}
+	//public PandoraAssembler(
+	//	IPathResolver pathResolver,
+	//	IMetaDataExporter<IPackFile> exporter,
+	//	IPatchAssembler nemesisAssembler
+	//)
+	//{
+	//	_pathResolver = pathResolver;
+	//	_packFileExporter = exporter;
+	//	ProjectManager = nemesisAssembler.ProjectManager;
+	//	AnimSetDataManager = nemesisAssembler.AnimSetDataManager;
+	//	AnimDataManager = nemesisAssembler.AnimDataManager;
+	//}
 
-	public PandoraAssembler(
-		IPathResolver pathResolver,
-		IMetaDataExporter<IPackFile> exporter,
-		IProjectManager projManager,
-		IAnimSetDataManager animSDManager,
-		IAnimDataManager animDManager
-	)
-	{
-		_pathResolver = pathResolver;
-		_packFileExporter = exporter;
-		ProjectManager = projManager;
-		AnimSetDataManager = animSDManager;
-		AnimDataManager = animDManager;
-	}
 
 	public bool AssemblePackFilePatch(FileInfo file, IModInfo modInfo)
 	{

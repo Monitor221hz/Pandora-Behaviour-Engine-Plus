@@ -1,10 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using System;
-using System.Globalization;
-using System.IO;
-using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
@@ -12,19 +8,20 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 using Microsoft.Extensions.DependencyInjection;
 using Pandora.API.Services;
-using Pandora.API.Utils;
 using Pandora.Logging;
+using Pandora.Models.Patch.Plugins;
 using Pandora.Services;
-using Pandora.Utils;
 using Pandora.ViewModels;
 using Pandora.Views;
+using System;
+using System.Globalization;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Pandora;
 
 public partial class App : Application
 {
-	private AppExceptionHandler? _appExceptionHandler;
-
 	public override void Initialize()
 	{
 		AvaloniaXamlLoader.Load(this);
@@ -36,24 +33,55 @@ public partial class App : Application
 		SetupAppTheme();
 		if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
 		{
-			LaunchOptions.Parse(desktop.Args, caseInsensitive: true);
-
 			// Line below is needed to remove Avalonia data validation.
 			// Without this line you will get duplicate validations from both Avalonia and CT
 			BindingPlugins.DataValidators.RemoveAt(0);
 
 			var serviceCollection = new ServiceCollection();
-			var mainWindow = new MainWindow();
 
-			serviceCollection.AddPandoraServices(new() { MainWindow = mainWindow });
+			serviceCollection.AddPandoraServices();
 			serviceCollection.AddViewModels();
+			
 			Services = serviceCollection.BuildServiceProvider();
+
+			var exceptionHandler = Services.GetRequiredService<IAppExceptionHandler>();
+			exceptionHandler.Initialize();
+
 			SetupNLogConfig();
+
+			if (PluginManager.EngineConfigurations.Count > 0)
+			{
+				EngineLoggerAdapter.AppendLine("Plugins loaded.");
+			}
+
+			var mainWindow = Services.GetRequiredService<MainWindow>();
 			mainWindow.DataContext = Services.GetRequiredService<MainWindowViewModel>();
+
 			desktop.MainWindow = mainWindow;
+
+
+			_ = InitializeApplicationAsync();
 		}
 
 		base.OnFrameworkInitializationCompleted();
+	}
+
+	private async Task InitializeApplicationAsync()
+	{
+		var modService = Services.GetRequiredService<IModService>();
+		var engine = Services.GetRequiredService<IBehaviourEngine>();
+
+		try
+		{
+			var loadModsTask = modService.RefreshModsAsync();
+			var initEngineTask = engine.InitializeAsync();
+
+			await Task.WhenAll(loadModsTask, initEngineTask);
+		}
+		catch (Exception ex)
+		{
+			logger.Fatal(ex, "Startup failed");
+		}
 	}
 
 	private static void SetupCultureInfo()
@@ -75,13 +103,6 @@ public partial class App : Application
 			1 => ThemeVariant.Dark,
 			_ => ThemeVariant.Default,
 		};
-	}
-
-	private void SetupExceptionHandler()
-	{
-		_appExceptionHandler = new AppExceptionHandler(
-			Services.GetRequiredService<IPathResolver>()
-		);
 	}
 
 	private void SetupNLogConfig()
@@ -110,4 +131,6 @@ public partial class App : Application
 	/// Gets the <see cref="IServiceProvider"/> instance to resolve application services.
 	/// </summary>
 	public IServiceProvider Services { get; private set; }
+
+	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 }

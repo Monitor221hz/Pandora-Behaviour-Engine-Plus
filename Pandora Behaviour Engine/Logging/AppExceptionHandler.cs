@@ -1,30 +1,31 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
+using Pandora.API.Services;
+using ReactiveUI;
 using System;
-using System.Diagnostics;
 using System.IO;
+using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
-using Pandora.API.Utils;
-using Pandora.Utils;
 
 namespace Pandora.Logging;
 
-public class AppExceptionHandler
+public class AppExceptionHandler : IAppExceptionHandler
 {
 	private IPathResolver _pathResolver;
 
 	public AppExceptionHandler(IPathResolver pathResolver)
 	{
 		_pathResolver = pathResolver;
-		Register();
 	}
 
-	public void Register()
+	public void Initialize()
 	{
 		AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 		TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
+
+		RxApp.DefaultExceptionHandler = Observer.Create<Exception>(HandleRxException);
 	}
 
 	/// <summary>
@@ -60,13 +61,15 @@ public class AppExceptionHandler
 		e.SetObserved();
 	}
 
+	private void HandleRxException(Exception ex)
+	{
+		var content = BuildLog("ReactiveUI_Exception", ex.ToString());
+		WriteCrashLog("Pandora_RxUI_Error", content);
+	}
 	private void WriteCrashLog(string fileName, string log)
 	{
 		try
 		{
-			//var dir = PandoraPaths.OutputPath.Exists
-			//	? PandoraPaths.OutputPath.FullName
-			//	: Path.GetDirectoryName(Process.GetCurrentProcess().MainModule?.FileName)!;
 			var dir = _pathResolver.GetOutputFolder().FullName;
 			Directory.CreateDirectory(dir);
 			var outputLogPath = Path.Combine(dir, fileName);
@@ -84,9 +87,9 @@ public class AppExceptionHandler
 		sb.AppendLine("[ Pandora Critical Crash Log ]");
 		sb.AppendLine("=======================================");
 		sb.AppendLine($"Type: {type}");
-		sb.AppendLine($"Environment.CurrentDirectory: {Environment.CurrentDirectory}");
+		sb.AppendLine($"Environment.CurrentDirectory: {_pathResolver.GetCurrentFolder().FullName}");
 		sb.AppendLine(
-			$"Executable Path: {Process.GetCurrentProcess().MainModule?.FileName ?? "unknown"}"
+			$"Executable Path: {_pathResolver.GetAssemblyFolder().FullName ?? "unknown"}"
 		);
 		sb.AppendLine();
 		sb.AppendLine(content);

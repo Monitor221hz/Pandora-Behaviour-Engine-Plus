@@ -2,18 +2,17 @@
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
 using Microsoft.Extensions.DependencyInjection;
-using NSubstitute;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Pandora.API.Data;
 using Pandora.API.Patch.Config;
 using Pandora.API.Patch.IOManagers;
-using Pandora.API.Utils;
+using Pandora.API.Patch.Skyrim64;
+using Pandora.API.Services;
 using Pandora.Data;
-using Pandora.Models;
 using Pandora.Models.Patch.Configs;
-using Pandora.Models.Patch.Skyrim64;
-using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
+using Pandora.Models.Patch.IO.Skyrim64;
 using Pandora.Services;
-using Pandora.Utils;
-using Testably.Abstractions.Testing;
+using PandoraTests.Utils;
 
 namespace PandoraTests;
 
@@ -25,8 +24,19 @@ public sealed class DependencyInjectedCluster : IDisposable
     {
         var serviceCollection = new ServiceCollection();
 
-        serviceCollection.AddPandoraServices(Substitute.For<PandoraServiceContext>());
+        serviceCollection.AddPandoraServices();
         serviceCollection.AddSingleton<IPathResolver, TestPathResolver>();
+
+        serviceCollection.RemoveAll<IMetaDataExporter<IPackFile>>();
+
+        serviceCollection.AddSingleton<DebugPackFileExporter>();
+
+        serviceCollection.AddSingleton<TestCapturingExporter>(sp =>
+            new TestCapturingExporter(sp.GetRequiredService<DebugPackFileExporter>()));
+
+        serviceCollection.AddSingleton<IMetaDataExporter<IPackFile>>(sp =>
+            sp.GetRequiredService<TestCapturingExporter>());
+
         ServiceProvider = serviceCollection.BuildServiceProvider();
     }
 
@@ -51,7 +61,7 @@ public class EndToEndTests : IClassFixture<DependencyInjectedCluster>
         _output.WriteLine(
             $"Starting EngineOutputTest. OutputDirectory: {Resources.OutputDirectory.FullName}"
         );
-        var modLoader = _serviceProvider.GetRequiredService<IModLoader>();
+        var modLoader = _serviceProvider.GetRequiredService<IModLoaderService>();
         var configurationFactory = _serviceProvider.GetRequiredService<
             IEngineConfigurationFactory<SkyrimDebugConfiguration>
         >();
@@ -64,8 +74,8 @@ public class EndToEndTests : IClassFixture<DependencyInjectedCluster>
         };
         var directories = new List<DirectoryInfo>
         {
-            BehaviourEngine.AssemblyDirectory,
-            new(Path.Combine(Environment.CurrentDirectory, "Data")),
+            pathResolver.GetAssemblyFolder(),
+            new(Path.Combine(pathResolver.GetCurrentFolder().FullName, "Data")),
         };
         var activeModsFilePath = pathResolver.GetActiveModsFile();
         _output.WriteLine(
@@ -77,24 +87,41 @@ public class EndToEndTests : IClassFixture<DependencyInjectedCluster>
         Assert.NotEmpty(mods);
 
         // Initialization Engine and Launch
-        BehaviourEngine engine = new BehaviourEngine(pathResolver, configurationFactory.Create()!);
+        var engine = _serviceProvider.GetRequiredService<IBehaviourEngine>();
+        await engine.SetConfigurationAsync(configurationFactory);
         _output.WriteLine(
             $"BehaviourEngine configured with OutputPath: {Resources.OutputDirectory.FullName}"
         );
 
-        await engine.PreloadAsync();
+        await engine.InitializeAsync();
         _output.WriteLine("PreloadAsync completed");
 
-        bool launchSuccess = await engine.LaunchAsync(mods.ToList());
-        Assert.True(launchSuccess, "LaunchAsync failed");
+        var result = await engine.LaunchAsync(mods.ToList());
+        _output.WriteLine($"Launch Result: {result.Message}");
+        Assert.True(result.Success, $"LaunchAsync failed: {result.Message}");
         _output.WriteLine("LaunchAsync completed successfully");
 
-        var skyrimPatcher = engine.Configuration.Patcher as SkyrimPatcher;
-        Assert.NotNull(skyrimPatcher);
-        _output.WriteLine("SkyrimPatcher retrieved");
+        //var skyrimPatcher = engine.Configuration.Patcher as SkyrimPatcher;
+        //Assert.NotNull(skyrimPatcher);
+        //_output.WriteLine("SkyrimPatcher retrieved");
 
-        var activePackFiles = skyrimPatcher.NemesisAssembler.ProjectManager.ActivePackFiles;
-        _output.WriteLine($"Found {activePackFiles.Count} ActivePackFiles");
+        //var activePackFiles = skyrimPatcher.NemesisAssembler.ProjectManager.ActivePackFiles;
+        //_output.WriteLine($"Found {activePackFiles.Count} ActivePackFiles");
+
+        //Assert.NotEmpty(activePackFiles);
+
+        //foreach (var activePackFile in activePackFiles)
+        //{
+        //    _output.WriteLine(
+        //        $"PackFile: Name={activePackFile.Name}, InputHandle={activePackFile.InputHandle.FullName}, OutputHandle={activePackFile.OutputHandle.FullName}, RelativeOutputDirectoryPath={activePackFile.RelativeOutputDirectoryPath}"
+        //    );
+        //    PackFileAssert.DowncastValidPackFile(activePackFile);
+        //}
+
+        var spyExporter = _serviceProvider.GetRequiredService<TestCapturingExporter>();
+        Assert.NotNull(spyExporter);
+        var activePackFiles = spyExporter.CapturedPackFiles;
+        _output.WriteLine($"Spy captured {activePackFiles.Count} ActivePackFiles");
 
         Assert.NotEmpty(activePackFiles);
 

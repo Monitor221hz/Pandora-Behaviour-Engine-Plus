@@ -1,13 +1,15 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using Pandora.Utils;
+using Pandora.API.Services;
+using Pandora.Services;
 
 namespace PandoraTests;
 
 public class ArgumentsParsingTests : IDisposable
 {
     private readonly ITestOutputHelper _output;
+    private readonly ILaunchOptionsParser _parser;
     private readonly DirectoryInfo _tempDir;
     private readonly DirectoryInfo _tempDirWithSpaces;
 
@@ -24,6 +26,8 @@ public class ArgumentsParsingTests : IDisposable
         _output.WriteLine($"Test directories created:");
         _output.WriteLine($"  - Path: {_tempDir.FullName}");
         _output.WriteLine($"  - Path with spaces: {_tempDirWithSpaces.FullName}");
+
+        _parser = new LaunchOptionsParser();
     }
 
     #region Test Data Sources
@@ -79,116 +83,95 @@ public class ArgumentsParsingTests : IDisposable
     [MemberData(nameof(StandardFormatsData))]
     public void Parse_Should_CorrectlyHandleStandardFormats(params string[] argsTemplate)
     {
-        RunParseTest(_tempDir.FullName, caseInsensitive: false, argsTemplate);
-        RunParseTest(_tempDir.FullName, caseInsensitive: true, argsTemplate);
+        RunParseTest(_tempDir.FullName, argsTemplate);
     }
 
     [Theory(DisplayName = "Parse: Path with spaces")]
     [MemberData(nameof(StandardFormatsWithSpaceData))]
     public void Parse_Should_HandlePathsWithSpaces_WhenQuoted(params string[] argsTemplate)
     {
-        RunParseTest(_tempDirWithSpaces.FullName, caseInsensitive: false, argsTemplate);
-        RunParseTest(_tempDirWithSpaces.FullName, caseInsensitive: true, argsTemplate);
+        RunParseTest(_tempDirWithSpaces.FullName, argsTemplate);
     }
 
     [Theory(DisplayName = "Parse: Incorrect fused arguments (Correct Case)")]
     [MemberData(nameof(CorrectCaseCombinedArgumentData))]
     public void Parse_Should_Handle_CorrectCase_FusedArguments(string formatTemplate)
     {
-        RunCombinedArgumentsTest(_tempDir.FullName, caseInsensitive: false, formatTemplate);
-        RunCombinedArgumentsTest(_tempDir.FullName, caseInsensitive: true, formatTemplate);
+        RunCombinedArgumentsTest(_tempDir.FullName, formatTemplate);
     }
 
     [Theory(DisplayName = "Parse: Incorrect fused arguments (Mixed Case)")]
     [MemberData(nameof(MixedCaseCombinedArgumentData))]
     public void Parse_Should_Handle_MixedCase_FusedArguments_BasedOnFlag(string formatTemplate)
     {
-        RunCombinedArgumentsTest(_tempDir.FullName, caseInsensitive: true, formatTemplate);
-
-        var path = _tempDir.FullName;
-        var args = new[] { string.Format(formatTemplate, path) };
-        _output.WriteLine($"Testing (expect failure, caseSensitive=true): `{args[0]}`");
-        var options = LaunchOptions.Parse(args, caseInsensitive: false);
-
-        Assert.Null(options.SkyrimGameDirectory);
+        RunCombinedArgumentsTest(_tempDir.FullName, formatTemplate);
     }
 
     [Theory(DisplayName = "Parse: Value without separator")]
-    [InlineData("--tesv{0}", false)]
-    [InlineData("-tesv{0}", false)]
-    [InlineData("--TeSv{0}", true)]
-    [InlineData("-tEsV{0}", true)]
-    public void Parse_Should_HandleValueWithoutSeparator(string format, bool isCaseInsensitive)
+    [InlineData("--tesv{0}")]
+    [InlineData("-tesv{0}")]
+    [InlineData("--TeSv{0}")]
+    [InlineData("-tEsV{0}")]
+    public void Parse_Should_HandleValueWithoutSeparator(string format)
     {
-        RunParseTest(_tempDir.FullName, isCaseInsensitive, format);
+        RunParseTest(_tempDir.FullName, format);
     }
 
     [Theory(DisplayName = "Parse: Multiple arguments")]
     [MemberData(nameof(MultipleArgumentsData))]
     public void Parse_Should_HandleMultipleArguments(params string[] argsTemplate)
     {
-        RunMultipleArgumentsTest(caseInsensitive: false, argsTemplate);
-        RunMultipleArgumentsTest(caseInsensitive: true, argsTemplate);
+        RunMultipleArgumentsTest(argsTemplate);
     }
 
     [Theory(DisplayName = "Parse: Mixed case arguments")]
     [MemberData(nameof(CaseVariantFormatsData))]
     public void Parse_Should_HandleMixedCaseArguments_BasedOnFlag(params string[] argsTemplate)
     {
-        RunParseTest(_tempDir.FullName, caseInsensitive: true, argsTemplate);
-
-        var path = _tempDir.FullName;
-        var args = argsTemplate.Select(arg => string.Format(arg, path)).ToArray();
-
-        _output.WriteLine(
-            $"Testing (expect failure, caseSensitive=true): `{string.Join(" ", args)}`"
-        );
-        var options = LaunchOptions.Parse(args, caseInsensitive: false);
-
-        Assert.Null(options.SkyrimGameDirectory);
+        RunParseTest(_tempDir.FullName, argsTemplate);
     }
 
     #endregion
 
     #region Private Helpers
 
-    private void RunParseTest(string path, bool caseInsensitive, params string[] argsTemplate)
+    private void RunParseTest(string path, params string[] argsTemplate)
     {
         var args = argsTemplate.Select(arg => string.Format(arg, path)).ToArray();
 
         _output.WriteLine(
-            $"Testing (caseInsensitive={caseInsensitive}): ` {string.Join(" ", args)} `"
+            $"Testing: ` {string.Join(" ", args)} `"
         );
-        var options = LaunchOptions.Parse(args, caseInsensitive);
+        var options = _parser.Parse(args);
 
         Assert.NotNull(options.SkyrimGameDirectory);
         Assert.Equal(path, options.SkyrimGameDirectory.FullName);
     }
 
-    private void RunCombinedArgumentsTest(string path, bool caseInsensitive, string formatTemplate)
+    private void RunCombinedArgumentsTest(string path, string formatTemplate)
     {
         var args = new[] { string.Format(formatTemplate, path) };
 
         _output.WriteLine(
-            $"Testing combined argument (caseInsensitive={caseInsensitive}): `{args[0]}`"
+            $"Testing combined argument: `{args[0]}`"
         );
-        var options = LaunchOptions.Parse(args, caseInsensitive);
+        var options = _parser.Parse(args);
 
         Assert.NotNull(options.SkyrimGameDirectory);
         Assert.False(options.SkyrimGameDirectory.Exists);
         Assert.Null(options.OutputDirectory);
     }
 
-    private void RunMultipleArgumentsTest(bool caseInsensitive, params string[] argsTemplate)
+    private void RunMultipleArgumentsTest(params string[] argsTemplate)
     {
         var skyrimPath = _tempDir.FullName;
         var outputPath = _tempDirWithSpaces.FullName;
         var args = argsTemplate.Select(arg => string.Format(arg, skyrimPath, outputPath)).ToArray();
 
         _output.WriteLine(
-            $"Testing multiple arguments (caseInsensitive={caseInsensitive}): `{string.Join(" ", args)}`"
+            $"Testing multiple arguments: `{string.Join(" ", args)}`"
         );
-        var options = LaunchOptions.Parse(args, caseInsensitive);
+        var options = _parser.Parse(args);
 
         Assert.NotNull(options.SkyrimGameDirectory);
         Assert.Equal(skyrimPath, options.SkyrimGameDirectory.FullName);
@@ -206,8 +189,6 @@ public class ArgumentsParsingTests : IDisposable
 
     public void Dispose()
     {
-        LaunchOptions.Current = null;
-
         if (Directory.Exists(_tempDir.FullName))
         {
             Directory.Delete(_tempDir.FullName, true);

@@ -6,20 +6,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using DynamicData.Binding;
 using NLog;
+using Pandora.API.Data;
 using Pandora.API.Patch;
-using Pandora.API.Utils;
-using Pandora.Data;
-using Pandora.Logging;
+using Pandora.API.Services;
 using Pandora.Utils;
-using Pandora.ViewModels;
 
 namespace Pandora.Services;
 
-public class ModLoader(IPathResolver pathResolver) : IModLoader
+public class ModLoaderService : IModLoaderService
 {
-	private readonly IPathResolver _pathResolver = pathResolver;
 	private static readonly NLog.Logger logger = LogManager.GetCurrentClassLogger();
 
 	public async Task<HashSet<IModInfo>> LoadModsAsync(
@@ -29,8 +25,8 @@ public class ModLoader(IPathResolver pathResolver) : IModLoader
 	{
 		var modInfos = new HashSet<IModInfo>();
 
-		var pathsToScan = ModUtils
-			.ResolvePaths(directories, providers)
+		var pathsToScan = PathDiscoveryUtils
+			.ResolveProviderPaths(directories, providers)
 			.DistinctBy(p => p.path, StringComparer.OrdinalIgnoreCase)
 			.ToList();
 
@@ -60,34 +56,4 @@ public class ModLoader(IPathResolver pathResolver) : IModLoader
 		return modInfos;
 	}
 
-	public async Task LoadModsVMAsync(
-		ObservableCollectionExtended<ModInfoViewModel> mods,
-		IEnumerable<DirectoryInfo> directories,
-		IEnumerable<IModInfoProvider> providers
-	)
-	{
-		mods.Clear();
-
-		var uniqueDirectories = directories
-			.Where(d => d is not null && d.Exists)
-			.DistinctBy(d => d.FullName, StringComparer.OrdinalIgnoreCase)
-			.ToList();
-
-		var modInfos = await LoadModsAsync(providers, uniqueDirectories);
-		var modViewModels = modInfos.Select(m => new ModInfoViewModel(m)).ToList();
-
-		await JsonModSettingsStore.ApplyAsync(
-			modViewModels,
-			_pathResolver.GetActiveModsFile().FullName
-		);
-
-		mods.AddRange(modViewModels);
-		EngineLoggerAdapter.AppendLine($"Mods loaded.");
-	}
-}
-
-public record ModSaveEntry
-{
-	public uint Priority { get; init; }
-	public bool Active { get; init; }
 }

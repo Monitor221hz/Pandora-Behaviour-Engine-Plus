@@ -5,7 +5,14 @@ using Avalonia.Controls;
 
 namespace Pandora.Services;
 
-public class PandoraServiceContext
+public sealed class PandoraServiceContext
 {
-	public Window MainWindow { get; init; }
+	public Window MainWindow { get; }
+
+	public PandoraServiceContext(
+		Window mainWindow
+	)
+	{
+		MainWindow = mainWindow;
+	}
 }

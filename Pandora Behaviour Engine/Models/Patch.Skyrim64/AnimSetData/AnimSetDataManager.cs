@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using NLog;
 using Pandora.API.Patch.Skyrim64.AnimSetData;
-using Pandora.API.Utils;
+using Pandora.API.Services;
 using Pandora.Models.Extensions;
 
 namespace Pandora.Models.Patch.Skyrim64.AnimSetData;

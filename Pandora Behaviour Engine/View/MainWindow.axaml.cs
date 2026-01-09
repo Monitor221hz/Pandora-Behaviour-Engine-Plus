@@ -3,8 +3,8 @@
 
 using System;
 using FluentAvalonia.UI.Windowing;
-using Pandora.Utils;
-using Pandora.Utils.Platform.Windows;
+using Pandora.API.Services;
+using Pandora.Platform.Windows;
 
 namespace Pandora.Views;
 
@@ -48,6 +48,5 @@ public partial class MainWindow : AppWindow
 			Width = savedWidth;
 	}
 
-	public void SetVisualState(WindowVisualState state) =>
-		WindowsPlatformHelper.SetVisualWindowState(this, state);
+	public void SetVisualState(WindowVisualState state) => this.SetVisualWindowState(state);
 }

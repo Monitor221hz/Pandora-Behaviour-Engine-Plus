@@ -5,59 +5,62 @@ using System;
 using System.Runtime.InteropServices;
 using Avalonia.Controls;
 
-namespace Pandora.Utils;
+namespace Pandora.Platform.Windows;
 
 public static partial class TaskbarFlasher
 {
 	private static nint? _lastFlashingHandle;
 
-	public static void FlashUntilFocused(this Window window)
+	extension (Window window)
 	{
-		if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-			return;
-
-		var handle = GetWindowHandle(window);
-		if (handle == nint.Zero)
-			return;
-
-		_lastFlashingHandle = handle;
-
-		var fw = new FLASHWINFO
+		public void FlashUntilFocused()
 		{
-			cbSize = (uint)Marshal.SizeOf<FLASHWINFO>(),
-			hwnd = handle,
-			dwFlags = FLASHW_ALL | FLASHW_TIMERNOFG,
-			uCount = uint.MaxValue,
-			dwTimeout = 0,
-		};
+			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+				return;
 
-		FlashWindowEx(ref fw);
+			var handle = GetWindowHandle(window);
+			if (handle == nint.Zero)
+				return;
 
-		window.Activated -= OnWindowActivated;
-		window.Activated += OnWindowActivated;
-	}
+			_lastFlashingHandle = handle;
 
-	public static void StopFlashing(this Window window)
-	{
-		if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-			return;
+			var fw = new FLASHWINFO
+			{
+				cbSize = (uint)Marshal.SizeOf<FLASHWINFO>(),
+				hwnd = handle,
+				dwFlags = FLASHW_ALL | FLASHW_TIMERNOFG,
+				uCount = uint.MaxValue,
+				dwTimeout = 0,
+			};
 
-		var handle = GetWindowHandle(window);
-		if (handle == nint.Zero || _lastFlashingHandle != handle)
-			return;
+			FlashWindowEx(ref fw);
 
-		var fw = new FLASHWINFO
+			window.Activated -= OnWindowActivated;
+			window.Activated += OnWindowActivated;
+		}
+
+		public void StopFlashing()
 		{
-			cbSize = (uint)Marshal.SizeOf<FLASHWINFO>(),
-			hwnd = handle,
-			dwFlags = FLASHW_STOP,
-			uCount = 0,
-			dwTimeout = 0,
-		};
+			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+				return;
 
-		FlashWindowEx(ref fw);
+			var handle = GetWindowHandle(window);
+			if (handle == nint.Zero || _lastFlashingHandle != handle)
+				return;
 
-		_lastFlashingHandle = null;
+			var fw = new FLASHWINFO
+			{
+				cbSize = (uint)Marshal.SizeOf<FLASHWINFO>(),
+				hwnd = handle,
+				dwFlags = FLASHW_STOP,
+				uCount = 0,
+				dwTimeout = 0,
+			};
+
+			FlashWindowEx(ref fw);
+
+			_lastFlashingHandle = null;
+		}
 	}
 
 	private static void OnWindowActivated(object? sender, EventArgs e)
