@@ -2,7 +2,6 @@
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
 using Pandora.API.ModManager;
-using Pandora.Logging;
 using Pandora.Models.Patch.Plugins;
 using Pandora.Utils;
 
@@ -10,6 +9,9 @@ namespace Pandora.Services;
 
 public class StartupService
 {
+
+	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
 	public record StartupInfo(
 		bool IsCustomSet,
 		bool AutoRun,
@@ -51,7 +53,7 @@ public class StartupService
 	{
 		if (PluginManager.EngineConfigurations.Count > 0)
 		{
-			EngineLoggerAdapter.AppendLine("Plugins loaded.");
+			logger.UiInfo("Plugins loaded.");
 		}
 	}
 }

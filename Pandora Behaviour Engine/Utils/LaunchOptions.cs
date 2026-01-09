@@ -5,7 +5,6 @@ using System;
 using System.CommandLine;
 using System.IO;
 using System.Linq;
-using Pandora.Logging;
 
 namespace Pandora.Utils;
 
@@ -91,8 +90,8 @@ public class LaunchOptions
 					"Please check the spelling and prefixes ('-' for short aliases, '--' for full names).";
 				logger.Error(errorArgsMsg);
 				logger.Info(infoArgsMsg);
-				EngineLoggerAdapter.AppendLine($"ERROR: {errorArgsMsg}");
-				EngineLoggerAdapter.AppendLine(infoArgsMsg);
+				logger.UiError($"ERROR: {errorArgsMsg}");
+				logger.UiInfo(infoArgsMsg);
 			}
 
 			var otherErrors = parseResult
@@ -106,7 +105,7 @@ public class LaunchOptions
 				{
 					logger.Error($"- {error.Message}");
 				}
-				EngineLoggerAdapter.AppendLine(
+				logger.Error(
 					"ERROR: Command line arguments could not be processed. See Engine.log for details."
 				);
 			}

@@ -11,7 +11,6 @@ using NLog;
 using Pandora.API.Patch;
 using Pandora.API.Utils;
 using Pandora.Data;
-using Pandora.Logging;
 using Pandora.Utils;
 using Pandora.ViewModels;
 
@@ -82,7 +81,7 @@ public class ModLoader(IPathResolver pathResolver) : IModLoader
 		);
 
 		mods.AddRange(modViewModels);
-		EngineLoggerAdapter.AppendLine($"Mods loaded.");
+		logger.UiInfo($"Mods loaded.");
 	}
 }
 

@@ -1,23 +1,23 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using System;
-using System.Globalization;
-using System.IO;
-using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 using Microsoft.Extensions.DependencyInjection;
-using Pandora.API.Services;
+using NLog;
+using NLog.Filters;
+using NLog.Targets.Wrappers;
 using Pandora.API.Utils;
 using Pandora.Logging;
 using Pandora.Services;
 using Pandora.Utils;
 using Pandora.ViewModels;
 using Pandora.Views;
+using System;
+using System.Globalization;
 
 namespace Pandora;
 
@@ -86,22 +86,54 @@ public partial class App : Application
 
 	private void SetupNLogConfig()
 	{
-		var config = new NLog.Config.LoggingConfiguration();
+		var initialPath = Services.GetRequiredService<IPathResolver>().GetOutputFolder().FullName;
 
-		var fileTarget = new NLog.Targets.FileTarget("Engine Log")
+		var fileTarget = new NLog.Targets.FileTarget("EngineLog")
 		{
-			FileName = Path.Combine(
-				Services.GetRequiredService<IPathResolver>().GetOutputFolder().FullName,
-				"Engine.log"
-			),
+			FileName = "${var:LogDir}/Engine.log",
 			DeleteOldFileOnStartup = true,
-			Layout = "${level:uppercase=true} : ${message}",
+			Layout = "${level:uppercase=true} : ${message}"
 		};
 
-		config.AddTarget(fileTarget);
-		config.AddRule(NLog.LogLevel.Trace, NLog.LogLevel.Fatal, fileTarget);
+		var uiTarget = new ObservableNLogTarget
+		{
+			Name = "ui",
+			Layout = "${message}"
+		};
 
-		NLog.LogManager.Configuration = config;
+		var asyncUiTarget = new AsyncTargetWrapper(uiTarget)
+		{
+			Name = "uiAsync",
+			QueueLimit = 5000,
+			OverflowAction = AsyncTargetWrapperOverflowAction.Discard
+		};
+
+		LogManager.Setup()
+			.SetupInternalLogger(builder => builder
+				.LogToConsole(true)
+				.SetMinimumLogLevel(LogLevel.Trace))
+			.LoadConfiguration(builder =>
+			{
+				// File Logger
+				builder.ForLogger()
+					.FilterDynamic(new ConditionBasedFilter
+					{
+						Condition = "equals('${event-properties:ui}', true)",
+						Action = FilterResult.Ignore
+					}, filterDefaultAction: FilterResult.Log)
+					.WriteTo(fileTarget);
+				// UI Logger
+				builder.ForLogger()
+					.FilterDynamic(new ConditionBasedFilter
+					{
+						Condition = "equals('${event-properties:ui}', true)",
+						Action = FilterResult.Log
+					})
+					.WriteTo(asyncUiTarget);
+			});
+
+		LogManager.Configuration.Variables["LogDir"] = initialPath;
+		LogManager.ReconfigExistingLoggers();
 	}
 
 	public static new App? Current => Application.Current as App;
