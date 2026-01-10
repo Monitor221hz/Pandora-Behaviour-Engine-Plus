@@ -15,6 +15,8 @@ public class AppExceptionHandler
 {
 	private IPathResolver _pathResolver;
 
+	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
 	public AppExceptionHandler(IPathResolver pathResolver)
 	{
 		_pathResolver = pathResolver;
@@ -74,7 +76,7 @@ public class AppExceptionHandler
 		}
 		catch (Exception ex)
 		{
-			EngineLoggerAdapter.AppendLine($"Failed to write crash log: {ex}");
+			logger.UiError($"Failed to write crash log:", ex);
 		}
 	}
 

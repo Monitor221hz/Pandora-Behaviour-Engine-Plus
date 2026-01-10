@@ -1,13 +1,6 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using System;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Linq;
-using System.Text.Json;
-using System.Threading.Tasks;
 using GameFinder.Common;
 using GameFinder.RegistryUtils;
 using GameFinder.StoreHandlers.GOG;
@@ -15,10 +8,13 @@ using GameFinder.StoreHandlers.Steam;
 using GameFinder.StoreHandlers.Steam.Models.ValueTypes;
 using NexusMods.Paths;
 using NLog;
-using Pandora.API.Services;
 using Pandora.API.Utils;
-using Pandora.Logging;
-using Pandora.Services;
+using System;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
 
 namespace Pandora.Utils.Skyrim;
 
@@ -206,7 +202,7 @@ public sealed class SkyrimPathResolver : IPathResolver
 
 		string msg =
 			$"Could not find a valid Skyrim 'Data' directory. Using directory {_assemblyDirectory.FullName}";
-		EngineLoggerAdapter.AppendLine($"WARN: {msg}");
+		Logger.UiWarn($"WARN: {msg}");
 
 		Logger.Warn(msg);
 		return _assemblyDirectory!;

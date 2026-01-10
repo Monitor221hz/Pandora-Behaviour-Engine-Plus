@@ -1,6 +1,24 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using DynamicData;
+using DynamicData.Binding;
+using NLog;
+using Pandora.API;
+using Pandora.API.Patch.Config;
+using Pandora.API.Services;
+using Pandora.API.Utils;
+using Pandora.Data;
+using Pandora.Models;
+using Pandora.Services;
+using Pandora.Utils;
+using Pandora.Views;
+using ReactiveUI;
+using ReactiveUI.SourceGenerators;
+using Splat;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,25 +32,6 @@ using System.Reactive.Disposables.Fluent;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
-using DynamicData;
-using DynamicData.Binding;
-using Pandora.API;
-using Pandora.API.Patch.Config;
-using Pandora.API.Services;
-using Pandora.API.Utils;
-using Pandora.Data;
-using Pandora.Logging;
-using Pandora.Models;
-using Pandora.Services;
-using Pandora.Utils;
-using Pandora.Views;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
-using ReactiveUI.SourceGenerators;
-using Splat;
 
 namespace Pandora.ViewModels;
 
@@ -67,9 +66,6 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 	private bool _isVisibleLinkOutputDirectory;
 
 	[Reactive]
-	private string _logText = string.Empty;
-
-	[Reactive]
 	private string _searchTerm = string.Empty;
 
 	[Reactive]
@@ -82,6 +78,8 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 	private bool _engineRunning;
 
 	public IBehaviourEngine Engine { get; private set; }
+
+	public LogViewModel LogVM { get; } = new();
 	public DataGridOptionsViewModel DataGridOptions { get; } = new();
 	public Interaction<AboutDialogViewModel, Unit> ShowAboutDialog { get; } = new();
 	public SettingsViewModel SettingsApp { get; } = new();
@@ -133,11 +131,6 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 
 		this.WhenActivated(disposables =>
 		{
-			EngineLoggerAdapter
-				.LogObservable.ObserveOn(RxApp.MainThreadScheduler)
-				.Subscribe(line => LogText = line, ex => logger.Error(ex))
-				.DisposeWith(disposables);
-
 			Observable.FromAsync(InitAsync).Subscribe().DisposeWith(disposables);
 
 			InitSubscriptions(disposables);
@@ -177,8 +170,8 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		}
 		catch (Exception ex)
 		{
-			logger.Error($"Preload failed: {ex.ToString()}");
-			EngineLoggerAdapter.AppendLine($"Error: Preload failed. See logs for details.");
+			logger.Error("Preload failed:", ex);
+			logger.UiError("Error: Preload failed.", ex);
 		}
 		finally
 		{
@@ -214,7 +207,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		catch (Exception ex)
 		{
 			logger.Error(ex, "Failed to initialize load mods and preload engine.");
-			EngineLoggerAdapter.AppendLine(
+			logger.UiInfo(
 				"Error: Failed to load initial data. Please check the logs."
 			);
 		}
@@ -241,20 +234,20 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 
 	private async Task WaitForPreloadAsync()
 	{
-		EngineLoggerAdapter.Clear();
-		EngineLoggerAdapter.AppendLine(
+		logger.UiClear();
+		logger.UiInfo(
 			$"Engine launched with configuration: {Engine.Configuration.Name}. Do not exit before the launch is finished."
 		);
 		try
 		{
-			EngineLoggerAdapter.AppendLine("Waiting for preload to finish...");
+			logger.UiInfo("Waiting for preload to finish...");
 			await _preloadTask.ConfigureAwait(false);
-			EngineLoggerAdapter.AppendLine("Preload finished.");
+			logger.UiInfo("Preload finished.");
 		}
 		catch (Exception ex)
 		{
 			logger.Error(ex, "Error while waiting for preload.");
-			EngineLoggerAdapter.AppendLine("Error: Preload failed. See logs for details.");
+			logger.UiError("Error: Preload failed. See logs for details.");
 			throw;
 		}
 	}
@@ -298,7 +291,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		else
 		{
 			mainWindow?.SetVisualState(WindowVisualState.Error);
-			EngineLoggerAdapter.AppendLine(
+			logger.UiInfo(
 				"Launch aborted. Existing output was not cleared, and current patch list will not be saved."
 			);
 		}
@@ -325,8 +318,8 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 
 			timer.Stop();
 
-			EngineLoggerAdapter.AppendLine(Engine.GetMessages(success));
-			EngineLoggerAdapter.AppendLine(
+			logger.UiInfo(Engine.GetMessages(success));
+			logger.UiInfo(
 				$"Launch finished in {timer.Elapsed.TotalSeconds:F2} seconds."
 			);
 			await HandleLaunchResultAsync(success, mainWindow);
@@ -353,8 +346,8 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		catch (Exception ex)
 		{
 			logger.Error(ex, "Failed to set engine config.");
-			EngineLoggerAdapter.AppendLine(
-				"Error: Failed to apply configuration. See logs for details."
+			logger.UiError(
+				"Error: Failed to apply configuration.", ex
 			);
 		}
 	}
@@ -378,7 +371,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 				);
 				break;
 			default:
-				EngineLoggerAdapter.AppendLine(
+				logger.UiInfo(
 					"Warning: The selected executable does not appear to be Skyrim 64."
 				);
 				break;
@@ -396,6 +389,9 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		_isOutputFolderCustomSet = true;
 		OutputDirectoryMessage = $"Custom output directory set to {folder.FullName}";
 		_pathResolver.SavePathsConfiguration();
+
+		LogManager.Configuration.Variables["LogDir"] = folder.FullName;
+		LogManager.ReconfigExistingLoggers();
 	}
 
 	[ReactiveCommand]
