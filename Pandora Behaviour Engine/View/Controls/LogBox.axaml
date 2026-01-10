@@ -14,9 +14,9 @@
              mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
              x:Class="Pandora.Views.LogBox"
 			       x:DataType="vm:EngineViewModel">
-  <Grid>
+	<Grid>
 		<Border Background="{DynamicResource ControlFillColorDefault}" Padding="6" CornerRadius="4">
-		  <ae:TextEditor Name="LogEditor"
+			<ae:TextEditor Name="LogEditor"
                      Foreground="{DynamicResource TextFillColorPrimary}"
 									   FontFamily="Consolas"
                      BorderThickness="0"
@@ -26,41 +26,41 @@
                      HorizontalScrollBarVisibility="Auto"
                      VerticalScrollBarVisibility="Auto"
                      WordWrap="True">
-			  <Interaction.Behaviors>
-				  <b:LogTextEditorBehavior LogStream="{Binding LogVM.LogStream}"
+				<Interaction.Behaviors>
+					<b:LogTextEditorBehavior LogStream="{Binding LogVM.LogStream}"
 																   ClearStream="{Binding LogVM.ClearStream}" />
-			  </Interaction.Behaviors>
-		  </ae:TextEditor>
+				</Interaction.Behaviors>
+			</ae:TextEditor>
 		</Border>
-    <Border Background="Transparent" ToolTip.Tip="Preloading..." ToolTip.Placement="Bottom" Width="24" Height="24" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="8" >
-      <ui:ProgressRing IsActive="{Binding IsPreloading}" IsEnabled="{Binding IsPreloading}" />
-    </Border>
-    <StackPanel Orientation="Horizontal" Spacing="4" Margin="8" HorizontalAlignment="Right">
-      <Button Name="OpenOutputFolderButton"
+		<Border Background="Transparent" ToolTip.Tip="Preloading..." ToolTip.Placement="Bottom" Width="24" Height="24" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="8" >
+			<ui:ProgressRing IsActive="{Binding IsPreloading}" IsEnabled="{Binding IsPreloading}" />
+		</Border>
+		<StackPanel Orientation="Horizontal" Spacing="4" Margin="8" HorizontalAlignment="Right">
+			<Button Name="OpenOutputFolderButton"
               IsVisible="True"
               IsEnabled="{Binding IsOutputFolderCustomSet}"
               Padding="4"
               HorizontalAlignment="Right" VerticalAlignment="Bottom"
               ToolTip.Tip="Open Output Folder">
-        <ui:SymbolIcon Symbol="Folder" FontSize="20" />
-        <Interaction.Behaviors>
-          <EventTriggerBehavior EventName="Click">
-            <LaunchUriOrFileAction Path="{Binding OutputFolderUri}" />
-          </EventTriggerBehavior>
-        </Interaction.Behaviors>
-      </Button>
-      <Button Name="CopyCodeButton"
+				<ui:SymbolIcon Symbol="Folder" FontSize="20" />
+				<Interaction.Behaviors>
+					<EventTriggerBehavior EventName="Click">
+						<LaunchUriOrFileAction Path="{Binding OutputFolderUri}" />
+					</EventTriggerBehavior>
+				</Interaction.Behaviors>
+			</Button>
+			<Button Name="CopyCodeButton"
               IsVisible="True"
               Padding="4"
               HorizontalAlignment="Right" VerticalAlignment="Bottom"
               ToolTip.Tip="Copy text">
-        <ui:SymbolIcon Symbol="ClipboardCode" FontSize="20" />
-        <Interaction.Behaviors>
-          <EventTriggerBehavior EventName="Click" SourceObject="CopyCodeButton">
-            <SetClipboardTextAction Text="{Binding #LogEditor.Document.Text}" />
-          </EventTriggerBehavior>
-        </Interaction.Behaviors>
-      </Button>
-    </StackPanel>
-  </Grid>
+				<ui:SymbolIcon Symbol="ClipboardCode" FontSize="20" />
+				<Interaction.Behaviors>
+					<EventTriggerBehavior EventName="Click" SourceObject="CopyCodeButton">
+						<SetClipboardTextAction Text="{Binding #LogEditor.Document.Text}" />
+					</EventTriggerBehavior>
+				</Interaction.Behaviors>
+			</Button>
+		</StackPanel>
+	</Grid>
 </UserControl>
