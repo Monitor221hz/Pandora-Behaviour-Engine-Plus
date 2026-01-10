@@ -52,6 +52,6 @@ public partial class EngineView : ReactiveUserControl<EngineViewModel>
 		Grid.SetRowSpan(LogBox, isWide ? 3 : 1);
 		Grid.SetColumn(LogBox, isWide ? 2 : 0);
 		Grid.SetColumnSpan(LogBox, isWide ? 1 : 3);
-		LogBox.Margin = isWide ? new Thickness(0, 6, 0, 10) : new Thickness(0, 0, 0, 10);
+		LogBox.Margin = isWide ? new Thickness(6, 6, 0, 10) : new Thickness(0, 6, 0, 10);
 	}
 }
