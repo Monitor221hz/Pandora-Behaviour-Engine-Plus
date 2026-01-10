@@ -66,9 +66,6 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 	private bool _isVisibleLinkOutputDirectory;
 
 	[Reactive]
-	private string _logText = string.Empty;
-
-	[Reactive]
 	private string _searchTerm = string.Empty;
 
 	[Reactive]
