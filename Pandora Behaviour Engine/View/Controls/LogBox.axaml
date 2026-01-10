@@ -15,21 +15,23 @@
              x:Class="Pandora.Views.LogBox"
 			       x:DataType="vm:EngineViewModel">
   <Grid>
-		<ae:TextEditor Name="LogEditor"
-                   Background="Transparent"
-                   Foreground="{DynamicResource TextControlForeground}"
-									 FontFamily="Consolas"
-                   BorderThickness="0"
-									 ShowLineNumbers="False"
-									 IsReadOnly="True"
-                   HorizontalScrollBarVisibility="Auto"
-                   VerticalScrollBarVisibility="Auto"
-                   WordWrap="True">
-			<Interaction.Behaviors>
-				<b:LogTextEditorBehavior LogStream="{Binding LogVM.LogStream}"
-																 ClearStream="{Binding LogVM.ClearStream}" />
-			</Interaction.Behaviors>
-		</ae:TextEditor>
+		<Border Background="{DynamicResource ControlFillColorDefault}" Padding="6" CornerRadius="4">
+		  <ae:TextEditor Name="LogEditor"
+                     Foreground="{DynamicResource TextFillColorPrimary}"
+									   FontFamily="Consolas"
+                     BorderThickness="0"
+									   Background="Transparent"
+									   ShowLineNumbers="False"
+									   IsReadOnly="True"
+                     HorizontalScrollBarVisibility="Auto"
+                     VerticalScrollBarVisibility="Auto"
+                     WordWrap="True">
+			  <Interaction.Behaviors>
+				  <b:LogTextEditorBehavior LogStream="{Binding LogVM.LogStream}"
+																   ClearStream="{Binding LogVM.ClearStream}" />
+			  </Interaction.Behaviors>
+		  </ae:TextEditor>
+		</Border>
     <Border Background="Transparent" ToolTip.Tip="Preloading..." ToolTip.Placement="Bottom" Width="24" Height="24" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="8" >
       <ui:ProgressRing IsActive="{Binding IsPreloading}" IsEnabled="{Binding IsPreloading}" />
     </Border>
