@@ -10,7 +10,7 @@ using NexusMods.Paths;
 using NLog;
 using Pandora.API.DTOs;
 using Pandora.API.Services;
-using Pandora.Logging;
+using Pandora.Utils;
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -203,7 +203,7 @@ public sealed class SkyrimPathResolver : IPathResolver
 
 		string msg =
 			$"Could not find a valid Skyrim 'Data' directory. Using directory {_assemblyDirectory.FullName}";
-		EngineLoggerAdapter.AppendLine($"WARN: {msg}");
+		Logger.UiWarn($"WARN: {msg}");
 
 		Logger.Warn(msg);
 		return _assemblyDirectory!;

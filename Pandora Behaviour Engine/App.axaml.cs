@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
 using Avalonia;
@@ -7,15 +7,18 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 using Microsoft.Extensions.DependencyInjection;
+using NLog;
+using NLog.Filters;
+using NLog.Targets.Wrappers;
 using Pandora.API.Services;
 using Pandora.Logging;
 using Pandora.Models.Patch.Plugins;
 using Pandora.Services;
+using Pandora.Utils;
 using Pandora.ViewModels;
 using Pandora.Views;
 using System;
 using System.Globalization;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace Pandora;
@@ -44,14 +47,14 @@ public partial class App : Application
 			
 			Services = serviceCollection.BuildServiceProvider();
 
+			var logConfig = Services.GetRequiredService<ILoggingConfigurationService>();
 			var exceptionHandler = Services.GetRequiredService<IAppExceptionHandler>();
+			logConfig.Configure();
 			exceptionHandler.Initialize();
-
-			SetupNLogConfig();
 
 			if (PluginManager.EngineConfigurations.Count > 0)
 			{
-				EngineLoggerAdapter.AppendLine("Plugins loaded.");
+				logger.UiInfo("Plugins loaded.");
 			}
 
 			var mainWindow = Services.GetRequiredService<MainWindow>();
@@ -103,26 +106,6 @@ public partial class App : Application
 			1 => ThemeVariant.Dark,
 			_ => ThemeVariant.Default,
 		};
-	}
-
-	private void SetupNLogConfig()
-	{
-		var config = new NLog.Config.LoggingConfiguration();
-
-		var fileTarget = new NLog.Targets.FileTarget("Engine Log")
-		{
-			FileName = Path.Combine(
-				Services.GetRequiredService<IPathResolver>().GetOutputFolder().FullName,
-				"Engine.log"
-			),
-			DeleteOldFileOnStartup = true,
-			Layout = "${level:uppercase=true} : ${message}",
-		};
-
-		config.AddTarget(fileTarget);
-		config.AddRule(NLog.LogLevel.Trace, NLog.LogLevel.Fatal, fileTarget);
-
-		NLog.LogManager.Configuration = config;
 	}
 
 	public static new App? Current => Application.Current as App;

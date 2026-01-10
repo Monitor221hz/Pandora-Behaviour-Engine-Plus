@@ -6,6 +6,7 @@ using Pandora.API.Patch.Config;
 using Pandora.API.Patch.Engine.Config;
 using Pandora.API.Services;
 using Pandora.Logging;
+using Pandora.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,6 +18,8 @@ namespace Pandora.Models;
 
 public sealed class BehaviourEngine : IBehaviourEngine, IDisposable
 {
+	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
 	private readonly IPathResolver _pathResolver;
 	private readonly IServiceScopeFactory _scopeFactory;
 	private IServiceScope? _preparedScope;
@@ -52,14 +55,14 @@ public sealed class BehaviourEngine : IBehaviourEngine, IDisposable
 
 		try
 		{
-			EngineLoggerAdapter.Clear();
-			EngineLoggerAdapter.AppendLine(
+			logger.UiClear();
+			logger.UiInfo(
 				$"Engine launched with configuration: {Configuration.Name}. Do not exit before the launch is finished."
 			);
 
-			EngineLoggerAdapter.AppendLine("Waiting for preload to finish...");
+			logger.UiInfo("Waiting for preload to finish...");
 			await AwaitPreloadIfRunningAsync();
-			EngineLoggerAdapter.AppendLine("Preload finished.");
+			logger.UiInfo("Preload finished.");
 
 			if (scope is null)
 			{

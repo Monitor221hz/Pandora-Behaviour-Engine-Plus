@@ -4,6 +4,7 @@
 using Avalonia.Controls;
 using DynamicData;
 using DynamicData.Binding;
+using NLog;
 using Pandora.API.Data;
 using Pandora.API.Patch.Config;
 using Pandora.API.Services;
@@ -30,7 +31,8 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 	private readonly IModService _modService;
-	private readonly IEngineConfigurationService _configService;
+	private readonly IEngineConfigurationService _engineConfigService;
+	private readonly ILoggingConfigurationService _logConfigService;
 	private readonly IDiskDialogService _diskDialogService;
 	private readonly IPathResolver _pathResolver;
 	private readonly IWindowStateService _windowStateService;
@@ -55,9 +57,6 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 	private bool _isVisibleLinkOutputDirectory;
 
 	[Reactive]
-	private string _logText = string.Empty;
-
-	[Reactive]
 	private string _searchTerm = string.Empty;
 
 	[Reactive]
@@ -68,6 +67,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 
 	public string OutputFolderUri => _pathResolver.GetOutputFolder().FullName;
 
+	public LogViewModel LogVM { get; } = new LogViewModel();
 	public ViewModelActivator Activator { get; } = new();
 	public AboutDialogViewModel AboutDialog { get; }
 	public SettingsViewModel Settings { get; }
@@ -80,7 +80,8 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 	public EngineViewModel(
 		IModService modService,
 		IPathResolver pathResolver,
-		IEngineConfigurationService configService,
+		IEngineConfigurationService engineConfigService,
+		ILoggingConfigurationService logConfigService,
 		IDiskDialogService diskDialogService,
 		IWindowStateService windowStateService,
 		IBehaviourEngine engine,
@@ -96,7 +97,8 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 
 		_modService = modService;
 		_pathResolver = pathResolver;
-		_configService = configService;
+		_engineConfigService = engineConfigService;
+		_logConfigService = logConfigService;
 		_diskDialogService = diskDialogService;
 		_windowStateService = windowStateService;
 		_engine = engine;
@@ -106,11 +108,11 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		_outputDirectoryMessage = startupInfo.OutputMessage;
 		_isOutputFolderCustomSet = startupInfo.IsOutputCustomSet || !_pathResolver.GetOutputFolder().Equals(_pathResolver.GetAssemblyFolder());
 
-		_configService.Initialize(startupInfo.UseSkyrimDebug64);
+		_engineConfigService.Initialize(startupInfo.UseSkyrimDebug64);
 
 		EngineConfigurationViewModels = ConfigurationMenuBuilder.BuildTree(
-			_configService.GetAvailableConfigurations(),
-			_configService
+			_engineConfigService.GetAvailableConfigurations(),
+			_engineConfigService
 		);
 
 		_modService
@@ -123,13 +125,9 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 
 		this.WhenActivated(disposables =>
 		{
-			EngineLoggerAdapter.AppendLine($"{_modViewModels.Count} mods loaded.");
-			EngineLoggerAdapter
-				.LogObservable.ObserveOn(RxApp.MainThreadScheduler)
-				.Subscribe(line => LogText = line, ex => logger.Error(ex))
-				.DisposeWith(disposables);
+			logger.UiInfo($"{_modViewModels.Count} mods loaded.");
 
-			_configService.CurrentFactoryChanged
+			_engineConfigService.CurrentFactoryChanged
 				.DistinctUntilChanged()
 				.SelectMany(async factory =>
 				{
@@ -161,7 +159,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 
 						case EngineState.Error:
 							_windowStateService.SetVisualState(WindowVisualState.Error);
-							EngineLoggerAdapter.AppendLine("Launch failed. Existing output was not cleared, and current patch list will not be saved.");
+							logger.UiError("Launch failed. Existing output was not cleared, and current patch list will not be saved.");
 							break;
 
 						case EngineState.Idle:
@@ -201,8 +199,8 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 
 		await _modService.SaveSettingsAsync();
 
-		EngineLoggerAdapter.AppendLine(result.Message);
-		EngineLoggerAdapter.AppendLine($"Launch finished in {result.Duration.TotalSeconds:F2} seconds.");
+		logger.UiInfo(result.Message);
+		logger.UiInfo($"Launch finished in {result.Duration.TotalSeconds:F2} seconds.");
 	}
 
 	[ReactiveCommand]
@@ -226,7 +224,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 				);
 				break;
 			default:
-				EngineLoggerAdapter.AppendLine(
+				logger.UiInfo(
 					"Warning: The selected executable does not appear to be Skyrim 64."
 				);
 				break;
@@ -246,6 +244,8 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		_isOutputFolderCustomSet = true;
 		OutputDirectoryMessage = $"Custom output directory set to {folder.FullName}";
 		_pathResolver.SavePathsConfiguration();
+
+		_logConfigService.UpdateLogPath(folder.FullName);
 	}
 
 	[ReactiveCommand]

@@ -60,6 +60,7 @@ public static class ServiceCollectionExtensions
 		serviceCollection.AddSingleton<StartupInfo>();
 
 
+		serviceCollection.AddSingleton<ILoggingConfigurationService, NLogConfigurationService>();
 		serviceCollection.AddSingleton<IModLoaderService, ModLoaderService>();
 		serviceCollection.AddSingleton<IModService, ModService>();
 		serviceCollection.AddSingleton<IModSettingsService, ModSettingsService>();

@@ -2,6 +2,7 @@
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
 using Pandora.API.Services;
+using Pandora.Utils;
 using ReactiveUI;
 using System;
 using System.IO;
@@ -14,6 +15,8 @@ namespace Pandora.Logging;
 public class AppExceptionHandler : IAppExceptionHandler
 {
 	private IPathResolver _pathResolver;
+
+	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 	public AppExceptionHandler(IPathResolver pathResolver)
 	{
@@ -77,7 +80,7 @@ public class AppExceptionHandler : IAppExceptionHandler
 		}
 		catch (Exception ex)
 		{
-			EngineLoggerAdapter.AppendLine($"Failed to write crash log: {ex}");
+			logger.UiError($"Failed to write crash log:", ex);
 		}
 	}
 
