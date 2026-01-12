@@ -6,10 +6,11 @@ using DynamicData;
 using DynamicData.Binding;
 using NLog;
 using Pandora.API.Data;
+using Pandora.API.DTOs;
 using Pandora.API.Patch.Config;
 using Pandora.API.Services;
-using Pandora.Logging;
 using Pandora.Services;
+using Pandora.Services.CreationEngine;
 using Pandora.Utils;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
@@ -31,12 +32,13 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 	private readonly IModService _modService;
+	private readonly IPathResolver _pathResolver;
 	private readonly IEngineConfigurationService _engineConfigService;
 	private readonly ILoggingConfigurationService _logConfigService;
 	private readonly IDiskDialogService _diskDialogService;
-	private readonly IPathResolver _pathResolver;
 	private readonly IWindowStateService _windowStateService;
 	private readonly IBehaviourEngine _engine;
+	private readonly IGameDescriptor _gameDescriptor;
 
 	private readonly bool _autoRun = false;
 	private readonly bool _autoClose = false;
@@ -65,9 +67,11 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 	[ObservableAsProperty(ReadOnly = false)]
 	private bool? _allSelected;
 
-	public string OutputFolderUri => _pathResolver.GetOutputFolder().FullName;
+	[Reactive]
+	private string _outputFolderUri;
 
-	public LogViewModel LogVM { get; } = new LogViewModel();
+	public LaunchOptions LaunchOptions { get; }
+	public LogViewModel LogVM { get; }
 	public ViewModelActivator Activator { get; } = new();
 	public AboutDialogViewModel AboutDialog { get; }
 	public SettingsViewModel Settings { get; }
@@ -85,14 +89,17 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		IDiskDialogService diskDialogService,
 		IWindowStateService windowStateService,
 		IBehaviourEngine engine,
-		StartupInfo startupInfo,
+		IGameDescriptor gameDescriptor,
+		LaunchOptions launchOptions,
 		SettingsViewModel settingsViewModel,
 		AboutDialogViewModel aboutDialogViewModel,
+		LogViewModel logViewModel,
 		DataGridOptionsViewModel dataGridOptionsViewModel
 	)
 	{
 		Settings = settingsViewModel;
 		AboutDialog = aboutDialogViewModel;
+		LogVM = logViewModel;
 		DataGridOptions = dataGridOptionsViewModel;
 
 		_modService = modService;
@@ -102,18 +109,28 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		_diskDialogService = diskDialogService;
 		_windowStateService = windowStateService;
 		_engine = engine;
+		_gameDescriptor = gameDescriptor;
 
-		_autoRun = startupInfo.AutoRun;
-		_autoClose = startupInfo.AutoClose;
-		_outputDirectoryMessage = startupInfo.OutputMessage;
-		_isOutputFolderCustomSet = startupInfo.IsOutputCustomSet || !_pathResolver.GetOutputFolder().Equals(_pathResolver.GetAssemblyFolder());
+		LaunchOptions = launchOptions;
 
-		_engineConfigService.Initialize(startupInfo.UseSkyrimDebug64);
+		_autoRun = LaunchOptions.AutoRun;
+		_autoClose = LaunchOptions.AutoClose;
+
+		_isOutputFolderCustomSet = !_pathResolver.GetOutputFolder().Equals(_pathResolver.GetGameDataFolder());
+
+		if (!_isOutputFolderCustomSet)
+		{
+			_outputDirectoryMessage = $"Output dir not set. Files output to: {_pathResolver.GetGameDataFolder().FullName}";
+		}
+
+		_engineConfigService.Initialize(LaunchOptions.UseSkyrimDebug64);
 
 		EngineConfigurationViewModels = ConfigurationMenuBuilder.BuildTree(
 			_engineConfigService.GetAvailableConfigurations(),
 			_engineConfigService
 		);
+
+		OutputFolderUri = _pathResolver.GetOutputFolder().FullName;
 
 		_modService
 		   .Connect()
@@ -206,45 +223,56 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 	[ReactiveCommand]
 	private async Task PickGameDirectory()
 	{
-		var file = await _diskDialogService.OpenFileAsync("Select Game Executable (.exe)", "*.exe");
+		var filterPattern = "*.exe";
+
+		var file = await _diskDialogService.OpenFileAsync(
+			$"Select {_gameDescriptor.Name} Executable",
+			filterPattern);
+
 		if (file == null || !file.Exists)
 			return;
 
 		var folder = file.Directory;
-		if (folder == null || !folder.Exists)
-			return;
-		
-		switch (file.Name.ToLowerInvariant())
+		if (folder is not null && !folder.Name.Equals("Data", StringComparison.OrdinalIgnoreCase))
 		{
-			case "skyrimse.exe":
-			case "skyrimvr.exe":
-			case "skyrimselauncher.exe":
-				_pathResolver.SetGameDataFolder(
-					new DirectoryInfo(Path.Join(folder.FullName, "Data"))
-				);
-				break;
-			default:
-				logger.UiInfo(
-					"Warning: The selected executable does not appear to be Skyrim 64."
-				);
-				break;
+			var dataSub = new DirectoryInfo(Path.Combine(folder.FullName, "Data"));
+			if (dataSub.Exists) folder = dataSub;
 		}
-		_pathResolver.SavePathsConfiguration();
+
+		if (folder is null || !folder.Exists) return;
+
+		bool isValidExecutable = _gameDescriptor.ExecutableNames.Any(
+			exe => exe.Equals(file.Name, StringComparison.OrdinalIgnoreCase));
+
+		if (isValidExecutable)
+		{
+			_pathResolver.SetGameDataFolder(folder);
+			logger.UiInfo($"Game Data folder set to: {folder.FullName}");
+		}
+		else
+		{
+			logger.UiWarn(
+				$"Warning: The selected executable ({file.Name}) does not appear to be for {_gameDescriptor.Name}."
+			);
+		}
 	}
 
 	[ReactiveCommand]
 	private async Task PickOutputDirectory()
 	{
-		var folder = await _diskDialogService.OpenFolderAsync("Select Output Directory");
+		var currentOutput = _pathResolver.GetOutputFolder();
+
+		var folder = await _diskDialogService.OpenFolderAsync("Select Output Directory", currentOutput);
 
 		if (folder == null || !folder.Exists)
 			return;
-		
-		_pathResolver.SetOutputFolder(folder);
-		_isOutputFolderCustomSet = true;
-		OutputDirectoryMessage = $"Custom output directory set to {folder.FullName}";
-		_pathResolver.SavePathsConfiguration();
 
+		_pathResolver.SetOutputFolder(folder);
+
+		_isOutputFolderCustomSet = true;
+
+		OutputFolderUri = folder.FullName;
+		logger.UiInfo($"Output directory changed: {_pathResolver.GetOutputFolder().FullName}");
 		_logConfigService.UpdateLogPath(folder.FullName);
 	}
 

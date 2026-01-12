@@ -55,7 +55,7 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 
 	public static bool DebugFiles { get; set; } = false;
 
-	public IPackFileEditor Editor { get; private set; } = new PackFileEditor();
+	//public IPackFileEditor Editor { get; private set; } = new PackFileEditor();
 
 	public IPackFileDispatcher Dispatcher { get; private set; } = new PackFileDispatcher();
 

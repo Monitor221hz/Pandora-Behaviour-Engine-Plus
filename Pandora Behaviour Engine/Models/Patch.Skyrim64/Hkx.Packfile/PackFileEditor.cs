@@ -10,7 +10,7 @@ using XmlCake.Linq;
 
 namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
-public partial class PackFileEditor : IPackFileEditor
+public partial class PackFileEditor
 {
 	private static readonly char[] trimChars = ['\t', '\r', '\n', ')', '('];
 

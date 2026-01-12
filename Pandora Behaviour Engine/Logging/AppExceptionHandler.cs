@@ -2,6 +2,7 @@
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
 using Pandora.API.Services;
+using Pandora.Services.Skyrim;
 using Pandora.Utils;
 using ReactiveUI;
 using System;
@@ -14,13 +15,15 @@ namespace Pandora.Logging;
 
 public class AppExceptionHandler : IAppExceptionHandler
 {
-	private IPathResolver _pathResolver;
+	private readonly IPathResolver _pathResolver;
+	private readonly IApplicationPaths _appPath;
 
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-	public AppExceptionHandler(IPathResolver pathResolver)
+	public AppExceptionHandler(IPathResolver pathResolver, IApplicationPaths appPaths)
 	{
 		_pathResolver = pathResolver;
+		_appPath = appPaths;
 	}
 
 	public void Initialize()
@@ -92,7 +95,7 @@ public class AppExceptionHandler : IAppExceptionHandler
 		sb.AppendLine($"Type: {type}");
 		sb.AppendLine($"Environment.CurrentDirectory: {_pathResolver.GetCurrentFolder().FullName}");
 		sb.AppendLine(
-			$"Executable Path: {_pathResolver.GetAssemblyFolder().FullName ?? "unknown"}"
+			$"Executable Path: {_appPath.AssemblyDirectory.FullName ?? "unknown"}"
 		);
 		sb.AppendLine();
 		sb.AppendLine(content);

@@ -20,22 +20,32 @@ public class DiskDialogService : IDiskDialogService
 		_window = window;
 	}
 
-	public async Task<DirectoryInfo?> OpenFolderAsync(string title)
+	public async Task<DirectoryInfo?> OpenFolderAsync(string title, DirectoryInfo? initialDirectory = null)
 	{
+		IStorageFolder? startLocation = null;
+
+		if (initialDirectory is { Exists: true })
+		{
+			startLocation = await _window.StorageProvider
+				.TryGetFolderFromPathAsync(initialDirectory.FullName);
+		}
+
 		var folders = await _window.StorageProvider.OpenFolderPickerAsync(
-			new FolderPickerOpenOptions { Title = title, AllowMultiple = false }
+			new FolderPickerOpenOptions
+			{
+				Title = title,
+				AllowMultiple = false,
+				SuggestedStartLocation = startLocation
+			}
 		);
-		if (folders == null)
-		{
-			return null;
-		}
+
 		if (folders.Count == 0)
-		{
 			return null;
-		}
+
 		var localPath = folders[0].TryGetLocalPath();
-		return new DirectoryInfo(localPath ?? Environment.CurrentDirectory);
+		return localPath is null ? null : new DirectoryInfo(localPath);
 	}
+
 
 	public async Task<FileInfo?> OpenFileAsync(string title, params string[] patterns)
 	{

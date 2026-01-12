@@ -7,11 +7,7 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 using Microsoft.Extensions.DependencyInjection;
-using NLog;
-using NLog.Filters;
-using NLog.Targets.Wrappers;
 using Pandora.API.Services;
-using Pandora.Logging;
 using Pandora.Models.Patch.Plugins;
 using Pandora.Services;
 using Pandora.Utils;
@@ -43,19 +39,8 @@ public partial class App : Application
 			var serviceCollection = new ServiceCollection();
 
 			serviceCollection.AddPandoraServices();
-			serviceCollection.AddViewModels();
 			
 			Services = serviceCollection.BuildServiceProvider();
-
-			var logConfig = Services.GetRequiredService<ILoggingConfigurationService>();
-			var exceptionHandler = Services.GetRequiredService<IAppExceptionHandler>();
-			logConfig.Configure();
-			exceptionHandler.Initialize();
-
-			if (PluginManager.EngineConfigurations.Count > 0)
-			{
-				logger.UiInfo("Plugins loaded.");
-			}
 
 			var mainWindow = Services.GetRequiredService<MainWindow>();
 			mainWindow.DataContext = Services.GetRequiredService<MainWindowViewModel>();
@@ -74,8 +59,19 @@ public partial class App : Application
 		var modService = Services.GetRequiredService<IModService>();
 		var engine = Services.GetRequiredService<IBehaviourEngine>();
 
+		var logConfig = Services.GetRequiredService<ILoggingConfigurationService>();
+		var exceptionHandler = Services.GetRequiredService<IAppExceptionHandler>();
+
 		try
 		{
+			logConfig.Configure();
+			exceptionHandler.Initialize();
+
+			if (PluginManager.EngineConfigurations.Count > 0)
+			{
+				logger.UiInfo("Plugins loaded.");
+			}
+
 			var loadModsTask = modService.RefreshModsAsync();
 			var initEngineTask = engine.InitializeAsync();
 
@@ -83,7 +79,7 @@ public partial class App : Application
 		}
 		catch (Exception ex)
 		{
-			logger.Fatal(ex, "Startup failed");
+			logger.Fatal(ex, $"Startup failed");
 		}
 	}
 

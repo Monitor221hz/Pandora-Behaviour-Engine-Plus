@@ -4,10 +4,9 @@ using NLog.Filters;
 using NLog.Targets;
 using NLog.Targets.Wrappers;
 using Pandora.API.Services;
-using Pandora.Logging;
-using System.IO;
+using Pandora.Utils;
 
-namespace Pandora.Services;
+namespace Pandora.Logging;
 
 public class NLogConfigurationService : ILoggingConfigurationService
 {
@@ -21,19 +20,19 @@ public class NLogConfigurationService : ILoggingConfigurationService
 	public void Configure()
 	{
 		var logDir = _pathResolver.GetOutputFolder().FullName;
-		var logPath = Path.Combine(logDir, "Engine.log");
+		var logPath = logDir / "Engine.log";
 
 		var fileTarget = new FileTarget("EngineLog")
 		{
 			FileName = logPath,
 			DeleteOldFileOnStartup = true,
-			Layout = "${level:uppercase=true} : ${message}"
+			Layout = "${level:uppercase=true} : ${message} ${exception:format=toString}"
 		};
 
 		var uiTarget = new ObservableNLogTarget
 		{
 			Name = "ui",
-			Layout = "${message}"
+			Layout = "${message} ${exception:format=toString}"
 		};
 
 		var asyncUiTarget = new AsyncTargetWrapper(uiTarget)
@@ -75,7 +74,7 @@ public class NLogConfigurationService : ILoggingConfigurationService
 
 		if (target is not null)
 		{
-			var newPath = Path.Combine(newDirectory, "Engine.log");
+			var newPath = newDirectory / "Engine.log";
 			target.FileName = newPath;
 			LogManager.ReconfigExistingLoggers();
 		}

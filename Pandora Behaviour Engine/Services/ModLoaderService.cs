@@ -18,15 +18,21 @@ public class ModLoaderService : IModLoaderService
 {
 	private static readonly NLog.Logger logger = LogManager.GetCurrentClassLogger();
 
+	private readonly IEnumerable<IModInfoProvider> _providers;
+
+	public ModLoaderService(IEnumerable<IModInfoProvider> providers)
+	{
+		_providers = providers;
+	}
+
 	public async Task<HashSet<IModInfo>> LoadModsAsync(
-		IEnumerable<IModInfoProvider> providers,
 		IEnumerable<DirectoryInfo> directories
 	)
 	{
 		var modInfos = new HashSet<IModInfo>();
 
 		var pathsToScan = PathDiscoveryUtils
-			.ResolveProviderPaths(directories, providers)
+			.ResolveProviderPaths(directories, _providers)
 			.DistinctBy(p => p.path, StringComparer.OrdinalIgnoreCase)
 			.ToList();
 

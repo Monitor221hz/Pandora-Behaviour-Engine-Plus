@@ -20,7 +20,6 @@ public sealed class BehaviourEngine : IBehaviourEngine, IDisposable
 {
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-	private readonly IPathResolver _pathResolver;
 	private readonly IServiceScopeFactory _scopeFactory;
 	private IServiceScope? _preparedScope;
 
@@ -35,9 +34,8 @@ public sealed class BehaviourEngine : IBehaviourEngine, IDisposable
 	public EngineState CurrentState => _state;
 	public IObservable<EngineState> StateObservable => _stateSubject;
 
-	public BehaviourEngine(IPathResolver pathResolver, IEngineConfiguration config, IServiceScopeFactory scopeFactory)
+	public BehaviourEngine(IEngineConfiguration config, IServiceScopeFactory scopeFactory)
 	{
-		_pathResolver = pathResolver;
 		Configuration = config;
 		_scopeFactory = scopeFactory;
 		_stateSubject = new BehaviorSubject<EngineState>(_state);
@@ -56,9 +54,7 @@ public sealed class BehaviourEngine : IBehaviourEngine, IDisposable
 		try
 		{
 			logger.UiClear();
-			logger.UiInfo(
-				$"Engine launched with configuration: {Configuration.Name}. Do not exit before the launch is finished."
-			);
+			logger.UiInfo($"Engine launched with configuration: {Configuration.Name}. Do not exit before the launch is finished.");
 
 			logger.UiInfo("Waiting for preload to finish...");
 			await AwaitPreloadIfRunningAsync();
@@ -78,8 +74,6 @@ public sealed class BehaviourEngine : IBehaviourEngine, IDisposable
 			TransitionTo(EngineState.Running);
 
 			patcher.SetTarget(mods);
-
-			EnsureOutputFolder();
 
 			if (!await patcher.UpdateAsync())
 			{
@@ -186,12 +180,6 @@ public sealed class BehaviourEngine : IBehaviourEngine, IDisposable
 		if (_state == next) return;
 		_state = next;
 		_stateSubject.OnNext(next);
-	}
-
-	private void EnsureOutputFolder()
-	{
-		var output = _pathResolver.GetOutputFolder();
-		if (!output.Exists) output.Create();
 	}
 
 	private static EngineLaunchResult Fail(Stopwatch timer, string message)

@@ -3,16 +3,15 @@
 
 using DynamicData;
 using DynamicData.Binding;
-using Pandora.API.Data;
 using Pandora.API.DTOs;
+using Pandora.API.Patch;
 using Pandora.API.Services;
-using Pandora.Data;
 using Pandora.Utils;
 using Pandora.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace Pandora.Services;
@@ -26,11 +25,15 @@ public interface IModService
 	Task SaveSettingsAsync();
 }
 
-public class ModService : IModService
+public class ModService : IModService, IDisposable
 {
 	private readonly IModLoaderService _loader;
 	private readonly IModSettingsService _settings;
 	private readonly IPathResolver _pathResolver;
+
+	private List<IModInfo>? _cachedCoreMods;
+
+	private IDisposable? _pathSubscription;
 
 	public ObservableCollectionExtended<ModInfoViewModel> Source { get; } = [];
 
@@ -41,19 +44,10 @@ public class ModService : IModService
 		_loader	= loader;
 		_settings = settings;
 		_pathResolver = pathResolver;
-	}
 
-	private IEnumerable<IModInfoProvider> ResolveProviders()
-	{
-		yield return new NemesisModInfoProvider();
-		yield return new PandoraModInfoProvider();
-	}
-
-	private IEnumerable<DirectoryInfo> ResolveDirectories()
-	{
-		yield return _pathResolver.GetAssemblyFolder();
-		yield return _pathResolver.GetCurrentFolder();
-		yield return _pathResolver.GetGameDataFolder();
+		_pathSubscription = _pathResolver.GameDataFolderChanged
+			.Skip(1)
+			.Subscribe(async _ => await RefreshModsAsync());
 	}
 
 	private void ApplySettings(List<ModInfoViewModel> mods, List<ModSaveEntry> settings)
@@ -74,9 +68,27 @@ public class ModService : IModService
 
 	public async Task RefreshModsAsync()
 	{
-		var rawMods = await _loader.LoadModsAsync(ResolveProviders(), ResolveDirectories());
+		if (_cachedCoreMods == null)
+		{
+			var coreDirs = new[]
+			{
+				_pathResolver.GetAssemblyFolder(),
+				_pathResolver.GetCurrentFolder()
+			};
 
-		var modVMs = rawMods.Select(m => new ModInfoViewModel(m)).ToList();
+			var coreModsSet = await _loader.LoadModsAsync(coreDirs);
+			_cachedCoreMods = coreModsSet.ToList();
+		}
+
+		var gameDirs = new[] { _pathResolver.GetGameDataFolder() };
+		var gameModsSet = await _loader.LoadModsAsync(gameDirs);
+
+		var allMods = _cachedCoreMods
+			.Concat(gameModsSet)
+			.DistinctBy(m => m.Code, StringComparer.OrdinalIgnoreCase)
+			.ToList();
+
+		var modVMs = allMods.Select(m => new ModInfoViewModel(m)).ToList();
 
 		var savedSettings = await _settings.LoadAsync();
 
@@ -102,5 +114,10 @@ public class ModService : IModService
 			.OrderBy(e => e.Priority);
 
 		await _settings.SaveAsync(entries);
+	}
+
+	public void Dispose()
+	{
+		_pathSubscription?.Dispose();
 	}
 }
