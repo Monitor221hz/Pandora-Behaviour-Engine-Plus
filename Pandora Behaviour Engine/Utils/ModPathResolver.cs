@@ -7,9 +7,9 @@ using System.IO;
 
 namespace Pandora.Utils;
 
-public static class PathDiscoveryUtils
+public static class ModPathResolver
 {
-	public static IEnumerable<(string path, IModInfoProvider provider)> ResolveProviderPaths(
+	public static IEnumerable<(string path, IModInfoProvider provider)> Resolve(
 		IEnumerable<DirectoryInfo> baseDirs,
 		IEnumerable<IModInfoProvider> providers)
 	{

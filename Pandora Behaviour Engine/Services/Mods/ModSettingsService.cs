@@ -10,7 +10,7 @@ using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Pandora.Services;
+namespace Pandora.Services.Mods;
 
 public sealed class ModSettingsService : IModSettingsService
 {

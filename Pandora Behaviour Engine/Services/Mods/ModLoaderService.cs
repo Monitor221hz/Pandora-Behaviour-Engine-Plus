@@ -12,7 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Pandora.Services;
+namespace Pandora.Services.Mods;
 
 public class ModLoaderService : IModLoaderService
 {
@@ -31,8 +31,8 @@ public class ModLoaderService : IModLoaderService
 	{
 		var modInfos = new HashSet<IModInfo>();
 
-		var pathsToScan = PathDiscoveryUtils
-			.ResolveProviderPaths(directories, _providers)
+		var pathsToScan = ModPathResolver
+			.Resolve(directories, _providers)
 			.DistinctBy(p => p.path, StringComparer.OrdinalIgnoreCase)
 			.ToList();
 

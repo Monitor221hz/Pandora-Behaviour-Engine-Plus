@@ -26,6 +26,7 @@ using Pandora.Services.CreationEngine;
 using Pandora.Services.CreationEngine.Game;
 using Pandora.Services.CreationEngine.Locators;
 using Pandora.Services.Interfaces;
+using Pandora.Services.Mods;
 using Pandora.Services.Skyrim;
 using Pandora.ViewModels;
 using Pandora.Views;
@@ -86,105 +87,90 @@ public static class ServiceCollectionExtensions
 
 		private IServiceCollection AddCoreServices()
 		{
-			serviceCollection.AddSingleton<IFileSystem>(FileSystem.Shared);
-
 			if (OperatingSystem.IsWindows())
 				serviceCollection.AddSingleton<IRegistry>(WindowsRegistry.Shared);
 
-			serviceCollection.AddSingleton<MainWindow>();
-			serviceCollection.AddSingleton<PandoraServiceContext>(sp =>
-				new PandoraServiceContext(sp.GetRequiredService<MainWindow>())
-			);
-			serviceCollection.AddSingleton<ILaunchOptionsParser, LaunchOptionsParser>();
-			serviceCollection.AddSingleton<LaunchOptions>(sp =>
-			{
-				var parser = sp.GetRequiredService<ILaunchOptionsParser>();
-				return parser.Parse(Environment.GetCommandLineArgs());
-			});
+			return serviceCollection
+				.AddSingleton<IFileSystem>(FileSystem.Shared)
+				.AddSingleton<MainWindow>()
+				.AddSingleton<PandoraServiceContext>(sp =>
+					new PandoraServiceContext(sp.GetRequiredService<MainWindow>())
+				)
+				.AddSingleton<ICommandLineParser, CommandLineParser>()
+				.AddSingleton<LaunchOptions>(sp =>
+				{
+					var parser = sp.GetRequiredService<ICommandLineParser>();
+					return parser.Parse(Environment.GetCommandLineArgs());
+				})
 
-			serviceCollection.AddSingleton<IAppExceptionHandler, AppExceptionHandler>();
-			serviceCollection.AddSingleton<IDiskDialogService>(sp => new DiskDialogService(sp.GetRequiredService<MainWindow>()));
+				.AddSingleton<IAppExceptionHandler, AppExceptionHandler>()
+				.AddSingleton<IDiskDialogService>(sp => new DiskDialogService(sp.GetRequiredService<MainWindow>()))
 
-			serviceCollection.AddSingleton<IWindowStateService, WindowStateService>();
-
-			return serviceCollection;
+				.AddSingleton<IWindowStateService, WindowStateService>();
 		}
 
 		private IServiceCollection AddLoggingServices()
 		{
-			serviceCollection.AddSingleton<ILoggingConfigurationService, NLogConfigurationService>();
-			return serviceCollection;
+			return serviceCollection.AddSingleton<ILoggingConfigurationService, NLogConfigurationService>();
 		}
 
 		private IServiceCollection AddModServices()
 		{
-			serviceCollection.AddSingleton<IModService, ModService>();
-			serviceCollection.AddSingleton<IModLoaderService, ModLoaderService>();
-			serviceCollection.AddSingleton<IModSettingsService, ModSettingsService>();
-
-			serviceCollection.AddSingleton<IModInfoProvider, NemesisModInfoProvider>();
-			serviceCollection.AddSingleton<IModInfoProvider, PandoraModInfoProvider>();
-
-			return serviceCollection;
+			return serviceCollection
+				.AddSingleton<IModService, ModService>()
+				.AddSingleton<IModLoaderService, ModLoaderService>()
+				.AddSingleton<IModSettingsService, ModSettingsService>()
+				.AddSingleton<IModInfoProvider, NemesisModInfoProvider>()
+				.AddSingleton<IModInfoProvider, PandoraModInfoProvider>();
 		}
 
 		private IServiceCollection AddPatchServices()
 		{
+			return serviceCollection
 #if DEBUG
-			serviceCollection.AddSingleton<IMetaDataExporter<IPackFile>, DebugPackFileExporter>();
+				.AddSingleton<IMetaDataExporter<IPackFile>, DebugPackFileExporter>()
 #else
-			serviceCollection.AddSingleton<IMetaDataExporter<IPackFile>, PackFileExporter>();
+				.AddSingleton<IMetaDataExporter<IPackFile>, PackFileExporter>()
 #endif
-
-			serviceCollection.AddScoped<IFNISParser, FNISParser>();
-			serviceCollection.AddScoped<IProjectManager, ProjectManager>();
-			serviceCollection.AddScoped<IAnimDataManager, AnimDataManager>();
-			serviceCollection.AddScoped<IAnimSetDataManager, AnimSetDataManager>();
-
-			serviceCollection.AddScoped<NemesisAssembler>();
-			serviceCollection.AddScoped<PandoraAssembler>();
-			serviceCollection.AddScoped<PandoraBridgedAssembler>();
-			serviceCollection.AddScoped<IPatchAssembler>(sp => sp.GetRequiredService<NemesisAssembler>());
-
-			serviceCollection.AddScoped<SkyrimPatcher>();
-
-			return serviceCollection;
+				.AddScoped<IFNISParser, FNISParser>()
+				.AddScoped<IProjectManager, ProjectManager>()
+				.AddScoped<IAnimDataManager, AnimDataManager>()
+				.AddScoped<IAnimSetDataManager, AnimSetDataManager>()
+				.AddScoped<NemesisAssembler>()
+				.AddScoped<PandoraAssembler>()
+				.AddScoped<PandoraBridgedAssembler>()
+				.AddScoped<IPatchAssembler>(sp => sp.GetRequiredService<NemesisAssembler>())
+				.AddScoped<SkyrimPatcher>();
 		}
 		private IServiceCollection AddSkyrimServices()
 		{
-			serviceCollection.AddSingleton<IEngineConfigurationService, EngineConfigurationService>();
-			serviceCollection.AddTransient<SkyrimConfiguration>();
-			serviceCollection.AddTransient<SkyrimDebugConfiguration>();
-
+			return serviceCollection
+				.AddSingleton<IEngineConfigurationService, EngineConfigurationService>()
+				.AddTransient<SkyrimConfiguration>()
+				.AddTransient<SkyrimDebugConfiguration>()
 #if DEBUG
-			serviceCollection.AddTransient<IEngineConfiguration, SkyrimDebugConfiguration>();
+				.AddTransient<IEngineConfiguration, SkyrimDebugConfiguration>()
 #else
-			serviceCollection.AddTransient<IEngineConfiguration, SkyrimConfiguration>();
+				.AddTransient<IEngineConfiguration, SkyrimConfiguration>()
 #endif
-
-			serviceCollection.AddSingleton<Func<SkyrimDebugConfiguration>>(sp => () => sp.GetRequiredService<SkyrimDebugConfiguration>());
-			serviceCollection.AddSingleton<Func<SkyrimConfiguration>>(sp => () => sp.GetRequiredService<SkyrimConfiguration>());
-
-			serviceCollection.AddSingleton<IEngineConfigurationFactory<SkyrimConfiguration>, ConstEngineConfigurationFactory<SkyrimConfiguration>>();
-			serviceCollection.AddSingleton<IEngineConfigurationFactory<SkyrimDebugConfiguration>, ConstEngineConfigurationFactory<SkyrimDebugConfiguration>>();
-
-			return serviceCollection;
+				.AddSingleton<Func<SkyrimDebugConfiguration>>(sp => () => sp.GetRequiredService<SkyrimDebugConfiguration>())
+				.AddSingleton<Func<SkyrimConfiguration>>(sp => () => sp.GetRequiredService<SkyrimConfiguration>())
+				.AddSingleton<IEngineConfigurationFactory<SkyrimConfiguration>, ConstEngineConfigurationFactory<SkyrimConfiguration>>()
+				.AddSingleton<IEngineConfigurationFactory<SkyrimDebugConfiguration>, ConstEngineConfigurationFactory<SkyrimDebugConfiguration>>();
 		}
 
 		private IServiceCollection AddPathServices()
 		{
-			serviceCollection.AddSingleton<IApplicationPaths, ApplicationPaths>();
-			serviceCollection.AddSingleton<IPathsConfigService, PathsConfigService>();
-			serviceCollection.AddSingleton<IOutputDirectoryProvider, OutputDirectoryProvider>();
-			serviceCollection.AddSingleton<IPathResolver, SkyrimPathResolver>();
-
-			return serviceCollection;
+			return serviceCollection
+				.AddSingleton<IApplicationPaths, ApplicationPaths>()
+				.AddSingleton<IPathsConfigService, PathsConfigService>()
+				.AddSingleton<IOutputDirectoryProvider, OutputDirectoryProvider>()
+				.AddSingleton<IPathResolver, SkyrimPathResolver>();
 		}
 
 		private IServiceCollection AddGameDescriptors()
 		{
-			serviceCollection.AddSingleton<IGameDescriptor, SkyrimDescriptor>();
-			return serviceCollection;
+			return serviceCollection.AddSingleton<IGameDescriptor, SkyrimDescriptor>();
 		}
 
 		private IServiceCollection AddBehaviourEngine()

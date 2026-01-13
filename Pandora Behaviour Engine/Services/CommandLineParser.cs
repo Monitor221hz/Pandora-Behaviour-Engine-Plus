@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Pandora.Services;
 
-public sealed class LaunchOptionsParser : ILaunchOptionsParser
+public sealed class CommandLineParser : ICommandLineParser
 {
 	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -21,7 +21,7 @@ public sealed class LaunchOptionsParser : ILaunchOptionsParser
 	private readonly Option<bool> _autoCloseOption;
 	private readonly Option<bool> _skyrimDebug64Option;
 
-	public LaunchOptionsParser()
+	public CommandLineParser()
 	{
 		_outputOption = new("--output", ["-o"])
 		{

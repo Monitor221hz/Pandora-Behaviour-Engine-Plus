@@ -14,7 +14,7 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
-namespace Pandora.Services;
+namespace Pandora.Services.Mods;
 
 public class ModService : IModService, IDisposable
 {

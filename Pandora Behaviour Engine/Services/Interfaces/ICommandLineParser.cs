@@ -2,7 +2,7 @@
 
 namespace Pandora.Services.Interfaces;
 
-public interface ILaunchOptionsParser
+public interface ICommandLineParser
 {
     LaunchOptions Parse(string[] args);
 }
