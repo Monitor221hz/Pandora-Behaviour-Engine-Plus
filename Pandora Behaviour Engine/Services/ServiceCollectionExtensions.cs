@@ -4,7 +4,6 @@
 using GameFinder.RegistryUtils;
 using Microsoft.Extensions.DependencyInjection;
 using NexusMods.Paths;
-using Pandora.API.Data;
 using Pandora.API.Patch.Config;
 using Pandora.API.Patch.Engine.Config;
 using Pandora.API.Patch.IOManagers;

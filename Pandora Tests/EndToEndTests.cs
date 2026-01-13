@@ -3,7 +3,6 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Pandora.API.Data;
 using Pandora.API.Patch.Config;
 using Pandora.API.Patch.IOManagers;
 using Pandora.API.Patch.Skyrim64;
