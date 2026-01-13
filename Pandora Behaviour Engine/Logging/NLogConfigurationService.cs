@@ -1,9 +1,8 @@
 ﻿using NLog;
-using NLog.Config;
 using NLog.Filters;
 using NLog.Targets;
 using NLog.Targets.Wrappers;
-using Pandora.API.Services;
+using Pandora.Services.Interfaces;
 using Pandora.Utils;
 
 namespace Pandora.Logging;
@@ -15,6 +14,8 @@ public class NLogConfigurationService : ILoggingConfigurationService
 	public NLogConfigurationService(IPathResolver pathResolver)
 	{
 		_pathResolver = pathResolver;
+
+		Configure();
 	}
 
 	public void Configure()

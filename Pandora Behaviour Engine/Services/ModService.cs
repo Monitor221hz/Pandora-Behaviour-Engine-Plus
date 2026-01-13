@@ -3,9 +3,9 @@
 
 using DynamicData;
 using DynamicData.Binding;
-using Pandora.API.DTOs;
 using Pandora.API.Patch;
-using Pandora.API.Services;
+using Pandora.Services.Interfaces;
+using Pandora.DTOs;
 using Pandora.Utils;
 using Pandora.ViewModels;
 using System;

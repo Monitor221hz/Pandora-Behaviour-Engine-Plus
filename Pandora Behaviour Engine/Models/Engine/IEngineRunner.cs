@@ -1,4 +1,4 @@
-﻿using Pandora.API.DTOs;
+﻿using Pandora.DTOs;
 using Pandora.API.Patch;
 using Pandora.API.Patch.Engine.Config;
 using System.Collections.Generic;

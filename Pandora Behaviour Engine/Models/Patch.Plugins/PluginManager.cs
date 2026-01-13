@@ -15,7 +15,7 @@ public static class PluginManager
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 	private static readonly List<IEngineConfigurationPlugin> _configurations = [];
-	public static IReadOnlyList<IEngineConfigurationPlugin> EngineConfigurations => _configurations;
+	public static IReadOnlyList<IEngineConfigurationPlugin> EngineConfigurationPlugins => _configurations;
 
 	public static void LoadAllPlugins(DirectoryInfo assemblyDirectory)
 	{

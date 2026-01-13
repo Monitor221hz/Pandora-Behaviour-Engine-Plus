@@ -2,7 +2,6 @@
 using GameFinder.StoreHandlers.Steam;
 using GameFinder.StoreHandlers.Steam.Models.ValueTypes;
 using NexusMods.Paths;
-using Pandora.Utils;
 using System.IO;
 
 namespace Pandora.Services.CreationEngine.Locators;
@@ -35,7 +34,7 @@ public sealed class SteamGameLocator : IGameLocator
 
 			var gameDir = new DirectoryInfo(game.Path.GetFullPath());
 
-			return GamePathUtils.NormalizeToDataDirectory(gameDir, _gameDescriptor);
+			return gameDir;
 		}
 		return null;
 	}

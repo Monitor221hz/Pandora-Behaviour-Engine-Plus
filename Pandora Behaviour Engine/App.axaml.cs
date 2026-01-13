@@ -7,10 +7,10 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 using Microsoft.Extensions.DependencyInjection;
-using Pandora.API.Services;
+using Pandora.Services.Interfaces;
+using Pandora.Logging.Extensions;
 using Pandora.Models.Patch.Plugins;
 using Pandora.Services;
-using Pandora.Utils;
 using Pandora.ViewModels;
 using Pandora.Views;
 using System;
@@ -56,21 +56,15 @@ public partial class App : Application
 
 	private async Task InitializeApplicationAsync()
 	{
-		var modService = Services.GetRequiredService<IModService>();
-		var engine = Services.GetRequiredService<IBehaviourEngine>();
-
-		var logConfig = Services.GetRequiredService<ILoggingConfigurationService>();
-		var exceptionHandler = Services.GetRequiredService<IAppExceptionHandler>();
-
 		try
 		{
-			logConfig.Configure();
-			exceptionHandler.Initialize();
-
-			if (PluginManager.EngineConfigurations.Count > 0)
+			if (PluginManager.EngineConfigurationPlugins.Count > 0)
 			{
 				logger.UiInfo("Plugins loaded.");
 			}
+
+			var modService = Services.GetRequiredService<IModService>();
+			var engine = Services.GetRequiredService<IBehaviourEngine>();
 
 			var loadModsTask = modService.RefreshModsAsync();
 			var initEngineTask = engine.InitializeAsync();

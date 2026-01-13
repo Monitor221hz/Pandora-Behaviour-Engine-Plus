@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Pandora.DTOs;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace Pandora.Services.Skyrim;
+namespace Pandora.Services.Interfaces;
 
 public interface IPathsConfigService
 {

@@ -1,6 +1,6 @@
 ﻿using NLog;
-using Pandora.API.Services;
 using Pandora.Services.CreationEngine;
+using Pandora.Services.Interfaces;
 using Pandora.Utils;
 using System;
 using System.IO;
@@ -60,26 +60,33 @@ public sealed class SkyrimPathResolver : IPathResolver
 		return _cachedGameDir;
 	}
 
-	public void SetGameDataFolder(DirectoryInfo newFolder)
+	public bool TrySetGameDataFolder(DirectoryInfo input)
 	{
-		if (!newFolder.Exists) return;
+		var normalized = GameDataDirectoryResolver.Resolve(input, _gameDescriptor);
+		if (normalized is null)
+		{
+			Logger.Warn($"Invalid game data directory: {input.FullName}");
+			return false;
+		}
 
-		Logger.Info($"Game Data directory changed to: {newFolder.FullName}");
+		Logger.Info($"Game Data directory changed to: {normalized.FullName}");
 
-		_cachedGameDir = newFolder;
+		_cachedGameDir = normalized;
 		_configService.UpdatePaths(_gameDescriptor.Id, _cachedGameDir, _cachedOutputDir);
+		_gameDataSubject.OnNext(normalized);
 
-		_gameDataSubject.OnNext(newFolder);
+		return true;
 	}
 
 	private DirectoryInfo ResolveGameData()
 	{
-		var dir = _gameLocator.TryLocateGameData();
-		if (dir is not null)
-		{
-			Logger.Info($"Skyrim Data directory found: {dir.FullName}");
-			return dir;
-		}
+		var located = _gameLocator.TryLocateGameData();
+		var normalized = located is not null
+			? GameDataDirectoryResolver.Resolve(located, _gameDescriptor)
+			: null;
+
+		if (normalized is not null)
+			return normalized;
 
 		Logger.Warn("Skyrim Data directory not found. Falling back to assembly directory.");
 		return _appPaths.AssemblyDirectory;

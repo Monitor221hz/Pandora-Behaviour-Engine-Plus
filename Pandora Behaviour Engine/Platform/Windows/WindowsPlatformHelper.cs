@@ -1,10 +1,10 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using System;
 using Avalonia.Media;
 using FluentAvalonia.UI.Windowing;
-using Pandora.API.Services;
+using Pandora.Services.Interfaces;
+using System;
 
 namespace Pandora.Platform.Windows;
 

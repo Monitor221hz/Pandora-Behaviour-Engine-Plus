@@ -1,4 +1,5 @@
-﻿using Pandora.API.DTOs;
+﻿using Pandora.DTOs;
+using Pandora.Services.Interfaces;
 using System.IO;
 
 namespace Pandora.Services.Skyrim;

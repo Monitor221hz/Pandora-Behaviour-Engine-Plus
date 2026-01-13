@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Pandora.Services.Skyrim;
+namespace Pandora.DTOs;
 
 public class GamePathSettings
 {

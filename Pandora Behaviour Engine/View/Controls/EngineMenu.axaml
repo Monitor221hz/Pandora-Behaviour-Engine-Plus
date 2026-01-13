@@ -8,7 +8,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Pandora.ViewModels"
-						 xmlns:vmapi="using:Pandora.API.Patch.Config"
 						 xmlns:vmconf="using:Pandora.ViewModels.Configuration"
              mc:Ignorable="d" d:DesignWidth="500"
              x:Class="Pandora.Views.EngineMenu"
@@ -23,17 +22,15 @@
 			<MenuItem Header="About" Command="{Binding ShowAboutDialogCommand}" />
 
 			<MenuItem Header="Menu" ItemsSource="{Binding EngineConfigurationViewModels}">
-				<MenuItem.ItemTemplate>
-					<TreeDataTemplate ItemsSource="{Binding Children}" x:DataType="vmapi:IEngineConfigurationViewModel">
-						<TextBlock Text="{Binding Name}" />
-					</TreeDataTemplate>
-				</MenuItem.ItemTemplate>
 				<MenuItem.Styles>
-					<Style Selector="MenuItem" x:DataType="vmapi:IEngineConfigurationViewModel">
+					<Style Selector="MenuItem" x:DataType="vmconf:IEngineConfigurationViewModel">
 						<Setter Property="Header" Value="{Binding Name}" />
-					</Style>
-					<Style Selector="MenuItem" x:DataType="vmconf:ConfigurationOptionViewModel">
+						<Setter Property="ItemsSource" Value="{Binding Children}" />
+
 						<Setter Property="Command" Value="{Binding SelectCommand}" />
+
+						<Setter Property="ToggleType" Value="Radio" />
+						<Setter Property="IsChecked" Value="{Binding IsChecked}" />
 					</Style>
 				</MenuItem.Styles>
 			</MenuItem>

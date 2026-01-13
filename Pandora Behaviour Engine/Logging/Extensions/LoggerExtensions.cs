@@ -4,7 +4,7 @@
 using NLog;
 using System;
 
-namespace Pandora.Utils;
+namespace Pandora.Logging.Extensions;
 
 public static class LoggerExtensions
 {

@@ -1,5 +1,4 @@
-﻿using Pandora.Services.Skyrim;
-using Pandora.Utils;
+﻿using Pandora.Services.Interfaces;
 using System.IO;
 
 namespace Pandora.Services.CreationEngine.Locators;
@@ -23,7 +22,7 @@ public sealed class ConfigGameLocator : IGameLocator
 
 		if (settings.GameDataDirectory is { Exists: true } dir)
 		{
-			return GamePathUtils.NormalizeToDataDirectory(dir, _gameDescriptor);
+			return dir;
 		}
 
 		return null;

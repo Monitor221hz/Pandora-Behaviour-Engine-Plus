@@ -5,22 +5,23 @@ using Avalonia.Controls;
 using DynamicData;
 using DynamicData.Binding;
 using NLog;
-using Pandora.API.Data;
-using Pandora.API.DTOs;
-using Pandora.API.Patch.Config;
-using Pandora.API.Services;
+using Pandora.DTOs;
+using Pandora.Enums;
+using Pandora.Logging.Extensions;
 using Pandora.Services;
 using Pandora.Services.CreationEngine;
+using Pandora.Services.Interfaces;
 using Pandora.Utils;
+using Pandora.ViewModels.Configuration;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using Splat;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Reactive.Disposables.Fluent;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -144,13 +145,27 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 		{
 			logger.UiInfo($"{_modViewModels.Count} mods loaded.");
 
+			var gameData = _pathResolver.GetGameDataFolder();
+			var assemblyDir = _pathResolver.GetAssemblyFolder();
+
+			if (GameDataDirectoryResolver.Resolve(gameData, _gameDescriptor) is null ||
+			gameData.FullName.Equals(assemblyDir.FullName, StringComparison.OrdinalIgnoreCase))
+			{
+				logger.UiWarn("Game Data directory not found automatically.");
+
+				RxApp.MainThreadScheduler.Schedule(async () =>
+				{
+					await PickGameDirectory();
+				});
+			}
+
 			_engineConfigService.CurrentFactoryChanged
 				.DistinctUntilChanged()
-				.SelectMany(async factory =>
+				.Select(async factory =>
 				{
 					try
 					{
-						await _engine.SetConfigurationAsync(factory);
+						await _engine.SwitchConfigurationAsync(factory.Create());
 					}
 					catch (Exception ex)
 					{
@@ -158,32 +173,43 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 					}
 					return Unit.Default;
 				})
+				.Concat()
 				.Subscribe()
 				.DisposeWith(disposables);
 
-			_engine.StateObservable
+			_engine.StateChanged
 				.ObserveOn(RxApp.MainThreadScheduler)
-				.Subscribe(async state =>
+				.Subscribe(state =>
 				{
 					EngineRunning = state == EngineState.Running;
 					IsPreloading = state == EngineState.Preloading;
 
+					bool isReady = state == EngineState.Ready || state == EngineState.Success || state == EngineState.Error;
+
 					switch (state)
 					{
+						case EngineState.Preloading:
+							break;
+
+						case EngineState.Ready:
+							_windowStateService.SetVisualState(WindowVisualState.Idle);
+							break;
+
 						case EngineState.Running:
 							_windowStateService.SetVisualState(WindowVisualState.Running);
+							break;
+
+						case EngineState.Success:
+							_windowStateService.SetVisualState(WindowVisualState.Idle);
+							_windowStateService.FlashWindow();
+
+							if (_autoClose)
+								_windowStateService.Shutdown();
 							break;
 
 						case EngineState.Error:
 							_windowStateService.SetVisualState(WindowVisualState.Error);
 							logger.UiError("Launch failed. Existing output was not cleared, and current patch list will not be saved.");
-							break;
-
-						case EngineState.Idle:
-							_windowStateService.SetVisualState(WindowVisualState.Idle);
-
-							if (_autoClose)
-								_windowStateService.Shutdown();
 							break;
 					}
 				})
@@ -212,7 +238,7 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 	{
 		var activeMods = _modViewModels.GetSortedActiveMods();
 
-		var result = await Task.Run(() => _engine.LaunchAsync(activeMods));
+		var result = await Task.Run(() => _engine.RunAsync(activeMods));
 
 		await _modService.SaveSettingsAsync();
 
@@ -223,37 +249,16 @@ public partial class EngineViewModel : ViewModelBase, IActivatableViewModel
 	[ReactiveCommand]
 	private async Task PickGameDirectory()
 	{
-		var filterPattern = "*.exe";
-
 		var file = await _diskDialogService.OpenFileAsync(
 			$"Select {_gameDescriptor.Name} Executable",
-			filterPattern);
+			"*.exe");
 
-		if (file == null || !file.Exists)
+		if (file is null)
 			return;
 
-		var folder = file.Directory;
-		if (folder is not null && !folder.Name.Equals("Data", StringComparison.OrdinalIgnoreCase))
+		if (!_pathResolver.TrySetGameDataFolder(file.Directory!))
 		{
-			var dataSub = new DirectoryInfo(Path.Combine(folder.FullName, "Data"));
-			if (dataSub.Exists) folder = dataSub;
-		}
-
-		if (folder is null || !folder.Exists) return;
-
-		bool isValidExecutable = _gameDescriptor.ExecutableNames.Any(
-			exe => exe.Equals(file.Name, StringComparison.OrdinalIgnoreCase));
-
-		if (isValidExecutable)
-		{
-			_pathResolver.SetGameDataFolder(folder);
-			logger.UiInfo($"Game Data folder set to: {folder.FullName}");
-		}
-		else
-		{
-			logger.UiWarn(
-				$"Warning: The selected executable ({file.Name}) does not appear to be for {_gameDescriptor.Name}."
-			);
+			logger.UiWarn("Selected folder is not a valid game directory.");
 		}
 	}
 

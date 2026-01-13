@@ -1,7 +1,6 @@
 ﻿using GameFinder.RegistryUtils;
 using GameFinder.StoreHandlers.GOG;
 using NexusMods.Paths;
-using Pandora.Utils;
 using System.IO;
 
 namespace Pandora.Services.CreationEngine.Locators;
@@ -32,6 +31,6 @@ public sealed class GogGameLocator : IGameLocator
 
 		var dirInfo = new DirectoryInfo(game.Path.GetFullPath());
 
-		return GamePathUtils.NormalizeToDataDirectory(dirInfo, _gameDescriptor);
+		return dirInfo;
 	}
 }

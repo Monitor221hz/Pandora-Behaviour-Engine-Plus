@@ -1,6 +1,5 @@
 ﻿using GameFinder.RegistryUtils;
 using NexusMods.Paths;
-using Pandora.Utils;
 using System;
 using System.IO;
 
@@ -37,7 +36,7 @@ public sealed class RegistryGameLocator : IGameLocator
 
 		var dirInfo = new DirectoryInfo(game.GetFullPath());
 
-		return GamePathUtils.NormalizeToDataDirectory(dirInfo, _gameDescriptor);
+		return dirInfo;
 	}
 }
 

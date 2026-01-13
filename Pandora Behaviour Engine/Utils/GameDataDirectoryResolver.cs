@@ -5,9 +5,9 @@ using System.IO;
 
 namespace Pandora.Utils;
 
-internal static class GamePathUtils
+internal static class GameDataDirectoryResolver
 {
-	public static DirectoryInfo? NormalizeToDataDirectory(
+	public static DirectoryInfo? Resolve(
 		DirectoryInfo input,
 		IGameDescriptor descriptor)
 	{
@@ -18,12 +18,12 @@ internal static class GamePathUtils
 			? input
 			: new DirectoryInfo(Path.Combine(input.FullName, "Data"));
 
-		return IsValidDataDirectory(dataDir, descriptor)
+		return IsValid(dataDir, descriptor)
 			? dataDir
 			: null;
 	}
 
-	private static bool IsValidDataDirectory(
+	private static bool IsValid(
 		[NotNullWhen(true)] DirectoryInfo? dataDir,
 		IGameDescriptor descriptor)
 	{

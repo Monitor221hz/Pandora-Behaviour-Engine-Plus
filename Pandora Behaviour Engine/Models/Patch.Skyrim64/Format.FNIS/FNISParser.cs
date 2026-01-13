@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using HKX2E;
 using Pandora.API.Patch;
 using Pandora.API.Patch.Skyrim64;
-using Pandora.API.Services;
+using Pandora.Services.Interfaces;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 using Pandora.Patch.Patchers.Skyrim.FNIS;
 

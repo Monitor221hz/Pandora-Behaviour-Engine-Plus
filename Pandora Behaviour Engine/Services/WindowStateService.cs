@@ -3,8 +3,8 @@
 
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Pandora.API.Services;
 using Pandora.Platform.Windows;
+using Pandora.Services.Interfaces;
 using Pandora.Views;
 
 namespace Pandora.Services;

@@ -1,5 +1,4 @@
-﻿using Pandora.API.DTOs;
-using Pandora.Utils;
+﻿using Pandora.DTOs;
 using System.IO;
 
 namespace Pandora.Services.CreationEngine.Locators;
@@ -20,6 +19,6 @@ public sealed class CommandLineGameLocator : IGameLocator
 		if (_options.SkyrimGameDirectory is null)
 			return null;
 
-		return GamePathUtils.NormalizeToDataDirectory(_options.SkyrimGameDirectory, _gameDescriptor);
+		return _options.SkyrimGameDirectory;
 	}
 }

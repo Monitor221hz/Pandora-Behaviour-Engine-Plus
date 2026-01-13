@@ -3,7 +3,7 @@
 
 using System;
 using FluentAvalonia.UI.Windowing;
-using Pandora.API.Services;
+using Pandora.Services.Interfaces;
 using Pandora.Platform.Windows;
 
 namespace Pandora.Views;

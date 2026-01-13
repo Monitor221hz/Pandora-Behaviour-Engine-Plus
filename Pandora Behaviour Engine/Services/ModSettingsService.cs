@@ -2,8 +2,8 @@
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
 using NLog;
-using Pandora.API.DTOs;
-using Pandora.API.Services;
+using Pandora.DTOs;
+using Pandora.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;

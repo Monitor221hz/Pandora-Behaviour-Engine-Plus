@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using Pandora.API.Patch.Skyrim64;
 using Pandora.API.Patch.Skyrim64.AnimData;
-using Pandora.API.Services;
+using Pandora.Services.Interfaces;
 
 namespace Pandora.Models.Patch.Skyrim64.AnimData;
 
