@@ -16,6 +16,7 @@ using Pandora.API.Services;
 using Pandora.Data;
 using Pandora.Logging;
 using Pandora.Models;
+using Pandora.Models.Engine;
 using Pandora.Models.Patch.Configs;
 using Pandora.Models.Patch.IO.Skyrim64;
 using Pandora.Models.Patch.Skyrim64;
@@ -49,6 +50,7 @@ public static class ServiceCollectionExtensions
 				.AddSkyrimServices()
 				.AddGameLocators()
 				.AddGameDescriptors()
+				.AddBehaviourEngine()
 				.AddViewModels();
 
 		}
@@ -106,13 +108,6 @@ public static class ServiceCollectionExtensions
 			serviceCollection.AddSingleton<IDiskDialogService>(sp => new DiskDialogService(sp.GetRequiredService<MainWindow>()));
 
 			serviceCollection.AddSingleton<IWindowStateService, WindowStateService>();
-
-			serviceCollection.AddSingleton<IBehaviourEngine>(sp =>
-				new BehaviourEngine(
-					sp.GetRequiredService<IEngineConfigurationFactory<SkyrimConfiguration>>().Create(),
-					sp.GetRequiredService<IServiceScopeFactory>()
-				)
-			);
 
 			return serviceCollection;
 		}
@@ -192,6 +187,15 @@ public static class ServiceCollectionExtensions
 		{
 			serviceCollection.AddSingleton<IGameDescriptor, SkyrimDescriptor>();
 			return serviceCollection;
+		}
+
+		private IServiceCollection AddBehaviourEngine()
+		{
+			return serviceCollection
+				.AddSingleton<IBehaviourEngine, BehaviourEngine>()
+				.AddSingleton<IEngineStateMachine, EngineStateMachine>()
+				.AddScoped<IPatcherFactory, PatcherFactory>()
+				.AddScoped<IEngineRunner, EngineRunner>();
 		}
 	}
 }
