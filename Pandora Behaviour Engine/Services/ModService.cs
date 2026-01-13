@@ -16,15 +16,6 @@ using System.Threading.Tasks;
 
 namespace Pandora.Services;
 
-public interface IModService
-{
-	IObservable<IChangeSet<ModInfoViewModel>> Connect();
-
-	Task RefreshModsAsync();
-
-	Task SaveSettingsAsync();
-}
-
 public class ModService : IModService, IDisposable
 {
 	private readonly IModLoaderService _loader;
