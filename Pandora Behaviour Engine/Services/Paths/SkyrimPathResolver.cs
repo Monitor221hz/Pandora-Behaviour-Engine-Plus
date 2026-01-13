@@ -6,7 +6,7 @@ using System;
 using System.IO;
 using System.Reactive.Subjects;
 
-namespace Pandora.Services.Skyrim;
+namespace Pandora.Services.Paths;
 
 public sealed class SkyrimPathResolver : IPathResolver
 {

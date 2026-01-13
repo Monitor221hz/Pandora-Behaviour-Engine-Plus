@@ -27,7 +27,7 @@ using Pandora.Services.CreationEngine.Game;
 using Pandora.Services.CreationEngine.Locators;
 using Pandora.Services.Interfaces;
 using Pandora.Services.Mods;
-using Pandora.Services.Skyrim;
+using Pandora.Services.Paths;
 using Pandora.ViewModels;
 using Pandora.Views;
 using System;

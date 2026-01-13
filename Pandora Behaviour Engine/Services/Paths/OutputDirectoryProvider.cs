@@ -2,7 +2,7 @@
 using Pandora.Services.Interfaces;
 using System.IO;
 
-namespace Pandora.Services.Skyrim;
+namespace Pandora.Services.Paths;
 
 public sealed class OutputDirectoryProvider : IOutputDirectoryProvider
 {

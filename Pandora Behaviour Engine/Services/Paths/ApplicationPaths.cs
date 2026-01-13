@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 
-namespace Pandora.Services.Skyrim;
+namespace Pandora.Services.Paths;
 
 public sealed class ApplicationPaths : IApplicationPaths
 {

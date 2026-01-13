@@ -4,7 +4,7 @@ using Pandora.Utils;
 using System.IO;
 using System.Text.Json;
 
-namespace Pandora.Services.Skyrim;
+namespace Pandora.Services.Paths;
 
 public sealed class PathsConfigService : IPathsConfigService
 {
