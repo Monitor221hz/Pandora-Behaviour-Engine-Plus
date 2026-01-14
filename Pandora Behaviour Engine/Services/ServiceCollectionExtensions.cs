@@ -57,10 +57,13 @@ public static class ServiceCollectionExtensions
 		private IServiceCollection AddViewModels()
 		{
 			return serviceCollection
+				.AddSingleton<EngineMenuViewModel>()
+				.AddSingleton<PatchBoxViewModel>()
+				.AddSingleton<LogBoxViewModel>()
+				.AddSingleton<LaunchElementViewModel>()
 				.AddSingleton<SettingsViewModel>()
 				.AddSingleton<DataGridOptionsViewModel>()
-				.AddSingleton<AboutDialogViewModel>()
-				.AddSingleton<LogViewModel>()
+				.AddSingleton<AboutDiaLogBoxViewModel>()
 				.AddSingleton<EngineViewModel>()
 				.AddSingleton<MainWindowViewModel>();
 		}
@@ -106,7 +109,9 @@ public static class ServiceCollectionExtensions
 				.AddSingleton<IAppExceptionHandler, AppExceptionHandler>()
 				.AddSingleton<IDiskDialogService>(sp => new DiskDialogService(sp.GetRequiredService<MainWindow>()))
 
-				.AddSingleton<IWindowStateService, WindowStateService>();
+				.AddSingleton<IWindowStateService, WindowStateService>()
+
+				.AddSingleton<IEngineSessionState, EngineSessionState>();
 		}
 
 		private IServiceCollection AddLoggingServices()

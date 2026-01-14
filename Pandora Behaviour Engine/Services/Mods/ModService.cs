@@ -107,6 +107,16 @@ public class ModService : IModService, IDisposable
 		await _settings.SaveAsync(entries);
 	}
 
+	public IReadOnlyList<IModInfo> GetActiveMods()
+	{
+		return Source
+			.Where(m => m.Active)
+			.OrderBy(m => m.Priority)
+			.ThenBy(m => !m.IsPandora)
+			.Select(m => m.ModInfo)
+			.ToList();
+	}
+
 	public void Dispose()
 	{
 		_pathSubscription?.Dispose();

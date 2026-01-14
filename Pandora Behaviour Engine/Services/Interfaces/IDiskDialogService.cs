@@ -6,5 +6,5 @@ namespace Pandora.Services.Interfaces;
 public interface IDiskDialogService
 {
     Task<DirectoryInfo?> OpenFolderAsync(string title, DirectoryInfo? initialDirectory = null);
-    Task<FileInfo?> OpenFileAsync(string title, params string[] patterns);
+    Task<FileInfo?> OpenFileAsync(string title, DirectoryInfo? initialDirectory = null, params string[] patterns);
 }

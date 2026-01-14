@@ -33,7 +33,7 @@ public sealed class KeyboardModMoveBehavior : Behavior<DataGrid>
 
 		var dataGrid = AssociatedObject;
 
-		if (dataGrid?.DataContext is not EngineViewModel vm ||
+		if (dataGrid?.DataContext is not PatchBoxViewModel vm ||
 			dataGrid.SelectedItem is not ModInfoViewModel selectedMod)
 			return;
 

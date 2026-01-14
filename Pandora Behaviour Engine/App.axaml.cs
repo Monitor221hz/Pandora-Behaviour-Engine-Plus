@@ -7,10 +7,11 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 using Microsoft.Extensions.DependencyInjection;
-using Pandora.Services.Interfaces;
+using Pandora.DTOs;
 using Pandora.Logging.Extensions;
 using Pandora.Models.Patch.Plugins;
 using Pandora.Services;
+using Pandora.Services.Interfaces;
 using Pandora.ViewModels;
 using Pandora.Views;
 using System;
@@ -41,6 +42,13 @@ public partial class App : Application
 			serviceCollection.AddPandoraServices();
 			
 			Services = serviceCollection.BuildServiceProvider();
+
+			var launchOptions = Services.GetRequiredService<LaunchOptions>();
+			var configService = Services.GetRequiredService<IEngineConfigurationService>();
+			var logService = Services.GetRequiredService<ILoggingConfigurationService>();
+
+			logService.Configure();
+			configService.Initialize(launchOptions.UseSkyrimDebug64);
 
 			var mainWindow = Services.GetRequiredService<MainWindow>();
 			mainWindow.DataContext = Services.GetRequiredService<MainWindowViewModel>();

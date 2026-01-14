@@ -29,7 +29,7 @@
       <ColumnDefinition Width="*" MinWidth="200" />
     </Grid.ColumnDefinitions>
 
-    <vws:PatchBox x:Name="PatchBox"
+    <vws:PatchBox x:Name="PatchBox" DataContext="{Binding PatchBoxVM}"
                   Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
                   Margin="0 6 0 0" />
 
@@ -40,19 +40,19 @@
                   ResizeDirection="Rows"
                   Width="90" />
 
-    <vws:LogBox x:Name="LogBox"
+    <vws:LogBox x:Name="LogBox" DataContext="{Binding LogVM}"
                 Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
                 Margin="0 0 0 10" />
 
     <ui:InfoBar Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3"
                 Severity="Informational" Title="Info"
-                Message="{Binding OutputDirectoryMessage}" IsOpen="{Binding !IsOutputFolderCustomSet}"
+                Message="{Binding State.OutputDirectoryMessage}" IsOpen="{Binding !State.IsOutputFolderCustomSet}"
                 IsVisible="{Binding $self.IsOpen}" Margin="0 0 0 10">
       <ui:InfoBar.ActionButton>
-        <HyperlinkButton Content="here" NavigateUri="{Binding OutputFolderUri}" IsVisible="{Binding !IsVisibleLinkOutputDirectory}" />
+        <HyperlinkButton Content="here" NavigateUri="{Binding State.OutputFolderUri}" />
       </ui:InfoBar.ActionButton>
     </ui:InfoBar>
 
-    <vws:LaunchElement Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" />
+    <vws:LaunchElement Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" DataContext="{Binding LauncherVM}" />
   </Grid>
 </UserControl>

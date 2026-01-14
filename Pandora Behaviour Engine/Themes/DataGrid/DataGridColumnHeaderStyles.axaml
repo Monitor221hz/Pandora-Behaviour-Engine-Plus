@@ -76,16 +76,16 @@
                     <ui:FAMenuFlyout Placement="Bottom">
                       <ui:MenuFlyoutItem Text="Sort Ascending"
                                          IconSource="{StaticResource IconArrowDown}"
-                                         Command="{Binding $parent[DataGrid].((vm:EngineViewModel)DataContext).SortAscendingCommand}"
+                                         Command="{Binding $parent[DataGrid].((vm:PatchBoxViewModel)DataContext).SortAscendingCommand}"
                                          CommandParameter="{Binding $parent[DataGridColumnHeader]}" />
                       <ui:MenuFlyoutItem Text="Sort Descending"
                                          IconSource="{StaticResource IconArrowUp}"
-                                         Command="{Binding $parent[DataGrid].((vm:EngineViewModel)DataContext).SortDescendingCommand}"
+                                         Command="{Binding $parent[DataGrid].((vm:PatchBoxViewModel)DataContext).SortDescendingCommand}"
                                          CommandParameter="{Binding $parent[DataGridColumnHeader]}" />
                       <ui:MenuFlyoutSeparator />
                       <ui:MenuFlyoutItem Text="Clear Sorting"
                                          IconSource="Clear"
-                                         Command="{Binding $parent[DataGrid].((vm:EngineViewModel)DataContext).ClearSortCommand}"
+                                         Command="{Binding $parent[DataGrid].((vm:PatchBoxViewModel)DataContext).ClearSortCommand}"
                                          CommandParameter="{Binding $parent[DataGridColumnHeader]}" />
                     </ui:FAMenuFlyout>
                   </Button.Flyout>

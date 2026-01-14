@@ -1,0 +1,87 @@
+﻿using Avalonia.Controls;
+using DynamicData;
+using DynamicData.Binding;
+using Pandora.DTOs;
+using Pandora.Logging.Extensions;
+using Pandora.Services.Interfaces;
+using Pandora.Utils;
+using ReactiveUI;
+using ReactiveUI.SourceGenerators;
+using System;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Reactive.Disposables.Fluent;
+using System.Reactive.Linq;
+
+namespace Pandora.ViewModels;
+
+public partial class PatchBoxViewModel : ViewModelBase, IActivatableViewModel
+{
+	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
+	private readonly IModService _modService;
+	private readonly IEngineSessionState _state;
+	public IEngineSessionState State => _state;
+
+	[BindableDerivedList]
+	private readonly ReadOnlyObservableCollection<ModInfoViewModel> _modViewModels;
+
+	[ObservableAsProperty(ReadOnly = false)]
+	private bool? _allSelected;
+
+	public DataGridOptionsViewModel DataGridOptions { get; }
+
+	public ViewModelActivator Activator { get; } = new();
+
+
+	public PatchBoxViewModel(IModService modService, IEngineSessionState state, DataGridOptionsViewModel dataGridOptions)
+	{
+		_modService = modService;
+		_state = state;
+
+		DataGridOptions = dataGridOptions;
+
+		_modService
+		   .Connect()
+		   .AutoRefresh(x => x.Priority)
+		   .Filter(this.WhenAnyValue(x => x.State.SearchTerm).Select(ModViewModelExtensions.BuildNameFilter))
+		   .Sort(SortExpressionComparer<ModInfoViewModel>.Ascending(x => x.Priority))
+		   .Bind(out _modViewModels)
+		   .Subscribe();
+
+		this.WhenActivated(disposables =>
+		{
+			logger.UiInfo($"{_modViewModels.Count} mods loaded.");
+
+			_allSelectedHelper = _modService
+				.Connect()
+				.AutoRefresh(x => x.Active)
+				.ToCollection()
+				.Select(items => ModViewModelExtensions.AreAllNonPandoraModsSelected(items))
+				.DistinctUntilChanged()
+				.ToProperty(this, x => x.AllSelected)
+				.DisposeWith(disposables);
+		});
+	}
+
+	[ReactiveCommand]
+	private void ToggleSelectAll(bool? isChecked)
+	{
+		if (isChecked is not bool check)
+			return;
+
+		_modViewModels.SetAllActive(check);
+	}
+
+	[ReactiveCommand]
+	private void SortAscending(DataGridColumnHeader? header) =>
+		DataGridUtils.ApplySort(header, c => c.Sort(ListSortDirection.Ascending));
+
+	[ReactiveCommand]
+	private void SortDescending(DataGridColumnHeader? header) =>
+		DataGridUtils.ApplySort(header, c => c.Sort(ListSortDirection.Descending));
+
+	[ReactiveCommand]
+	private void ClearSort(DataGridColumnHeader? header) =>
+		DataGridUtils.ApplySort(header, c => c.ClearSort());
+}

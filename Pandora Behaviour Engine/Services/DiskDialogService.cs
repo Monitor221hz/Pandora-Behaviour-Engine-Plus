@@ -46,8 +46,16 @@ public class DiskDialogService : IDiskDialogService
 	}
 
 
-	public async Task<FileInfo?> OpenFileAsync(string title, params string[] patterns)
+	public async Task<FileInfo?> OpenFileAsync(string title, DirectoryInfo? initialDirectory = null, params string[] patterns)
 	{
+		IStorageFolder? startLocation = null;
+
+		if (initialDirectory is { Exists: true })
+		{
+			startLocation = await _window.StorageProvider
+				.TryGetFolderFromPathAsync(initialDirectory.FullName);
+		}
+
 		var files = await _window.StorageProvider.OpenFilePickerAsync(
 			new FilePickerOpenOptions
 			{
@@ -57,14 +65,14 @@ public class DiskDialogService : IDiskDialogService
 				{
 					new FilePickerFileType(title) { Patterns = patterns },
 				},
+				SuggestedStartLocation = startLocation
 			}
 		);
-		if (files.Count == 0)
-		{
-			return null;
-		}
-		var localPath = files[0].TryGetLocalPath();
 
+		if (files.Count == 0)
+			return null;
+
+		var localPath = files[0].TryGetLocalPath();
 		return new FileInfo(localPath!);
 	}
 }

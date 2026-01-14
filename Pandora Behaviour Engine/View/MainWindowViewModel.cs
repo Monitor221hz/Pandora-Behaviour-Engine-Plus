@@ -6,9 +6,11 @@ namespace Pandora.ViewModels;
 public partial class MainWindowViewModel : ViewModelBase
 {
 	public EngineViewModel EngineVM { get; }
+	public EngineMenuViewModel EngineMenuVM { get; }
 
-	public MainWindowViewModel(EngineViewModel viewModel)
+	public MainWindowViewModel(EngineViewModel viewModel, EngineMenuViewModel engineMenuVM)
 	{
 		EngineVM = viewModel;
+		EngineMenuVM = engineMenuVM;
 	}
 }

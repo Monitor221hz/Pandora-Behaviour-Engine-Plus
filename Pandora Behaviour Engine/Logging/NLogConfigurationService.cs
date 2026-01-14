@@ -14,8 +14,6 @@ public class NLogConfigurationService : ILoggingConfigurationService
 	public NLogConfigurationService(IPathResolver pathResolver)
 	{
 		_pathResolver = pathResolver;
-
-		Configure();
 	}
 
 	public void Configure()

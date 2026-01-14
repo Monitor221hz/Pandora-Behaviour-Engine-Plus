@@ -13,7 +13,7 @@
 						 xmlns:ae="using:AvaloniaEdit"
              mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
              x:Class="Pandora.Views.LogBox"
-			       x:DataType="vm:EngineViewModel">
+			       x:DataType="vm:LogBoxViewModel">
 	<Grid>
 		<Border Background="{DynamicResource ControlFillColorDefault}" Padding="6" CornerRadius="4">
 			<ae:TextEditor Name="LogEditor"
@@ -27,25 +27,24 @@
                      VerticalScrollBarVisibility="Auto"
                      WordWrap="True">
 				<Interaction.Behaviors>
-					<b:LogTextEditorBehavior LogStream="{Binding LogVM.LogStream}"
-																   ClearStream="{Binding LogVM.ClearStream}" />
+					<b:LogTextEditorBehavior LogStream="{Binding LogStream}"
+																   ClearStream="{Binding ClearStream}" />
 				</Interaction.Behaviors>
 			</ae:TextEditor>
 		</Border>
 		<Border Background="Transparent" ToolTip.Tip="Preloading..." ToolTip.Placement="Bottom" Width="24" Height="24" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="8" >
-			<ui:ProgressRing IsActive="{Binding IsPreloading}" IsEnabled="{Binding IsPreloading}" />
+			<ui:ProgressRing IsActive="{Binding State.IsPreloading}" IsEnabled="{Binding State.IsPreloading}" />
 		</Border>
 		<StackPanel Orientation="Horizontal" Spacing="4" Margin="8" HorizontalAlignment="Right">
 			<Button Name="OpenOutputFolderButton"
               IsVisible="True"
-              IsEnabled="{Binding IsOutputFolderCustomSet}"
               Padding="4"
               HorizontalAlignment="Right" VerticalAlignment="Bottom"
               ToolTip.Tip="Open Output Folder">
 				<ui:SymbolIcon Symbol="Folder" FontSize="20" />
 				<Interaction.Behaviors>
 					<EventTriggerBehavior EventName="Click">
-						<LaunchUriOrFileAction Path="{Binding OutputFolderUri}" />
+						<LaunchUriOrFileAction Path="{Binding State.OutputFolderUri}" />
 					</EventTriggerBehavior>
 				</Interaction.Behaviors>
 			</Button>
