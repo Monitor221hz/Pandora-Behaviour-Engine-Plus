@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.VisualTree;
 using Avalonia.Xaml.Interactions.DragAndDrop;
+using Pandora.Mods.Extensions;
 using Pandora.Utils;
 using Pandora.ViewModels;
 using System.Collections.ObjectModel;

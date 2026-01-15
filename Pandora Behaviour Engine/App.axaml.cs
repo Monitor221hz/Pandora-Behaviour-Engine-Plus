@@ -7,16 +7,12 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 using Microsoft.Extensions.DependencyInjection;
-using Pandora.DTOs;
-using Pandora.Logging.Extensions;
-using Pandora.Models.Patch.Plugins;
 using Pandora.Services;
 using Pandora.Services.Interfaces;
 using Pandora.ViewModels;
 using Pandora.Views;
 using System;
 using System.Globalization;
-using System.Threading.Tasks;
 
 namespace Pandora;
 
@@ -43,46 +39,19 @@ public partial class App : Application
 			
 			Services = serviceCollection.BuildServiceProvider();
 
-			var launchOptions = Services.GetRequiredService<LaunchOptions>();
-			var configService = Services.GetRequiredService<IEngineConfigurationService>();
-			var logService = Services.GetRequiredService<ILoggingConfigurationService>();
+			var bootstrapper = Services.GetRequiredService<IAppBootstrapper>();
 
-			logService.Configure();
-			configService.Initialize(launchOptions.UseSkyrimDebug64);
+			bootstrapper.InitializeSync();
 
 			var mainWindow = Services.GetRequiredService<MainWindow>();
 			mainWindow.DataContext = Services.GetRequiredService<MainWindowViewModel>();
 
 			desktop.MainWindow = mainWindow;
 
-
-			_ = InitializeApplicationAsync();
+			_ = bootstrapper.InitializeAsync();
 		}
 
 		base.OnFrameworkInitializationCompleted();
-	}
-
-	private async Task InitializeApplicationAsync()
-	{
-		try
-		{
-			if (PluginManager.EngineConfigurationPlugins.Count > 0)
-			{
-				logger.UiInfo("Plugins loaded.");
-			}
-
-			var modService = Services.GetRequiredService<IModService>();
-			var engine = Services.GetRequiredService<IBehaviourEngine>();
-
-			var loadModsTask = modService.RefreshModsAsync();
-			var initEngineTask = engine.InitializeAsync();
-
-			await Task.WhenAll(loadModsTask, initEngineTask);
-		}
-		catch (Exception ex)
-		{
-			logger.Fatal(ex, $"Startup failed");
-		}
 	}
 
 	private static void SetupCultureInfo()
@@ -106,12 +75,8 @@ public partial class App : Application
 		};
 	}
 
-	public static new App? Current => Application.Current as App;
-
 	/// <summary>
 	/// Gets the <see cref="IServiceProvider"/> instance to resolve application services.
 	/// </summary>
 	public IServiceProvider Services { get; private set; }
-
-	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 }

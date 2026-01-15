@@ -8,7 +8,7 @@ using Pandora.API.Patch.Skyrim64.AnimData;
 using Pandora.API.Patch.Skyrim64.AnimSetData;
 using Pandora.Models.Patch.Skyrim64.AnimSetData;
 using Pandora.Models.Patch.Skyrim64.Hkx.Changes;
-using Pandora.Services.Interfaces;
+using Pandora.Paths.Contexts;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Linq;
@@ -20,7 +20,7 @@ public class PandoraAssembler
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 	private readonly PandoraNativePatchManager nativeManager = new();
-	private readonly IPathResolver _pathResolver;
+	private readonly IEnginePathContext _pathContext;
 	private readonly IMetaDataExporter<IPackFile> _packFileExporter;
 
 	public IProjectManager ProjectManager { get; private set; }
@@ -28,14 +28,14 @@ public class PandoraAssembler
 	public IAnimSetDataManager AnimSetDataManager { get; private set; }
 
 	public PandoraAssembler(
-		IPathResolver pathResolver,
+		IEnginePathContext pathContext,
 		IMetaDataExporter<IPackFile> exporter,
 		IProjectManager projectManager,
 		IAnimDataManager animDataManager,
 		IAnimSetDataManager animSetDataManager
 	)
 	{
-		_pathResolver = pathResolver;
+		_pathContext = pathContext;
 		_packFileExporter = exporter;
 		ProjectManager = projectManager;
 		AnimSetDataManager = animSetDataManager;
@@ -43,12 +43,12 @@ public class PandoraAssembler
 	}
 
 	//public PandoraAssembler(
-	//	IPathResolver pathResolver,
+	//	IEnginePathContext pathContext,
 	//	IMetaDataExporter<IPackFile> exporter,
 	//	IPatchAssembler nemesisAssembler
 	//)
 	//{
-	//	_pathResolver = pathResolver;
+	//	_pathContext = pathContext;
 	//	_packFileExporter = exporter;
 	//	ProjectManager = nemesisAssembler.ProjectManager;
 	//	AnimSetDataManager = nemesisAssembler.AnimSetDataManager;

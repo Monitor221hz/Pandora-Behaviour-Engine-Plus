@@ -74,9 +74,9 @@
     <Rectangle Grid.Column="4" Height="24" Width="1" Fill="{DynamicResource MenuFlyoutSeparatorBackground}" HorizontalAlignment="Left" Margin="4 0 0 0" />
 
     <ui:TaskDialog Name="AboutDialog"
-                   Header="{x:Static vm:AboutDiaLogBoxViewModel.Header}"
-                   SubHeader="{x:Static vm:AboutDiaLogBoxViewModel.SubHeader}"
-                   Content="{x:Static vm:AboutDiaLogBoxViewModel.Content}"
+                   Header="{x:Static vm:AboutDialogViewModel.Header}"
+                   SubHeader="{x:Static vm:AboutDialogViewModel.SubHeader}"
+                   Content="{x:Static vm:AboutDialogViewModel.Content}"
                    FooterVisibility="Never"
                    IsFooterExpanded="False"
                    ShowProgressBar="False"

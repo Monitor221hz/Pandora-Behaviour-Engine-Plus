@@ -1,10 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Pandora.API.Patch;
 using Pandora.API.Patch.Engine.Config;
+using System;
 
 namespace Pandora.Models.Engine;
 
-public sealed class PatcherFactory : IPatcherFactory
+public sealed class PatcherFactory : IPatcherFactory, IDisposable
 {
 	private readonly IServiceScopeFactory _scopeFactory;
 	private IServiceScope? _scope;
@@ -29,6 +30,10 @@ public sealed class PatcherFactory : IPatcherFactory
 	public void SetConfiguration(IEngineConfiguration config)
 	{
 		_config = config;
+	}
+
+	public void Dispose()
+	{
 		_scope?.Dispose();
 		_scope = null;
 	}

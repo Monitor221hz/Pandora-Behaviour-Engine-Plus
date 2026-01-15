@@ -10,7 +10,7 @@ using Pandora.API.Patch.Skyrim64.AnimSetData;
 using Pandora.Models.Patch.Skyrim64.AnimData;
 using Pandora.Models.Patch.Skyrim64.Format.Pandora;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
-using Pandora.Services.Interfaces;
+using Pandora.Paths.Contexts;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -26,7 +26,7 @@ public class NemesisAssembler : IPatchAssembler
 {
 	private static readonly Logger Logger = LogManager.GetCurrentClassLogger(); //to do: move logger into inheritable base class
 
-	private readonly IPathResolver _pathResolver;
+	private readonly IEnginePathContext _pathContext;
 
 	private readonly PandoraBridgedAssembler _pandoraConverter;
 	private readonly IMetaDataExporter<IPackFile> _exporter;
@@ -52,7 +52,7 @@ public class NemesisAssembler : IPatchAssembler
 	public IAnimSetDataManager AnimSetDataManager { get; private set; }
 
 	public NemesisAssembler(
-	   IPathResolver pathResolver,
+	   IEnginePathContext pathContext,
 	   IMetaDataExporter<IPackFile> exporter,
 	   IProjectManager projectManager,
 	   IAnimDataManager animDataManager,
@@ -60,7 +60,7 @@ public class NemesisAssembler : IPatchAssembler
 	   PandoraBridgedAssembler bridgedAssembler
    )
 	{
-		_pathResolver = pathResolver;
+		_pathContext = pathContext;
 		_exporter = exporter;
 		ProjectManager = projectManager;
 		AnimDataManager = animDataManager;
@@ -288,7 +288,7 @@ public class NemesisAssembler : IPatchAssembler
 			exportFiles.Add(
 				(
 					packFile.InputHandle,
-					new FileInfo(Path.Join(_pathResolver.GetCurrentFolder().FullName, packFile.InputHandle.Name))
+					new FileInfo(Path.Join(_pathContext.CurrentFolder.FullName, packFile.InputHandle.Name))
 				)
 			);
 		}

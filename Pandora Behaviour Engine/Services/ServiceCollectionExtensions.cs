@@ -10,9 +10,9 @@ using Pandora.API.Patch.IOManagers;
 using Pandora.API.Patch.Skyrim64;
 using Pandora.API.Patch.Skyrim64.AnimData;
 using Pandora.API.Patch.Skyrim64.AnimSetData;
-using Pandora.Data;
 using Pandora.DTOs;
 using Pandora.Logging;
+using Pandora.Logging.Services;
 using Pandora.Models.Engine;
 using Pandora.Models.Patch.Configs;
 using Pandora.Models.Patch.IO.Skyrim64;
@@ -22,12 +22,16 @@ using Pandora.Models.Patch.Skyrim64.AnimSetData;
 using Pandora.Models.Patch.Skyrim64.Format.FNIS;
 using Pandora.Models.Patch.Skyrim64.Format.Nemesis;
 using Pandora.Models.Patch.Skyrim64.Format.Pandora;
-using Pandora.Services.CreationEngine;
-using Pandora.Services.CreationEngine.Game;
-using Pandora.Services.CreationEngine.Locators;
+using Pandora.Mods.Providers;
+using Pandora.Mods.Services;
+using Pandora.Paths.Contexts;
+using Pandora.Paths.Services;
+using Pandora.Paths.Validation;
+using Pandora.Platform.CreationEngine;
+using Pandora.Platform.CreationEngine.Game;
+using Pandora.Platform.CreationEngine.Locators;
+using Pandora.Platform.Windows;
 using Pandora.Services.Interfaces;
-using Pandora.Services.Mods;
-using Pandora.Services.Paths;
 using Pandora.ViewModels;
 using Pandora.Views;
 using System;
@@ -41,6 +45,7 @@ public static class ServiceCollectionExtensions
 		public IServiceCollection AddPandoraServices()
 		{
 			return serviceCollection
+				.AddAppBootstrapper()
 				.AddCoreServices()
 				.AddLoggingServices()
 				.AddPathServices()
@@ -51,7 +56,11 @@ public static class ServiceCollectionExtensions
 				.AddGameDescriptors()
 				.AddBehaviourEngine()
 				.AddViewModels();
+		}
 
+		private IServiceCollection AddAppBootstrapper()
+		{
+			return serviceCollection.AddSingleton<IAppBootstrapper, AppBootstrapper>();
 		}
 
 		private IServiceCollection AddViewModels()
@@ -63,7 +72,7 @@ public static class ServiceCollectionExtensions
 				.AddSingleton<LaunchElementViewModel>()
 				.AddSingleton<SettingsViewModel>()
 				.AddSingleton<DataGridOptionsViewModel>()
-				.AddSingleton<AboutDiaLogBoxViewModel>()
+				.AddSingleton<AboutDialogViewModel>()
 				.AddSingleton<EngineViewModel>()
 				.AddSingleton<MainWindowViewModel>();
 		}
@@ -99,19 +108,16 @@ public static class ServiceCollectionExtensions
 				.AddSingleton<PandoraServiceContext>(sp =>
 					new PandoraServiceContext(sp.GetRequiredService<MainWindow>())
 				)
-				.AddSingleton<ICommandLineParser, CommandLineParser>()
 				.AddSingleton<LaunchOptions>(sp =>
 				{
 					var parser = sp.GetRequiredService<ICommandLineParser>();
 					return parser.Parse(Environment.GetCommandLineArgs());
 				})
-
+				.AddSingleton<ICommandLineParser, CommandLineParser>()
 				.AddSingleton<IAppExceptionHandler, AppExceptionHandler>()
 				.AddSingleton<IDiskDialogService>(sp => new DiskDialogService(sp.GetRequiredService<MainWindow>()))
-
 				.AddSingleton<IWindowStateService, WindowStateService>()
-
-				.AddSingleton<IEngineSessionState, EngineSessionState>();
+				.AddSingleton<IEngineSharedState, EngineSharedState>();
 		}
 
 		private IServiceCollection AddLoggingServices()
@@ -167,10 +173,14 @@ public static class ServiceCollectionExtensions
 		private IServiceCollection AddPathServices()
 		{
 			return serviceCollection
-				.AddSingleton<IApplicationPaths, ApplicationPaths>()
-				.AddSingleton<IPathsConfigService, PathsConfigService>()
-				.AddSingleton<IOutputDirectoryProvider, OutputDirectoryProvider>()
-				.AddSingleton<IPathResolver, SkyrimPathResolver>();
+				.AddSingleton<IAppPathContext, AppPathContext>()
+				.AddSingleton<IUserPathContext, UserPathContext>()
+				.AddSingleton<IOutputPathContext, OutputPathContext>()
+				.AddSingleton<IGamePathService, GamePathService>()
+				.AddSingleton<IOutputPathService, OutputPathService>()
+				.AddSingleton<IPathConfigService, PathConfigService>()
+				.AddSingleton<IEnginePathContext, EnginePathContext>()
+				.AddSingleton<IGameDataValidator, GameDataValidator>();
 		}
 
 		private IServiceCollection AddGameDescriptors()
@@ -183,8 +193,9 @@ public static class ServiceCollectionExtensions
 			return serviceCollection
 				.AddSingleton<IBehaviourEngine, BehaviourEngine>()
 				.AddSingleton<IEngineStateMachine, EngineStateMachine>()
-				.AddScoped<IPatcherFactory, PatcherFactory>()
-				.AddScoped<IEngineRunner, EngineRunner>();
+				.AddSingleton<IPatcherFactory, PatcherFactory>()
+				.AddSingleton<IEngineRunner, EngineRunner>()
+				.AddSingleton<EngineOrchestrator>();
 		}
 	}
 }

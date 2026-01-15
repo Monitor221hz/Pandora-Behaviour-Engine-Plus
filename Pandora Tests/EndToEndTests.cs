@@ -10,6 +10,7 @@ using Pandora.API.Services;
 using Pandora.Data;
 using Pandora.Models.Patch.Configs;
 using Pandora.Models.Patch.IO.Skyrim64;
+using Pandora.Mods.Providers;
 using Pandora.Services;
 using PandoraTests.Utils;
 

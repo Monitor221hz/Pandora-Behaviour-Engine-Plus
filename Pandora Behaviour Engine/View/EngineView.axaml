@@ -40,7 +40,7 @@
                   ResizeDirection="Rows"
                   Width="90" />
 
-    <vws:LogBox x:Name="LogBox" DataContext="{Binding LogVM}"
+    <vws:LogBox x:Name="LogBox" DataContext="{Binding LogBoxVM}"
                 Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
                 Margin="0 0 0 10" />
 
@@ -53,6 +53,6 @@
       </ui:InfoBar.ActionButton>
     </ui:InfoBar>
 
-    <vws:LaunchElement Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" DataContext="{Binding LauncherVM}" />
+    <vws:LaunchElement Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" DataContext="{Binding LaunchElementVM}" />
   </Grid>
 </UserControl>

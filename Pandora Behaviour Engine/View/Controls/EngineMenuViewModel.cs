@@ -1,6 +1,7 @@
-﻿using Pandora.DTOs;
-using Pandora.Logging.Extensions;
-using Pandora.Services.CreationEngine;
+﻿using Pandora.Logging.Extensions;
+using Pandora.Paths.Contexts;
+using Pandora.Paths.Services;
+using Pandora.Platform.CreationEngine;
 using Pandora.Services.Interfaces;
 using Pandora.Utils;
 using Pandora.ViewModels.Configuration;
@@ -9,102 +10,90 @@ using ReactiveUI.SourceGenerators;
 using System;
 using System.Collections.ObjectModel;
 using System.Reactive;
-using System.Reactive.Concurrency;
+using System.Reactive.Disposables.Fluent;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace Pandora.ViewModels;
 
-public partial class EngineMenuViewModel : ViewModelBase
+public partial class EngineMenuViewModel : ViewModelBase, IActivatableViewModel
 {
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-	private readonly IPathResolver _pathResolver;
+	private readonly IUserPathContext _userPathContext;
+	private readonly IGamePathService _gamePathService;
+	private readonly IOutputPathService _outputPathService;
+
 	private readonly IEngineConfigurationService _engineConfigService;
-	private readonly ILoggingConfigurationService _logConfigService;
 	private readonly IDiskDialogService _diskDialogService;
 	private readonly IGameDescriptor _gameDescriptor;
 
-	private readonly IEngineSessionState _state;
-	public IEngineSessionState State => _state;
+	public IEngineSharedState State { get; }
 
-	public LaunchOptions LaunchOptions { get; }
-
-	public AboutDiaLogBoxViewModel AboutDialog { get; }
+	public AboutDialogViewModel AboutDialog { get; }
 	public SettingsViewModel Settings { get; }
 
-	public Interaction<AboutDiaLogBoxViewModel, Unit> ShowAboutDialog { get; } = new();
+	public Interaction<AboutDialogViewModel, Unit> ShowAboutDialog { get; } = new();
+
+	public ViewModelActivator Activator { get; } = new();
 
 	public ObservableCollection<IEngineConfigurationViewModel> EngineConfigurationViewModels { get; } = [];
 
 	public EngineMenuViewModel(
-		IEngineSessionState state,
+		IUserPathContext userPathContext,
+		IGamePathService gamePathService,
+		IOutputPathService outputPathService,
+		IEngineSharedState state,
 		IEngineConfigurationService engineConfigService,
-		ILoggingConfigurationService logConfigService,
-		IPathResolver pathResolver,
 		IDiskDialogService diskDialogService,
 		IGameDescriptor gameDescriptor,
-		LaunchOptions launchOptions,
 		SettingsViewModel settingsViewModel,
-		AboutDiaLogBoxViewModel aboutDiaLogBoxViewModel)
+		AboutDialogViewModel AboutDialogViewModel)
 	{
-		_state = state;
+		State = state;
+		_userPathContext = userPathContext;
+		_gamePathService = gamePathService;
+		_outputPathService = outputPathService;
+
 		_engineConfigService = engineConfigService;
-		_logConfigService = logConfigService;
-		_pathResolver = pathResolver;
 		_diskDialogService = diskDialogService;
 		_gameDescriptor = gameDescriptor;
 
-		AboutDialog = aboutDiaLogBoxViewModel;
+		AboutDialog = AboutDialogViewModel;
 		Settings = settingsViewModel;
-		LaunchOptions = launchOptions;
-
 
 		EngineConfigurationViewModels = ConfigurationMenuBuilder.BuildTree(
 			_engineConfigService.GetAvailableConfigurations(),
 			_engineConfigService
 		);
 
-		var gameData = _pathResolver.GetGameDataFolder();
-		var assemblyDir = _pathResolver.GetAssemblyFolder();
-
-		State.IsOutputFolderCustomSet = !_pathResolver.GetOutputFolder().Equals(_pathResolver.GetGameDataFolder());
-
-
-		State.OutputFolderUri = _pathResolver.GetOutputFolder().FullName;
-
-		if (!State.IsOutputFolderCustomSet)
+		this.WhenActivated(disposables =>
 		{
-			State.OutputDirectoryMessage = $"Custom output dir not set. Files output to: {_pathResolver.GetGameDataFolder().FullName}";
-		}
-
-		if (GameDataDirectoryResolver.Resolve(gameData, _gameDescriptor) is null ||
-		gameData.FullName.Equals(assemblyDir.FullName, StringComparison.OrdinalIgnoreCase))
-		{
-			logger.UiWarn("Game Data directory not found automatically.");
-
-			RxApp.MainThreadScheduler.Schedule(async () =>
-			{
-				await PickGameDirectory();
-			});
-		}
+			_gamePathService
+				.WhenAnyValue(x => x.NeedsUserSelection)
+				.Where(x => x)
+				.Take(1)
+				.ObserveOn(RxApp.MainThreadScheduler)
+				.Subscribe(async _ => await PickGameDirectory())
+				.DisposeWith(disposables);
+		});
 
 	}
 
 	[ReactiveCommand]
 	private async Task PickGameDirectory()
 	{
-		var currentGameData = _pathResolver.GetGameDataFolder();
-
 		var file = await _diskDialogService.OpenFileAsync(
 			$"Select {_gameDescriptor.Name} Executable",
-			currentGameData,
-			patterns: ["*.exe"]);
+			_userPathContext.GameData,
+			["*.exe"]);
 
 		if (file is null)
 			return;
 
-		if (!_pathResolver.TrySetGameDataFolder(file.Directory!))
+		var success = _gamePathService.TrySetGameData(file.Directory!);
+
+		if (!success)
 		{
 			logger.UiWarn("Selected folder is not a valid game directory.");
 		}
@@ -113,19 +102,15 @@ public partial class EngineMenuViewModel : ViewModelBase
 	[ReactiveCommand]
 	private async Task PickOutputDirectory()
 	{
-		var currentOutput = _pathResolver.GetOutputFolder();
 
-		var folder = await _diskDialogService.OpenFolderAsync("Select Output Directory", currentOutput);
+		var folder = await _diskDialogService.OpenFolderAsync(
+			"Select Output Directory",
+			_userPathContext.Output);
 
-		if (folder == null || !folder.Exists)
+		if (folder is null || !folder.Exists)
 			return;
 
-		_pathResolver.SetOutputFolder(folder);
-
-		State.OutputFolderUri = folder.FullName;
-		State.IsOutputFolderCustomSet = true;
-		logger.UiInfo($"Output directory changed: {_pathResolver.GetOutputFolder().FullName}");
-		_logConfigService.UpdateLogPath(folder.FullName);
+		_outputPathService.SetOutputFolder(folder);
 	}
 
 	[ReactiveCommand]

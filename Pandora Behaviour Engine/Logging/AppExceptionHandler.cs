@@ -1,9 +1,9 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using Pandora.Services.Interfaces;
+using Pandora.Enums;
 using Pandora.Logging.Extensions;
-using Pandora.Utils;
+using Pandora.Paths.Contexts;
 using ReactiveUI;
 using System;
 using System.IO;
@@ -13,19 +13,15 @@ using System.Threading.Tasks;
 
 namespace Pandora.Logging;
 
-public class AppExceptionHandler : IAppExceptionHandler
+public class AppExceptionHandler : IAppExceptionHandler, IDisposable
 {
-	private readonly IPathResolver _pathResolver;
-	private readonly IApplicationPaths _appPath;
+	private readonly IEnginePathContext _pathContext;
 
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-	public AppExceptionHandler(IPathResolver pathResolver, IApplicationPaths appPaths)
+	public AppExceptionHandler(IEnginePathContext pathContext)
 	{
-		_pathResolver = pathResolver;
-		_appPath = appPaths;
-
-		Initialize();
+		_pathContext = pathContext;
 	}
 
 	public void Initialize()
@@ -50,7 +46,7 @@ public class AppExceptionHandler : IAppExceptionHandler
 		// When using /p:IncludeAllContentForSelfExtract=true -> EXE runs from temp dir
 		// => Use `Environment.CurrentDirectory`:  Current exe dir
 		// => Use `Directory.GetCurrentDirectory()`: Tmp dir! -> template read fails!
-		var log = BuildLog("UnhandledException", ex?.ToString() ?? "ExceptionObject is null");
+		var log = BuildLog(CrashType.UnhandledException, ex?.ToString() ?? "ExceptionObject is null");
 		WriteCrashLog("Pandora_CriticalCrash_UnhandledException.log", log);
 	}
 
@@ -64,21 +60,21 @@ public class AppExceptionHandler : IAppExceptionHandler
 		UnobservedTaskExceptionEventArgs e
 	)
 	{
-		var log = BuildLog("UnobservedTaskException", e.Exception.ToString());
+		var log = BuildLog(CrashType.UnobservedTaskException, e.Exception.ToString());
 		WriteCrashLog("Pandora_CriticalCrash_UnobservedTaskException.log", log);
 		e.SetObserved();
 	}
 
 	private void HandleRxException(Exception ex)
 	{
-		var content = BuildLog("ReactiveUI_Exception", ex.ToString());
-		WriteCrashLog("Pandora_RxUI_Error", content);
+		var content = BuildLog(CrashType.ReactiveUI, ex.ToString());
+		WriteCrashLog("Pandora_CriticalCrash__RxUIException", content);
 	}
 	private void WriteCrashLog(string fileName, string log)
 	{
 		try
 		{
-			var dir = _pathResolver.GetOutputFolder().FullName;
+			var dir = _pathContext.OutputFolder.FullName;
 			Directory.CreateDirectory(dir);
 			var outputLogPath = Path.Combine(dir, fileName);
 			File.WriteAllText(outputLogPath, log, Encoding.UTF8);
@@ -89,19 +85,26 @@ public class AppExceptionHandler : IAppExceptionHandler
 		}
 	}
 
-	private string BuildLog(string type, string content)
+	private string BuildLog(CrashType type, string content)
 	{
 		var sb = new StringBuilder();
 		sb.AppendLine("[ Pandora Critical Crash Log ]");
 		sb.AppendLine("=======================================");
 		sb.AppendLine($"Type: {type}");
-		sb.AppendLine($"Environment.CurrentDirectory: {_pathResolver.GetCurrentFolder().FullName}");
+		sb.AppendLine($"Environment.CurrentDirectory: {_pathContext.CurrentFolder.FullName}");
 		sb.AppendLine(
-			$"Executable Path: {_appPath.AssemblyDirectory.FullName ?? "unknown"}"
+			$"Executable Path: {_pathContext.AssemblyFolder.FullName ?? "unknown"}"
 		);
 		sb.AppendLine();
 		sb.AppendLine(content);
 		sb.AppendLine("=======================================");
 		return sb.ToString();
 	}
+
+	public void Dispose()
+	{
+		AppDomain.CurrentDomain.UnhandledException -= CurrentDomain_UnhandledException;
+		TaskScheduler.UnobservedTaskException -= TaskScheduler_UnobservedTaskException;
+	}
+
 }

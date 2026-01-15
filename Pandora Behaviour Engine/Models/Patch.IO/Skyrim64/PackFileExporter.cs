@@ -5,14 +5,14 @@ using System;
 using HKX2E;
 using NLog;
 using Pandora.API.Patch.Skyrim64;
-using Pandora.Services.Interfaces;
+using Pandora.Paths.Contexts;
 
 namespace Pandora.Models.Patch.IO.Skyrim64;
 
 public class PackFileExporter : BasePackFileExporter
 {
-	public PackFileExporter(IPathResolver pathResolver)
-		: base(pathResolver) { }
+	public PackFileExporter(IEnginePathContext pathContext)
+		: base(pathContext) { }
 
 	public override bool Export(IPackFile packFile)
 	{

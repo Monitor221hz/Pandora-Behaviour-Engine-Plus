@@ -4,7 +4,7 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Xaml.Interactivity;
-using Pandora.Utils;
+using Pandora.Mods.Extensions;
 using Pandora.ViewModels;
 
 namespace Pandora.Behaviors;

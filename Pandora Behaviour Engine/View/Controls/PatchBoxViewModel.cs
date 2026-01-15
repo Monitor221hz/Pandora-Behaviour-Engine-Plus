@@ -1,8 +1,8 @@
 ﻿using Avalonia.Controls;
 using DynamicData;
 using DynamicData.Binding;
-using Pandora.DTOs;
-using Pandora.Logging.Extensions;
+using Pandora.Mods.Extensions;
+using Pandora.Mods.Services;
 using Pandora.Services.Interfaces;
 using Pandora.Utils;
 using ReactiveUI;
@@ -20,8 +20,8 @@ public partial class PatchBoxViewModel : ViewModelBase, IActivatableViewModel
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 	private readonly IModService _modService;
-	private readonly IEngineSessionState _state;
-	public IEngineSessionState State => _state;
+
+	public IEngineSharedState State { get; }
 
 	[BindableDerivedList]
 	private readonly ReadOnlyObservableCollection<ModInfoViewModel> _modViewModels;
@@ -34,11 +34,14 @@ public partial class PatchBoxViewModel : ViewModelBase, IActivatableViewModel
 	public ViewModelActivator Activator { get; } = new();
 
 
-	public PatchBoxViewModel(IModService modService, IEngineSessionState state, DataGridOptionsViewModel dataGridOptions)
+	public PatchBoxViewModel(
+		IModService modService,
+		IEngineSharedState state,
+		DataGridOptionsViewModel dataGridOptions)
 	{
 		_modService = modService;
-		_state = state;
 
+		State = state;
 		DataGridOptions = dataGridOptions;
 
 		_modService
@@ -51,8 +54,6 @@ public partial class PatchBoxViewModel : ViewModelBase, IActivatableViewModel
 
 		this.WhenActivated(disposables =>
 		{
-			logger.UiInfo($"{_modViewModels.Count} mods loaded.");
-
 			_allSelectedHelper = _modService
 				.Connect()
 				.AutoRefresh(x => x.Active)

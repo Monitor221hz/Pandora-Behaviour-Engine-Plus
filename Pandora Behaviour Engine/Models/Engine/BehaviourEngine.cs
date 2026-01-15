@@ -1,7 +1,6 @@
 using Pandora.DTOs;
 using Pandora.API.Patch;
 using Pandora.API.Patch.Engine.Config;
-using Pandora.Services.Interfaces;
 using Pandora.Logging.Extensions;
 using System;
 using System.Collections.Generic;
@@ -54,7 +53,7 @@ public sealed class BehaviourEngine : IBehaviourEngine
 
 		logger.UiClear();
 		logger.UiInfo($"Engine launched with configuration: {Configuration.Name}. Do not exit before the launch is finished.");
-		bool isWaitingForPreload = _lock.CurrentCount == 0;
+		bool isWaitingForPreload = _state.Current == EngineState.Preloading;
 
 		if (isWaitingForPreload)
 		{
