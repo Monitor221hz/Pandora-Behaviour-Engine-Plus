@@ -14,7 +14,6 @@ public sealed class AppPathContext : IAppPathContext
 	private readonly Lazy<FileInfo> _pathConfig;
 
 	public DirectoryInfo AssemblyDirectory => new(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule!.FileName!)!);
-	public DirectoryInfo CurrentDirectory => new(Environment.CurrentDirectory);
 	public DirectoryInfo EngineDirectory => new(AssemblyDirectory.FullName / PANDORA_ENGINE_FOLDERNAME);
 	public DirectoryInfo TemplateDirectory => new(EngineDirectory.FullName / "Skyrim" / "Template");
 

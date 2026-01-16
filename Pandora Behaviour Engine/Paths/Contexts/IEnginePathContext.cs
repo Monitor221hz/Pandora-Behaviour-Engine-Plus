@@ -15,7 +15,6 @@ public interface IEnginePathContext
 	void SetOutput(DirectoryInfo dir);
 
 	DirectoryInfo AssemblyFolder { get; }
-	DirectoryInfo CurrentFolder { get; }
 	DirectoryInfo TemplateFolder { get; }
 	DirectoryInfo EngineFolder { get; }
 

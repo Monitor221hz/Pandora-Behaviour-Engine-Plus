@@ -3,7 +3,6 @@
 
 using NLog;
 using Pandora.API.Patch;
-using Pandora.Logging.Extensions;
 using Pandora.Mods.Providers;
 using Pandora.Utils;
 using System;
@@ -58,8 +57,6 @@ public class ModLoaderService : IModLoaderService
 		{
 			modInfos.UnionWith(mods);
 		}
-
-		logger.UiInfo($"{modInfos.Count} mods loaded.");
 
 		return modInfos;
 	}

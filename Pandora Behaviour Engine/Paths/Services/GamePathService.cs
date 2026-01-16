@@ -1,37 +1,30 @@
 ﻿using Pandora.Paths.Contexts;
 using Pandora.Paths.Validation;
 using Pandora.Platform.CreationEngine;
-using Pandora.Utils;
-using Splat;
 using System.IO;
 
 namespace Pandora.Paths.Services;
 
-public sealed class GamePathService : IGamePathService
+public sealed class GamePathService : UserPathServiceBase, IGamePathService
 {
-	private readonly IUserPathContext _userPaths;
-	private readonly IGameDescriptor _descriptor;
-	private readonly IGameLocator _gameLocator;
+	private readonly IGameLocator _locator;
 	private readonly IGameDataValidator _validator;
-	private readonly IPathConfigService _configService;
 
 	public GamePathService(
 		IUserPathContext userPaths,
 		IGameDescriptor descriptor,
-		IGameLocator gameLocator,
+		IGameLocator locator,
 		IGameDataValidator validator,
-		IPathConfigService configService)
+		IPathConfigService config)
+		: base(userPaths, descriptor, config)
 	{
-		_userPaths = userPaths;
+		_locator = locator;
 		_validator = validator;
-		_descriptor = descriptor;
-		_gameLocator = gameLocator;
-		_configService = configService;
 	}
 
 	public void Initialize()
 	{
-		var located = _gameLocator.TryLocateGameData();
+		var located = _locator.TryLocateGameData();
 		if (located is null)
 			return;
 
@@ -52,16 +45,15 @@ public sealed class GamePathService : IGamePathService
 		return true;
 	}
 
+	public bool NeedsUserSelection => !IsGameDataValid;
 
 	public bool IsGameDataValid =>
-		_userPaths.GameData is not null &&
-		_validator.IsValid(_userPaths.GameData);
-
-	public bool NeedsUserSelection => !IsGameDataValid;
+		UserPaths.GameData is not null &&
+		_validator.IsValid(UserPaths.GameData);
 
 	private void SetGameData(DirectoryInfo dir)
 	{
-		_userPaths.SetGameData(dir);
-		_configService.SaveGameDataPath(_descriptor.Id, dir);
+		UserPaths.SetGameData(dir);
+		SaveGameData(dir);
 	}
 }

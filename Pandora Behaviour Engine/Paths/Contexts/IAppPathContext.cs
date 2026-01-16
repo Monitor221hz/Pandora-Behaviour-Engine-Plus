@@ -11,7 +11,6 @@ public interface IAppPathContext
 	/// running inside virtualized environments like Mod Organizer 2 (MO2), bypassing the VFS.
 	/// </summary>
 	DirectoryInfo AssemblyDirectory { get; }
-	DirectoryInfo CurrentDirectory { get; }
 	DirectoryInfo TemplateDirectory { get; }
 	DirectoryInfo EngineDirectory { get; }
 	FileInfo PathConfig { get; }

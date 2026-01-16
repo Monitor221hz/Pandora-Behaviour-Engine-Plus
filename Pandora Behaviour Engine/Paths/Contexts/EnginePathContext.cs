@@ -30,7 +30,6 @@ public sealed class EnginePathContext : IEnginePathContext
 
 
 	public DirectoryInfo AssemblyFolder => _appPaths.AssemblyDirectory;
-	public DirectoryInfo CurrentFolder => _appPaths.CurrentDirectory;
 	public DirectoryInfo TemplateFolder => _appPaths.TemplateDirectory;
 	public DirectoryInfo EngineFolder => _appPaths.EngineDirectory;
 

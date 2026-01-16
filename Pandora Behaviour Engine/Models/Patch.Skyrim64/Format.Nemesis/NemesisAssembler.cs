@@ -288,7 +288,7 @@ public class NemesisAssembler : IPatchAssembler
 			exportFiles.Add(
 				(
 					packFile.InputHandle,
-					new FileInfo(Path.Join(_pathContext.CurrentFolder.FullName, packFile.InputHandle.Name))
+					new FileInfo(Path.Join(_pathContext.GameDataFolder.FullName, packFile.InputHandle.Name))
 				)
 			);
 		}

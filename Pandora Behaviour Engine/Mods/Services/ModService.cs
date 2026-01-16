@@ -3,8 +3,10 @@
 
 using DynamicData;
 using DynamicData.Binding;
+using NLog;
 using Pandora.API.Patch;
 using Pandora.DTOs;
+using Pandora.Logging.Extensions;
 using Pandora.Mods.Extensions;
 using Pandora.Paths.Contexts;
 using Pandora.ViewModels;
@@ -12,7 +14,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Disposables;
-using System.Reactive.Disposables.Fluent;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -20,6 +21,8 @@ namespace Pandora.Mods.Services;
 
 public class ModService : IModService, IDisposable
 {
+	private static readonly NLog.Logger logger = LogManager.GetCurrentClassLogger();
+
 	private readonly IModLoaderService _loader;
 	private readonly IModSettingsService _settings;
 	private readonly IEnginePathContext _pathContext;
@@ -37,12 +40,6 @@ public class ModService : IModService, IDisposable
 		_loader	= loader;
 		_settings = settings;
 		_pathContext = pathContext;
-
-		_pathContext.GameDataChanged
-			.Skip(1)
-			.SelectMany(_ => Observable.FromAsync(RefreshModsAsync))
-			.Subscribe()
-			.DisposeWith(_disposables);
 	}
 
 	private void ApplySettings(List<ModInfoViewModel> mods, List<ModSaveEntry> settings)
@@ -65,13 +62,7 @@ public class ModService : IModService, IDisposable
 	{
 		if (_cachedCoreMods == null)
 		{
-			var coreDirs = new[]
-			{
-				_pathContext.AssemblyFolder,
-				_pathContext.CurrentFolder
-			};
-
-			var coreModsSet = await _loader.LoadModsAsync(coreDirs);
+			var coreModsSet = await _loader.LoadModsAsync([_pathContext.AssemblyFolder]);
 			_cachedCoreMods = coreModsSet.ToList();
 		}
 
@@ -99,6 +90,8 @@ public class ModService : IModService, IDisposable
 		modVMs.NormalizePriorities();
 
 		Source.Load(modVMs);
+
+		logger.UiInfo($"{Source.Count} mods loaded.");
 	}
 
 	public async Task SaveSettingsAsync()

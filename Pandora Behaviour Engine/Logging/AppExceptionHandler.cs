@@ -91,7 +91,7 @@ public class AppExceptionHandler : IAppExceptionHandler, IDisposable
 		sb.AppendLine("[ Pandora Critical Crash Log ]");
 		sb.AppendLine("=======================================");
 		sb.AppendLine($"Type: {type}");
-		sb.AppendLine($"Environment.CurrentDirectory: {_pathContext.CurrentFolder.FullName}");
+		sb.AppendLine($"Environment.CurrentDirectory: {Environment.CurrentDirectory}");
 		sb.AppendLine(
 			$"Executable Path: {_pathContext.AssemblyFolder.FullName ?? "unknown"}"
 		);
