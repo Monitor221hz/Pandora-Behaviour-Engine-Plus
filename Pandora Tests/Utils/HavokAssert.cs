@@ -7,7 +7,7 @@ using System.Reflection;
 using FastMember;
 using HKX2E;
 
-namespace PandoraTests;
+namespace PandoraTests.Utils;
 
 public static class HavokAssert
 {

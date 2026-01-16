@@ -1,15 +1,15 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using Pandora.API.Services;
 using Pandora.Services;
+using Pandora.Services.Interfaces;
 
-namespace PandoraTests;
+namespace PandoraTests.Unit;
 
 public class ArgumentsParsingTests : IDisposable
 {
     private readonly ITestOutputHelper _output;
-    private readonly ILaunchOptionsParser _parser;
+    private readonly ICommandLineParser _parser;
     private readonly DirectoryInfo _tempDir;
     private readonly DirectoryInfo _tempDirWithSpaces;
 
@@ -27,7 +27,7 @@ public class ArgumentsParsingTests : IDisposable
         _output.WriteLine($"  - Path: {_tempDir.FullName}");
         _output.WriteLine($"  - Path with spaces: {_tempDirWithSpaces.FullName}");
 
-        _parser = new LaunchOptionsParser();
+        _parser = new CommandLineParser();
     }
 
     #region Test Data Sources

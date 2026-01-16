@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Pandora.Paths.Extensions;
 
-static class PathExtensions
+public static class PathExtensions
 {
 	extension(string)
 	{
