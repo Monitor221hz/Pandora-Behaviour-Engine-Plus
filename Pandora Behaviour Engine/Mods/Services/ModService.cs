@@ -8,7 +8,7 @@ using Pandora.API.Patch;
 using Pandora.DTOs;
 using Pandora.Logging.Extensions;
 using Pandora.Mods.Extensions;
-using Pandora.Paths.Contexts;
+using Pandora.Paths.Abstractions;
 using Pandora.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -25,7 +25,7 @@ public class ModService : IModService, IDisposable
 
 	private readonly IModLoaderService _loader;
 	private readonly IModSettingsService _settings;
-	private readonly IEnginePathContext _pathContext;
+	private readonly IEnginePathsFacade _pathContext;
 
 	private List<IModInfo>? _cachedCoreMods;
 
@@ -35,7 +35,7 @@ public class ModService : IModService, IDisposable
 
 	public IObservable<IChangeSet<ModInfoViewModel>> Connect() => Source.ToObservableChangeSet();
 
-	public ModService(IModLoaderService loader, IModSettingsService settings, IEnginePathContext pathContext)
+	public ModService(IModLoaderService loader, IModSettingsService settings, IEnginePathsFacade pathContext)
 	{
 		_loader	= loader;
 		_settings = settings;

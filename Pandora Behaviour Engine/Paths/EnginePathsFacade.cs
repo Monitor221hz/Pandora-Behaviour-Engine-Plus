@@ -1,18 +1,20 @@
-﻿using System;
+﻿using Pandora.Paths.Abstractions;
+using Pandora.Services.Settings;
+using System;
 using System.IO;
 
-namespace Pandora.Paths.Contexts;
+namespace Pandora.Paths;
 
-public sealed class EnginePathContext : IEnginePathContext
+public sealed class EnginePathsFacade : IEnginePathsFacade
 {
-	private readonly IAppPathContext _appPaths;
-	private readonly IUserPathContext _userPaths;
-	private readonly IOutputPathContext _outputPaths;
+	private readonly IApplicationPaths _appPaths;
+	private readonly IUserPaths _userPaths;
+	private readonly IOutputPaths _outputPaths;
 
-	public EnginePathContext(
-		IAppPathContext appPaths,
-		IUserPathContext userPaths,
-		IOutputPathContext outputPaths)
+	public EnginePathsFacade(
+		IApplicationPaths appPaths,
+		IUserPaths userPaths,
+		IOutputPaths outputPaths)
 	{
 		_appPaths = appPaths;
 		_userPaths = userPaths;
@@ -21,13 +23,6 @@ public sealed class EnginePathContext : IEnginePathContext
 
 	public DirectoryInfo GameDataFolder => _userPaths.GameData;
 	public DirectoryInfo OutputFolder => _userPaths.Output;
-
-	public IObservable<DirectoryInfo> GameDataChanged => _userPaths.GameDataChanged;
-	public IObservable<DirectoryInfo> OutputChanged => _userPaths.OutputChanged;
-
-	public void SetGameData(DirectoryInfo dir) => _userPaths.SetGameData(dir);
-	public void SetOutput(DirectoryInfo dir) => _userPaths.SetOutput(dir);
-
 
 	public DirectoryInfo AssemblyFolder => _appPaths.AssemblyDirectory;
 	public DirectoryInfo TemplateFolder => _appPaths.TemplateDirectory;

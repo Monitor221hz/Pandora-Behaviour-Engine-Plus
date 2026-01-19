@@ -1,18 +1,19 @@
-﻿using System;
+﻿using Pandora.Paths.Abstractions;
+using System;
 using System.IO;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
-namespace Pandora.Paths.Contexts;
+namespace Pandora.Paths;
 
-public sealed class UserPathContext : IUserPathContext
+public sealed class UserPaths : IUserPaths
 {
-	private readonly IAppPathContext _appPaths;
+	private readonly IApplicationPaths _appPaths;
 
 	private readonly BehaviorSubject<DirectoryInfo> _gameData;
 	private readonly BehaviorSubject<DirectoryInfo> _output;
 
-	public UserPathContext(IAppPathContext appPaths)
+	public UserPaths(IApplicationPaths appPaths)
 	{
 		_appPaths = appPaths;
 

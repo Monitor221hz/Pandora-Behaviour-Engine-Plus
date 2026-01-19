@@ -3,7 +3,7 @@
 
 using Pandora.Enums;
 using Pandora.Logging.Extensions;
-using Pandora.Paths.Contexts;
+using Pandora.Paths.Abstractions;
 using ReactiveUI;
 using System;
 using System.IO;
@@ -15,11 +15,11 @@ namespace Pandora.Logging;
 
 public class AppExceptionHandler : IAppExceptionHandler, IDisposable
 {
-	private readonly IEnginePathContext _pathContext;
+	private readonly IEnginePathsFacade _pathContext;
 
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-	public AppExceptionHandler(IEnginePathContext pathContext)
+	public AppExceptionHandler(IEnginePathsFacade pathContext)
 	{
 		_pathContext = pathContext;
 	}

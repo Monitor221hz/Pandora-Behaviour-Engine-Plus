@@ -8,7 +8,7 @@ using NLog;
 using Pandora.API.Patch.IOManagers;
 using Pandora.API.Patch.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
-using Pandora.Paths.Contexts;
+using Pandora.Paths.Abstractions;
 
 namespace Pandora.Models.Patch.IO.Skyrim64;
 
@@ -16,10 +16,10 @@ public abstract class BasePackFileExporter : IMetaDataExporter<IPackFile>
 {
 	protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-	private readonly IEnginePathContext _pathContext;
+	private readonly IEnginePathsFacade _pathContext;
 	protected FileInfo PreviousOutputFile => _pathContext.OutputPreviousFile;
 
-	protected BasePackFileExporter(IEnginePathContext pathContext)
+	protected BasePackFileExporter(IEnginePathsFacade pathContext)
 	{
 		_pathContext = pathContext;
 	}

@@ -1,11 +1,12 @@
-﻿using Pandora.Paths.Extensions;
+﻿using Pandora.Paths.Abstractions;
+using Pandora.Paths.Extensions;
 using System;
 using System.Diagnostics;
 using System.IO;
 
-namespace Pandora.Paths.Contexts;
+namespace Pandora.Paths;
 
-public sealed class AppPathContext : IAppPathContext
+public sealed class ApplicationPaths : IApplicationPaths
 {
 	private const string PANDORA_ENGINE_FOLDERNAME = "Pandora_Engine";
 	private const string CONFIG_FILE = "Paths.json";
@@ -17,7 +18,7 @@ public sealed class AppPathContext : IAppPathContext
 	public DirectoryInfo EngineDirectory => new(AssemblyDirectory.FullName / PANDORA_ENGINE_FOLDERNAME);
 	public DirectoryInfo TemplateDirectory => new(EngineDirectory.FullName / "Skyrim" / "Template");
 
-	public AppPathContext()
+	public ApplicationPaths()
 	{
 		_pathConfig = new Lazy<FileInfo>(() => new FileInfo(EngineDirectory.FullName / CONFIG_FILE));
 	}

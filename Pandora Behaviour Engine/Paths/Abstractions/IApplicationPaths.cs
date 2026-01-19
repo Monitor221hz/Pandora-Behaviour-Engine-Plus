@@ -1,8 +1,8 @@
 ﻿using System.IO;
 
-namespace Pandora.Paths.Contexts;
+namespace Pandora.Paths.Abstractions;
 
-public interface IAppPathContext
+public interface IApplicationPaths
 {
 	/// <summary>
 	/// Gets the real file system path to the folder containing the running executable.

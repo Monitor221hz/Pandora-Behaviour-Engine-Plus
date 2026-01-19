@@ -7,7 +7,7 @@ using System.IO;
 using NLog;
 using Pandora.API.Patch.Skyrim64.AnimSetData;
 using Pandora.Models.Extensions;
-using Pandora.Paths.Contexts;
+using Pandora.Paths.Abstractions;
 
 namespace Pandora.Models.Patch.Skyrim64.AnimSetData;
 
@@ -18,7 +18,7 @@ public class AnimSetDataManager : IAnimSetDataManager
 	private const string ANIMSETDATA_FILENAME = "animationsetdatasinglefile.txt";
 	private const string VANILLA_HKXPATHS_FILENAME = "vanilla_hkxpaths.txt";
 
-	private readonly IEnginePathContext _pathContext;
+	private readonly IEnginePathsFacade _pathContext;
 
 	public FileInfo TemplateAnimSetDataSingleFile { get; }
 	public FileInfo OutputAnimSetDataSingleFile { get; }
@@ -34,7 +34,7 @@ public class AnimSetDataManager : IAnimSetDataManager
 
 	public Dictionary<string, IProjectAnimSetData> AnimSetDataMap { get; private set; } = [];
 
-	public AnimSetDataManager(IEnginePathContext pathContext)
+	public AnimSetDataManager(IEnginePathsFacade pathContext)
 	{
 		_pathContext = pathContext;
 

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using Pandora.API.Patch.Skyrim64;
 using Pandora.API.Patch.Skyrim64.AnimData;
-using Pandora.Paths.Contexts;
+using Pandora.Paths.Abstractions;
 
 namespace Pandora.Models.Patch.Skyrim64.AnimData;
 
@@ -24,14 +24,14 @@ public class AnimDataManager : IAnimDataManager
 	private List<IProjectAnimData> animDataList { get; set; } = [];
 	private List<IMotionData> motionDataList { get; set; } = [];
 
-	private readonly IEnginePathContext _pathContext;
+	private readonly IEnginePathsFacade _pathContext;
 
 	public FileInfo OutputAnimDataSingleFile { get; }
 	public FileInfo TemplateAnimDataSingleFile { get; }
 
 	private int LastID { get; set; } = 32767;
 
-	public AnimDataManager(IEnginePathContext pathContext)
+	public AnimDataManager(IEnginePathsFacade pathContext)
 	{
 		_pathContext = pathContext;
 		TemplateAnimDataSingleFile = new(

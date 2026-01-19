@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
 
-namespace Pandora.Paths.Contexts;
+namespace Pandora.Paths.Abstractions;
 
-public interface IUserPathContext
+public interface IUserPaths
 {
 	DirectoryInfo GameData { get; }
 	DirectoryInfo Output { get; }

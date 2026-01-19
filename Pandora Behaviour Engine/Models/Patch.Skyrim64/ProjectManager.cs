@@ -6,7 +6,7 @@ using Pandora.API.Patch;
 using Pandora.API.Patch.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.Format.FNIS;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
-using Pandora.Paths.Contexts;
+using Pandora.Paths.Abstractions;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -38,7 +38,7 @@ public class ProjectManager : IProjectManager
 
 	private const string VANILLA_PROJECTPATHS_FILENAME = "vanilla_projectpaths.txt";
 
-	private readonly IEnginePathContext _pathContext;
+	private readonly IEnginePathsFacade _pathContext;
 	private IPackFileCache packFileCache = new PackFileConcurrentCache();
 
 	private readonly IFNISParser _fnisParser;
@@ -47,7 +47,7 @@ public class ProjectManager : IProjectManager
 
 	public HashSet<IPackFile> ActivePackFiles { get; private set; } = [];
 
-	public ProjectManager(IEnginePathContext skyrimPathResolver)
+	public ProjectManager(IEnginePathsFacade skyrimPathResolver)
 	{
 		_pathContext = skyrimPathResolver;
 		_fnisParser = new FNISParser(_pathContext, this);

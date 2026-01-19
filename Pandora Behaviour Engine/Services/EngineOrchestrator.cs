@@ -1,7 +1,7 @@
 ﻿using Pandora.Enums;
 using Pandora.Models.Engine;
 using Pandora.Mods.Services;
-using Pandora.Paths.Contexts;
+using Pandora.Paths.Abstractions;
 using Pandora.Services.Interfaces;
 using System;
 using System.Reactive.Disposables;
@@ -13,7 +13,7 @@ namespace Pandora.Services;
 public class EngineOrchestrator : IDisposable
 {
 	private readonly IModService _mods;
-	private readonly IEnginePathContext _pathContext;
+	private readonly IUserPaths _userPaths;
 	private readonly IBehaviourEngine _engine;
 	private readonly IEngineConfigurationService _configService;
 	private readonly IEngineSharedState _state;
@@ -22,14 +22,14 @@ public class EngineOrchestrator : IDisposable
 
 	public EngineOrchestrator(
 		IModService mods,
-		IEnginePathContext pathContext,
+		IUserPaths userPaths,
 		IBehaviourEngine engine,
 		IEngineConfigurationService configService,
 		IEngineSharedState state,
 		IWindowStateService windowService)
 	{
 		_mods = mods;
-		_pathContext = pathContext;
+		_userPaths = userPaths;
 		_engine = engine;
 		_configService = configService;
 		_state = state;
@@ -38,7 +38,7 @@ public class EngineOrchestrator : IDisposable
 
 	public void Initialize()
 	{
-		_pathContext.GameDataChanged
+		_userPaths.GameDataChanged
 			.Skip(1)
 			.SelectMany(_ => Observable.FromAsync(_mods.RefreshModsAsync))
 			.Subscribe()

@@ -1,18 +1,19 @@
-﻿using System.IO;
+﻿using Pandora.Paths.Abstractions;
 using Pandora.Paths.Extensions;
+using System.IO;
 
-namespace Pandora.Paths.Contexts;
+namespace Pandora.Paths;
 
-public sealed class OutputPathContext : IOutputPathContext
+public sealed class OutputPaths : IOutputPaths
 {
-    private readonly IUserPathContext _userPaths;
+    private readonly IUserPaths _userPaths;
 
     private const string ENGINE_FOLDER = "Pandora_Engine";
     private const string MESH_FOLDER = "meshes";
     private const string ACTIVE_MODS = "ActiveMods.json";
     private const string PREVIOUS_OUT = "PreviousOutput.txt";
 
-    public OutputPathContext(IUserPathContext userPaths)
+    public OutputPaths(IUserPaths userPaths)
     {
         _userPaths = userPaths;
     }

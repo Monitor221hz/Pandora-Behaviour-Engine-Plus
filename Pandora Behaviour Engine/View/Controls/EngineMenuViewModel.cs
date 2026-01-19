@@ -1,8 +1,7 @@
-﻿using Pandora.Logging.Extensions;
-using Pandora.Paths.Contexts;
-using Pandora.Paths.Services;
+﻿using Pandora.Paths.Abstractions;
 using Pandora.Platform.CreationEngine;
 using Pandora.Services.Interfaces;
+using Pandora.Services.Settings;
 using Pandora.Utils;
 using Pandora.ViewModels.Configuration;
 using ReactiveUI;
@@ -20,9 +19,8 @@ public partial class EngineMenuViewModel : ViewModelBase, IActivatableViewModel
 {
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-	private readonly IUserPathContext _userPathContext;
-	private readonly IGamePathService _gamePathService;
-	private readonly IOutputPathService _outputPathService;
+	private readonly ISettingsService _settings;
+	private readonly IUserPaths _userPaths;
 
 	private readonly IEngineConfigurationService _engineConfigService;
 	private readonly IDiskDialogService _diskDialogService;
@@ -40,9 +38,8 @@ public partial class EngineMenuViewModel : ViewModelBase, IActivatableViewModel
 	public ObservableCollection<IEngineConfigurationViewModel> EngineConfigurationViewModels { get; } = [];
 
 	public EngineMenuViewModel(
-		IUserPathContext userPathContext,
-		IGamePathService gamePathService,
-		IOutputPathService outputPathService,
+		ISettingsService settings,
+		IUserPaths userPaths,
 		IEngineSharedState state,
 		IEngineConfigurationService engineConfigService,
 		IDiskDialogService diskDialogService,
@@ -51,9 +48,9 @@ public partial class EngineMenuViewModel : ViewModelBase, IActivatableViewModel
 		AboutDialogViewModel AboutDialogViewModel)
 	{
 		State = state;
-		_userPathContext = userPathContext;
-		_gamePathService = gamePathService;
-		_outputPathService = outputPathService;
+
+		_settings = settings;
+		_userPaths = userPaths;
 
 		_engineConfigService = engineConfigService;
 		_diskDialogService = diskDialogService;
@@ -69,7 +66,7 @@ public partial class EngineMenuViewModel : ViewModelBase, IActivatableViewModel
 
 		this.WhenActivated(disposables =>
 		{
-			_gamePathService
+			_settings
 				.WhenAnyValue(x => x.NeedsUserSelection)
 				.Where(x => x)
 				.Take(1)
@@ -85,18 +82,13 @@ public partial class EngineMenuViewModel : ViewModelBase, IActivatableViewModel
 	{
 		var file = await _diskDialogService.OpenFileAsync(
 			$"Select {_gameDescriptor.Name} Executable",
-			_userPathContext.GameData,
+			_userPaths.GameData,
 			["*.exe"]);
 
 		if (file is null)
 			return;
 
-		var success = _gamePathService.TrySetGameData(file.Directory!);
-
-		if (!success)
-		{
-			logger.UiWarn("Selected folder is not a valid game directory.");
-		}
+		_settings.SetGameDataFolder(file.Directory!);
 	}
 
 	[ReactiveCommand]
@@ -105,12 +97,12 @@ public partial class EngineMenuViewModel : ViewModelBase, IActivatableViewModel
 
 		var folder = await _diskDialogService.OpenFolderAsync(
 			"Select Output Directory",
-			_userPathContext.Output);
+			_userPaths.Output);
 
 		if (folder is null || !folder.Exists)
 			return;
 
-		_outputPathService.SetOutputFolder(folder);
+		_settings.SetOutputFolder(folder);
 	}
 
 	[ReactiveCommand]

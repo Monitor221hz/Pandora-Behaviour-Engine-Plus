@@ -16,22 +16,18 @@ public sealed class GameDataValidator : IGameDataValidator
 
 	public DirectoryInfo? Normalize(DirectoryInfo input)
 	{
-		if (!input.Exists)
-			return null;
-
-		var dataDir = input.Name.Equals("Data", StringComparison.OrdinalIgnoreCase)
-			? input
-			: new DirectoryInfo(input.FullName / "Data");
-
-		return IsValid(dataDir) ? dataDir : null;
+		var dataDir = GetDataDirectory(input);
+		return dataDir != null && IsValid(dataDir) ? dataDir : null;
 	}
+
 
 	public bool IsValid(DirectoryInfo input)
 	{
-		if (!input.Exists || !input.Name.Equals("Data", StringComparison.OrdinalIgnoreCase))
+		var dataDir = GetDataDirectory(input);
+		if (dataDir is null)
 			return false;
 
-		var gameRoot = input.Parent;
+		var gameRoot = dataDir.Parent;
 		if (gameRoot is null || !gameRoot.Exists)
 			return false;
 
@@ -43,4 +39,17 @@ public sealed class GameDataValidator : IGameDataValidator
 
 		return false;
 	}
+
+	private static DirectoryInfo? GetDataDirectory(DirectoryInfo input)
+	{
+		if (!input.Exists)
+			return null;
+
+		if (input.Name.Equals("Data", StringComparison.OrdinalIgnoreCase))
+			return input;
+
+		var candidate = new DirectoryInfo(input.FullName / "Data");
+		return candidate.Exists ? candidate : null;
+	}
+
 }

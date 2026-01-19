@@ -14,7 +14,7 @@ using Pandora.API.Patch;
 using Pandora.API.Patch.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 using Pandora.Patch.Patchers.Skyrim.FNIS;
-using Pandora.Paths.Contexts;
+using Pandora.Paths.Abstractions;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
 
@@ -115,7 +115,7 @@ public class FNISParser : IFNISParser
 		"defaultfemale",
 	};
 
-	private readonly IEnginePathContext _pathContext;
+	private readonly IEnginePathsFacade _pathContext;
 	private readonly IProjectManager _projectManager;
 	private readonly HashSet<PackFile> parsedBehaviorFiles = [];
 	private readonly HashSet<Project> skipAnimlistProjects = [];
@@ -126,7 +126,7 @@ public class FNISParser : IFNISParser
 	private readonly HashSet<string> parsedFiles = new(StringComparer.OrdinalIgnoreCase) { };
 	public HashSet<IModInfo> ModInfos { get; private set; } = [];
 
-	public FNISParser(IEnginePathContext pathContext, IProjectManager manager)
+	public FNISParser(IEnginePathsFacade pathContext, IProjectManager manager)
 	{
 		_pathContext = pathContext;
 		_projectManager = manager;

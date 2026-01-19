@@ -24,14 +24,15 @@ using Pandora.Models.Patch.Skyrim64.Format.Nemesis;
 using Pandora.Models.Patch.Skyrim64.Format.Pandora;
 using Pandora.Mods.Providers;
 using Pandora.Mods.Services;
-using Pandora.Paths.Contexts;
-using Pandora.Paths.Services;
+using Pandora.Paths;
+using Pandora.Paths.Abstractions;
 using Pandora.Paths.Validation;
 using Pandora.Platform.CreationEngine;
 using Pandora.Platform.CreationEngine.Game;
 using Pandora.Platform.CreationEngine.Locators;
 using Pandora.Platform.Windows;
 using Pandora.Services.Interfaces;
+using Pandora.Services.Settings;
 using Pandora.ViewModels;
 using Pandora.Views;
 using System;
@@ -47,6 +48,7 @@ public static class ServiceCollectionExtensions
 			return serviceCollection
 				.AddAppBootstrapper()
 				.AddCoreServices()
+				.AddSettings()
 				.AddLoggingServices()
 				.AddPathServices()
 				.AddPatchServices()
@@ -80,20 +82,21 @@ public static class ServiceCollectionExtensions
 		private IServiceCollection AddGameLocators()
 		{
 			return serviceCollection
+				.AddSingleton<GameDataValidator>()
 				.AddTransient<CommandLineGameLocator>()
-				.AddTransient<ConfigGameLocator>()
 				.AddTransient<SteamGameLocator>()
 				.AddTransient<GogGameLocator>()
 				.AddTransient<RegistryGameLocator>()
 				.AddSingleton<IGameLocator>(sp =>
 				new CompositeGameLocator(
-				[
-					sp.GetRequiredService<CommandLineGameLocator>(),
-					sp.GetRequiredService<ConfigGameLocator>(),
-					sp.GetRequiredService<SteamGameLocator>(),
-					sp.GetRequiredService<GogGameLocator>(),
-					sp.GetRequiredService<RegistryGameLocator>(),
-				])
+					locators: [
+						sp.GetRequiredService<CommandLineGameLocator>(),
+						sp.GetRequiredService<SteamGameLocator>(),
+						sp.GetRequiredService<GogGameLocator>(),
+						sp.GetRequiredService<RegistryGameLocator>(),
+					],
+					validator: sp.GetRequiredService<GameDataValidator>()
+				)
 			);
 		}
 
@@ -173,19 +176,24 @@ public static class ServiceCollectionExtensions
 		private IServiceCollection AddPathServices()
 		{
 			return serviceCollection
-				.AddSingleton<IAppPathContext, AppPathContext>()
-				.AddSingleton<IUserPathContext, UserPathContext>()
-				.AddSingleton<IOutputPathContext, OutputPathContext>()
-				.AddSingleton<IGamePathService, GamePathService>()
-				.AddSingleton<IOutputPathService, OutputPathService>()
-				.AddSingleton<IPathConfigService, PathConfigService>()
-				.AddSingleton<IEnginePathContext, EnginePathContext>()
+				.AddSingleton<IApplicationPaths, ApplicationPaths>()
+				.AddSingleton<IOutputPaths, OutputPaths>()
+				.AddSingleton<IUserPaths, UserPaths>()
+				.AddSingleton<ISettingsRepository, SettingsRepository>()
+				.AddSingleton<IEnginePathsFacade, EnginePathsFacade>()
 				.AddSingleton<IGameDataValidator, GameDataValidator>();
 		}
 
 		private IServiceCollection AddGameDescriptors()
 		{
 			return serviceCollection.AddSingleton<IGameDescriptor, SkyrimDescriptor>();
+		}
+
+		private IServiceCollection AddSettings()
+		{
+			return serviceCollection
+				.AddSingleton<ISettingsRepository, SettingsRepository>()
+				.AddSingleton<ISettingsService, SettingsService>();
 		}
 
 		private IServiceCollection AddBehaviourEngine()

@@ -1,8 +1,8 @@
 ﻿using System.IO;
 
-namespace Pandora.Paths.Contexts;
+namespace Pandora.Paths.Abstractions;
 
-public interface IOutputPathContext
+public interface IOutputPaths
 {
 	DirectoryInfo PandoraEngineDirectory { get; }
 	DirectoryInfo MeshesDirectory { get; }

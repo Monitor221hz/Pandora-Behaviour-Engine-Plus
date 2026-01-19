@@ -6,7 +6,8 @@ using Pandora.API.Patch.Config;
 using Pandora.Models.Engine;
 using Pandora.Models.Patch.Configs;
 using Pandora.Mods.Services;
-using Pandora.Paths.Contexts;
+using Pandora.Paths;
+using Pandora.Paths.Abstractions;
 using PandoraTests.Fakes;
 using PandoraTests.Utils;
 
@@ -29,17 +30,17 @@ public sealed class DependencyInjectedCluster : IDisposable
         gameData.Create();
         output.Create();
 
-        services.AddSingleton<IAppPathContext>(
+        services.AddSingleton<IApplicationPaths>(
             new FakeAppPathContext(root)
         );
-        services.AddSingleton<IUserPathContext>(
+        services.AddSingleton<IUserPaths>(
             new FakeUserPathContext(gameData, output)
         );
-        services.AddSingleton<IOutputPathContext>(
+        services.AddSingleton<IOutputPaths>(
             new FakeOutputPathContext(output)
         );
 
-        services.AddSingleton<IEnginePathContext, EnginePathContext>();
+        services.AddSingleton<IEnginePathsFacade, EnginePathsFacade>();
 
         services.AddPandoraTestServices();
 
@@ -63,7 +64,7 @@ public class EndToEndTests : IClassFixture<DependencyInjectedCluster>
     [Fact]
     public async Task EngineOutputTest()
     {
-        var pathContext = _serviceProvider.GetRequiredService<IEnginePathContext>();
+        var pathContext = _serviceProvider.GetRequiredService<IEnginePathsFacade>();
 
         _output.WriteLine($"GameData: {pathContext.GameDataFolder.FullName}");
         _output.WriteLine($"Output: {pathContext.OutputFolder.FullName}");

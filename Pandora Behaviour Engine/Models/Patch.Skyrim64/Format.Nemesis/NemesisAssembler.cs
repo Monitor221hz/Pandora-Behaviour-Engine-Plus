@@ -10,7 +10,7 @@ using Pandora.API.Patch.Skyrim64.AnimSetData;
 using Pandora.Models.Patch.Skyrim64.AnimData;
 using Pandora.Models.Patch.Skyrim64.Format.Pandora;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
-using Pandora.Paths.Contexts;
+using Pandora.Paths.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -26,7 +26,7 @@ public class NemesisAssembler : IPatchAssembler
 {
 	private static readonly Logger Logger = LogManager.GetCurrentClassLogger(); //to do: move logger into inheritable base class
 
-	private readonly IEnginePathContext _pathContext;
+	private readonly IEnginePathsFacade _pathContext;
 
 	private readonly PandoraBridgedAssembler _pandoraConverter;
 	private readonly IMetaDataExporter<IPackFile> _exporter;
@@ -52,7 +52,7 @@ public class NemesisAssembler : IPatchAssembler
 	public IAnimSetDataManager AnimSetDataManager { get; private set; }
 
 	public NemesisAssembler(
-	   IEnginePathContext pathContext,
+	   IEnginePathsFacade pathContext,
 	   IMetaDataExporter<IPackFile> exporter,
 	   IProjectManager projectManager,
 	   IAnimDataManager animDataManager,

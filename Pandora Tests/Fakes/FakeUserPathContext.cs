@@ -1,12 +1,12 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using Pandora.Paths.Contexts;
+using Pandora.Paths.Abstractions;
 using System.Reactive.Subjects;
 
 namespace PandoraTests.Fakes;
 
-public sealed class FakeUserPathContext : IUserPathContext
+public sealed class FakeUserPathContext : IUserPaths
 {
     private readonly BehaviorSubject<DirectoryInfo> _gameData;
     private readonly BehaviorSubject<DirectoryInfo> _output;

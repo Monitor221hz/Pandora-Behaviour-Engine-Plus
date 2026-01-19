@@ -1,13 +1,13 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
-using Pandora.Paths.Contexts;
 using System.Diagnostics;
 using Pandora.Paths.Extensions;
+using Pandora.Paths.Abstractions;
 
 namespace PandoraTests.Fakes;
 
-public sealed class FakeAppPathContext : IAppPathContext
+public sealed class FakeAppPathContext : IApplicationPaths
 {
     public DirectoryInfo AssemblyDirectory { get; }
     public DirectoryInfo TemplateDirectory { get; }

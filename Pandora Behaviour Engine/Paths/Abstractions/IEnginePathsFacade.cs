@@ -1,18 +1,12 @@
 ﻿using System;
 using System.IO;
 
-namespace Pandora.Paths.Contexts;
+namespace Pandora.Paths.Abstractions;
 
-public interface IEnginePathContext
+public interface IEnginePathsFacade
 {
 	DirectoryInfo GameDataFolder { get; }
 	DirectoryInfo OutputFolder { get; }
-
-	IObservable<DirectoryInfo> GameDataChanged { get; }
-	IObservable<DirectoryInfo> OutputChanged { get; }
-
-	void SetGameData(DirectoryInfo dir);
-	void SetOutput(DirectoryInfo dir);
 
 	DirectoryInfo AssemblyFolder { get; }
 	DirectoryInfo TemplateFolder { get; }

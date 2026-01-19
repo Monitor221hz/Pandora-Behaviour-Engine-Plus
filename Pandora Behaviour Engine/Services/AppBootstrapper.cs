@@ -5,8 +5,8 @@ using Pandora.Logging.Services;
 using Pandora.Models.Engine;
 using Pandora.Models.Patch.Plugins;
 using Pandora.Mods.Services;
-using Pandora.Paths.Services;
 using Pandora.Services.Interfaces;
+using Pandora.Services.Settings;
 using System;
 using System.Threading.Tasks;
 
@@ -19,8 +19,7 @@ public class AppBootstrapper : IAppBootstrapper
 	private readonly IAppExceptionHandler _appExceptionHandler;
 	private readonly IEngineConfigurationService _configService;
 	private readonly ILoggingConfigurationService _logService;
-	private readonly IGamePathService _gamePathService;
-	private readonly IOutputPathService _outputPathService;
+	private readonly ISettingsService _settings;
 	private readonly IModService _modService;
 	private readonly IBehaviourEngine _engine;
 	private readonly EngineOrchestrator _orchestrator;
@@ -30,8 +29,7 @@ public class AppBootstrapper : IAppBootstrapper
 		IAppExceptionHandler appExceptionHandler,
 		IEngineConfigurationService configService,
 		ILoggingConfigurationService logService,
-		IGamePathService gamePathService,
-		IOutputPathService outputPathService,
+		ISettingsService settings,
 		IModService modService,
 		IBehaviourEngine engine,
 		EngineOrchestrator orchestrator,
@@ -40,8 +38,7 @@ public class AppBootstrapper : IAppBootstrapper
 		_appExceptionHandler = appExceptionHandler;
 		_configService = configService;
 		_logService = logService;
-		_gamePathService = gamePathService;
-		_outputPathService = outputPathService;
+		_settings = settings;
 		_modService = modService;
 		_engine = engine;
 		_orchestrator = orchestrator;
@@ -52,8 +49,7 @@ public class AppBootstrapper : IAppBootstrapper
 	{
 		_appExceptionHandler.Initialize();
 
-		_gamePathService.Initialize();
-		_outputPathService.Initialize();
+		_settings.Initialize();
 
 		_orchestrator.Initialize();
 

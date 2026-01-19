@@ -1,4 +1,4 @@
-﻿using Pandora.Paths.Contexts;
+﻿using Pandora.Paths.Abstractions;
 using Pandora.Services.Interfaces;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
@@ -32,7 +32,7 @@ public partial class EngineSharedState : ReactiveObject, IEngineSharedState, IDi
 	private string _outputDirectoryMessage;
 
 	public EngineSharedState(
-		IEnginePathContext paths)
+		IUserPaths paths)
 	{
 		_outputFolderUriHelper = paths.OutputChanged
 			.Select(d => d.FullName)

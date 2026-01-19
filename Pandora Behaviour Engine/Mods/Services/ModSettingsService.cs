@@ -3,7 +3,7 @@
 
 using NLog;
 using Pandora.DTOs;
-using Pandora.Paths.Contexts;
+using Pandora.Paths.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,9 +16,9 @@ public sealed class ModSettingsService : IModSettingsService
 {
 	private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-	private readonly IEnginePathContext _pathContext;
+	private readonly IEnginePathsFacade _pathContext;
 
-	public ModSettingsService(IEnginePathContext pathContext)
+	public ModSettingsService(IEnginePathsFacade pathContext)
 	{
 		_pathContext = pathContext;
 	}
@@ -34,7 +34,7 @@ public sealed class ModSettingsService : IModSettingsService
 
 			var result = await JsonSerializer.DeserializeAsync(
 				stream,
-				PandoraJsonContext.Default.ListModSaveEntry
+				ModsJsonContext.Default.ListModSaveEntry
 			);
 
 			return result ?? [];
@@ -58,7 +58,7 @@ public sealed class ModSettingsService : IModSettingsService
 			await JsonSerializer.SerializeAsync(
 				stream,
 				[.. entries],
-				PandoraJsonContext.Default.ListModSaveEntry
+				ModsJsonContext.Default.ListModSaveEntry
 			);
 
 			logger.Info("Mod settings saved.");

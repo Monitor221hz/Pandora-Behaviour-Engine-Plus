@@ -2,7 +2,7 @@
 using NLog.Filters;
 using NLog.Targets;
 using NLog.Targets.Wrappers;
-using Pandora.Paths.Contexts;
+using Pandora.Paths.Abstractions;
 using Pandora.Paths.Extensions;
 using System;
 using System.IO;
@@ -12,21 +12,21 @@ namespace Pandora.Logging.Services;
 
 public class NLogConfigurationService : ILoggingConfigurationService, IDisposable
 {
-	private readonly IEnginePathContext _pathContext;
+	private readonly IUserPaths _userPaths;
 	private readonly IDisposable? _subscription;
 
-	public NLogConfigurationService(IEnginePathContext pathContext)
+	public NLogConfigurationService(IUserPaths userPaths)
 	{
-		_pathContext = pathContext;
+		_userPaths = userPaths;
 
-		_subscription = _pathContext.OutputChanged
+		_subscription = _userPaths.OutputChanged
 			.Skip(1)
 			.Subscribe(UpdateLogPath);
 	}
 
 	public void Initialize()
 	{
-		var logDir = _pathContext.OutputFolder.FullName;
+		var logDir = _userPaths.Output.FullName;
 		var logPath = logDir / "Engine.log";
 
 		var fileTarget = new FileTarget("EngineLog")
