@@ -21,13 +21,7 @@ public class DiskDialogService : IDiskDialogService
 
 	public async Task<DirectoryInfo?> OpenFolderAsync(string title, DirectoryInfo? initialDirectory = null)
 	{
-		IStorageFolder? startLocation = null;
-
-		if (initialDirectory is { Exists: true })
-		{
-			startLocation = await _window.StorageProvider
-				.TryGetFolderFromPathAsync(initialDirectory.FullName);
-		}
+		var startLocation = await GetStartLocationAsync(initialDirectory);
 
 		var folders = await _window.StorageProvider.OpenFolderPickerAsync(
 			new FolderPickerOpenOptions
@@ -48,13 +42,7 @@ public class DiskDialogService : IDiskDialogService
 
 	public async Task<FileInfo?> OpenFileAsync(string title, DirectoryInfo? initialDirectory = null, params string[] patterns)
 	{
-		IStorageFolder? startLocation = null;
-
-		if (initialDirectory is { Exists: true })
-		{
-			startLocation = await _window.StorageProvider
-				.TryGetFolderFromPathAsync(initialDirectory.FullName);
-		}
+		var startLocation = await GetStartLocationAsync(initialDirectory);
 
 		var files = await _window.StorageProvider.OpenFilePickerAsync(
 			new FilePickerOpenOptions
@@ -74,5 +62,17 @@ public class DiskDialogService : IDiskDialogService
 
 		var localPath = files[0].TryGetLocalPath();
 		return new FileInfo(localPath!);
+	}
+
+
+
+	private async Task<IStorageFolder?> GetStartLocationAsync(DirectoryInfo? initialDirectory)
+	{
+		if (initialDirectory?.Exists != true)
+		{
+			return null;
+		}
+
+		return await _window.StorageProvider.TryGetFolderFromPathAsync(initialDirectory.FullName);
 	}
 }

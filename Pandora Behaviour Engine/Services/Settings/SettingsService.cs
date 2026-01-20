@@ -15,12 +15,12 @@ public class SettingsService : ISettingsService
 	private readonly ISettingsRepository _repository;
 	private readonly IGameLocator _gameLocator;
 	private readonly IGameDataValidator _validator;
+	private readonly IGameDescriptor _descriptor;
 	private readonly IApplicationPaths _appPaths;
 	private readonly IUserPaths _userPaths;
-	private readonly IGameDescriptor _descriptor;
 
-	private PathsConfiguration _fullConfiguration = new();
-	private UserSettings _currentSettings = new();
+	private PathsConfiguration _fullConfiguration;
+	private UserSettings _currentSettings;
 
 	public bool IsGameDataValid =>
 		!_userPaths.GameData.FullName.Equals(_appPaths.AssemblyDirectory.FullName, StringComparison.OrdinalIgnoreCase)
@@ -32,114 +32,117 @@ public class SettingsService : ISettingsService
 		ISettingsRepository repository,
 		IGameLocator gameLocator,
 		IGameDataValidator validator,
+		IGameDescriptor descriptor,
 		IApplicationPaths appPaths,
-		IUserPaths userPaths,
-		IGameDescriptor descriptor)
+		IUserPaths userPaths)
 	{
 		_repository = repository;
 		_gameLocator = gameLocator;
 		_validator = validator;
+		_descriptor = descriptor;
 		_appPaths = appPaths;
 		_userPaths = userPaths;
-		_descriptor = descriptor;
 	}
 
 	public void Initialize()
 	{
-		_fullConfiguration = _repository.Load();
+		LoadConfiguration();
+		DirectoryInfo gameDataDirectory = ResolveGameDataDirectory();
+		_userPaths.SetGameData(gameDataDirectory);
 
-		if (!_fullConfiguration.TryGetValue(_descriptor.Id, out _currentSettings!))
+		DirectoryInfo outputDirectory = ResolveOutputDirectory(gameDataDirectory);
+		_userPaths.SetOutput(outputDirectory);
+
+		SaveState();
+	}
+
+	private void LoadConfiguration()
+	{
+		_fullConfiguration = _repository.Load() ?? new PathsConfiguration();
+
+		if (!_fullConfiguration.TryGetValue(_descriptor.Id, out _currentSettings))
 		{
 			_currentSettings = new UserSettings();
 			_fullConfiguration[_descriptor.Id] = _currentSettings;
 		}
+	}
 
-		// 1. GAME DATA
-		DirectoryInfo resolvedGameData;
-
+	private DirectoryInfo ResolveGameDataDirectory()
+	{
 		if (!string.IsNullOrEmpty(_currentSettings.GameDataPath))
 		{
-			var configured = new DirectoryInfo(_currentSettings.GameDataPath);
-			var normalized = _validator.Normalize(configured);
+			var configuredDirectory = new DirectoryInfo(_currentSettings.GameDataPath);
+			var normalizedDirectory = _validator.Normalize(configuredDirectory);
 
-			if (normalized != null)
+			if (normalizedDirectory != null)
 			{
-				resolvedGameData = normalized;
-			}
-			else
-			{
-				resolvedGameData = ResolveViaLocators();
+				return normalizedDirectory;
 			}
 		}
-		else
-		{
-			resolvedGameData = ResolveViaLocators();
-		}
-		_userPaths.SetGameData(resolvedGameData);
 
-		// 2. OUTPUT
-		DirectoryInfo resolvedOutput;
-
-		if (!string.IsNullOrEmpty(_currentSettings.OutputPath)
-			&& new DirectoryInfo(_currentSettings.OutputPath).Exists)
-		{
-			resolvedOutput = new DirectoryInfo(_currentSettings.OutputPath);
-		}
-		else
-		{
-			resolvedOutput = resolvedGameData;
-		}
-		_userPaths.SetOutput(resolvedOutput);
+		return ResolveViaLocators() ?? _appPaths.AssemblyDirectory;
 	}
 
-	private DirectoryInfo ResolveViaLocators()
+	private DirectoryInfo ResolveOutputDirectory(DirectoryInfo gameDataDirectory)
 	{
-		var located = _gameLocator.TryLocateGameData();
-
-		if (located != null)
+		if (!string.IsNullOrEmpty(_currentSettings.OutputPath))
 		{
-			var normalized = _validator.Normalize(located);
-			if (normalized != null)
+			var outputDirectory = new DirectoryInfo(_currentSettings.OutputPath);
+			if (outputDirectory.Exists)
 			{
-				_currentSettings.GameDataPath = normalized.FullName;
-				SaveState();
-				return normalized;
+				return outputDirectory;
 			}
 		}
 
-		// fallback
-		return _appPaths.AssemblyDirectory;
+		return gameDataDirectory;
 	}
 
-
-	public void SetGameDataFolder(DirectoryInfo dir)
+	private DirectoryInfo? ResolveViaLocators()
 	{
-		var normalized = _validator.Normalize(dir);
-		if (normalized is null)
+		var locatedDirectory = _gameLocator.TryLocateGameData();
+		if (locatedDirectory == null)
+		{
+			return null;
+		}
+
+		var normalizedDirectory = _validator.Normalize(locatedDirectory);
+		if (normalizedDirectory != null)
+		{
+			_currentSettings.GameDataPath = normalizedDirectory.FullName;
+		}
+
+		return normalizedDirectory;
+	}
+
+	public void SetGameDataFolder(DirectoryInfo directory)
+	{
+		var normalizedDirectory = _validator.Normalize(directory);
+		if (normalizedDirectory == null)
 		{
 			logger.UiWarn("Selected folder is not a valid game directory.");
-			return;
+			throw new InvalidOperationException("Invalid game data directory selected.");
 		}
 
-		_userPaths.SetGameData(normalized);
-		_currentSettings.GameDataPath = normalized.FullName;
+		_userPaths.SetGameData(normalizedDirectory);
+		_currentSettings.GameDataPath = normalizedDirectory.FullName;
 
 		if (string.IsNullOrEmpty(_currentSettings.OutputPath))
 		{
-			_userPaths.SetOutput(normalized);
+			_userPaths.SetOutput(normalizedDirectory);
 		}
 
 		SaveState();
 	}
 
-
-	public void SetOutputFolder(DirectoryInfo dir)
+	public void SetOutputFolder(DirectoryInfo directory)
 	{
-		if (!dir.Exists) dir.Create();
+		if (!directory.Exists)
+		{
+			directory.Create();
+		}
 
-		_userPaths.SetOutput(dir);
-
-		_currentSettings.OutputPath = dir.FullName;
+		_userPaths.SetOutput(directory);
+		_currentSettings.OutputPath = directory.FullName;
 
 		SaveState();
 	}
@@ -147,7 +150,6 @@ public class SettingsService : ISettingsService
 	private void SaveState()
 	{
 		_fullConfiguration[_descriptor.Id] = _currentSettings;
-
 		_repository.Save(_fullConfiguration);
 	}
 }

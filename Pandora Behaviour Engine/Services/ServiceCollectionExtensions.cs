@@ -88,16 +88,15 @@ public static class ServiceCollectionExtensions
 				.AddTransient<GogGameLocator>()
 				.AddTransient<RegistryGameLocator>()
 				.AddSingleton<IGameLocator>(sp =>
-				new CompositeGameLocator(
-					locators: [
-						sp.GetRequiredService<CommandLineGameLocator>(),
-						sp.GetRequiredService<SteamGameLocator>(),
-						sp.GetRequiredService<GogGameLocator>(),
-						sp.GetRequiredService<RegistryGameLocator>(),
-					],
-					validator: sp.GetRequiredService<GameDataValidator>()
-				)
-			);
+					new CompositeGameLocator(
+						[
+							sp.GetRequiredService<CommandLineGameLocator>(),
+							sp.GetRequiredService<SteamGameLocator>(),
+							sp.GetRequiredService<GogGameLocator>(),
+							sp.GetRequiredService<RegistryGameLocator>(),
+						]
+					)
+				);
 		}
 
 		private IServiceCollection AddCoreServices()
