@@ -2,7 +2,6 @@
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
 using Pandora.DTOs;
-using Pandora.Services.Interfaces;
 using System;
 using System.CommandLine;
 using System.IO;
@@ -10,7 +9,7 @@ using System.Linq;
 
 namespace Pandora.Services;
 
-public sealed class CommandLineParser : ICommandLineParser
+public sealed class CommandLineParser
 {
 	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -37,7 +36,7 @@ public sealed class CommandLineParser : ICommandLineParser
 		_autoCloseOption = new("--auto_close", ["-ac"]);
 		_skyrimDebug64Option = new("--skyrim_debug64");
 
-		_rootCommand = new RootCommand();
+		_rootCommand = [];
 		_rootCommand.Options.Add(_outputOption);
 		_rootCommand.Options.Add(_tesvOption);
 		_rootCommand.Options.Add(_autoRunOption);

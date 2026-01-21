@@ -6,27 +6,19 @@ using System.IO;
 
 namespace Pandora.Platform.CreationEngine.Locators;
 
-public sealed class SteamGameLocator : IGameLocator
+public sealed class SteamGameLocator(
+	IGameDescriptor gameDescriptor,
+	IRegistry? registry,
+	IFileSystem fileSystem) : IGameLocator
 {
-	private readonly IGameDescriptor _gameDescriptor;
-	private readonly IRegistry? _registry;
-	private readonly IFileSystem _fileSystem;
-
-	public SteamGameLocator(IGameDescriptor gameDescriptor, IRegistry? registry, IFileSystem fileSystem)
-	{
-		_gameDescriptor = gameDescriptor;
-		_registry = registry;
-		_fileSystem = fileSystem;
-	}
-
 	public DirectoryInfo? TryLocateGameData()
 	{
-		if (_registry is null) 
+		if (registry is null) 
 			return null;
 
-		var handler = new SteamHandler(_fileSystem, _registry);
+		var handler = new SteamHandler(fileSystem, registry);
 
-		foreach (var appId in _gameDescriptor.SteamAppIds)
+		foreach (var appId in gameDescriptor.SteamAppIds)
 		{
 			var game = handler.FindOneGameById(AppId.From(appId), out _);
 			if (game?.Path.DirectoryExists() != true)

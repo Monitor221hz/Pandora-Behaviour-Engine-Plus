@@ -36,6 +36,7 @@ using Pandora.Services.Settings;
 using Pandora.ViewModels;
 using Pandora.Views;
 using System;
+using System.Linq;
 
 namespace Pandora.Services;
 
@@ -62,7 +63,7 @@ public static class ServiceCollectionExtensions
 
 		private IServiceCollection AddAppBootstrapper()
 		{
-			return serviceCollection.AddSingleton<IAppBootstrapper, AppBootstrapper>();
+			return serviceCollection.AddSingleton<AppBootstrapper>();
 		}
 
 		private IServiceCollection AddViewModels()
@@ -107,15 +108,12 @@ public static class ServiceCollectionExtensions
 			return serviceCollection
 				.AddSingleton<IFileSystem>(FileSystem.Shared)
 				.AddSingleton<MainWindow>()
-				.AddSingleton<PandoraServiceContext>(sp =>
-					new PandoraServiceContext(sp.GetRequiredService<MainWindow>())
-				)
+				.AddSingleton<CommandLineParser>()
 				.AddSingleton<LaunchOptions>(sp =>
 				{
-					var parser = sp.GetRequiredService<ICommandLineParser>();
-					return parser.Parse(Environment.GetCommandLineArgs());
+					var parser = sp.GetRequiredService<CommandLineParser>();
+					return parser.Parse([.. Environment.GetCommandLineArgs().Skip(1)]);
 				})
-				.AddSingleton<ICommandLineParser, CommandLineParser>()
 				.AddSingleton<IAppExceptionHandler, AppExceptionHandler>()
 				.AddSingleton<IDiskDialogService>(sp => new DiskDialogService(sp.GetRequiredService<MainWindow>()))
 				.AddSingleton<IWindowStateService, WindowStateService>()

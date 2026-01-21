@@ -5,21 +5,13 @@ using Pandora.Paths.Extensions;
 
 namespace Pandora.Paths.Validation;
 
-public sealed class GameDataValidator : IGameDataValidator
+public sealed class GameDataValidator(IGameDescriptor descriptor) : IGameDataValidator
 {
-	private readonly IGameDescriptor _descriptor;
-
-	public GameDataValidator(IGameDescriptor descriptor)
-	{
-		_descriptor = descriptor;
-	}
-
 	public DirectoryInfo? Normalize(DirectoryInfo input)
 	{
 		var dataDir = GetDataDirectory(input);
 		return dataDir != null && IsValid(dataDir) ? dataDir : null;
 	}
-
 
 	public bool IsValid(DirectoryInfo input)
 	{
@@ -31,7 +23,7 @@ public sealed class GameDataValidator : IGameDataValidator
 		if (gameRoot is null || !gameRoot.Exists)
 			return false;
 
-		foreach (var exe in _descriptor.ExecutableNames)
+		foreach (var exe in descriptor.ExecutableNames)
 		{
 			if (File.Exists(gameRoot.FullName / exe))
 				return true;

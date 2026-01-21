@@ -10,56 +10,40 @@ using System.Reactive.Linq;
 
 namespace Pandora.Services;
 
-public class EngineOrchestrator : IDisposable
+public sealed class EngineOrchestrator(
+	IModService mods,
+	IUserPaths userPaths,
+	IBehaviourEngine engine,
+	IEngineConfigurationService configService,
+	IEngineSharedState state,
+	IWindowStateService windowService) : IDisposable
 {
-	private readonly IModService _mods;
-	private readonly IUserPaths _userPaths;
-	private readonly IBehaviourEngine _engine;
-	private readonly IEngineConfigurationService _configService;
-	private readonly IEngineSharedState _state;
-	private readonly IWindowStateService _windowService;
-	private readonly CompositeDisposable _disposables = new();
-
-	public EngineOrchestrator(
-		IModService mods,
-		IUserPaths userPaths,
-		IBehaviourEngine engine,
-		IEngineConfigurationService configService,
-		IEngineSharedState state,
-		IWindowStateService windowService)
-	{
-		_mods = mods;
-		_userPaths = userPaths;
-		_engine = engine;
-		_configService = configService;
-		_state = state;
-		_windowService = windowService;
-	}
+	private readonly CompositeDisposable _disposables = [];
 
 	public void Initialize()
 	{
-		_userPaths.GameDataChanged
+		userPaths.GameDataChanged
 			.Skip(1)
-			.SelectMany(_ => Observable.FromAsync(_mods.RefreshModsAsync))
+			.SelectMany(_ => Observable.FromAsync(mods.RefreshModsAsync))
 			.Subscribe()
 			.DisposeWith(_disposables);
 
-		_configService.CurrentFactoryChanged
+		configService.CurrentFactoryChanged
 			.DistinctUntilChanged()
 			.Select(factory => Observable.FromAsync(() =>
-				_engine.SwitchConfigurationAsync(factory.Create())))
+				engine.SwitchConfigurationAsync(factory.Create())))
 			.Concat()
 			.Subscribe()
 			.DisposeWith(_disposables);
 
 
-		_engine.StateChanged.Subscribe(s =>
+		engine.StateChanged.Subscribe(s =>
 		{
-			_state.IsEngineRunning = s == EngineState.Running;
-			_state.IsPreloading = s == EngineState.Preloading;
+			state.IsEngineRunning = s == EngineState.Running;
+			state.IsPreloading = s == EngineState.Preloading;
 		}).DisposeWith(_disposables);
 
-		_engine.StateChanged.Subscribe(HandleWindowState).DisposeWith(_disposables);
+		engine.StateChanged.Subscribe(HandleWindowState).DisposeWith(_disposables);
 	}
 
 	private void HandleWindowState(EngineState state)
@@ -67,19 +51,23 @@ public class EngineOrchestrator : IDisposable
 		switch (state)
 		{
 			case EngineState.Running:
-				_windowService.SetVisualState(WindowVisualState.Running);
+				windowService.SetVisualState(WindowVisualState.Running);
 				break;
 			case EngineState.Success:
-				_windowService.SetVisualState(WindowVisualState.Idle);
-				_windowService.FlashWindow();
+				windowService.SetVisualState(WindowVisualState.Idle);
+				windowService.FlashWindow();
 				break;
 			case EngineState.Error:
-				_windowService.SetVisualState(WindowVisualState.Error);
+				windowService.SetVisualState(WindowVisualState.Error);
 				break;
-			default: _windowService.SetVisualState(WindowVisualState.Idle);
+			default: windowService.SetVisualState(WindowVisualState.Idle);
 				break;
 		}
 	}
 
-	public void Dispose() => _disposables.Dispose();
+	public void Dispose()
+	{
+		_disposables.Dispose();
+		GC.SuppressFinalize(this);
+	}
 }

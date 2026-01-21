@@ -12,50 +12,29 @@ using System.Threading.Tasks;
 
 namespace Pandora.Services;
 
-public class AppBootstrapper : IAppBootstrapper
+public sealed class AppBootstrapper(
+	IAppExceptionHandler appExceptionHandler,
+	IEngineConfigurationService configService,
+	ILoggingConfigurationService logService,
+	ISettingsService settings,
+	IModService modService,
+	IBehaviourEngine engine,
+	EngineOrchestrator orchestrator,
+	LaunchOptions launchOptions)
 {
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-	private readonly IAppExceptionHandler _appExceptionHandler;
-	private readonly IEngineConfigurationService _configService;
-	private readonly ILoggingConfigurationService _logService;
-	private readonly ISettingsService _settings;
-	private readonly IModService _modService;
-	private readonly IBehaviourEngine _engine;
-	private readonly EngineOrchestrator _orchestrator;
-	private readonly LaunchOptions _launchOptions;
-
-	public AppBootstrapper(
-		IAppExceptionHandler appExceptionHandler,
-		IEngineConfigurationService configService,
-		ILoggingConfigurationService logService,
-		ISettingsService settings,
-		IModService modService,
-		IBehaviourEngine engine,
-		EngineOrchestrator orchestrator,
-		LaunchOptions launchOptions)
-	{
-		_appExceptionHandler = appExceptionHandler;
-		_configService = configService;
-		_logService = logService;
-		_settings = settings;
-		_modService = modService;
-		_engine = engine;
-		_orchestrator = orchestrator;
-		_launchOptions = launchOptions;
-	}
-
 	public void InitializeSync()
 	{
-		_appExceptionHandler.Initialize();
+		appExceptionHandler.Initialize();
 
-		_settings.Initialize();
+		settings.Initialize();
 
-		_orchestrator.Initialize();
+		orchestrator.Initialize();
 
-		_logService.Initialize();
+		logService.Initialize();
 
-		_configService.Initialize(_launchOptions.UseSkyrimDebug64);
+		configService.Initialize(launchOptions.UseSkyrimDebug64);
 	}
 
 	public async Task InitializeAsync()
@@ -67,8 +46,8 @@ public class AppBootstrapper : IAppBootstrapper
 				logger.UiInfo("Plugins loaded.");
 			}
 
-			var loadModsTask = _modService.RefreshModsAsync();
-			var initEngineTask = _engine.InitializeAsync();
+			var loadModsTask = modService.RefreshModsAsync();
+			var initEngineTask = engine.InitializeAsync();
 
 			await Task.WhenAll(loadModsTask, initEngineTask);
 		}

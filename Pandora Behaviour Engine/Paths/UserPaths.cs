@@ -6,22 +6,10 @@ using System.Reactive.Subjects;
 
 namespace Pandora.Paths;
 
-public sealed class UserPaths : IUserPaths
+public sealed class UserPaths(IApplicationPaths appPaths) : IUserPaths
 {
-	private readonly IApplicationPaths _appPaths;
-
-	private readonly BehaviorSubject<DirectoryInfo> _gameData;
-	private readonly BehaviorSubject<DirectoryInfo> _output;
-
-	public UserPaths(IApplicationPaths appPaths)
-	{
-		_appPaths = appPaths;
-
-		var initial = _appPaths.AssemblyDirectory;
-
-		_gameData = new BehaviorSubject<DirectoryInfo>(initial);
-		_output = new BehaviorSubject<DirectoryInfo>(initial);
-	}
+	private readonly BehaviorSubject<DirectoryInfo> _gameData = new(appPaths.AssemblyDirectory);
+	private readonly BehaviorSubject<DirectoryInfo> _output = new(appPaths.AssemblyDirectory);
 
 	public DirectoryInfo GameData => _gameData.Value;
 	public DirectoryInfo Output => _output.Value;

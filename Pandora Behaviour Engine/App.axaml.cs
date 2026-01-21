@@ -39,7 +39,7 @@ public partial class App : Application
 			
 			Services = serviceCollection.BuildServiceProvider();
 
-			var bootstrapper = Services.GetRequiredService<IAppBootstrapper>();
+			var bootstrapper = Services.GetRequiredService<AppBootstrapper>();
 
 			bootstrapper.InitializeSync();
 

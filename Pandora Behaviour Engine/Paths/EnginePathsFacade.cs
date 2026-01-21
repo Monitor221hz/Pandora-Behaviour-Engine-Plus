@@ -1,38 +1,25 @@
 ﻿using Pandora.Paths.Abstractions;
-using Pandora.Services.Settings;
-using System;
 using System.IO;
 
 namespace Pandora.Paths;
 
-public sealed class EnginePathsFacade : IEnginePathsFacade
+public sealed class EnginePathsFacade(
+	IApplicationPaths appPaths,
+	IUserPaths userPaths,
+	IOutputPaths outputPaths) : IEnginePathsFacade
 {
-	private readonly IApplicationPaths _appPaths;
-	private readonly IUserPaths _userPaths;
-	private readonly IOutputPaths _outputPaths;
+	public DirectoryInfo GameDataFolder => userPaths.GameData;
+	public DirectoryInfo OutputFolder => userPaths.Output;
 
-	public EnginePathsFacade(
-		IApplicationPaths appPaths,
-		IUserPaths userPaths,
-		IOutputPaths outputPaths)
-	{
-		_appPaths = appPaths;
-		_userPaths = userPaths;
-		_outputPaths = outputPaths;
-	}
+	public DirectoryInfo AssemblyFolder => appPaths.AssemblyDirectory;
+	public DirectoryInfo TemplateFolder => appPaths.TemplateDirectory;
+	public DirectoryInfo EngineFolder => appPaths.EngineDirectory;
 
-	public DirectoryInfo GameDataFolder => _userPaths.GameData;
-	public DirectoryInfo OutputFolder => _userPaths.Output;
+	public FileInfo PathConfig => appPaths.PathConfig;
 
-	public DirectoryInfo AssemblyFolder => _appPaths.AssemblyDirectory;
-	public DirectoryInfo TemplateFolder => _appPaths.TemplateDirectory;
-	public DirectoryInfo EngineFolder => _appPaths.EngineDirectory;
+	public DirectoryInfo OutputEngineFolder => outputPaths.PandoraEngineDirectory;
+	public DirectoryInfo OutputMeshesFolder => outputPaths.MeshesDirectory;
 
-	public FileInfo PathConfig => _appPaths.PathConfig;
-
-	public DirectoryInfo OutputEngineFolder => _outputPaths.PandoraEngineDirectory;
-	public DirectoryInfo OutputMeshesFolder => _outputPaths.MeshesDirectory;
-
-	public FileInfo OutputPreviousFile => _outputPaths.PreviousOutputFile;
-	public FileInfo ActiveModsFile => _outputPaths.ActiveModsFile;
+	public FileInfo OutputPreviousFile => outputPaths.PreviousOutputFile;
+	public FileInfo ActiveModsFile => outputPaths.ActiveModsFile;
 }

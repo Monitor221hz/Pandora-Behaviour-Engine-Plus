@@ -3,22 +3,13 @@ using System.IO;
 
 namespace Pandora.Platform.CreationEngine.Locators;
 
-public sealed class CommandLineGameLocator : IGameLocator
+public sealed class CommandLineGameLocator(LaunchOptions options) : IGameLocator
 {
-	private readonly IGameDescriptor _gameDescriptor;
-	private readonly LaunchOptions _options;
-
-	public CommandLineGameLocator(IGameDescriptor gameDescriptor, LaunchOptions options)
-	{
-		_gameDescriptor = gameDescriptor;
-		_options = options;
-	}
-
 	public DirectoryInfo? TryLocateGameData()
 	{
-		if (_options.SkyrimGameDirectory is null)
+		if (options.SkyrimGameDirectory is null)
 			return null;
 
-		return _options.SkyrimGameDirectory;
+		return options.SkyrimGameDirectory;
 	}
 }

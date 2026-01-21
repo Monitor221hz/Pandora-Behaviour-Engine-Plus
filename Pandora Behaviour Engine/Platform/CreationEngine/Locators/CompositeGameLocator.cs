@@ -5,18 +5,11 @@ using System.Linq;
 
 namespace Pandora.Platform.CreationEngine.Locators;
 
-public sealed class CompositeGameLocator : IGameLocator
+public sealed class CompositeGameLocator(IEnumerable<IGameLocator> locators) : IGameLocator
 {
-	private readonly IReadOnlyList<IGameLocator> _locators;
-
-	public CompositeGameLocator(IEnumerable<IGameLocator> locators)
-	{
-		_locators = locators.ToList();
-	}
-
 	public DirectoryInfo? TryLocateGameData()
 	{
-		foreach (var locator in _locators)
+		foreach (var locator in locators)
 		{
 			var candidate = locator.TryLocateGameData();
 			if (candidate is not null)

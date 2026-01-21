@@ -1,12 +1,6 @@
-﻿namespace Pandora.Services.Interfaces;
+﻿using Pandora.Enums;
 
-public enum WindowVisualState
-{
-    Idle,
-    Running,
-    Error,
-    Indeterminate,
-}
+namespace Pandora.Services.Interfaces;
 
 public interface IWindowStateService
 {

@@ -4,20 +4,14 @@
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using Pandora.Services.Interfaces;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
 namespace Pandora.Services;
 
-public class DiskDialogService : IDiskDialogService
+public sealed class DiskDialogService(Window window) : IDiskDialogService
 {
-	private readonly Window _window;
-
-	public DiskDialogService(Window window)
-	{
-		_window = window;
-	}
+	private readonly Window _window = window;
 
 	public async Task<DirectoryInfo?> OpenFolderAsync(string title, DirectoryInfo? initialDirectory = null)
 	{
@@ -49,10 +43,10 @@ public class DiskDialogService : IDiskDialogService
 			{
 				Title = title,
 				AllowMultiple = false,
-				FileTypeFilter = new List<FilePickerFileType>
-				{
-					new FilePickerFileType(title) { Patterns = patterns },
-				},
+				FileTypeFilter =
+				[
+					new(title) { Patterns = patterns },
+				],
 				SuggestedStartLocation = startLocation
 			}
 		);

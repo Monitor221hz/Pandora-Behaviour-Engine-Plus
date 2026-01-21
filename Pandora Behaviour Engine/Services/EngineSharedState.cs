@@ -9,9 +9,9 @@ using System.Reactive.Linq;
 
 namespace Pandora.Services;
 
-public partial class EngineSharedState : ReactiveObject, IEngineSharedState, IDisposable
+public sealed partial class EngineSharedState : ReactiveObject, IEngineSharedState, IDisposable
 {
-	private readonly CompositeDisposable _disposables = new();
+	private readonly CompositeDisposable _disposables = [];
 
 	[Reactive]
 	private bool _isEngineRunning;
@@ -20,16 +20,16 @@ public partial class EngineSharedState : ReactiveObject, IEngineSharedState, IDi
 	private bool _isPreloading;
 
 	[Reactive]
-	private string _searchTerm;
+	private string _searchTerm = string.Empty;
 
 	[ObservableAsProperty]
 	private bool _isOutputFolderCustomSet;
 
 	[ObservableAsProperty]
-	private string _outputFolderUri;
+	private string _outputFolderUri = string.Empty;
 
 	[ObservableAsProperty]
-	private string _outputDirectoryMessage;
+	private string _outputDirectoryMessage = string.Empty;
 
 	public EngineSharedState(
 		IUserPaths paths)
@@ -60,5 +60,6 @@ public partial class EngineSharedState : ReactiveObject, IEngineSharedState, IDi
 	public void Dispose()
 	{
 		_disposables.Dispose();
+		GC.SuppressFinalize(this);
 	}
 }

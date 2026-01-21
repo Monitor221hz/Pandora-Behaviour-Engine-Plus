@@ -11,7 +11,7 @@ using System.Reactive.Subjects;
 
 namespace Pandora.Services;
 
-public class EngineConfigurationService : IEngineConfigurationService
+public sealed class EngineConfigurationService : IEngineConfigurationService
 {
 	private readonly IEngineConfigurationFactory<SkyrimConfiguration> _skyrimFactory;
 	private readonly IEngineConfigurationFactory<SkyrimDebugConfiguration> _skyrimDebugFactory;

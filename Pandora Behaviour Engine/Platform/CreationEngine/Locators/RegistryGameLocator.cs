@@ -5,32 +5,24 @@ using System.IO;
 
 namespace Pandora.Platform.CreationEngine.Locators;
 
-public sealed class RegistryGameLocator : IGameLocator
+public sealed class RegistryGameLocator(
+	IGameDescriptor gameDescriptor,
+	IRegistry? registry,
+	IFileSystem fileSystem) : IGameLocator
 {
-	private readonly IGameDescriptor _gameDescriptor;
-	private readonly IRegistry? _registry;
-	private readonly IFileSystem _fileSystem;
-
-	public RegistryGameLocator(IGameDescriptor gameDescriptor, IRegistry? registry, IFileSystem fileSystem)
-	{
-		_gameDescriptor = gameDescriptor;
-		_registry = registry;
-		_fileSystem = fileSystem;
-	}
-
 	public DirectoryInfo? TryLocateGameData()
 	{
-		if (!OperatingSystem.IsWindows() || _registry is null)
+		if (!OperatingSystem.IsWindows() || registry is null)
 			return null;
 
-		var key = _registry.OpenBaseKey(RegistryHive.LocalMachine).OpenSubKey(_gameDescriptor.SubKey);
+		var key = registry.OpenBaseKey(RegistryHive.LocalMachine).OpenSubKey(gameDescriptor.SubKey);
 		if (key == null)
 			return null;
 
 		if (key.GetValue("Installed Path") is not string installPath)
 			return null;
 
-		var game = _fileSystem.FromUnsanitizedFullPath(installPath);
+		var game = fileSystem.FromUnsanitizedFullPath(installPath);
 		if (!game.DirectoryExists())
 			return null;
 

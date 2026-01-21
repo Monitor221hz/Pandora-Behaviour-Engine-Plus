@@ -3,30 +3,24 @@
 
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
+using Pandora.Enums;
 using Pandora.Services.Interfaces;
 using Pandora.Views;
 
 namespace Pandora.Platform.Windows;
 
-public class WindowStateService : IWindowStateService
+public sealed class WindowStateService(MainWindow window) : IWindowStateService
 {
-	private MainWindow? GetMainWindow()
-	{
-		if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-		{
-			return desktop.MainWindow as MainWindow;
-		}
-		return null;
-	}
+	private readonly MainWindow _mainWindow = window;
 
 	public void SetVisualState(WindowVisualState state)
 	{
-		GetMainWindow()?.SetVisualState(state);
+		_mainWindow.SetVisualState(state);
 	}
 
 	public void FlashWindow()
 	{
-		GetMainWindow()?.FlashUntilFocused();
+		_mainWindow.FlashUntilFocused();
 	}
 
 	public void Shutdown()

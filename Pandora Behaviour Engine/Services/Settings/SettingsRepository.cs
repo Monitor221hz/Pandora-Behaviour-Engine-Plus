@@ -7,31 +7,26 @@ using System.Text.Json;
 
 namespace Pandora.Services.Settings;
 
-public sealed class SettingsRepository : ISettingsRepository
+public sealed class SettingsRepository(IApplicationPaths appPaths) : ISettingsRepository
 {
-	private readonly FileInfo _configFile;
-
-	public SettingsRepository(IApplicationPaths appPaths)
-	{
-		_configFile = appPaths.PathConfig;
-	}
+	private readonly FileInfo _configFile = appPaths.PathConfig;
 
 	public PathsConfiguration Load()
 	{
 		if (!_configFile.Exists)
-			return new PathsConfiguration();
+			return [];
 
 		try
 		{
 			using var stream = _configFile.OpenRead();
-			if (stream.Length == 0) return new PathsConfiguration();
+			if (stream.Length == 0) return [];
 
 			return JsonSerializer.Deserialize(stream, PathsJsonContext.Default.PathsConfiguration)
-				   ?? new PathsConfiguration();
+				   ?? [];
 		}
 		catch (Exception)
 		{
-			return new PathsConfiguration();
+			return [];
 		}
 	}
 

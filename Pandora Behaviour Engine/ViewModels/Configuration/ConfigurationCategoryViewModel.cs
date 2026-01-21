@@ -6,15 +6,10 @@ using System.Collections.ObjectModel;
 
 namespace Pandora.ViewModels.Configuration;
 
-public class ConfigurationCategoryViewModel : ViewModelBase, IEngineConfigurationViewModel
+public class ConfigurationCategoryViewModel(string name) : ViewModelBase, IEngineConfigurationViewModel
 {
-	public string Name { get; }
+	public string Name { get; } = name;
 	public bool IsChecked => false;
 	public IReactiveCommand? SelectCommand => null;
 	public ObservableCollection<IEngineConfigurationViewModel> Children { get; } = [];
-
-	public ConfigurationCategoryViewModel(string name)
-	{
-		Name = name;
-	}
 }
