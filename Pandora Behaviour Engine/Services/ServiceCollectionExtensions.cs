@@ -11,8 +11,11 @@ using Pandora.API.Patch.Skyrim64;
 using Pandora.API.Patch.Skyrim64.AnimData;
 using Pandora.API.Patch.Skyrim64.AnimSetData;
 using Pandora.DTOs;
-using Pandora.Logging;
-using Pandora.Logging.Services;
+using Pandora.Logging.Diagnostics;
+using Pandora.Logging.NLogger;
+using Pandora.Logging.NLogger.Abstractions;
+using Pandora.Logging.NLogger.Environment;
+using Pandora.Logging.NLogger.UI;
 using Pandora.Models.Engine;
 using Pandora.Models.Patch.Configs;
 using Pandora.Models.Patch.IO.Skyrim64;
@@ -114,7 +117,6 @@ public static class ServiceCollectionExtensions
 					var parser = sp.GetRequiredService<CommandLineParser>();
 					return parser.Parse([.. Environment.GetCommandLineArgs().Skip(1)]);
 				})
-				.AddSingleton<IAppExceptionHandler, AppExceptionHandler>()
 				.AddSingleton<IDiskDialogService>(sp => new DiskDialogService(sp.GetRequiredService<MainWindow>()))
 				.AddSingleton<IWindowStateService, WindowStateService>()
 				.AddSingleton<IEngineSharedState, EngineSharedState>();
@@ -122,8 +124,20 @@ public static class ServiceCollectionExtensions
 
 		private IServiceCollection AddLoggingServices()
 		{
-			return serviceCollection.AddSingleton<ILoggingConfigurationService, NLogConfigurationService>();
+			return serviceCollection
+				.AddSingleton<ILogEventStream, LogEventStream>()
+				.AddSingleton<ObservableNLogTarget>()
+				.AddSingleton<ILogPathProvider, UserLogPathProvider>()
+				.AddSingleton<INLogTargetsFactory, NLogTargetsFactory>()
+				.AddSingleton<INLogConfigurator, NLogConfigurator>()
+				.AddSingleton<LogFilePathUpdater>()
+				.AddSingleton<LoggingBootstrapper>()
+				.AddSingleton<AppExceptionHandler>()
+				.AddSingleton<CrashReporter>()
+				.AddSingleton<CrashLogBuilder>()
+				.AddSingleton<CrashLogWriter>();
 		}
+
 
 		private IServiceCollection AddModServices()
 		{

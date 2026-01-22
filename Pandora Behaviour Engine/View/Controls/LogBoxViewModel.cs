@@ -1,8 +1,6 @@
-﻿using Pandora.Logging;
+﻿using Pandora.Logging.NLogger.UI;
 using Pandora.Services.Interfaces;
 using System;
-using System.Reactive;
-using System.Reactive.Linq;
 
 namespace Pandora.ViewModels;
 
@@ -10,18 +8,13 @@ public partial class LogBoxViewModel : ViewModelBase
 {
 	public IEngineSharedState State { get; }
 
-	public IObservable<string> LogStream { get; }
-	public IObservable<Unit> ClearStream { get; }
+	public IObservable<LogUiEvent> LogStream { get; }
 
-	public LogBoxViewModel(IEngineSharedState state)
+	public LogBoxViewModel(IEngineSharedState state, ILogEventStream stream)
 	{
 		State = state;
 
-		LogStream = ObservableNLogTarget.LogStream
-			.Buffer(TimeSpan.FromMilliseconds(100))
-			.Where(x => x.Count > 0)
-			.Select(msgs => string.Join(Environment.NewLine, msgs) + Environment.NewLine);
+		LogStream = stream.Events;
 
-		ClearStream = ObservableNLogTarget.ClearStream;
 	}
 }

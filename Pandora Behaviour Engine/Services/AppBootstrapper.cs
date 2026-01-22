@@ -1,7 +1,7 @@
 ﻿using Pandora.DTOs;
-using Pandora.Logging;
+using Pandora.Logging.Diagnostics;
 using Pandora.Logging.Extensions;
-using Pandora.Logging.Services;
+using Pandora.Logging.NLogger;
 using Pandora.Models.Engine;
 using Pandora.Models.Patch.Plugins;
 using Pandora.Mods.Services;
@@ -13,9 +13,9 @@ using System.Threading.Tasks;
 namespace Pandora.Services;
 
 public sealed class AppBootstrapper(
-	IAppExceptionHandler appExceptionHandler,
+	AppExceptionHandler appExceptionHandler,
+	LoggingBootstrapper nlogger,
 	IEngineConfigurationService configService,
-	ILoggingConfigurationService logService,
 	ISettingsService settings,
 	IModService modService,
 	IBehaviourEngine engine,
@@ -30,9 +30,9 @@ public sealed class AppBootstrapper(
 
 		settings.Initialize();
 
-		orchestrator.Initialize();
+		nlogger.Initialize();
 
-		logService.Initialize();
+		orchestrator.Initialize();
 
 		configService.Initialize(launchOptions.UseSkyrimDebug64);
 	}

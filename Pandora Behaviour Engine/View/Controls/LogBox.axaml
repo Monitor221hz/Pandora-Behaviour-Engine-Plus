@@ -19,6 +19,7 @@
 			<ae:TextEditor Name="LogEditor"
                      Foreground="{DynamicResource TextFillColorPrimary}"
 									   FontFamily="Consolas"
+										 FontSize="13"
                      BorderThickness="0"
 									   Background="Transparent"
 									   ShowLineNumbers="False"
@@ -27,8 +28,7 @@
                      VerticalScrollBarVisibility="Auto"
                      WordWrap="True">
 				<Interaction.Behaviors>
-					<b:LogTextEditorBehavior LogStream="{Binding LogStream}"
-																   ClearStream="{Binding ClearStream}" />
+					<b:LogTextEditorBehavior LogSource="{Binding LogStream}" />
 				</Interaction.Behaviors>
 			</ae:TextEditor>
 		</Border>
