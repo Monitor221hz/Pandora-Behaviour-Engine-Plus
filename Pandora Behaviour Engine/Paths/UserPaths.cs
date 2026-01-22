@@ -6,7 +6,7 @@ using System.Reactive.Subjects;
 
 namespace Pandora.Paths;
 
-public sealed class UserPaths(IApplicationPaths appPaths) : IUserPaths
+public sealed class UserPaths(IApplicationPaths appPaths) : IUserPaths, IDisposable
 {
 	private readonly BehaviorSubject<DirectoryInfo> _gameData = new(appPaths.AssemblyDirectory);
 	private readonly BehaviorSubject<DirectoryInfo> _output = new(appPaths.AssemblyDirectory);
@@ -25,4 +25,10 @@ public sealed class UserPaths(IApplicationPaths appPaths) : IUserPaths
 
 	public void SetOutput(DirectoryInfo dir) =>
 		_output.OnNext(dir);
+
+	public void Dispose()
+	{
+		_gameData.Dispose();
+		_output.Dispose();
+	}
 }

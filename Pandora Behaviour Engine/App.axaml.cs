@@ -8,7 +8,6 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 using Microsoft.Extensions.DependencyInjection;
 using Pandora.Services;
-using Pandora.Services.Interfaces;
 using Pandora.ViewModels;
 using Pandora.Views;
 using System;
@@ -47,6 +46,11 @@ public partial class App : Application
 			mainWindow.DataContext = Services.GetRequiredService<MainWindowViewModel>();
 
 			desktop.MainWindow = mainWindow;
+
+			desktop.Exit += (_, _) =>
+			{
+				(Services as IDisposable)?.Dispose();
+			};
 
 			_ = bootstrapper.InitializeAsync();
 		}
