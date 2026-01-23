@@ -2,7 +2,9 @@
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
 using Pandora.API.Patch.Config;
+using Pandora.Logging.Extensions;
 using Pandora.Models.Patch.Configs;
+using Pandora.Models.Patch.Plugins;
 using System;
 using System.Collections.Generic;
 using System.Reactive.Subjects;
@@ -11,6 +13,9 @@ namespace Pandora.Configuration;
 
 public sealed class EngineConfigurationService : IEngineConfigurationService
 {
+	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
+	private readonly IPluginManager _pluginManager;
 	private readonly IEngineConfigurationFactory<SkyrimConfiguration> _skyrimFactory;
 	private readonly IEngineConfigurationFactory<SkyrimDebugConfiguration> _skyrimDebugFactory;
 
@@ -23,9 +28,11 @@ public sealed class EngineConfigurationService : IEngineConfigurationService
 	public IEngineConfigurationFactory CurrentFactory => _currentFactory;
 
 	public EngineConfigurationService(
+		IPluginManager pluginManager,
 		IEngineConfigurationFactory<SkyrimConfiguration> skyrimFactory,
 		IEngineConfigurationFactory<SkyrimDebugConfiguration> skyrimDebugFactory)
 	{
+		_pluginManager = pluginManager;
 		_skyrimFactory = skyrimFactory;
 		_skyrimDebugFactory = skyrimDebugFactory;
 		_currentFactory = skyrimFactory;
@@ -38,6 +45,16 @@ public sealed class EngineConfigurationService : IEngineConfigurationService
 
 		RegisterConfiguration(_skyrimFactory, "Lean", "Skyrim 64/Behavior/Patch");
 		RegisterConfiguration(_skyrimDebugFactory, "Include Debug", "Skyrim 64/Behavior/Patch");
+
+		foreach (var plugin in _pluginManager.EngineConfigurationPlugins)
+		{
+			RegisterConfiguration(plugin.Factory, plugin.DisplayName, plugin.MenuPath);
+		}
+
+		if (_pluginManager.EngineConfigurationPlugins.Count > 0)
+		{
+			logger.UiInfo("Plugins loaded.");
+		}
 
 		if (useSkyrimDebug64)
 		{

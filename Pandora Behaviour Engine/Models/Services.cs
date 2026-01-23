@@ -8,6 +8,7 @@ using Pandora.API.Patch.Skyrim64.AnimData;
 using Pandora.API.Patch.Skyrim64.AnimSetData;
 using Pandora.Models.Engine;
 using Pandora.Models.Patch.IO.Skyrim64;
+using Pandora.Models.Patch.Plugins;
 using Pandora.Models.Patch.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.AnimData;
 using Pandora.Models.Patch.Skyrim64.AnimSetData;
@@ -33,6 +34,7 @@ public static class Services
 		public IServiceCollection AddPatchServices()
 		{
 			return serviceCollection
+				.AddSingleton<IPluginManager, PluginManager>()
 				.AddSingleton<IPatcherFactory, PatcherFactory>()
 #if DEBUG
 				.AddSingleton<IMetaDataExporter<IPackFile>, DebugPackFileExporter>()

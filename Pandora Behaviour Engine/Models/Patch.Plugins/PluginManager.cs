@@ -10,62 +10,85 @@ using Pandora.API.Patch.Plugins;
 
 namespace Pandora.Models.Patch.Plugins;
 
-public static class PluginManager
+public sealed class PluginManager : IPluginManager
 {
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-	private static readonly List<IEngineConfigurationPlugin> _configurations = [];
-	public static IReadOnlyList<IEngineConfigurationPlugin> EngineConfigurationPlugins => _configurations;
+	private readonly List<IEngineConfigurationPlugin> _plugins = new();
+	public IReadOnlyList<IEngineConfigurationPlugin> EngineConfigurationPlugins => _plugins;
 
-	public static void LoadAllPlugins(DirectoryInfo assemblyDirectory)
+	public void LoadAllPlugins(DirectoryInfo assemblyDirectory)
 	{
-		var pluginsDirectory = new DirectoryInfo(
-			Path.Combine(assemblyDirectory.FullName, "Plugins")
-		);
-		if (!pluginsDirectory.Exists)
+		if (assemblyDirectory == null || !assemblyDirectory.Exists) return;
+
+        var pluginsDir = new DirectoryInfo(Path.Combine(assemblyDirectory.FullName, "Plugins"));
+        if (!pluginsDir.Exists) 
 			return;
 
-		var subDirectories = pluginsDirectory.GetDirectories();
-		foreach (var pluginDirectory in subDirectories)
+		foreach (var pluginDir in pluginsDir.GetDirectories())
 		{
-#if DEBUG
-			// only for debug. DO NOT introduce json field plugin loading to release builds
-			IMetaPluginLoader metaPluginLoader = new JsonPluginLoader();
-
-			if (!metaPluginLoader.TryLoadMetadata(pluginDirectory, out var pluginInfo))
-				continue;
-
-			var assembly = metaPluginLoader.LoadPlugin(pluginDirectory, pluginInfo);
-#else
-			Assembly? assembly;
 			try
 			{
-				var pluginLoader = new PluginLoader();
-				assembly = pluginLoader.LoadPlugin(pluginDirectory);
+#if DEBUG
+                LoadPluginDebug(pluginDir);
+#else
+				LoadPluginRelease(pluginDir);
+#endif
 			}
 			catch (Exception ex)
 			{
-				logger.Error($"Critical error loading plugin from {pluginDirectory.Name}: {ex}");
-				continue;
-			}
-#endif
-			if (assembly != null)
-			{
-				AddConfigurations(assembly);
+				logger.Error(ex, "Failed to load plugin from directory {Dir}", pluginDir.FullName);
 			}
 		}
 	}
 
-	private static void AddConfigurations(Assembly assembly)
+	/// <summary>
+	/// Only for debug. DO NOT introduce json field plugin loading to release builds
+	/// </summary>
+	private void LoadPluginDebug(DirectoryInfo pluginDir)
 	{
-		foreach (Type type in assembly.GetTypes())
+		IMetaPluginLoader metaLoader = new JsonPluginLoader();
+		if (!metaLoader.TryLoadMetadata(pluginDir, out var pluginInfo))
 		{
-			if (
-				typeof(IEngineConfigurationPlugin).IsAssignableFrom(type)
-				&& Activator.CreateInstance(type) is IEngineConfigurationPlugin plugin
-			)
+			logger.Warn("No metadata found for plugin {Dir}", pluginDir.FullName);
+			return;
+		}
+
+		var assembly = metaLoader.LoadPlugin(pluginDir, pluginInfo);
+		RegisterConfigurationsFromAssembly(assembly);
+	}
+
+	private void LoadPluginRelease(DirectoryInfo pluginDir)
+	{
+		var pluginDll = new FileInfo(Path.Combine(pluginDir.FullName, $"{pluginDir.Name}.dll"));
+		if (!pluginDll.Exists)
+		{
+			logger.Warn("Plugin DLL not found: {Dll}", pluginDll.FullName);
+			return;
+		}
+
+		var loader = new PluginLoadContext(pluginDll.FullName);
+		var assembly = loader.LoadFromAssemblyName(AssemblyName.GetAssemblyName(pluginDll.FullName));
+		RegisterConfigurationsFromAssembly(assembly);
+	}
+
+	private void RegisterConfigurationsFromAssembly(Assembly assembly)
+	{
+		foreach (var type in assembly.GetTypes())
+		{
+			if (!typeof(IEngineConfigurationPlugin).IsAssignableFrom(type)) continue;
+
+			try
 			{
-				_configurations.Add(plugin);
+				if (Activator.CreateInstance(type) is IEngineConfigurationPlugin plugin)
+				{
+					_plugins.Add(plugin);
+					logger.Info("Loaded plugin configuration: {Plugin}", type.FullName);
+				}
+			}
+			catch (Exception ex)
+			{
+				logger.Error(ex, "Failed to instantiate plugin type {Type}", type.FullName);
 			}
 		}
 	}
