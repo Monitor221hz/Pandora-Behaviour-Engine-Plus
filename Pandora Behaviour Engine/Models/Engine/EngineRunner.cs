@@ -1,6 +1,6 @@
-﻿using Pandora.DTOs;
-using Pandora.API.Patch;
+﻿using Pandora.API.Patch;
 using Pandora.API.Patch.Engine.Config;
+using Pandora.Models.Patch.Skyrim64;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

@@ -1,9 +1,9 @@
-﻿using Pandora.Paths.Abstractions;
+﻿using Pandora.Configuration;
+using Pandora.Configuration.ViewModels;
+using Pandora.Paths.Abstractions;
+using Pandora.Platform.Avalonia;
 using Pandora.Platform.CreationEngine;
-using Pandora.Services.Interfaces;
-using Pandora.Services.Settings;
-using Pandora.Utils;
-using Pandora.ViewModels.Configuration;
+using Pandora.Settings;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using System;

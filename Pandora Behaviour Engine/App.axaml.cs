@@ -7,7 +7,6 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 using Microsoft.Extensions.DependencyInjection;
-using Pandora.Services;
 using Pandora.ViewModels;
 using Pandora.Views;
 using System;

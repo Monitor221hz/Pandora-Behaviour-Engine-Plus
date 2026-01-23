@@ -3,7 +3,6 @@
 
 using Avalonia.Media;
 using FluentAvalonia.UI.Windowing;
-using Pandora.Enums;
 using System;
 
 namespace Pandora.Platform.Windows;

@@ -1,5 +1,4 @@
 ﻿using Pandora.Logging.NLogger.UI;
-using Pandora.Services.Interfaces;
 using System;
 
 namespace Pandora.ViewModels;

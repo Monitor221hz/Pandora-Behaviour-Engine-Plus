@@ -3,7 +3,6 @@
 
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Pandora.Enums;
 using Pandora.Views;
 
 namespace Pandora.Platform.Windows;

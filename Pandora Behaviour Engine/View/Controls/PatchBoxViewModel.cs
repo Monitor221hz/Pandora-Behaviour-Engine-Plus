@@ -1,9 +1,8 @@
 ﻿using Avalonia.Controls;
 using DynamicData;
 using DynamicData.Binding;
+using Pandora.Mods.Abstractions;
 using Pandora.Mods.Extensions;
-using Pandora.Mods.Services;
-using Pandora.Services.Interfaces;
 using Pandora.Utils;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
