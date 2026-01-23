@@ -16,9 +16,9 @@ public sealed class ModSettingsService : IModSettingsService
 {
 	private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-	private readonly IEnginePathsFacade _pathContext;
+	private readonly IOutputPaths _pathContext;
 
-	public ModSettingsService(IEnginePathsFacade pathContext)
+	public ModSettingsService(IOutputPaths pathContext)
 	{
 		_pathContext = pathContext;
 	}

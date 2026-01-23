@@ -1,6 +1,8 @@
-﻿using Pandora.Logging.Extensions;
+﻿using Pandora.DTOs;
+using Pandora.Logging.Extensions;
 using Pandora.Models.Engine;
 using Pandora.Mods.Services;
+using Pandora.Platform.Windows;
 using Pandora.Services.Interfaces;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
@@ -20,6 +22,7 @@ public partial class LaunchElementViewModel : ViewModelBase, IActivatableViewMod
 
 	private readonly IModService _modService;
 	private readonly IBehaviourEngine _engine;
+	private readonly IWindowStateService _windowStateService;
 
 	private readonly bool _autoClose = false;
 	private readonly bool _autoRun = false;
@@ -27,13 +30,19 @@ public partial class LaunchElementViewModel : ViewModelBase, IActivatableViewMod
 	public ViewModelActivator Activator { get; } = new();
 
 	public LaunchElementViewModel(
+		LaunchOptions options,
 		IEngineSharedState state,
 		IModService modService,
-		IBehaviourEngine engine)
+		IBehaviourEngine engine,
+		IWindowStateService windowStateService)
 	{
 		State = state;
 		_engine = engine;
 		_modService = modService;
+		_windowStateService = windowStateService;
+
+		_autoClose = options.AutoClose;
+		_autoRun = options.AutoRun;
 
 		this.WhenActivated(disposables =>
 		{
@@ -42,7 +51,7 @@ public partial class LaunchElementViewModel : ViewModelBase, IActivatableViewMod
 				.DisposeWith(disposables);
 
 			if (_autoRun)
-				LaunchEngineCommand.Execute().Subscribe().DisposeWith(disposables);
+				LaunchEngineCommand.Execute().Subscribe();
 		});
 
 	}
@@ -58,5 +67,8 @@ public partial class LaunchElementViewModel : ViewModelBase, IActivatableViewMod
 		logger.UiInfo($"Launch finished in {result.Duration.TotalSeconds:F2} seconds.");
 
 		await _modService.SaveSettingsAsync();
+
+		if (_autoClose) 
+			_windowStateService.Shutdown();
 	}
 }

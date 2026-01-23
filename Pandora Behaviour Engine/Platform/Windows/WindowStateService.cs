@@ -4,7 +4,6 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Pandora.Enums;
-using Pandora.Services.Interfaces;
 using Pandora.Views;
 
 namespace Pandora.Platform.Windows;

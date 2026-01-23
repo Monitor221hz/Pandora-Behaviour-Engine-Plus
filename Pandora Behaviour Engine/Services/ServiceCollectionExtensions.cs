@@ -72,15 +72,15 @@ public static class ServiceCollectionExtensions
 		private IServiceCollection AddViewModels()
 		{
 			return serviceCollection
-				.AddSingleton<EngineMenuViewModel>()
-				.AddSingleton<PatchBoxViewModel>()
-				.AddSingleton<LogBoxViewModel>()
-				.AddSingleton<LaunchElementViewModel>()
-				.AddSingleton<SettingsViewModel>()
-				.AddSingleton<DataGridOptionsViewModel>()
-				.AddSingleton<AboutDialogViewModel>()
-				.AddSingleton<EngineViewModel>()
-				.AddSingleton<MainWindowViewModel>();
+				.AddTransient<EngineMenuViewModel>()
+				.AddTransient<PatchBoxViewModel>()
+				.AddTransient<LogBoxViewModel>()
+				.AddTransient<LaunchElementViewModel>()
+				.AddTransient<SettingsViewModel>()
+				.AddTransient<DataGridOptionsViewModel>()
+				.AddTransient<AboutDialogViewModel>()
+				.AddTransient<EngineViewModel>()
+				.AddTransient<MainWindowViewModel>();
 		}
 
 		private IServiceCollection AddGameLocators()

@@ -2,6 +2,7 @@
 using Pandora.Models.Engine;
 using Pandora.Mods.Services;
 using Pandora.Paths.Abstractions;
+using Pandora.Platform.Windows;
 using Pandora.Services.Interfaces;
 using System;
 using System.Reactive.Disposables;

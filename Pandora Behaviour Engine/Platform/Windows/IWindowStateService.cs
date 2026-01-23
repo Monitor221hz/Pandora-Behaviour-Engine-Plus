@@ -1,6 +1,6 @@
 ﻿using Pandora.Enums;
 
-namespace Pandora.Services.Interfaces;
+namespace Pandora.Platform.Windows;
 
 public interface IWindowStateService
 {
