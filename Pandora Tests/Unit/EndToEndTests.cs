@@ -2,13 +2,13 @@
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
 using Microsoft.Extensions.DependencyInjection;
+using NSubstitute;
 using Pandora.API.Patch.Config;
 using Pandora.Models.Engine;
 using Pandora.Models.Patch.Configs;
-using Pandora.Mods.Services;
+using Pandora.Mods.Abstractions;
 using Pandora.Paths;
 using Pandora.Paths.Abstractions;
-using PandoraTests.Fakes;
 using PandoraTests.Utils;
 
 namespace PandoraTests.Unit;
@@ -23,25 +23,46 @@ public sealed class DependencyInjectedCluster : IDisposable
 
         var root = new DirectoryInfo(Environment.CurrentDirectory);
         root.Create();
+        
+        var gameDataDir = new DirectoryInfo(Path.Combine(root.FullName, "Data"));
+        var outputDir = new DirectoryInfo(Path.Combine(root.FullName, "Output"));
 
-        var gameData = new DirectoryInfo(Path.Combine(root.FullName, "Data"));
-        var output = new DirectoryInfo(Path.Combine(root.FullName, "Output"));
+        gameDataDir.Create();
+        outputDir.Create();
 
-        gameData.Create();
-        output.Create();
+        var pandoraEngineDir = outputDir.CreateSubdirectory("Pandora_Engine");
+        var meshesDir = outputDir.CreateSubdirectory("meshes");
 
-        services.AddSingleton<IApplicationPaths>(
-            new FakeAppPathContext(root)
-        );
-        services.AddSingleton<IUserPaths>(
-            new FakeUserPathContext(gameData, output)
-        );
-        services.AddSingleton<IOutputPaths>(
-            new FakeOutputPathContext(output)
-        );
+        var appEngineDir = root.CreateSubdirectory("Pandora_Engine");
+        var templateDir = appEngineDir.CreateSubdirectory(Path.Combine("Skyrim", "Template"));
+
+        var userPathsSub = Substitute.For<IUserPaths>();
+
+        userPathsSub.Output.Returns(outputDir);
+        userPathsSub.GameData.Returns(gameDataDir);
+
+        services.AddSingleton(userPathsSub);
+
+        var appPathsSub = Substitute.For<IApplicationPaths>();
+        var assemblyDir = root;
+
+        appPathsSub.AssemblyDirectory.Returns(assemblyDir);
+        appPathsSub.EngineDirectory.Returns(appEngineDir);
+        appPathsSub.TemplateDirectory.Returns(templateDir);
+        appPathsSub.PathConfig.Returns(new FileInfo(Path.Combine(appEngineDir.FullName, "Paths.json")));
+
+        services.AddSingleton(appPathsSub);
+
+        var outputPathsSub = Substitute.For<IOutputPaths>();
+
+        outputPathsSub.PandoraEngineDirectory.Returns(pandoraEngineDir);
+        outputPathsSub.MeshesDirectory.Returns(meshesDir);
+        outputPathsSub.PreviousOutputFile.Returns(new FileInfo(Path.Combine(pandoraEngineDir.FullName, "PreviousOutput.txt")));
+        outputPathsSub.ActiveModsFile.Returns(new FileInfo(Path.Combine(pandoraEngineDir.FullName, "ActiveMods.json")));
+
+        services.AddSingleton(outputPathsSub);
 
         services.AddSingleton<IEnginePathsFacade, EnginePathsFacade>();
-
         services.AddPandoraTestServices();
 
         ServiceProvider = services.BuildServiceProvider();
@@ -64,10 +85,12 @@ public class EndToEndTests : IClassFixture<DependencyInjectedCluster>
     [Fact]
     public async Task EngineOutputTest()
     {
-        var pathContext = _serviceProvider.GetRequiredService<IEnginePathsFacade>();
+        var userPathContext = _serviceProvider.GetRequiredService<IUserPaths>();
+        var appPathContext = _serviceProvider.GetRequiredService<IApplicationPaths>();
+        var outputPathContext = _serviceProvider.GetRequiredService<IOutputPaths>();
 
-        _output.WriteLine($"GameData: {pathContext.GameDataFolder.FullName}");
-        _output.WriteLine($"Output: {pathContext.OutputFolder.FullName}");
+        _output.WriteLine($"GameData: {userPathContext.GameData.FullName}");
+        _output.WriteLine($"Output: {userPathContext.Output.FullName}");
 
         var modLoader = _serviceProvider.GetRequiredService<IModLoaderService>();
         var configurationFactory =
@@ -78,8 +101,8 @@ public class EndToEndTests : IClassFixture<DependencyInjectedCluster>
         // Loading mods
         var mods = await modLoader.LoadModsAsync(
             [
-                pathContext.AssemblyFolder,
-                pathContext.GameDataFolder
+                appPathContext.AssemblyDirectory,
+                userPathContext.GameData
             ]
         );
         _output.WriteLine($"Loaded {mods.Count} mods");
@@ -89,7 +112,7 @@ public class EndToEndTests : IClassFixture<DependencyInjectedCluster>
         var engine = _serviceProvider.GetRequiredService<IBehaviourEngine>();
         await engine.SwitchConfigurationAsync(configurationFactory.Create());
         _output.WriteLine(
-            $"BehaviourEngine configured with OutputPath: {pathContext.OutputFolder.FullName}"
+            $"BehaviourEngine configured with OutputPath: {userPathContext.Output.FullName}"
         );
 
         await engine.InitializeAsync();
@@ -133,7 +156,7 @@ public class EndToEndTests : IClassFixture<DependencyInjectedCluster>
         }
 
         // Checking for meshes with .hkx files
-        var meshesPath = pathContext.OutputMeshesFolder.FullName;
+        var meshesPath = outputPathContext.MeshesDirectory.FullName;
         Assert.True(Directory.Exists(meshesPath), $"Meshes directory does NOT exist: {meshesPath}");
         _output.WriteLine($"Meshes directory exists: {meshesPath}");
 
