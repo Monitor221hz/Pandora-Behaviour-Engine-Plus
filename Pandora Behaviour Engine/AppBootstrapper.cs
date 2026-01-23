@@ -9,6 +9,7 @@ using Pandora.Logging.NLogger;
 using Pandora.Models.Engine;
 using Pandora.Models.Patch.Plugins;
 using Pandora.Mods.Abstractions;
+using Pandora.Paths.Abstractions;
 using Pandora.Settings;
 using System;
 using System.Threading.Tasks;
@@ -18,6 +19,7 @@ namespace Pandora;
 public sealed class AppBootstrapper(
 	AppExceptionHandler appExceptionHandler,
 	LoggingBootstrapper nlogger,
+	IApplicationPaths baseDir,
 	IEngineConfigurationService configService,
 	ISettingsService settings,
 	IModService modService,
@@ -38,6 +40,17 @@ public sealed class AppBootstrapper(
 		orchestrator.Initialize();
 
 		configService.Initialize(launchOptions.UseSkyrimDebug64);
+
+		PluginManager.LoadAllPlugins(baseDir.AssemblyDirectory);
+
+		foreach (var plugin in PluginManager.EngineConfigurationPlugins)
+		{
+			configService.RegisterConfiguration(
+				plugin.Factory,
+				plugin.DisplayName,
+				plugin.MenuPath);
+		}
+
 	}
 
 	public async Task InitializeAsync()

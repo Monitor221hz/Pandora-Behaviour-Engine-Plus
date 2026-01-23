@@ -16,5 +16,7 @@ public interface IEngineConfigurationService
 
 	void SetCurrentFactory(IEngineConfigurationFactory factory);
 
+	void RegisterConfiguration(IEngineConfigurationFactory factory, string displayName, string menuPath);
+
 	IReadOnlyCollection<EngineConfigDescriptor> GetAvailableConfigurations();
 }

@@ -27,7 +27,7 @@ public sealed class PatcherFactory : IPatcherFactory, IDisposable
 		_scope?.Dispose();
 		_scope = _scopeFactory.CreateScope();
 
-		return (IPatcher)_scope.ServiceProvider.GetRequiredService(_config.PatcherType);
+		return (IPatcher)ActivatorUtilities.CreateInstance(_scope.ServiceProvider, _config.PatcherType);
 	}
 
 	public void SetConfiguration(IEngineConfiguration config)

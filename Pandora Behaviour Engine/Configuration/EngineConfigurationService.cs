@@ -36,8 +36,8 @@ public sealed class EngineConfigurationService : IEngineConfigurationService
 	{
 		_availableConfigs.Clear();
 
-		_availableConfigs.Add(new EngineConfigDescriptor(_skyrimFactory, "Lean", "Skyrim 64/Behavior/Patch"));
-		_availableConfigs.Add(new EngineConfigDescriptor(_skyrimDebugFactory, "Include Debug", "Skyrim 64/Behavior/Patch"));
+		RegisterConfiguration(_skyrimFactory, "Lean", "Skyrim 64/Behavior/Patch");
+		RegisterConfiguration(_skyrimDebugFactory, "Include Debug", "Skyrim 64/Behavior/Patch");
 
 		if (useSkyrimDebug64)
 		{
@@ -53,6 +53,16 @@ public sealed class EngineConfigurationService : IEngineConfigurationService
 			_factorySubject.OnNext(factory);
 		}
 	}
+
+	public void RegisterConfiguration(
+	IEngineConfigurationFactory factory,
+	string displayName,
+	string menuPath)
+	{
+		_availableConfigs.Add(
+			new EngineConfigDescriptor(factory, displayName, menuPath));
+	}
+
 
 	public IReadOnlyCollection<EngineConfigDescriptor> GetAvailableConfigurations() => _availableConfigs;
 }
