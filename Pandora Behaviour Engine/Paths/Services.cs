@@ -18,7 +18,6 @@ public static class Services
 				.AddSingleton<IApplicationPaths, ApplicationPaths>()
 				.AddSingleton<IOutputPaths, OutputPaths>()
 				.AddSingleton<IUserPaths, UserPaths>()
-				.AddSingleton<ISettingsRepository, SettingsRepository>()
 				.AddSingleton<IEnginePathsFacade, EnginePathsFacade>()
 				.AddSingleton<IGameDataValidator, GameDataValidator>();
 		}
