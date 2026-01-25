@@ -11,6 +11,7 @@ using Pandora.Models.Patch.Plugins;
 using Pandora.Mods.Abstractions;
 using Pandora.Paths.Abstractions;
 using Pandora.Settings;
+using Pandora.Utils;
 using System;
 using System.Threading.Tasks;
 
@@ -32,11 +33,23 @@ public sealed class AppBootstrapper(
 
 	public void InitializeSync()
 	{
+
 		appExceptionHandler.Initialize();
 
 		settings.Initialize();
 
 		nlogger.Initialize();
+
+		var modManager = ProcessUtils.Source;
+
+		if (ProcessUtils.IsLaunchedFromModManager)
+		{
+			logger.Info("Launched from Mod Manager: {ModManager}", modManager);
+		} 
+		else
+		{
+			logger.Info("Not launched from a known Mod Manager");
+		}
 
 		orchestrator.Initialize();
 
