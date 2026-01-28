@@ -6,7 +6,7 @@ using ReactiveUI.Avalonia;
 
 namespace Pandora.Views;
 
-public partial class LogBox : ReactiveUserControl<EngineViewModel>
+public partial class LogBox : ReactiveUserControl<LogBoxViewModel>
 {
 	public LogBox()
 	{

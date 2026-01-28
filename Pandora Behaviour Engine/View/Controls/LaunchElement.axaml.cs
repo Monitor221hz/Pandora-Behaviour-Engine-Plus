@@ -5,7 +5,7 @@ using ReactiveUI.Avalonia;
 
 namespace Pandora.Views;
 
-public partial class LaunchElement : ReactiveUserControl<EngineViewModel>
+public partial class LaunchElement : ReactiveUserControl<LaunchElementViewModel>
 {
 	public LaunchElement()
 	{

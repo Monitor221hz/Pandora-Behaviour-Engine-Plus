@@ -7,9 +7,8 @@ using System.IO;
 using NLog;
 using Pandora.API.Patch.IOManagers;
 using Pandora.API.Patch.Skyrim64;
-using Pandora.API.Utils;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
-using Pandora.Utils;
+using Pandora.Paths.Abstractions;
 
 namespace Pandora.Models.Patch.IO.Skyrim64;
 
@@ -17,12 +16,12 @@ public abstract class BasePackFileExporter : IMetaDataExporter<IPackFile>
 {
 	protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-	private IPathResolver _pathResolver;
-	protected FileInfo PreviousOutputFile => _pathResolver.GetPreviousOutputFile();
+	private readonly IEnginePathsFacade _pathContext;
+	protected FileInfo PreviousOutputFile => _pathContext.OutputPreviousFile;
 
-	protected BasePackFileExporter(IPathResolver pathResolver)
+	protected BasePackFileExporter(IEnginePathsFacade pathContext)
 	{
-		_pathResolver = pathResolver;
+		_pathContext = pathContext;
 	}
 
 	public abstract bool Export(IPackFile packFile);
@@ -97,6 +96,6 @@ public abstract class BasePackFileExporter : IMetaDataExporter<IPackFile>
 
 	public DirectoryInfo GetExportDirectory()
 	{
-		return _pathResolver.GetOutputFolder();
+		return _pathContext.OutputFolder;
 	}
 }

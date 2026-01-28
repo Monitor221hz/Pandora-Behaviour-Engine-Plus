@@ -1,6 +1,12 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using NLog;
+using Pandora.API.Patch;
+using Pandora.API.Patch.Skyrim64;
+using Pandora.Models.Patch.Skyrim64.Format.FNIS;
+using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
+using Pandora.Paths.Abstractions;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -9,12 +15,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NLog;
-using Pandora.API.Patch;
-using Pandora.API.Patch.Skyrim64;
-using Pandora.API.Utils;
-using Pandora.Models.Patch.Skyrim64.Format.FNIS;
-using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
 namespace Pandora.Models.Patch.Skyrim64;
 
@@ -38,7 +38,7 @@ public class ProjectManager : IProjectManager
 
 	private const string VANILLA_PROJECTPATHS_FILENAME = "vanilla_projectpaths.txt";
 
-	private readonly IPathResolver _pathResolver;
+	private readonly IEnginePathsFacade _pathContext;
 	private IPackFileCache packFileCache = new PackFileConcurrentCache();
 
 	private readonly IFNISParser _fnisParser;
@@ -47,10 +47,10 @@ public class ProjectManager : IProjectManager
 
 	public HashSet<IPackFile> ActivePackFiles { get; private set; } = [];
 
-	public ProjectManager(IPathResolver skyrimPathResolver)
+	public ProjectManager(IEnginePathsFacade skyrimPathResolver)
 	{
-		_pathResolver = skyrimPathResolver;
-		_fnisParser = new FNISParser(_pathResolver, this);
+		_pathContext = skyrimPathResolver;
+		_fnisParser = new FNISParser(_pathContext, this);
 	}
 
 	public void GetExportInfo(StringBuilder builder)
@@ -109,7 +109,7 @@ public class ProjectManager : IProjectManager
 	public void LoadTrackedProjects()
 	{
 		FileInfo projectList = new(
-			Path.Join(_pathResolver.GetTemplateFolder().FullName, VANILLA_PROJECTPATHS_FILENAME)
+			Path.Join(_pathContext.TemplateFolder.FullName, VANILLA_PROJECTPATHS_FILENAME)
 		);
 		string? expectedLine = null;
 		List<string> projectPaths = [];
@@ -219,7 +219,7 @@ public class ProjectManager : IProjectManager
 		{
 			var project = Project.Load(
 				new FileInfo(
-					Path.Join(_pathResolver.GetTemplateFolder().FullName, projectFilePath)
+					Path.Join(_pathContext.TemplateFolder.FullName, projectFilePath)
 				),
 				packFileCache
 			);
@@ -240,7 +240,7 @@ public class ProjectManager : IProjectManager
 			var project = new Project(
 				packFileCache.LoadPackFile(
 					new FileInfo(
-						Path.Join(_pathResolver.GetTemplateFolder().FullName, projectFilePath)
+						Path.Join(_pathContext.GameDataFolder.FullName, projectFilePath)
 					)
 				)
 			);
@@ -254,7 +254,7 @@ public class ProjectManager : IProjectManager
 	public bool TryLoadOutputPackFile<T>(IPackFile packFile, [NotNullWhen(true)] out T? outPackFile)
 		where T : class, IPackFile
 	{
-		var fileInfo = packFile.GetOutputHandle(_pathResolver.GetGameDataFolder());
+		var fileInfo = packFile.GetOutputHandle(_pathContext.GameDataFolder);
 		if (!fileInfo.Exists)
 		{
 			outPackFile = default;
@@ -273,7 +273,7 @@ public class ProjectManager : IProjectManager
 	{
 		var fileInfo = new FileInfo(
 			Path.ChangeExtension(
-				(packFile.GetOutputHandle(_pathResolver.GetGameDataFolder())).FullName,
+				(packFile.GetOutputHandle(_pathContext.GameDataFolder)).FullName,
 				extension
 			)
 		);
@@ -490,5 +490,5 @@ public class ProjectManager : IProjectManager
 		return true;
 	}
 
-	public DirectoryInfo GetOutputDirectory() => _pathResolver.GetOutputFolder();
+	public DirectoryInfo GetOutputDirectory() => _pathContext.OutputFolder;
 }

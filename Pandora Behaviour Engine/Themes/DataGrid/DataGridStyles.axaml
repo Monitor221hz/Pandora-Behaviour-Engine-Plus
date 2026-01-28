@@ -36,7 +36,7 @@
   </DataTemplate>
 
   <!-- Add Resources Here -->
-  <ControlTheme x:Key="{x:Type DataGrid}" TargetType="DataGrid" x:DataType="vm:EngineViewModel">
+  <ControlTheme x:Key="{x:Type DataGrid}" TargetType="DataGrid" x:DataType="vm:PatchBoxViewModel">
     <Setter Property="RowBackground" Value="Transparent" />
     <Setter Property="HeadersVisibility" Value="Column" />
     <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />

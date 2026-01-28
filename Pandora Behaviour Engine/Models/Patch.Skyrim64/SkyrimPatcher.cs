@@ -1,20 +1,17 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Pandora.API.Patch;
 using Pandora.API.Patch.IOManagers;
 using Pandora.API.Patch.Skyrim64;
-using Pandora.API.Utils;
-using Pandora.Models.Patch.IO.Skyrim64;
+using Pandora.Models.Patch.Skyrim64.Format.Nemesis;
 using Pandora.Models.Patch.Skyrim64.Format.Pandora;
-using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 using Pandora.Utils;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 using static Pandora.API.Patch.IPatcher;
 
 namespace Pandora.Models.Patch.Skyrim64;
@@ -70,12 +67,12 @@ public class SkyrimPatcher : IPatcher
 
 	private List<IModInfo> activeMods { get; set; } = [];
 
+	private readonly NemesisAssembler _nemesisAssembler;
+	private readonly PandoraAssembler _pandoraAssembler;
+
 	public void SetTarget(List<IModInfo> mods) => activeMods = mods;
 
 	private IMetaDataExporter<IPackFile> exporter;
-
-	public IPatchAssembler NemesisAssembler { get; set; }
-	public PandoraAssembler PandoraAssembler { get; set; }
 
 	public PatcherFlags Flags { get; private set; } = PatcherFlags.None;
 
@@ -84,14 +81,11 @@ public class SkyrimPatcher : IPatcher
 	public string GetVersionString() => AppInfo.Version;
 
 	public SkyrimPatcher(
-		IPathResolver pathResolver,
-		IMetaDataExporter<IPackFile> manager,
-		IPatchAssembler nemesisAssembler
-	)
+		NemesisAssembler nemesisAssembler,
+		PandoraAssembler pandoraAssembler)
 	{
-		exporter = manager;
-		NemesisAssembler = nemesisAssembler;
-		PandoraAssembler = new PandoraAssembler(pathResolver, manager, NemesisAssembler);
+		_nemesisAssembler = nemesisAssembler;
+		_pandoraAssembler = pandoraAssembler;
 	}
 
 	public string GetPostRunMessages()
@@ -106,7 +100,7 @@ public class SkyrimPatcher : IPatcher
 			logger.Info(modLine);
 		}
 
-		NemesisAssembler.GetPostMessages(logBuilder);
+		_nemesisAssembler.GetPostMessages(logBuilder);
 
 		return logBuilder.ToString();
 	}
@@ -134,7 +128,7 @@ public class SkyrimPatcher : IPatcher
 
 	public async Task<bool> RunAsync()
 	{
-		return await NemesisAssembler.ApplyPatchesAsync();
+		return await _nemesisAssembler.ApplyPatchesAsync();
 	}
 
 	public async Task<bool> UpdateAsync()
@@ -150,10 +144,10 @@ public class SkyrimPatcher : IPatcher
 					switch (mod.Format)
 					{
 						case IModInfo.ModFormat.Nemesis:
-							NemesisAssembler.AssemblePatch(mod);
+							_nemesisAssembler.AssemblePatch(mod);
 							break;
 						case IModInfo.ModFormat.Pandora:
-							PandoraAssembler.AssemblePatch(mod);
+							_pandoraAssembler.AssemblePatch(mod);
 							break;
 						default:
 							break;
@@ -176,7 +170,7 @@ public class SkyrimPatcher : IPatcher
 
 	public async Task PreloadAsync()
 	{
-		await NemesisAssembler.LoadResourcesAsync();
+		await _nemesisAssembler.LoadResourcesAsync();
 	}
 
 	public string GetPostUpdateMessages()

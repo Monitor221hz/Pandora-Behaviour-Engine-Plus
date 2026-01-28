@@ -1,88 +1,53 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using System;
-using System.Collections.ObjectModel;
-using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.VisualTree;
-using Pandora.Utils;
+using Avalonia.Xaml.Interactions.DragAndDrop;
+using Pandora.Mods.Extensions;
 using Pandora.ViewModels;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Pandora.Behaviors;
 
 public sealed class ModsDataGridDropHandler : BaseDataGridDropHandler<ModInfoViewModel>
 {
-	protected override ModInfoViewModel MakeCopy(
-		ObservableCollection<ModInfoViewModel> parentCollection,
-		ModInfoViewModel dragItem
-	) => throw new NotImplementedException();
+	protected override ModInfoViewModel MakeCopy(ObservableCollection<ModInfoViewModel> parentCollection, ModInfoViewModel item)
+		=> throw new System.NotImplementedException();
 
-	public ModsDataGridDropHandler()
-		: base((mod, priority) => mod.Priority = priority) { }
-
-	protected override bool Validate(
-		DataGrid dg,
-		DragEventArgs e,
-		object? sourceContext,
-		object? targetContext,
-		bool bExecute
-	)
+	protected override bool Validate(DataGrid dg, DragEventArgs e, object? sourceContext, object? targetContext, bool execute)
 	{
-		if (
-			sourceContext is not ModInfoViewModel sourceItem
-			|| targetContext is not EngineViewModel vm
-			|| dg.GetVisualAt(e.GetPosition(dg)) is not Control targetControl
-			|| targetControl.DataContext is not ModInfoViewModel targetItem
-		)
+		if (sourceContext is not ModInfoViewModel sourceItem
+		 || targetContext is not PatchBoxViewModel vm
+		 || dg.GetVisualAt(e.GetPosition(dg)) is not Control targetControl
+		 || targetControl.DataContext is not ModInfoViewModel targetItem)
 		{
 			return false;
 		}
 
-		if (ModUtils.IsPandoraMod(sourceItem) || ModUtils.IsPandoraMod(targetItem))
+		if (sourceItem.IsPandora)
 			return false;
 
-		var items = vm.SourceMods;
+		if (!execute)
+			return true;
 
-		return RunDropAction(dg, e, bExecute, sourceItem, targetItem, items);
-	}
+		var proxyCollection = new ObservableCollection<ModInfoViewModel>(vm.ModViewModels);
 
-	public void MoveUp(DataGrid grid, EngineViewModel vm)
-	{
-		if (grid.SelectedItem is not ModInfoViewModel selected || ModUtils.IsPandoraMod(selected))
-			return;
+		bool result = RunDropAction(dg, e, true, sourceItem, targetItem, proxyCollection);
 
-		var items = vm.SourceMods;
-		var currentOrder = items.OrderBy(m => m.Priority).ToList();
-		int idx = currentOrder.IndexOf(selected);
+		if (result)
+		{
+			var lastItem = vm.ModViewModels.Last();
+			if (proxyCollection.Last() != lastItem)
+			{
+				return false;
+			}
 
-		if (idx <= 0)
-			return;
+			proxyCollection.RecalculatePriorities();
+		}
 
-		currentOrder.RemoveAt(idx);
-		currentOrder.Insert(idx - 1, selected);
-
-		AssignPriorities(currentOrder);
-		grid.SelectedItem = selected;
-	}
-
-	public void MoveDown(DataGrid grid, EngineViewModel vm)
-	{
-		if (grid.SelectedItem is not ModInfoViewModel selected || ModUtils.IsPandoraMod(selected))
-			return;
-
-		var items = vm.SourceMods;
-		var currentOrder = items.OrderBy(m => m.Priority).ToList();
-		int idx = currentOrder.IndexOf(selected);
-
-		if (idx < 0 || idx >= currentOrder.Count - 2) // -2, Pandora base latest
-			return;
-
-		currentOrder.RemoveAt(idx);
-		currentOrder.Insert(idx + 1, selected);
-
-		AssignPriorities(currentOrder);
-		grid.SelectedItem = selected;
+		return result;
 	}
 }

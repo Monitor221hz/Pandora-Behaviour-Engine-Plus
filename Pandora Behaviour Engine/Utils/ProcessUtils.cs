@@ -8,7 +8,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
-using Pandora.API.ModManager;
 using static Vanara.PInvoke.NtDll;
 
 namespace Pandora.Utils;
@@ -17,6 +16,9 @@ public static class ProcessUtils
 {
 	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 	private const int InvalidProcessId = -1;
+
+	public static bool IsLaunchedFromModManager =>
+		_parentProcessInfo.Value.Manager != ModManager.None;
 
 	public static ModManager Source => _parentProcessInfo.Value.Manager;
 

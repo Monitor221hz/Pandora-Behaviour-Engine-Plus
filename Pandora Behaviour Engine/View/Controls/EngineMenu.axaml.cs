@@ -11,7 +11,7 @@ using ReactiveUI.Avalonia;
 
 namespace Pandora.Views;
 
-public partial class EngineMenu : ReactiveUserControl<EngineViewModel>
+public partial class EngineMenu : ReactiveUserControl<EngineMenuViewModel>
 {
 	public EngineMenu()
 	{

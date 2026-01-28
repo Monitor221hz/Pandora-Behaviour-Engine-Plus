@@ -10,15 +10,12 @@
     <ApplicationIcon>Assets\pandora.ico</ApplicationIcon>
     <AssemblyName>Pandora Behaviour Engine+</AssemblyName>
     <GenerateAssemblyInformationalVersionAttribute>true</GenerateAssemblyInformationalVersionAttribute>
+		<SatelliteResourceLanguages>none</SatelliteResourceLanguages>
     <CETCompat>false</CETCompat>
   </PropertyGroup>
 
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
-    <AvaloniaXaml Remove="Data\Skyrim64\**" />
-    <Compile Remove="Data\Skyrim64\**" />
-    <EmbeddedResource Remove="Data\Skyrim64\**" />
-    <None Remove="Data\Skyrim64\**" />
     <Content Include="Assets\pandora.ico" />
   </ItemGroup>
 
@@ -35,6 +32,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.1" />
     <PackageReference Include="ReactiveUI.Avalonia" Version="11.3.8" />
     <PackageReference Include="System.CommandLine" Version="2.0.1" />
+    <PackageReference Include="System.Interactive.Async" Version="7.0.0" />
     <PackageReference Include="Testably.Abstractions" Version="10.0.0" />
     <PackageReference Include="Vanara.PInvoke.NtDll" Version="4.2.1" />
     <PackageReference Include="System.Management" Version="10.0.1" />
@@ -49,6 +47,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.1" />
+    <PackageReference Include="Xaml.Behaviors.Interactions.DragAndDrop.DataGrid" Version="11.3.9.3" />
   </ItemGroup>
 
   <ItemGroup>

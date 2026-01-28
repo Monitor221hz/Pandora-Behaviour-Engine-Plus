@@ -9,7 +9,7 @@ using ReactiveUI.Avalonia;
 
 namespace Pandora.Views;
 
-public partial class PatchBox : ReactiveUserControl<EngineViewModel>
+public partial class PatchBox : ReactiveUserControl<PatchBoxViewModel>
 {
 	public PatchBox()
 	{

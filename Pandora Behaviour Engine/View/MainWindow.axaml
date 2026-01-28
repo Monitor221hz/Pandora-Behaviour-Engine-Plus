@@ -22,7 +22,7 @@
       <RowDefinition Height="Auto" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
-    <vws:EngineMenu Grid.Row="0" DataContext="{Binding EngineVM}" Margin="10 0 0 0" />
+    <vws:EngineMenu Grid.Row="0" DataContext="{Binding EngineMenuVM}" Margin="10 0 0 0" />
     <vws:EngineView Grid.Row="1" DataContext="{Binding EngineVM}" VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" />
   </Grid>
 </Window>

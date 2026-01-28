@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -27,7 +28,7 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 	public static readonly string ROOT_CONTAINER_INSERT_PATH = "__data__/top";
 
 	private static readonly string TemplateRootPath = Path.Combine(
-		BehaviourEngine.AssemblyDirectory.FullName,
+		Path.GetDirectoryName(Process.GetCurrentProcess().MainModule?.FileName)!,
 		"Pandora_Engine",
 		"Skyrim",
 		"Template"
@@ -54,7 +55,7 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 
 	public static bool DebugFiles { get; set; } = false;
 
-	public IPackFileEditor Editor { get; private set; } = new PackFileEditor();
+	//public IPackFileEditor Editor { get; private set; } = new PackFileEditor();
 
 	public IPackFileDispatcher Dispatcher { get; private set; } = new PackFileDispatcher();
 

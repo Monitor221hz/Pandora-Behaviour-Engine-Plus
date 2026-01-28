@@ -8,51 +8,52 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Pandora.ViewModels"
+						 xmlns:vmconf="using:Pandora.Configuration.ViewModels"
              mc:Ignorable="d" d:DesignWidth="500"
              x:Class="Pandora.Views.EngineMenu"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
-             x:DataType="vm:EngineViewModel">
+             x:DataType="vm:EngineMenuViewModel">
   <Grid Name="TitleBarHost" ColumnDefinitions="Auto,Auto,*,Auto,Auto" Background="Transparent">
     <ui:IconSourceElement Name="WindowIcon"
                           IconSource="{StaticResource IconPandora}"
                           Width="22" Height="22"
                           Margin="0 -2 0 0" />
-    <Menu MinWidth="110" FontSize="13" Grid.Column="1" IsEnabled="{Binding !EngineRunning}">
-	  <MenuItem Header="About" Command="{Binding ShowAboutDialogCommand}" />
-      <MenuItem Header="Menu" Classes="SubItems" ItemsSource="{Binding EngineConfigurationViewModels}">
-        <MenuItem.ItemTemplate>
-          <TreeDataTemplate ItemsSource="{Binding NestedViewModels}" x:DataType="vm:IEngineConfigurationViewModel">
-            <TextBlock Text="{Binding Name}" />
-          </TreeDataTemplate>
-        </MenuItem.ItemTemplate>
-        <MenuItem.Styles>
-          <Style Selector="MenuItem.SubItems MenuItem" x:DataType="vm:IEngineConfigurationViewModel">
-            <Setter Property="ToggleType" Value="Radio" />
-			      <Setter Property="Header" Value="{Binding Name}" />
-			      <Setter Property="Command" Value="{Binding SetCommand}" />
-            <Setter Property="CommandParameter" Value="{Binding}" />
-          </Style>
-        </MenuItem.Styles>
-      </MenuItem>
-	  <MenuItem Header ="Paths">
-	    <MenuItem Header="Game" Command="{Binding PickGameDirectoryCommand}" />
-		<MenuItem Header="Output" Command="{Binding PickOutputDirectoryCommand}" />
-	  </MenuItem>
-	</Menu>
+		<Menu MinWidth="110" FontSize="13" Grid.Column="1" IsEnabled="{Binding !State.IsEngineRunning}">
+			<MenuItem Header="About" Command="{Binding ShowAboutDialogCommand}" />
+
+			<MenuItem Header="Menu" ItemsSource="{Binding EngineConfigurationViewModels}">
+				<MenuItem.Styles>
+					<Style Selector="MenuItem" x:DataType="vmconf:IEngineConfigurationViewModel">
+						<Setter Property="Header" Value="{Binding Name}" />
+						<Setter Property="ItemsSource" Value="{Binding Children}" />
+
+						<Setter Property="Command" Value="{Binding SelectCommand}" />
+
+						<Setter Property="ToggleType" Value="Radio" />
+						<Setter Property="IsChecked" Value="{Binding IsChecked}" />
+					</Style>
+				</MenuItem.Styles>
+			</MenuItem>
+
+			<MenuItem Header="Paths">
+				<MenuItem Header="Game" Command="{Binding PickGameDirectoryCommand}" />
+				<MenuItem Header="Output" Command="{Binding PickOutputDirectoryCommand}" />
+			</MenuItem>
+		</Menu>
     <Border Grid.Column="2" VerticalAlignment="Center">
       <AutoCompleteBox x:Name="searchTextBox"
                        Classes="SampleApp"
                        MaxWidth="280"
                        FontSize="13"
-                       Text="{Binding SearchTerm}"
+                       Text="{Binding State.SearchTerm}"
                        Watermark="Search" 
-                       IsEnabled="{Binding !EngineRunning}" />
+                       IsEnabled="{Binding !State.IsEngineRunning}" />
     </Border>
     <ToggleButton Name="ThemeToggle" 
                   Grid.Column="3" 
                   Height="30"
                   IsThreeState="False"
-                  IsChecked="{Binding SettingsApp.ThemeToggleState}" 
+                  IsChecked="{Binding Settings.ThemeToggleState}" 
                   VerticalAlignment="Center"
                   Theme="{StaticResource TransparentButton}">
       <Interaction.Behaviors>

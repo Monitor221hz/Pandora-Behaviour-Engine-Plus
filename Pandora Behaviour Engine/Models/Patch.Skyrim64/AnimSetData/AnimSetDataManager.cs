@@ -6,8 +6,8 @@ using System.Collections.Generic;
 using System.IO;
 using NLog;
 using Pandora.API.Patch.Skyrim64.AnimSetData;
-using Pandora.API.Utils;
 using Pandora.Models.Extensions;
+using Pandora.Paths.Abstractions;
 
 namespace Pandora.Models.Patch.Skyrim64.AnimSetData;
 
@@ -18,7 +18,7 @@ public class AnimSetDataManager : IAnimSetDataManager
 	private const string ANIMSETDATA_FILENAME = "animationsetdatasinglefile.txt";
 	private const string VANILLA_HKXPATHS_FILENAME = "vanilla_hkxpaths.txt";
 
-	private readonly IPathResolver _pathResolver;
+	private readonly IEnginePathsFacade _pathContext;
 
 	public FileInfo TemplateAnimSetDataSingleFile { get; }
 	public FileInfo OutputAnimSetDataSingleFile { get; }
@@ -34,15 +34,15 @@ public class AnimSetDataManager : IAnimSetDataManager
 
 	public Dictionary<string, IProjectAnimSetData> AnimSetDataMap { get; private set; } = [];
 
-	public AnimSetDataManager(IPathResolver pathResolver)
+	public AnimSetDataManager(IEnginePathsFacade pathContext)
 	{
-		_pathResolver = pathResolver;
+		_pathContext = pathContext;
 
 		_vanillaHkxFiles = new FileInfo(
-			Path.Join(pathResolver.GetTemplateFolder().FullName, VANILLA_HKXPATHS_FILENAME)
+			Path.Join(pathContext.TemplateFolder.FullName, VANILLA_HKXPATHS_FILENAME)
 		);
 		TemplateAnimSetDataSingleFile = new(
-			Path.Join(_pathResolver.GetTemplateFolder().FullName, ANIMSETDATA_FILENAME)
+			Path.Join(_pathContext.TemplateFolder.FullName, ANIMSETDATA_FILENAME)
 		);
 	}
 
@@ -116,7 +116,7 @@ public class AnimSetDataManager : IAnimSetDataManager
 		try
 		{
 			var outputAnimSetDataSingleFile = new FileInfo(
-				Path.Join(_pathResolver.GetTemplateFolder().FullName, ANIMSETDATA_FILENAME)
+				Path.Join(_pathContext.TemplateFolder.FullName, ANIMSETDATA_FILENAME)
 			);
 			if (
 				outputAnimSetDataSingleFile.Directory != null

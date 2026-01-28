@@ -1,21 +1,17 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using System.Collections.Generic;
-using System.IO;
-using System.Xml.Linq;
 using Pandora.API.Patch;
 using Pandora.API.Patch.IOManagers;
 using Pandora.API.Patch.Skyrim64;
 using Pandora.API.Patch.Skyrim64.AnimData;
 using Pandora.API.Patch.Skyrim64.AnimSetData;
-using Pandora.API.Utils;
-using Pandora.Models.Patch.IO.Skyrim64;
-using Pandora.Models.Patch.Skyrim64.AnimData;
 using Pandora.Models.Patch.Skyrim64.AnimSetData;
 using Pandora.Models.Patch.Skyrim64.Hkx.Changes;
-using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
-using Pandora.Utils;
+using Pandora.Paths.Abstractions;
+using System.Collections.Generic;
+using System.IO;
+using System.Xml.Linq;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.Pandora;
 
@@ -23,16 +19,8 @@ public class PandoraAssembler
 {
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-	private readonly DirectoryInfo templateFolder = new(
-		Path.Join(
-			BehaviourEngine.AssemblyDirectory.FullName,
-			"Pandora_Engine",
-			"Skyrim",
-			"Template"
-		)
-	);
 	private readonly PandoraNativePatchManager nativeManager = new();
-	private readonly IPathResolver _pathResolver;
+	private readonly IEnginePathsFacade _pathContext;
 	private readonly IMetaDataExporter<IPackFile> _packFileExporter;
 
 	public IProjectManager ProjectManager { get; private set; }
@@ -40,47 +28,33 @@ public class PandoraAssembler
 	public IAnimSetDataManager AnimSetDataManager { get; private set; }
 
 	public PandoraAssembler(
-		IPathResolver pathResolver,
+		IEnginePathsFacade pathContext,
 		IMetaDataExporter<IPackFile> exporter,
 		IProjectManager projectManager,
 		IAnimDataManager animDataManager,
 		IAnimSetDataManager animSetDataManager
 	)
 	{
-		_pathResolver = pathResolver;
+		_pathContext = pathContext;
 		_packFileExporter = exporter;
 		ProjectManager = projectManager;
 		AnimSetDataManager = animSetDataManager;
 		AnimDataManager = animDataManager;
 	}
 
-	public PandoraAssembler(
-		IPathResolver pathResolver,
-		IMetaDataExporter<IPackFile> exporter,
-		IPatchAssembler nemesisAssembler
-	)
-	{
-		_pathResolver = pathResolver;
-		_packFileExporter = exporter;
-		ProjectManager = nemesisAssembler.ProjectManager;
-		AnimSetDataManager = nemesisAssembler.AnimSetDataManager;
-		AnimDataManager = nemesisAssembler.AnimDataManager;
-	}
+	//public PandoraAssembler(
+	//	IEnginePathContext pathContext,
+	//	IMetaDataExporter<IPackFile> exporter,
+	//	IPatchAssembler nemesisAssembler
+	//)
+	//{
+	//	_pathContext = pathContext;
+	//	_packFileExporter = exporter;
+	//	ProjectManager = nemesisAssembler.ProjectManager;
+	//	AnimSetDataManager = nemesisAssembler.AnimSetDataManager;
+	//	AnimDataManager = nemesisAssembler.AnimDataManager;
+	//}
 
-	public PandoraAssembler(
-		IPathResolver pathResolver,
-		IMetaDataExporter<IPackFile> exporter,
-		IProjectManager projManager,
-		IAnimSetDataManager animSDManager,
-		IAnimDataManager animDManager
-	)
-	{
-		_pathResolver = pathResolver;
-		_packFileExporter = exporter;
-		ProjectManager = projManager;
-		AnimSetDataManager = animSDManager;
-		AnimDataManager = animDManager;
-	}
 
 	public bool AssemblePackFilePatch(FileInfo file, IModInfo modInfo)
 	{
