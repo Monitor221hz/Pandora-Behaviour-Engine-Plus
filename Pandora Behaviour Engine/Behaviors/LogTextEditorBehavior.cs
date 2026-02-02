@@ -49,6 +49,8 @@ public class LogTextEditorBehavior : Behavior<TextEditor>
 
 		if (AssociatedObject is null || LogSource is null) return;
 
+		AssociatedObject.Document.Text = string.Empty;
+
 		_subscription = LogSource
 			.ObserveOn(RxApp.MainThreadScheduler)
 			.Subscribe(evt =>

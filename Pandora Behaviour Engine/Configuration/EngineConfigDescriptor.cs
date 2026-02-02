@@ -8,5 +8,5 @@ namespace Pandora.Configuration;
 public record EngineConfigDescriptor(
     IEngineConfigurationFactory Factory,
     string Name,
-    string MenuPath
+    string? MenuPath = null
 );

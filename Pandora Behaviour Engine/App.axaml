@@ -21,12 +21,13 @@
       <ResourceDictionary.MergedDictionaries>
         <ResourceInclude Source="avares://Pandora Behaviour Engine+/Assets/Icons.axaml" />
       </ResourceDictionary.MergedDictionaries>
+			<!--<SolidColorBrush x:Key="NavigationViewContentBackground" Color="Transparent" />-->
 
       <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key='Light'>
           <LinearGradientBrush x:Key="BackgroundVerticalGradient" StartPoint="0%,0%" EndPoint="0%,100%">
             <GradientStop Color="#FFEBE0FE" Offset="0.0" />
-            <GradientStop Color="#FFC299FF" Offset="1.0" />
+            <GradientStop Color="#FFAF79FF" Offset="1.0" />
           </LinearGradientBrush>
           <SolidColorBrush x:Key="ControlContent" Color="#FFFFFFFF" Opacity="0.35" />
         </ResourceDictionary>
@@ -37,7 +38,7 @@
           </LinearGradientBrush>
           <SolidColorBrush x:Key="DataGridDisabledVisualElementBackground" Color="#8C000000" />
           <SolidColorBrush x:Key="ControlContent" Color="#FF000000" Opacity="0.35" />
-        </ResourceDictionary>
+			</ResourceDictionary>
       </ResourceDictionary.ThemeDictionaries>
 
     </ResourceDictionary>

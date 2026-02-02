@@ -42,8 +42,9 @@ public partial class App : Application
 			bootstrapper.InitializeSync();
 
 			var mainWindow = Services.GetRequiredService<MainWindow>();
-			mainWindow.DataContext = Services.GetRequiredService<MainWindowViewModel>();
+			var mainVm = Services.GetRequiredService<MainWindowViewModel>();
 
+			mainWindow.DataContext = mainVm;
 			desktop.MainWindow = mainWindow;
 
 			desktop.Exit += (_, _) =>

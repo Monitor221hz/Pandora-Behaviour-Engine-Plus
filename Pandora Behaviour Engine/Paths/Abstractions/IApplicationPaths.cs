@@ -8,6 +8,11 @@ namespace Pandora.Paths.Abstractions;
 public interface IApplicationPaths
 {
 	/// <summary>
+	/// Settings store directory
+	/// </summary>
+	DirectoryInfo AppDataDirectory {  get; }
+
+	/// <summary>
 	/// Gets the real file system path to the folder containing the running executable.
 	///
 	/// Unlike typical assembly path methods, this returns the actual disk path even when
