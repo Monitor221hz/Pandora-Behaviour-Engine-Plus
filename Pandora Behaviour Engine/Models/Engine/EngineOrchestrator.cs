@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-﻿using Pandora.Configuration;
+using Pandora.Configuration;
 using Pandora.Mods.Abstractions;
 using Pandora.Paths.Abstractions;
 using Pandora.Platform.Windows;
 using Pandora.ViewModels;
 using System;
+using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using System.Reactive.Linq;
@@ -42,6 +43,7 @@ public sealed class EngineOrchestrator(
 
 		engine.StateChanged.Subscribe(s =>
 		{
+			state.EngineState = s;
 			state.IsEngineRunning = s == EngineState.Running;
 			state.IsPreloading = s == EngineState.Preloading;
 		}).DisposeWith(_disposables);

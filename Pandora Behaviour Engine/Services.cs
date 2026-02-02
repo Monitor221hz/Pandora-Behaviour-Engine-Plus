@@ -12,6 +12,7 @@ using Pandora.Mods;
 using Pandora.Paths;
 using Pandora.Platform;
 using Pandora.Settings;
+using Pandora.Themes;
 using Pandora.ViewModels;
 using Pandora.Views;
 using System;
@@ -26,7 +27,6 @@ public static class Services
 		{
 			return serviceCollection
 				.AddAppBootstrapper()
-				.AddCoreServices()
 				.AddSettings()
 				.AddLoggingServices()
 				.AddCLIServices()
@@ -36,7 +36,11 @@ public static class Services
 				.AddModServices()
 				.AddConfigurationServices()
 				.AddPlatformServices()
-				.AddViewModels();
+				.AddPages()
+				.AddViewModels()
+				.AddUtilViewModels()
+				.AddCoreServices()
+				.AddTheme();
 		}
 
 		private IServiceCollection AddAppBootstrapper()

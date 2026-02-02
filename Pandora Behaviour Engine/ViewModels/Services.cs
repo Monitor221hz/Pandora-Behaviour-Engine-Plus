@@ -9,19 +9,11 @@ public static class Services
 {
 	extension(IServiceCollection serviceCollection)
 	{
-		public IServiceCollection AddViewModels()
+		public IServiceCollection AddUtilViewModels()
 		{
 			return serviceCollection
 				.AddSingleton<IEngineSharedState, EngineSharedState>()
-				.AddTransient<EngineMenuViewModel>()
-				.AddTransient<PatchBoxViewModel>()
-				.AddTransient<LogBoxViewModel>()
-				.AddTransient<LaunchElementViewModel>()
-				.AddTransient<SettingsViewModel>()
-				.AddTransient<DataGridOptionsViewModel>()
-				.AddTransient<AboutDialogViewModel>()
-				.AddTransient<EngineViewModel>()
-				.AddTransient<MainWindowViewModel>();
+				.AddTransient<DataGridOptionsViewModel>();
 		}
 	}
 }

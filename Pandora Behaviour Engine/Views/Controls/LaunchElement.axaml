@@ -1,0 +1,31 @@
+<!--
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+  ~ Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
+-->
+
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Pandora.ViewModels"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="54"
+             x:Class="Pandora.Views.LaunchElement"
+						 x:DataType="vm:LaunchElementViewModel">
+  <Button Command="{Binding LaunchEngineCommand}"
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Center"
+					Height="34"
+					Width="128"
+					Padding="4"
+          Classes="accent">
+		<Grid >
+      <Viewbox Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" >
+        <Grid>
+          <ui:ProgressRing HorizontalAlignment="Left" IsActive="{Binding State.IsEngineRunning}" IsVisible="{Binding State.IsEngineRunning}" />
+          <PathIcon HorizontalAlignment="Right" Data="{StaticResource IconPlay}" Margin="0 2" Foreground="{DynamicResource SolidBackgroundFillColorQuarternary}" IsVisible="{Binding !State.IsEngineRunning}" />
+        </Grid>
+      </Viewbox>
+		</Grid>
+  </Button>
+</UserControl>

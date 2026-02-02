@@ -43,8 +43,8 @@ public sealed class EngineConfigurationService : IEngineConfigurationService
 	{
 		_availableConfigs.Clear();
 
-		RegisterConfiguration(_skyrimFactory, "Lean", "Skyrim 64/Behavior/Patch");
-		RegisterConfiguration(_skyrimDebugFactory, "Include Debug", "Skyrim 64/Behavior/Patch");
+		RegisterConfiguration(_skyrimFactory, "Lean");
+		RegisterConfiguration(_skyrimDebugFactory, "Include Debug");
 
 		foreach (var plugin in _pluginManager.EngineConfigurationPlugins)
 		{
@@ -74,10 +74,18 @@ public sealed class EngineConfigurationService : IEngineConfigurationService
 	public void RegisterConfiguration(
 	IEngineConfigurationFactory factory,
 	string displayName,
-	string menuPath)
+	string? menuPath)
 	{
 		_availableConfigs.Add(
 			new EngineConfigDescriptor(factory, displayName, menuPath));
+	}
+
+	public void RegisterConfiguration(
+	IEngineConfigurationFactory factory,
+	string displayName)
+	{
+		_availableConfigs.Add(
+			new EngineConfigDescriptor(factory, displayName));
 	}
 
 

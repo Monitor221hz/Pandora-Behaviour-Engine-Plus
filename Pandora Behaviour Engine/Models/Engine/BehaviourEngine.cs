@@ -134,11 +134,18 @@ public sealed class BehaviourEngine : IBehaviourEngine
 		await _lock.WaitAsync();
 		try
 		{
-			if (_state.Current == EngineState.Running) return;
+			var finalState = _state.Current;
 
-			await ExecutePreloadInternalAsync();
+			if (finalState is not (EngineState.Success or EngineState.Error))
+				return;
+
+			_state.Transition(EngineState.Preloading);
+
+			await _runner.PreloadAsync();
+
+			_state.Transition(finalState);
 		}
-		catch (Exception)
+		catch
 		{
 			_state.Transition(EngineState.Error);
 		}

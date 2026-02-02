@@ -9,23 +9,18 @@ namespace Pandora.Platform.Windows;
 
 public sealed class WindowStateService(MainWindow window) : IWindowStateService
 {
-	private readonly MainWindow _mainWindow = window;
-
-	public void SetVisualState(WindowVisualState state)
+	public void Initialize()
 	{
-		_mainWindow.SetVisualState(state);
+		var savedHeight = Properties.GUISettings.Default.WindowHeight;
+		var savedWidth = Properties.GUISettings.Default.WindowWidth;
+
+		if (savedHeight > 100) window.Height = savedHeight;
+		if (savedWidth > 100) window.Width = savedWidth;
 	}
 
-	public void FlashWindow()
-	{
-		_mainWindow.FlashUntilFocused();
-	}
+	public void SetVisualState(WindowVisualState state) => window.SetVisualState(state);
+	public void FlashWindow() => window.FlashUntilFocused();
 
-	public void Shutdown()
-	{
-		if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-		{
-			desktop.Shutdown();
-		}
-	}
+	public void Shutdown() =>
+		(Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Shutdown();
 }

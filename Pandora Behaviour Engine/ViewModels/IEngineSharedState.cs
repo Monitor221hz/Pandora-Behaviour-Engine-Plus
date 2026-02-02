@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-﻿namespace Pandora.ViewModels;
+using Pandora.Models.Engine;
+
+namespace Pandora.ViewModels;
 
 public interface IEngineSharedState
 {
@@ -11,4 +13,6 @@ public interface IEngineSharedState
 	string OutputFolderUri { get; }
 	string OutputDirectoryMessage { get; }
 	bool IsOutputFolderCustomSet { get; }
+
+	EngineState EngineState { get; set; }
 }

@@ -1,0 +1,78 @@
+<!--
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+  ~ Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
+-->
+
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			       xmlns:vm="using:Pandora.ViewModels"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:b="using:Pandora.Behaviors"
+						 xmlns:ae="using:AvaloniaEdit"
+						 xmlns:vws="using:Pandora.Views"
+             mc:Ignorable="d" d:DesignWidth="700" d:DesignHeight="450"
+             x:Class="Pandora.Views.LogBox"
+			       x:DataType="vm:LogBoxViewModel">
+	<Grid>
+		<Expander x:Name="LogExpander" Background="Transparent" IsExpanded="True" Theme="{StaticResource ExpandbleInfoBar}" ExpandDirection="Up" Padding="0" VerticalAlignment="Stretch">
+			<Expander.Header>
+				<ui:InfoBar Severity="{Binding InfoSeverity}"
+										Title="{Binding InfoTitle}"
+										Message="{Binding InfoMessage}"
+										IsOpen="True"
+										IsClosable="False">
+					<ui:InfoBar.ActionButton>
+						<vws:LaunchElement DataContext="{Binding LaunchElementVM}" HorizontalAlignment="Right" Margin="0 0 32 0" />
+					</ui:InfoBar.ActionButton>
+				</ui:InfoBar>
+			</Expander.Header>
+			<Border Background="{DynamicResource ControlFillColorDefault}" Padding="8 8 0 8" CornerRadius="4 0">
+				<Grid>
+					<ae:TextEditor Name="LogEditor"
+												Foreground="{DynamicResource TextFillColorPrimary}"
+												FontFamily="Consolas"
+												FontSize="13"
+												BorderThickness="0"
+												Background="Transparent"
+												ShowLineNumbers="False"
+												IsReadOnly="True"
+												HorizontalScrollBarVisibility="Auto"
+												VerticalScrollBarVisibility="Auto"
+												WordWrap="True">
+						<Interaction.Behaviors>
+							<b:LogTextEditorBehavior LogSource="{Binding LogStream}" />
+						</Interaction.Behaviors>
+					</ae:TextEditor>
+					<StackPanel Orientation="Horizontal" Spacing="4" Margin="8" HorizontalAlignment="Right">
+						<Button Name="OpenOutputFolderButton"
+										IsVisible="True"
+										Padding="4"
+										HorizontalAlignment="Right" VerticalAlignment="Bottom"
+										ToolTip.Tip="Open Output Folder">
+							<ui:SymbolIcon Symbol="Folder" FontSize="20" />
+							<Interaction.Behaviors>
+								<EventTriggerBehavior EventName="Click">
+									<LaunchUriOrFileAction Path="{Binding State.OutputFolderUri}" />
+								</EventTriggerBehavior>
+							</Interaction.Behaviors>
+						</Button>
+						<Button Name="CopyCodeButton"
+										IsVisible="True"
+										Padding="4"
+										HorizontalAlignment="Right" VerticalAlignment="Bottom"
+										ToolTip.Tip="Copy text">
+							<ui:SymbolIcon Symbol="ClipboardCode" FontSize="20" />
+							<Interaction.Behaviors>
+								<EventTriggerBehavior EventName="Click" SourceObject="CopyCodeButton">
+									<SetClipboardTextAction Text="{Binding #LogEditor.Document.Text}" />
+								</EventTriggerBehavior>
+							</Interaction.Behaviors>
+						</Button>
+					</StackPanel>
+				</Grid>
+			</Border>
+		</Expander>
+	</Grid>
+</UserControl>

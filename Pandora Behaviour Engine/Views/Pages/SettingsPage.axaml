@@ -1,0 +1,48 @@
+<!--
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+  ~ Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
+-->
+
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Pandora.ViewModels"
+						 mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="800"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+						 x:Class="Pandora.Views.SettingsPage"
+						 x:DataType="vm:SettingsPageViewModel">
+	<StackPanel Spacing="4" Margin="8">
+		<TextBlock Text="Paths" FontSize="16" FontWeight="Bold" Margin="4" />
+		<ui:SettingsExpander Header="Skyrim Data"
+												 IconSource="{StaticResource IconSkyrim}"
+												 Description="{Binding GameDataPath}">
+			<ui:SettingsExpander.Footer>
+				<Button Content="Change" Command="{Binding PickGameDirectoryCommand}" />
+			</ui:SettingsExpander.Footer>
+		</ui:SettingsExpander>
+		
+		<ui:SettingsExpander Header="Output Folder"
+												 IconSource="Folder"
+												 Description="{Binding OutputPath}">
+			<ui:SettingsExpander.Footer>
+				<Button Content="Change" Command="{Binding PickOutputDirectoryCommand}" />
+			</ui:SettingsExpander.Footer>
+		</ui:SettingsExpander>
+		<TextBlock Text="Theme" FontSize="16" FontWeight="Bold" Margin="4" />
+		<ui:SettingsExpander Header="Application theme" IconSource="DarkTheme">
+			<ui:SettingsExpander.Footer>
+				<ComboBox ItemsSource="{Binding Themes}"
+									Width="120"
+									SelectedItem="{Binding SelectedTheme}"
+									HorizontalAlignment="Stretch">
+					<ComboBox.ItemTemplate>
+						<DataTemplate>
+							<TextBlock Text="{Binding}" />
+						</DataTemplate>
+					</ComboBox.ItemTemplate>
+				</ComboBox>
+			</ui:SettingsExpander.Footer>
+		</ui:SettingsExpander>
+	</StackPanel>
+</UserControl>
