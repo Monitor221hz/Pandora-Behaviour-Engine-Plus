@@ -77,7 +77,6 @@ public partial class EnginePage : ReactiveUserControl<EnginePageViewModel>
 
 		if (Math.Abs(startHeight - targetHeight) < 1) return;
 
-		// Подготовка UI перед анимацией
 		if (isExpanded)
 		{
 			MySplitter.IsVisible = true;
@@ -90,35 +89,27 @@ public partial class EnginePage : ReactiveUserControl<EnginePageViewModel>
 
 		try
 		{
-			// 1. Анимация высоты
-			// Получаем ресурс и обновляем KeyFrames динамическими значениями
 			var heightAnim = (Animation)this.Resources["RowHeightAnimation"]!;
 
-			// Напрямую меняем значения в сеттерах KeyFrame-ов
-			// [0] - Start, [1] - End
 			if (heightAnim.Children[0].Setters[0] is Setter startSetter)
 				startSetter.Value = startHeight;
 
 			if (heightAnim.Children[1].Setters[0] is Setter endSetter)
 				endSetter.Value = targetHeight;
 
-			// Запускаем через обертку RowHeightAnimatable
 			var animatableRow = new RowHeightAnimatable(rowDef);
 			var heightTask = heightAnim.RunAsync(animatableRow, token);
 
-			// 2. Анимация сплиттера
 			var splitterAnimKey = isExpanded ? "SplitterFadeIn" : "SplitterFadeOut";
 			var splitterAnim = (Animation)this.Resources[splitterAnimKey]!;
 
-			// Для SplitterFadeOut можно явно задать текущую прозрачность как старт, 
-			// если анимация прервалась на полпути, но здесь для простоты берем стандарт.
 			var opacityTask = splitterAnim.RunAsync(MySplitter, token);
 
 			await Task.WhenAll(heightTask, opacityTask);
 		}
 		catch (OperationCanceledException)
 		{
-			// Игнорируем отмену
+
 		}
 		finally
 		{
@@ -127,7 +118,6 @@ public partial class EnginePage : ReactiveUserControl<EnginePageViewModel>
 				MySplitter.IsVisible = false;
 			}
 
-			// Убеждаемся, что лейаут корректный в конце
 			UpdateGridLayout(Bounds.Width, isExpanded);
 		}
 	}
@@ -176,7 +166,6 @@ public partial class EnginePage : ReactiveUserControl<EnginePageViewModel>
 	}
 }
 
-// Оставляем хелпер для анимации RowDefinition, так как GridLength нельзя анимировать напрямую в Animation
 public class RowHeightAnimatable(RowDefinition row) : Animatable
 {
 	public static readonly DirectProperty<RowHeightAnimatable, double> HeightProperty =
