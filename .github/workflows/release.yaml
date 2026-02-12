@@ -60,7 +60,7 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
           configuration: ${{ env.PROFILE }}
-          solution-path: "./Pandora+.sln"
+          solution-path: "./Pandora+.slnx"
           output-dir: ${{ steps.set_paths.outputs.output_dir }}
 
       - name: Zip and Release
