@@ -1,0 +1,23 @@
+<!--
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+  ~ Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
+-->
+
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Pandora.ViewModels"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+						 xmlns:vmconf="using:Pandora.Configuration.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="500"
+             x:Class="Pandora.Views.EngineMenu"
+             x:DataType="vm:EngineMenuViewModel">
+  <Grid Name="TitleBarHost" ColumnDefinitions="Auto,*,Auto" Background="Transparent">
+		<StackPanel Grid.Column="0" VerticalAlignment="Center" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 8" Grid.ColumnSpan="3">
+			<Image Width="20" Height="20" Source="{StaticResource PandoraIcon}" Margin="0 0 6 0"/>
+			<TextBlock Text="Pandora Behaviour Engine+" FontSize="13" VerticalAlignment="Center" />
+		</StackPanel>
+  </Grid>
+  
+</UserControl>

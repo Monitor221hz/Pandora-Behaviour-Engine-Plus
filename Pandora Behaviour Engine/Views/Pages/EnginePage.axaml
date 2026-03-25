@@ -1,0 +1,110 @@
+<!--
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+  ~ Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
+-->
+
+<UserControl xmlns="https://github.com/avaloniaui"
+						 xmlns:rxui="http://reactiveui.net"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Pandora.ViewModels"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:vws="using:Pandora.Views"
+						 xmlns:vmconf="using:Pandora.Configuration.ViewModels"
+						 xmlns:local="using:Pandora.Behaviors"
+             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="600"
+             x:Class="Pandora.Views.EnginePage"
+             x:DataType="vm:EnginePageViewModel"
+             x:Name="Root">
+	<UserControl.Resources>
+		<Animation x:Key="RowHeightAnimation"
+							 x:SetterTargetType="vws:RowHeightAnimatable"
+							 Duration="0:0:0.2"
+							 FillMode="Forward">
+			<Animation.Easing>
+				<CubicEaseOut />
+			</Animation.Easing>
+			<KeyFrame Cue="0%">
+				<Setter Property="Height" Value="0.0" />
+			</KeyFrame>
+			<KeyFrame Cue="100%">
+				<Setter Property="Height" Value="0.0" />
+			</KeyFrame>
+		</Animation>
+
+		<Animation x:Key="SplitterFadeIn"
+							 x:SetterTargetType="GridSplitter"
+							 Duration="0:0:0.2"
+							 FillMode="Forward">
+			<KeyFrame Cue="0%">
+				<Setter Property="Opacity" Value="0.0"/>
+			</KeyFrame>
+			<KeyFrame Cue="100%">
+				<Setter Property="Opacity" Value="1.0"/>
+			</KeyFrame>
+		</Animation>
+
+		<Animation x:Key="SplitterFadeOut"
+							 x:SetterTargetType="GridSplitter"
+							 Duration="0:0:0.2"
+							 FillMode="Forward">
+			<KeyFrame Cue="0%">
+				<Setter Property="Opacity" Value="1.0"/>
+			</KeyFrame>
+			<KeyFrame Cue="100%">
+				<Setter Property="Opacity" Value="0.0"/>
+			</KeyFrame>
+		</Animation>
+	</UserControl.Resources>
+  <Grid x:Name="RootGrid">
+    <Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+      <RowDefinition Height="*" MinHeight="100" />
+      <RowDefinition Height="8" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*" MinWidth="200" />
+      <ColumnDefinition Width="Auto" />
+      <ColumnDefinition Width="*" MinWidth="200" />
+    </Grid.ColumnDefinitions>
+		
+		<TextBlock Text="Patcher" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" Margin="12 0 0 0" />
+
+		<DropDownButton Content="Menu" HorizontalAlignment="Right" Grid.Column="2" Margin="6" Background="Transparent" BorderBrush="Transparent">
+			<DropDownButton.Flyout>
+				<MenuFlyout>
+					<MenuItem Header="Config" ItemsSource="{Binding EngineConfigurationViewModels}">
+						<MenuItem.Styles>
+							<Style Selector="MenuItem" x:DataType="vmconf:IEngineConfigurationViewModel">
+								<Setter Property="Header" Value="{Binding Name}" />
+								<Setter Property="ItemsSource" Value="{Binding Children}" />
+
+								<Setter Property="Command" Value="{Binding SelectCommand}" />
+
+								<Setter Property="ToggleType" Value="Radio" />
+								<Setter Property="IsChecked" Value="{Binding IsChecked}" />
+							</Style>
+						</MenuItem.Styles>
+					</MenuItem>
+				</MenuFlyout>
+			</DropDownButton.Flyout>
+		</DropDownButton>
+
+    <vws:PatchBox x:Name="PatchBox" DataContext="{Binding PatchBoxVM}"
+                  Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+                  Margin="0 0 0 0" />
+
+    <GridSplitter x:Name="MySplitter"
+                  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
+                  Classes="innerStyle"
+                  CornerRadius="6"
+                  ResizeDirection="Rows"
+                  Width="90" />
+
+    <vws:LogBox x:Name="LogBox" DataContext="{Binding LogBoxVM}"
+                Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" VerticalAlignment="Stretch"
+                Margin="0 0 0 10" />
+  </Grid>
+</UserControl>

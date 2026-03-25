@@ -1,19 +1,18 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
+// Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
 using System;
 using HKX2E;
 using NLog;
 using Pandora.API.Patch.Skyrim64;
-using Pandora.API.Utils;
-using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
+using Pandora.Paths.Abstractions;
 
 namespace Pandora.Models.Patch.IO.Skyrim64;
 
 public class PackFileExporter : BasePackFileExporter
 {
-	public PackFileExporter(IPathResolver pathResolver)
-		: base(pathResolver) { }
+	public PackFileExporter(IEnginePathsFacade pathContext)
+		: base(pathContext) { }
 
 	public override bool Export(IPackFile packFile)
 	{

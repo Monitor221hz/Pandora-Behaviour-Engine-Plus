@@ -1,6 +1,6 @@
 <!--
   ~ SPDX-License-Identifier: GPL-3.0-or-later
-  ~ Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
+  ~ Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 -->
 
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
@@ -36,7 +36,7 @@
   </DataTemplate>
 
   <!-- Add Resources Here -->
-  <ControlTheme x:Key="{x:Type DataGrid}" TargetType="DataGrid" x:DataType="vm:EngineViewModel">
+  <ControlTheme x:Key="{x:Type DataGrid}" TargetType="DataGrid" x:DataType="vm:PatchBoxViewModel">
     <Setter Property="RowBackground" Value="Transparent" />
     <Setter Property="HeadersVisibility" Value="Column" />
     <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />
