@@ -72,6 +72,15 @@ jobs:
           zip-path: ${{ steps.set_paths.outputs.zip_path }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Upload to NexusMods
+        uses: Nexus-Mods/upload-action@v1.0.0-beta.3
+        with:
+          api_key: ${{ secrets.NEXUSMODS_API_KEY }}
+          file_group_id: ${{ secrets.NEXUSMODS_GROUP_ID }}
+          filename: ${{ steps.set_paths.outputs.zip_path }}
+          display_name: Pandora Behaviour Engine ${{ github.ref_name }}
+          version: ${{ steps.version_step.outputs.fullSemVer }}
+
   publish:
     permissions:
       contents: write # Required for creating releases
