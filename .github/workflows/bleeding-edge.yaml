@@ -1,0 +1,91 @@
+name: bleeding edge nexus upload
+
+on:
+  workflow_run:
+    workflows: ["build & tests"]
+    types:
+      - completed
+    branches:
+      - "main"
+
+env:
+  DOTNET_VERSION: "10.0.x"
+  PROFILE: Release
+  NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
+
+jobs:
+  publish-bleeding-edge:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    permissions:
+      contents: read
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0 # needed for GitVersion
+
+      - name: Setup .NET & Cache Dependencies
+        uses: ./.github/actions/prepare-dotnet
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+          cache-key-suffix: ${{ env.PROFILE }}
+
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v4.1.0
+        with:
+          versionSpec: "6.3.x"
+
+      - name: Determine Version
+        id: version_step
+        uses: gittools/actions/gitversion/execute@v4.1.0
+
+      - name: Set output paths
+        id: set_paths
+        shell: pwsh
+        run: |
+          $rid = 'win-x64'
+          $output_dir = '${{ github.workspace }}/Output.BleedingEdge'
+          $zip_file_name = "Pandora_Behaviour_Engine_bleeding-edge_${rid}_net.zip"
+          $zip_path = "$output_dir/$zip_file_name"
+
+          echo "rid=$rid" >> $env:GITHUB_OUTPUT
+          echo "output_dir=$output_dir" >> $env:GITHUB_OUTPUT
+          echo "zip_path=$zip_path" >> $env:GITHUB_OUTPUT
+
+      - name: Publish Self-Contained
+        shell: pwsh
+        run: |
+          dotnet publish "./Pandora Behaviour Engine/Pandora Behaviour Engine.csproj" `
+            -c ${{ env.PROFILE }} `
+            -r ${{ steps.set_paths.outputs.rid }} `
+            -o "${{ steps.set_paths.outputs.output_dir }}" `
+            --self-contained true `
+            /p:PublishSingleFile=true `
+            /p:IncludeAllContentForSelfExtract=true `
+            /p:Version=${{ steps.version_step.outputs.fullSemVer }} `
+            /p:AssemblyVersion=${{ steps.version_step.outputs.assemblySemVer }} `
+            /p:FileVersion=${{ steps.version_step.outputs.assemblySemFileVer }} `
+            /p:InformationalVersion=${{ steps.version_step.outputs.informationalVersion }} `
+            /p:DebugType=none `
+            /p:DebugSymbols=false
+
+      - name: Create Zip
+        shell: pwsh
+        run: |
+          $outputDir = Resolve-Path '${{ steps.set_paths.outputs.output_dir }}'
+          $zipPath = '${{ steps.set_paths.outputs.zip_path }}'
+
+          Write-Host "Zipping from $outputDir => $zipPath"
+
+          Compress-Archive -Path "$outputDir/*" -DestinationPath "$zipPath"
+
+      - name: Upload to NexusMods
+        uses: Nexus-Mods/upload-action@v1.0.0-beta.3
+        with:
+          api_key: ${{ secrets.NEXUSMODS_API_KEY }}
+          file_group_id: ${{ secrets.NEXUSMODS_GROUP_ID_BLD }}
+          filename: ${{ steps.set_paths.outputs.zip_path }}
+          display_name: Pandora Behaviour Engine bleeding-edge ${{ steps.version_step.outputs.fullSemVer }}
+          version: ${{ steps.version_step.outputs.fullSemVer }}
