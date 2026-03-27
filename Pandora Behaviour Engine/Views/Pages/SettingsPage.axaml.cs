@@ -8,8 +8,8 @@ namespace Pandora.Views;
 
 public partial class SettingsPage : ReactiveUserControl<SettingsPageViewModel>
 {
-    public SettingsPage()
-    {
-        InitializeComponent();
-    }
+	public SettingsPage()
+	{
+		InitializeComponent();
+	}
 }

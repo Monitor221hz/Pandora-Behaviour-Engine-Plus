@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Pandora.Platform.Avalonia;
 using Pandora.Platform.CreationEngine;
 using Pandora.Platform.CreationEngine.Game;
@@ -18,23 +18,21 @@ public static class Services
 		public IServiceCollection AddPlatformServices()
 		{
 			return serviceCollection
-				.AddSingleton<IDiskDialogService>(sp => new DiskDialogService(sp.GetRequiredService<MainWindow>()))
+				.AddSingleton<IDiskDialogService>(sp => new DiskDialogService(
+					sp.GetRequiredService<MainWindow>()
+				))
 				.AddSingleton<IWindowStateService, WindowStateService>()
 				.AddSingleton<IGameDescriptor, SkyrimDescriptor>()
 				.AddTransient<CommandLineGameLocator>()
 				.AddTransient<SteamGameLocator>()
 				.AddTransient<GogGameLocator>()
 				.AddTransient<RegistryGameLocator>()
-				.AddSingleton<IGameLocator>(sp =>
-					new CompositeGameLocator(
-						[
-							sp.GetRequiredService<CommandLineGameLocator>(),
-							sp.GetRequiredService<SteamGameLocator>(),
-							sp.GetRequiredService<GogGameLocator>(),
-							sp.GetRequiredService<RegistryGameLocator>(),
-						]
-					)
-				);
+				.AddSingleton<IGameLocator>(sp => new CompositeGameLocator([
+					sp.GetRequiredService<CommandLineGameLocator>(),
+					sp.GetRequiredService<SteamGameLocator>(),
+					sp.GetRequiredService<GogGameLocator>(),
+					sp.GetRequiredService<RegistryGameLocator>(),
+				]));
 		}
 	}
 }

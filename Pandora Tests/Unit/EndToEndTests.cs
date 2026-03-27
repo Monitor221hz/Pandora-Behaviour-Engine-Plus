@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
 using Microsoft.Extensions.DependencyInjection;
@@ -26,7 +26,7 @@ public sealed class DependencyInjectedCluster : IDisposable
 
         var root = new DirectoryInfo(Environment.CurrentDirectory);
         root.Create();
-        
+
         var gameDataDir = new DirectoryInfo(Path.Combine(root.FullName, "Data"));
         var outputDir = new DirectoryInfo(Path.Combine(root.FullName, "Output"));
 
@@ -52,7 +52,9 @@ public sealed class DependencyInjectedCluster : IDisposable
         appPathsSub.AssemblyDirectory.Returns(assemblyDir);
         appPathsSub.EngineDirectory.Returns(appEngineDir);
         appPathsSub.TemplateDirectory.Returns(templateDir);
-        appPathsSub.PathConfig.Returns(new FileInfo(Path.Combine(appEngineDir.FullName, "Paths.json")));
+        appPathsSub.PathConfig.Returns(
+            new FileInfo(Path.Combine(appEngineDir.FullName, "Paths.json"))
+        );
 
         services.AddSingleton(appPathsSub);
 
@@ -60,8 +62,12 @@ public sealed class DependencyInjectedCluster : IDisposable
 
         outputPathsSub.PandoraEngineDirectory.Returns(pandoraEngineDir);
         outputPathsSub.MeshesDirectory.Returns(meshesDir);
-        outputPathsSub.PreviousOutputFile.Returns(new FileInfo(Path.Combine(pandoraEngineDir.FullName, "PreviousOutput.txt")));
-        outputPathsSub.ActiveModsFile.Returns(new FileInfo(Path.Combine(pandoraEngineDir.FullName, "ActiveMods.json")));
+        outputPathsSub.PreviousOutputFile.Returns(
+            new FileInfo(Path.Combine(pandoraEngineDir.FullName, "PreviousOutput.txt"))
+        );
+        outputPathsSub.ActiveModsFile.Returns(
+            new FileInfo(Path.Combine(pandoraEngineDir.FullName, "ActiveMods.json"))
+        );
 
         services.AddSingleton(outputPathsSub);
 
@@ -96,18 +102,15 @@ public class EndToEndTests : IClassFixture<DependencyInjectedCluster>
         _output.WriteLine($"Output: {userPathContext.Output.FullName}");
 
         var modLoader = _serviceProvider.GetRequiredService<IModLoaderService>();
-        var configurationFactory =
-            _serviceProvider.GetRequiredService<
-                IEngineConfigurationFactory<SkyrimDebugConfiguration>
-            >();
+        var configurationFactory = _serviceProvider.GetRequiredService<
+            IEngineConfigurationFactory<SkyrimDebugConfiguration>
+        >();
 
         // Loading mods
-        var mods = await modLoader.LoadModsAsync(
-            [
-                appPathContext.AssemblyDirectory,
-                userPathContext.GameData
-            ]
-        );
+        var mods = await modLoader.LoadModsAsync([
+            appPathContext.AssemblyDirectory,
+            userPathContext.GameData,
+        ]);
         _output.WriteLine($"Loaded {mods.Count} mods");
         Assert.NotEmpty(mods);
 

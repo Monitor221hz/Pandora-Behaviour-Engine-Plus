@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-﻿using Microsoft.Extensions.DependencyInjection;
+using System;
+using Microsoft.Extensions.DependencyInjection;
 using Pandora.API.Patch.Config;
 using Pandora.API.Patch.Engine.Config;
 using Pandora.Models.Patch.Configs;
-using System;
 
 namespace Pandora.Configuration;
 
@@ -24,10 +24,20 @@ public static class Services
 #else
 				.AddTransient<IEngineConfiguration, SkyrimConfiguration>()
 #endif
-				.AddSingleton<Func<SkyrimDebugConfiguration>>(sp => () => sp.GetRequiredService<SkyrimDebugConfiguration>())
-				.AddSingleton<Func<SkyrimConfiguration>>(sp => () => sp.GetRequiredService<SkyrimConfiguration>())
-				.AddSingleton<IEngineConfigurationFactory<SkyrimConfiguration>, ConstEngineConfigurationFactory<SkyrimConfiguration>>()
-				.AddSingleton<IEngineConfigurationFactory<SkyrimDebugConfiguration>, ConstEngineConfigurationFactory<SkyrimDebugConfiguration>>();
+				.AddSingleton<Func<SkyrimDebugConfiguration>>(sp =>
+					() => sp.GetRequiredService<SkyrimDebugConfiguration>()
+				)
+				.AddSingleton<Func<SkyrimConfiguration>>(sp =>
+					() => sp.GetRequiredService<SkyrimConfiguration>()
+				)
+				.AddSingleton<
+					IEngineConfigurationFactory<SkyrimConfiguration>,
+					ConstEngineConfigurationFactory<SkyrimConfiguration>
+				>()
+				.AddSingleton<
+					IEngineConfigurationFactory<SkyrimDebugConfiguration>,
+					ConstEngineConfigurationFactory<SkyrimDebugConfiguration>
+				>();
 		}
 	}
 }

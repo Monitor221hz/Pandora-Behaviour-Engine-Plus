@@ -1,17 +1,18 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-﻿using GameFinder.RegistryUtils;
-using NexusMods.Paths;
 using System;
 using System.IO;
+using GameFinder.RegistryUtils;
+using NexusMods.Paths;
 
 namespace Pandora.Platform.CreationEngine.Locators;
 
 public sealed class RegistryGameLocator(
 	IGameDescriptor gameDescriptor,
 	IRegistry? registry,
-	IFileSystem fileSystem) : IGameLocator
+	IFileSystem fileSystem
+) : IGameLocator
 {
 	public DirectoryInfo? TryLocateGameData()
 	{
@@ -34,4 +35,3 @@ public sealed class RegistryGameLocator(
 		return dirInfo;
 	}
 }
-

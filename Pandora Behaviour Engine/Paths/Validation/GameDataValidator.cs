@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-﻿using Pandora.Platform.CreationEngine;
 using System;
 using System.IO;
 using Pandora.Paths.Extensions;
+using Pandora.Platform.CreationEngine;
 
 namespace Pandora.Paths.Validation;
 
@@ -46,5 +46,4 @@ public sealed class GameDataValidator(IGameDescriptor descriptor) : IGameDataVal
 		var candidate = new DirectoryInfo(input.FullName / "Data");
 		return candidate.Exists ? candidate : null;
 	}
-
 }

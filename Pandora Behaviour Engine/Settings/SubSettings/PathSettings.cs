@@ -1,16 +1,16 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Pandora.Logging.Extensions;
-using Pandora.Paths.Abstractions;
-using Pandora.Paths.Validation;
-using Pandora.Platform.CreationEngine;
-using Pandora.Settings.DTOs;
 using System;
 using System.IO;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using Pandora.Logging.Extensions;
+using Pandora.Paths.Abstractions;
+using Pandora.Paths.Validation;
+using Pandora.Platform.CreationEngine;
+using Pandora.Settings.DTOs;
 
 namespace Pandora.Settings.SubSettings;
 
@@ -18,7 +18,8 @@ internal sealed class PathSettings(
 	IGameLocator gameLocator,
 	IGameDataValidator validator,
 	IApplicationPaths appPaths,
-	IUserPaths userPaths) : IPathSettings
+	IUserPaths userPaths
+) : IPathSettings
 {
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 	private GameSettings _gameSettings = null!;
@@ -33,8 +34,10 @@ internal sealed class PathSettings(
 	public DirectoryInfo Output => userPaths.Output;
 
 	public bool IsGameDataValid =>
-		!GameData.FullName.Equals(appPaths.AssemblyDirectory.FullName, StringComparison.OrdinalIgnoreCase)
-		&& validator.IsValid(GameData);
+		!GameData.FullName.Equals(
+			appPaths.AssemblyDirectory.FullName,
+			StringComparison.OrdinalIgnoreCase
+		) && validator.IsValid(GameData);
 
 	public bool NeedsUserSelection => !IsGameDataValid;
 
@@ -77,14 +80,16 @@ internal sealed class PathSettings(
 		{
 			var configured = new DirectoryInfo(_gameSettings.GameDataPath);
 			var normalized = validator.Normalize(configured);
-			if (normalized != null) return normalized;
+			if (normalized != null)
+				return normalized;
 		}
 
 		var located = gameLocator.TryLocateGameData();
 		if (located != null)
 		{
 			var normalized = validator.Normalize(located);
-			if (normalized != null) return normalized;
+			if (normalized != null)
+				return normalized;
 		}
 
 		return appPaths.AssemblyDirectory;
@@ -95,7 +100,8 @@ internal sealed class PathSettings(
 		if (!string.IsNullOrEmpty(_gameSettings.OutputPath))
 		{
 			var output = new DirectoryInfo(_gameSettings.OutputPath);
-			if (output.Exists) return output;
+			if (output.Exists)
+				return output;
 		}
 		return gameData;
 	}
@@ -112,7 +118,10 @@ internal sealed class PathSettings(
 		userPaths.SetGameData(normalized);
 		_gameSettings.GameDataPath = normalized.FullName;
 
-		if (string.IsNullOrEmpty(_gameSettings.OutputPath) || _gameSettings.OutputPath == _gameSettings.GameDataPath)
+		if (
+			string.IsNullOrEmpty(_gameSettings.OutputPath)
+			|| _gameSettings.OutputPath == _gameSettings.GameDataPath
+		)
 		{
 			userPaths.SetOutput(normalized);
 			_gameSettings.OutputPath = normalized.FullName;
@@ -123,7 +132,8 @@ internal sealed class PathSettings(
 
 	public void SetOutputFolder(DirectoryInfo directory)
 	{
-		if (!directory.Exists) directory.Create();
+		if (!directory.Exists)
+			directory.Create();
 
 		userPaths.SetOutput(directory);
 		_gameSettings.OutputPath = directory.FullName;

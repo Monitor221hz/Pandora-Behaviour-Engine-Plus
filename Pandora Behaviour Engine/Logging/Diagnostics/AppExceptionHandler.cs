@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Avalonia.Threading;
-using ReactiveUI;
 using System;
 using System.Reactive;
 using System.Threading.Tasks;
+using Avalonia.Threading;
+using ReactiveUI;
 
 namespace Pandora.Logging.Diagnostics;
 
@@ -29,8 +29,8 @@ public class AppExceptionHandler(CrashReporter reporter) : IDisposable
 	/// </summary>
 	/// <param name="sender"></param>
 	/// <param name="e"></param>
-	private void OnUnhandled(object? s, UnhandledExceptionEventArgs e)
-		=> reporter.Report(
+	private void OnUnhandled(object? s, UnhandledExceptionEventArgs e) =>
+		reporter.Report(
 			CrashType.UnhandledException,
 			e.ExceptionObject?.ToString() ?? "Unknown exception"
 		);
@@ -46,10 +46,10 @@ public class AppExceptionHandler(CrashReporter reporter) : IDisposable
 		e.SetObserved();
 	}
 
-	private void OnRxException(Exception ex) => 
+	private void OnRxException(Exception ex) =>
 		reporter.Report(CrashType.ReactiveUI, ex.ToString());
 
-	private void OnUiUnhandled(object? s, DispatcherUnhandledExceptionEventArgs e) => 
+	private void OnUiUnhandled(object? s, DispatcherUnhandledExceptionEventArgs e) =>
 		reporter.Report(CrashType.UiThread, e.Exception.ToString());
 
 	public void Dispose()
@@ -62,5 +62,4 @@ public class AppExceptionHandler(CrashReporter reporter) : IDisposable
 
 		GC.SuppressFinalize(this);
 	}
-
 }

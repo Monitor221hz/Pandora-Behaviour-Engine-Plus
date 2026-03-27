@@ -1,21 +1,22 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-﻿using GameFinder.RegistryUtils;
+using System.IO;
+using GameFinder.RegistryUtils;
 using GameFinder.StoreHandlers.GOG;
 using NexusMods.Paths;
-using System.IO;
 
 namespace Pandora.Platform.CreationEngine.Locators;
 
 public sealed class GogGameLocator(
 	IGameDescriptor gameDescriptor,
 	IRegistry? registry,
-	IFileSystem fileSystem) : IGameLocator
+	IFileSystem fileSystem
+) : IGameLocator
 {
 	public DirectoryInfo? TryLocateGameData()
 	{
-		if (registry is null || gameDescriptor.GogAppId is null) 
+		if (registry is null || gameDescriptor.GogAppId is null)
 			return null;
 
 		var handler = new GOGHandler(registry, fileSystem);

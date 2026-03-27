@@ -28,17 +28,12 @@ namespace PandoraTests.Utils;
 
 internal static class TestServiceCollectionExtensions
 {
-    public static IServiceCollection AddPandoraTestServices(
-        this IServiceCollection services)
+    public static IServiceCollection AddPandoraTestServices(this IServiceCollection services)
     {
-        return services
-            .AddTestMods()
-            .AddTestEngine()
-            .AddTestPatchPipeline();
+        return services.AddTestMods().AddTestEngine().AddTestPatchPipeline();
     }
 
-    private static IServiceCollection AddTestMods(
-    this IServiceCollection services)
+    private static IServiceCollection AddTestMods(this IServiceCollection services)
     {
         services.AddSingleton<IModLoaderService, ModLoaderService>();
         services.AddSingleton<IModSettingsService, ModSettingsService>();
@@ -49,8 +44,7 @@ internal static class TestServiceCollectionExtensions
         return services;
     }
 
-    private static IServiceCollection AddTestPatchPipeline(
-    this IServiceCollection services)
+    private static IServiceCollection AddTestPatchPipeline(this IServiceCollection services)
     {
         services.AddScoped<IFNISParser, FNISParser>();
         services.AddScoped<IProjectManager, ProjectManager>();
@@ -62,9 +56,7 @@ internal static class TestServiceCollectionExtensions
         services.AddScoped<PandoraBridgedAssembler>();
         services.AddScoped<SkyrimPatcher>();
 
-        services.AddScoped<IPatchAssembler>(sp =>
-            sp.GetRequiredService<NemesisAssembler>()
-        );
+        services.AddScoped<IPatchAssembler>(sp => sp.GetRequiredService<NemesisAssembler>());
 
         services.AddSingleton<DebugPackFileExporter>();
 
@@ -78,12 +70,10 @@ internal static class TestServiceCollectionExtensions
             sp.GetRequiredService<TestCapturingExporter>()
         );
 
-
         return services;
     }
 
-    private static IServiceCollection AddTestEngine(
-    this IServiceCollection services)
+    private static IServiceCollection AddTestEngine(this IServiceCollection services)
     {
         services.AddSingleton<IEngineRunner, EngineRunner>();
         services.AddSingleton<IEngineStateMachine, EngineStateMachine>();
@@ -92,14 +82,20 @@ internal static class TestServiceCollectionExtensions
 
         services.AddSingleton<IEngineConfigurationService, EngineConfigurationService>();
         services.AddSingleton<SkyrimDebugConfiguration>();
-        services.AddTransient<IEngineConfiguration>(sp => sp.GetRequiredService<SkyrimDebugConfiguration>());
+        services.AddTransient<IEngineConfiguration>(sp =>
+            sp.GetRequiredService<SkyrimDebugConfiguration>()
+        );
 
-        services.AddSingleton<Func<SkyrimDebugConfiguration>>(sp => () => sp.GetRequiredService<SkyrimDebugConfiguration>());
-        services.AddSingleton<IEngineConfigurationFactory<SkyrimDebugConfiguration>, ConstEngineConfigurationFactory<SkyrimDebugConfiguration>>();
+        services.AddSingleton<Func<SkyrimDebugConfiguration>>(sp =>
+            () => sp.GetRequiredService<SkyrimDebugConfiguration>()
+        );
+        services.AddSingleton<
+            IEngineConfigurationFactory<SkyrimDebugConfiguration>,
+            ConstEngineConfigurationFactory<SkyrimDebugConfiguration>
+        >();
 
         services.AddSingleton<IGameDescriptor, SkyrimDescriptor>();
 
         return services;
     }
-
 }

@@ -1,20 +1,22 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using System;
+using System.Reactive.Linq;
 using Avalonia;
 using Avalonia.Xaml.Interactivity;
 using AvaloniaEdit;
 using Pandora.Logging.NLogger.UI;
 using ReactiveUI;
-using System;
-using System.Reactive.Linq;
 
 namespace Pandora.Behaviors;
 
 public class LogTextEditorBehavior : Behavior<TextEditor>
 {
 	public static readonly StyledProperty<IObservable<LogUiEvent>?> LogSourceProperty =
-		AvaloniaProperty.Register<LogTextEditorBehavior, IObservable<LogUiEvent>?>(nameof(LogSource));
+		AvaloniaProperty.Register<LogTextEditorBehavior, IObservable<LogUiEvent>?>(
+			nameof(LogSource)
+		);
 
 	public IObservable<LogUiEvent>? LogSource
 	{
@@ -47,7 +49,8 @@ public class LogTextEditorBehavior : Behavior<TextEditor>
 	{
 		_subscription?.Dispose();
 
-		if (AssociatedObject is null || LogSource is null) return;
+		if (AssociatedObject is null || LogSource is null)
+			return;
 
 		AssociatedObject.Document.Text = string.Empty;
 
@@ -69,7 +72,8 @@ public class LogTextEditorBehavior : Behavior<TextEditor>
 
 	private void AppendText(string text)
 	{
-		if (AssociatedObject is null) return;
+		if (AssociatedObject is null)
+			return;
 
 		var document = AssociatedObject.Document;
 		document.BeginUpdate();

@@ -19,10 +19,11 @@ public sealed class PluginManager : IPluginManager
 
 	public void LoadAllPlugins(DirectoryInfo assemblyDirectory)
 	{
-		if (assemblyDirectory == null || !assemblyDirectory.Exists) return;
+		if (assemblyDirectory == null || !assemblyDirectory.Exists)
+			return;
 
-        var pluginsDir = new DirectoryInfo(Path.Combine(assemblyDirectory.FullName, "Plugins"));
-        if (!pluginsDir.Exists) 
+		var pluginsDir = new DirectoryInfo(Path.Combine(assemblyDirectory.FullName, "Plugins"));
+		if (!pluginsDir.Exists)
 			return;
 
 		foreach (var pluginDir in pluginsDir.GetDirectories())
@@ -30,7 +31,7 @@ public sealed class PluginManager : IPluginManager
 			try
 			{
 #if DEBUG
-                LoadPluginDebug(pluginDir);
+				LoadPluginDebug(pluginDir);
 #else
 				LoadPluginRelease(pluginDir);
 #endif
@@ -68,7 +69,9 @@ public sealed class PluginManager : IPluginManager
 		}
 
 		var loader = new PluginLoadContext(pluginDll.FullName);
-		var assembly = loader.LoadFromAssemblyName(AssemblyName.GetAssemblyName(pluginDll.FullName));
+		var assembly = loader.LoadFromAssemblyName(
+			AssemblyName.GetAssemblyName(pluginDll.FullName)
+		);
 		RegisterConfigurationsFromAssembly(assembly);
 	}
 
@@ -76,7 +79,8 @@ public sealed class PluginManager : IPluginManager
 	{
 		foreach (var type in assembly.GetTypes())
 		{
-			if (!typeof(IEngineConfigurationPlugin).IsAssignableFrom(type)) continue;
+			if (!typeof(IEngineConfigurationPlugin).IsAssignableFrom(type))
+				continue;
 
 			try
 			{

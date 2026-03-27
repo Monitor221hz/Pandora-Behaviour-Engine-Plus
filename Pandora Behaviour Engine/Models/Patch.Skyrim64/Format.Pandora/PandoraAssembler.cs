@@ -1,6 +1,9 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using System.Collections.Generic;
+using System.IO;
+using System.Xml.Linq;
 using Pandora.API.Patch;
 using Pandora.API.Patch.IOManagers;
 using Pandora.API.Patch.Skyrim64;
@@ -9,9 +12,6 @@ using Pandora.API.Patch.Skyrim64.AnimSetData;
 using Pandora.Models.Patch.Skyrim64.AnimSetData;
 using Pandora.Models.Patch.Skyrim64.Hkx.Changes;
 using Pandora.Paths.Abstractions;
-using System.Collections.Generic;
-using System.IO;
-using System.Xml.Linq;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.Pandora;
 
@@ -54,7 +54,6 @@ public class PandoraAssembler
 	//	AnimSetDataManager = nemesisAssembler.AnimSetDataManager;
 	//	AnimDataManager = nemesisAssembler.AnimDataManager;
 	//}
-
 
 	public bool AssemblePackFilePatch(FileInfo file, IModInfo modInfo)
 	{

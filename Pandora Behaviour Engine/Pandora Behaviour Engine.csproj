@@ -10,7 +10,7 @@
     <ApplicationIcon>Assets\pandora.ico</ApplicationIcon>
     <AssemblyName>Pandora Behaviour Engine+</AssemblyName>
     <GenerateAssemblyInformationalVersionAttribute>true</GenerateAssemblyInformationalVersionAttribute>
-		<SatelliteResourceLanguages>none</SatelliteResourceLanguages>
+    <SatelliteResourceLanguages>none</SatelliteResourceLanguages>
     <CETCompat>false</CETCompat>
   </PropertyGroup>
 
@@ -29,7 +29,11 @@
     <PackageReference Include="Avalonia.Desktop" Version="11.3.10" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.10" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.10" />
+    <PackageReference
+      Condition="'$(Configuration)' == 'Debug'"
+      Include="Avalonia.Diagnostics"
+      Version="11.3.10"
+    />
     <PackageReference Include="GameFinder" Version="4.9.0" />
     <PackageReference Include="GameFinder.StoreHandlers.GOG" Version="4.9.0" />
     <PackageReference Include="GameFinder.StoreHandlers.Steam" Version="4.9.0" />
@@ -51,7 +55,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.1" />
-    <PackageReference Include="Xaml.Behaviors.Interactions.DragAndDrop.DataGrid" Version="11.3.9.3" />
+    <PackageReference
+      Include="Xaml.Behaviors.Interactions.DragAndDrop.DataGrid"
+      Version="11.3.9.3"
+    />
   </ItemGroup>
 
   <ItemGroup>

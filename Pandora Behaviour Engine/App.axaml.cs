@@ -1,6 +1,8 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using System;
+using System.Globalization;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
@@ -9,8 +11,6 @@ using Avalonia.Styling;
 using Microsoft.Extensions.DependencyInjection;
 using Pandora.ViewModels;
 using Pandora.Views;
-using System;
-using System.Globalization;
 
 namespace Pandora;
 
@@ -34,7 +34,7 @@ public partial class App : Application
 			var serviceCollection = new ServiceCollection();
 
 			serviceCollection.AddPandoraServices();
-			
+
 			Services = serviceCollection.BuildServiceProvider();
 
 			var bootstrapper = Services.GetRequiredService<AppBootstrapper>();

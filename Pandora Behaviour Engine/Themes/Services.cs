@@ -11,8 +11,7 @@ public static class Services
 	{
 		public IServiceCollection AddTheme()
 		{
-			return serviceCollection
-				.AddSingleton<Themer>();
+			return serviceCollection.AddSingleton<Themer>();
 		}
 	}
 }

@@ -11,7 +11,10 @@ using ReactiveUI.SourceGenerators;
 
 namespace Pandora.ViewModels;
 
-public partial class ModInfoViewModel : ViewModelBase, IEquatable<ModInfoViewModel>, IActivatableViewModel
+public partial class ModInfoViewModel
+	: ViewModelBase,
+		IEquatable<ModInfoViewModel>,
+		IActivatableViewModel
 {
 	public IModInfo ModInfo { get; }
 

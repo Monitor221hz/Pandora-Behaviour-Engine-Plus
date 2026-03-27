@@ -1,14 +1,14 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using NLog;
 using System;
+using NLog;
 
 namespace Pandora.Logging.Extensions;
 
 public static class LoggerExtensions
 {
-	extension (Logger logger)
+	extension(Logger logger)
 	{
 		public void UiInfo(string message)
 		{
@@ -38,7 +38,6 @@ public static class LoggerExtensions
 				.WithProperty("ui", true)
 				.WithProperty("ui_command", "clear")
 				.Info("--- Log Cleared ---");
-
 		}
 	}
 }

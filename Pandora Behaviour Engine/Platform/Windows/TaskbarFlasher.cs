@@ -11,7 +11,7 @@ public static partial class TaskbarFlasher
 {
 	private static nint? _lastFlashingHandle;
 
-	extension (Window window)
+	extension(Window window)
 	{
 		public void FlashUntilFocused()
 		{

@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-﻿using Microsoft.Extensions.DependencyInjection;
+using System;
+using Microsoft.Extensions.DependencyInjection;
 using Pandora.API.Patch;
 using Pandora.API.Patch.Engine.Config;
-using System;
 
 namespace Pandora.Models.Patch.Skyrim64;
 
@@ -14,9 +14,7 @@ public sealed class PatcherFactory : IPatcherFactory, IDisposable
 	private IServiceScope? _scope;
 	private IEngineConfiguration _config;
 
-	public PatcherFactory(
-		IServiceScopeFactory scopeFactory,
-		IEngineConfiguration config)
+	public PatcherFactory(IServiceScopeFactory scopeFactory, IEngineConfiguration config)
 	{
 		_scopeFactory = scopeFactory;
 		_config = config;
@@ -27,7 +25,8 @@ public sealed class PatcherFactory : IPatcherFactory, IDisposable
 		_scope?.Dispose();
 		_scope = _scopeFactory.CreateScope();
 
-		return (IPatcher)ActivatorUtilities.CreateInstance(_scope.ServiceProvider, _config.PatcherType);
+		return (IPatcher)
+			ActivatorUtilities.CreateInstance(_scope.ServiceProvider, _config.PatcherType);
 	}
 
 	public void SetConfiguration(IEngineConfiguration config)

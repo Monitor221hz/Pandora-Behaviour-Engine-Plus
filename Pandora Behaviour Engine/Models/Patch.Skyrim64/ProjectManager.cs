@@ -1,12 +1,6 @@
 ﻿// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using NLog;
-using Pandora.API.Patch;
-using Pandora.API.Patch.Skyrim64;
-using Pandora.Models.Patch.Skyrim64.Format.FNIS;
-using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
-using Pandora.Paths.Abstractions;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -15,6 +9,12 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NLog;
+using Pandora.API.Patch;
+using Pandora.API.Patch.Skyrim64;
+using Pandora.Models.Patch.Skyrim64.Format.FNIS;
+using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
+using Pandora.Paths.Abstractions;
 
 namespace Pandora.Models.Patch.Skyrim64;
 
@@ -218,9 +218,7 @@ public class ProjectManager : IProjectManager
 		lock (projectMap)
 		{
 			var project = Project.Load(
-				new FileInfo(
-					Path.Join(_pathContext.TemplateFolder.FullName, projectFilePath)
-				),
+				new FileInfo(Path.Join(_pathContext.TemplateFolder.FullName, projectFilePath)),
 				packFileCache
 			);
 
@@ -239,9 +237,7 @@ public class ProjectManager : IProjectManager
 		{
 			var project = new Project(
 				packFileCache.LoadPackFile(
-					new FileInfo(
-						Path.Join(_pathContext.GameDataFolder.FullName, projectFilePath)
-					)
+					new FileInfo(Path.Join(_pathContext.GameDataFolder.FullName, projectFilePath))
 				)
 			);
 

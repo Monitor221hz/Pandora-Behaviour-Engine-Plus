@@ -8,8 +8,8 @@ namespace Pandora.Views.Pages;
 
 public partial class AboutPage : ReactiveUserControl<AboutPageViewModel>
 {
-    public AboutPage()
-    {
-        InitializeComponent();
-    }
+	public AboutPage()
+	{
+		InitializeComponent();
+	}
 }

@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-﻿using Pandora.Paths.Abstractions;
-using Pandora.Paths.Extensions;
 using System;
 using System.Diagnostics;
 using System.IO;
+using Pandora.Paths.Abstractions;
+using Pandora.Paths.Extensions;
 
 namespace Pandora.Paths;
 
@@ -17,9 +17,15 @@ public sealed class ApplicationPaths : IApplicationPaths
 	public FileInfo PathConfig => _pathConfig.Value;
 	private readonly Lazy<FileInfo> _pathConfig;
 
-	public DirectoryInfo AppDataDirectory => new(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) / "Pandora Behaviour Engine");
-	public DirectoryInfo AssemblyDirectory => new(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule!.FileName!)!);
-	public DirectoryInfo EngineDirectory => new(AssemblyDirectory.FullName / PANDORA_ENGINE_FOLDERNAME);
+	public DirectoryInfo AppDataDirectory =>
+		new(
+			Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
+				/ "Pandora Behaviour Engine"
+		);
+	public DirectoryInfo AssemblyDirectory =>
+		new(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule!.FileName!)!);
+	public DirectoryInfo EngineDirectory =>
+		new(AssemblyDirectory.FullName / PANDORA_ENGINE_FOLDERNAME);
 	public DirectoryInfo TemplateDirectory => new(EngineDirectory.FullName / "Skyrim" / "Template");
 
 	public ApplicationPaths()
@@ -27,7 +33,8 @@ public sealed class ApplicationPaths : IApplicationPaths
 		if (!AppDataDirectory.Exists)
 			AppDataDirectory.Create();
 
-		_pathConfig = new Lazy<FileInfo>(() => new FileInfo(AppDataDirectory.FullName / CONFIG_FILE));
+		_pathConfig = new Lazy<FileInfo>(() =>
+			new FileInfo(AppDataDirectory.FullName / CONFIG_FILE)
+		);
 	}
 }
- 
