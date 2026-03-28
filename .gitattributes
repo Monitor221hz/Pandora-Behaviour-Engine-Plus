@@ -1,7 +1,13 @@
 ###############################################################################
 # Set default behavior to automatically normalize line endings.
 ###############################################################################
-* text=auto
+* text=auto eol=lf
+
+###############################################################################
+# Always convert AnimData and AnimSet test files to CRLF 
+###############################################################################
+Pandora[[:space:]]Behaviour[[:space:]]Engine/**/*.txt text eol=crlf
+Pandora[[:space:]]Tests/Data/**/*.txt text eol=crlf
 
 ###############################################################################
 # Set default behavior for command prompt diff.
