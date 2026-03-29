@@ -104,7 +104,7 @@ public static class ModViewModelExtensions
 				.Select(m => m.ModInfo)
 				.ToList();
 		}
-		
+
 		private ModInfoViewModel? EnsurePandoraActive()
 		{
 			var pandora = mods.FirstOrDefault(m => m.IsPandora);

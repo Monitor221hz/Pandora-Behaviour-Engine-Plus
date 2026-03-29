@@ -42,7 +42,7 @@ public sealed class AppBootstrapper(
 		settings.Initialize();
 
 		nlogger.Initialize();
-		
+
 		themer.Initialize();
 
 		windowStateService.Initialize();
@@ -52,7 +52,7 @@ public sealed class AppBootstrapper(
 		if (ProcessUtils.IsLaunchedFromModManager)
 		{
 			logger.Info("Launched from Mod Manager: {ModManager}", modManager);
-		} 
+		}
 		else
 		{
 			logger.Info("Not launched from a known Mod Manager");

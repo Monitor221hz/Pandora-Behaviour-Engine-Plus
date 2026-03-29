@@ -1,0 +1,19 @@
+root = true
+
+[*]
+indent_style = tab
+end_of_line = lf
+charset = utf-8
+
+# Exclude Git submodules
+[Pandora API/**]
+indent_style = unset
+end_of_line = unset
+charset = unset
+
+# Ensure AnimData and AnimSet test files are always CRLF
+[Pandora Behaviour Engine/**/*.txt]
+end_of_line = crlf
+
+[Pandora Tests/Data/**/*.txt]
+end_of_line = crlf

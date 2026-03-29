@@ -22,7 +22,7 @@ public sealed class BehaviourEngine : IBehaviourEngine
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 	public BehaviourEngine(
-		IEngineRunner runner, 
+		IEngineRunner runner,
 		IEngineStateMachine state,
 		IEngineConfiguration initialConfig)
 	{

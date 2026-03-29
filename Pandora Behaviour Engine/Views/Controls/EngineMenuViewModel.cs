@@ -13,7 +13,7 @@ public partial class EngineMenuViewModel(
 {
 	public IEngineSharedState State { get; } = state;
 
-	public ObservableCollection<IEngineConfigurationViewModel> EngineConfigurationViewModels { get; } = 
+	public ObservableCollection<IEngineConfigurationViewModel> EngineConfigurationViewModels { get; } =
 		ConfigurationMenuBuilder.BuildTree(
 			engineConfigService.GetAvailableConfigurations(),
 			engineConfigService
