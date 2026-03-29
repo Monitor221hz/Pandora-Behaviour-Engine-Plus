@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-﻿using Pandora.CLI;
+using Pandora.CLI;
 using Pandora.Logging.Extensions;
 using Pandora.Models.Engine;
 using Pandora.Mods.Abstractions;
@@ -70,7 +70,7 @@ public partial class LaunchElementViewModel : ViewModelBase, IActivatableViewMod
 
 		await _modService.SaveSettingsAsync();
 
-		if (_autoClose) 
+		if (_autoClose)
 			_windowStateService.Shutdown();
 	}
 }

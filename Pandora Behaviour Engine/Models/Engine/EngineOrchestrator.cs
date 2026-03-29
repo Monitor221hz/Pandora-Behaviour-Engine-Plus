@@ -65,7 +65,8 @@ public sealed class EngineOrchestrator(
 			case EngineState.Error:
 				windowService.SetVisualState(WindowVisualState.Error);
 				break;
-			default: windowService.SetVisualState(WindowVisualState.Idle);
+			default:
+				windowService.SetVisualState(WindowVisualState.Idle);
 				break;
 		}
 	}

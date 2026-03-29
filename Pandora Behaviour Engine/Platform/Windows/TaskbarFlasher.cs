@@ -1,9 +1,9 @@
-﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using Avalonia.Controls;
 using System;
 using System.Runtime.InteropServices;
-using Avalonia.Controls;
 
 namespace Pandora.Platform.Windows;
 
@@ -11,7 +11,7 @@ public static partial class TaskbarFlasher
 {
 	private static nint? _lastFlashingHandle;
 
-	extension (Window window)
+	extension(Window window)
 	{
 		public void FlashUntilFocused()
 		{

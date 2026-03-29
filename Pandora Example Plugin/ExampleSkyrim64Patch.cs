@@ -1,4 +1,4 @@
-﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
 using System;
@@ -14,15 +14,15 @@ namespace ExamplePlugin;
 
 public class ExampleSkyrim64Patch : ISkyrim64Patch
 {
-    public RuntimeMode Mode => RuntimeMode.Serial;
-    public RunOrder Order => RunOrder.PreLaunch;
+	public RuntimeMode Mode => RuntimeMode.Serial;
+	public RunOrder Order => RunOrder.PreLaunch;
 
-    public void Run(IProjectManager projectManager)
-    {
-        if (projectManager.TryGetProject("defaultmale", out var ex))
-        {
-            var characterPackFile = ex!.CharacterPackFile!;
-            characterPackFile.AddUniqueAnimation("exampleanimation");
-        }
-    }
+	public void Run(IProjectManager projectManager)
+	{
+		if (projectManager.TryGetProject("defaultmale", out var ex))
+		{
+			var characterPackFile = ex!.CharacterPackFile!;
+			characterPackFile.AddUniqueAnimation("exampleanimation");
+		}
+	}
 }

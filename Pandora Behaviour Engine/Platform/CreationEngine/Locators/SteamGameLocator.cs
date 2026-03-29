@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-﻿using GameFinder.RegistryUtils;
+using GameFinder.RegistryUtils;
 using GameFinder.StoreHandlers.Steam;
 using GameFinder.StoreHandlers.Steam.Models.ValueTypes;
 using NexusMods.Paths;
@@ -16,7 +16,7 @@ public sealed class SteamGameLocator(
 {
 	public DirectoryInfo? TryLocateGameData()
 	{
-		if (registry is null) 
+		if (registry is null)
 			return null;
 
 		var handler = new SteamHandler(fileSystem, registry);
@@ -34,4 +34,3 @@ public sealed class SteamGameLocator(
 		return null;
 	}
 }
-

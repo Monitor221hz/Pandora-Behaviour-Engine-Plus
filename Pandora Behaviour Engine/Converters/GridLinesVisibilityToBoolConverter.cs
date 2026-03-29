@@ -1,10 +1,10 @@
-﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using System;
-using System.Globalization;
 using Avalonia.Controls;
 using Avalonia.Data.Converters;
+using System;
+using System.Globalization;
 
 namespace Pandora.Converters;
 

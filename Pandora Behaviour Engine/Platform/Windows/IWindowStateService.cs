@@ -9,9 +9,9 @@ public interface IWindowStateService
 {
 	void Initialize();
 
-    void SetVisualState(WindowVisualState state);
+	void SetVisualState(WindowVisualState state);
 
-    void FlashWindow();
+	void FlashWindow();
 
-    void Shutdown();
+	void Shutdown();
 }

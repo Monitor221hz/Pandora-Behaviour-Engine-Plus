@@ -38,7 +38,7 @@ public class ModService : IModService, IDisposable
 
 	public ModService(IModLoaderService loader, IModSettingsService settings, IEnginePathsFacade pathContext)
 	{
-		_loader	= loader;
+		_loader = loader;
 		_settings = settings;
 		_pathContext = pathContext;
 	}

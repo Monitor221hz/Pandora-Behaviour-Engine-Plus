@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-﻿using System.IO;
+using System.IO;
 
 namespace Pandora.Paths.Abstractions;
 
@@ -10,7 +10,7 @@ public interface IApplicationPaths
 	/// <summary>
 	/// Settings store directory
 	/// </summary>
-	DirectoryInfo AppDataDirectory {  get; }
+	DirectoryInfo AppDataDirectory { get; }
 
 	/// <summary>
 	/// Gets the real file system path to the folder containing the running executable.

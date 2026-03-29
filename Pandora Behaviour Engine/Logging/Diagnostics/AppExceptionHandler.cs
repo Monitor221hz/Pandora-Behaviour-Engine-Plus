@@ -46,10 +46,10 @@ public class AppExceptionHandler(CrashReporter reporter) : IDisposable
 		e.SetObserved();
 	}
 
-	private void OnRxException(Exception ex) => 
+	private void OnRxException(Exception ex) =>
 		reporter.Report(CrashType.ReactiveUI, ex.ToString());
 
-	private void OnUiUnhandled(object? s, DispatcherUnhandledExceptionEventArgs e) => 
+	private void OnUiUnhandled(object? s, DispatcherUnhandledExceptionEventArgs e) =>
 		reporter.Report(CrashType.UiThread, e.Exception.ToString());
 
 	public void Dispose()

@@ -1,4 +1,4 @@
-﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
 using System;
@@ -89,7 +89,7 @@ public static class ProcessUtils
 		return new ParentProcessInfo(0, ModManager.None);
 	}
 
-	private static Process GetParent(Process process)
+	private static Process? GetParent(Process process)
 	{
 		try
 		{

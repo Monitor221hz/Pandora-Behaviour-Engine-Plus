@@ -9,8 +9,8 @@ namespace Pandora.Configuration;
 
 public interface IEngineConfigurationService
 {
-    IObservable<IEngineConfigurationFactory> CurrentFactoryChanged { get; }
-    IEngineConfigurationFactory CurrentFactory { get; }
+	IObservable<IEngineConfigurationFactory> CurrentFactoryChanged { get; }
+	IEngineConfigurationFactory CurrentFactory { get; }
 
 	void Initialize(bool useSkyrimDebug64);
 

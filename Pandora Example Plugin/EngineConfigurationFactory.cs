@@ -1,4 +1,4 @@
-﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
 using Pandora.API.Patch.Config;
@@ -8,10 +8,10 @@ namespace ExamplePlugin;
 
 public class EngineConfigurationFactory : IEngineConfigurationFactory
 {
-    public string Name { get; } = "Example";
+	public string Name { get; } = "Example";
 
-    public IEngineConfiguration? Create()
-    {
-        return new ExampleEngineConfiguration();
-    }
+	public IEngineConfiguration? Create()
+	{
+		return new ExampleEngineConfiguration();
+	}
 }
