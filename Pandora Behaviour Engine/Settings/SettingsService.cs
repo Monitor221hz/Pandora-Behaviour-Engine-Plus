@@ -36,7 +36,6 @@ public sealed class SettingsService(
 			gameSettings = new GameSettings();
 			_root.Games[descriptor.Id] = gameSettings;
 		}
-		pathSettings.Initialize(gameSettings);
 
 		var saveSignals = Observable.Merge(
 			themeSettings.SaveRequired,
@@ -47,6 +46,8 @@ public sealed class SettingsService(
 			.Throttle(TimeSpan.FromMilliseconds(500))
 			.ObserveOn(TaskPoolScheduler.Default)
 			.Subscribe(_ => Save());
+
+		pathSettings.Initialize(gameSettings);
 	}
 
 	private void Save()
