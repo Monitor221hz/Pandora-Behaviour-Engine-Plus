@@ -24,4 +24,4 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
         cache-key-suffix: ${{ env.PROFILE }}
     - name: Format
-      run: dotnet format --exclude "./Pandora API" --no-restore --verify-no-changes --verbosity diagnostic --severity error
+      run: dotnet format --exclude "./Pandora API" --no-restore --verify-no-changes --verbosity diagnostic

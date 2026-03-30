@@ -14,13 +14,13 @@ public class RemoveTextChange : IPackFileChange
 	public XmlNodeType AssociatedType { get; } = XmlNodeType.Text;
 	public string Target { get; }
 	public string Path { get; private set; }
-	private string value { get; set; }
+	private readonly string _value;
 
 	public RemoveTextChange(string target, string path, string value)
 	{
 		Target = target;
 		Path = path;
-		this.value = value;
+		_value = value;
 	}
 
 	public bool Apply(IPackFile packFile)
@@ -29,7 +29,7 @@ public class RemoveTextChange : IPackFileChange
 		{
 			return false;
 		}
-		PackFileEditor.RemoveText(xmap!, Path, value);
+		PackFileEditor.RemoveText(xmap!, Path, _value);
 		return true;
 	}
 

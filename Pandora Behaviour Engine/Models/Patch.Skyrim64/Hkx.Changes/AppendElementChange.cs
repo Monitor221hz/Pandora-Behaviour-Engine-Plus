@@ -17,13 +17,13 @@ public class AppendElementChange : IPackFileChange
 	public string Target { get; }
 	public string Path { get; private set; }
 
-	private XElement element { get; set; }
+	private readonly XElement _element;
 
 	public AppendElementChange(string target, string path, XElement element)
 	{
 		Target = target;
 		Path = path;
-		this.element = element;
+		_element = element;
 	}
 
 	public bool Apply(IPackFile packFile)
@@ -32,7 +32,7 @@ public class AppendElementChange : IPackFileChange
 		{
 			return false;
 		}
-		string newPath = PackFileEditor.AppendElement(xmap!, Path, element);
+		string newPath = PackFileEditor.AppendElement(xmap!, Path, _element);
 		Path = string.IsNullOrEmpty(newPath) ? Path : newPath;
 		return xmap!.PathExists(Path);
 	}

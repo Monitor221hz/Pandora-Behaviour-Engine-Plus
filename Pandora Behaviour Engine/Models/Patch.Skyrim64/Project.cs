@@ -25,7 +25,7 @@ public class Project : IEquatable<Project>, IProject
 		return ProjectFile.GetHashCode();
 	}
 
-	private Dictionary<string, IPackFile> filesByName { get; set; } = [];
+	private readonly Dictionary<string, IPackFile> _filesByName = [];
 
 	public string Identifier { get; private set; } = string.Empty;
 
@@ -76,10 +76,10 @@ public class Project : IEquatable<Project>, IProject
 		Valid = true;
 	}
 
-	public IPackFile LookupPackFile(string name) => filesByName[name];
+	public IPackFile LookupPackFile(string name) => _filesByName[name];
 
 	public bool TryLookupPackFile(string name, [NotNullWhen(true)] out IPackFile? packFile) =>
-		filesByName.TryGetValue(name, out packFile);
+		_filesByName.TryGetValue(name, out packFile);
 
 	public bool TryLookupPackFileEx(string name, [NotNullWhen(true)] out IPackFile? packFile)
 	{
@@ -87,7 +87,7 @@ public class Project : IEquatable<Project>, IProject
 		return packFile != null;
 	}
 
-	public bool ContainsPackFile(string name) => filesByName.ContainsKey(name);
+	public bool ContainsPackFile(string name) => _filesByName.ContainsKey(name);
 
 	public List<string> MapFiles(IPackFileCache cache)
 	{
@@ -97,28 +97,28 @@ public class Project : IEquatable<Project>, IProject
 
 		var behaviorFiles = behaviorFolder.GetFiles("*.hkx");
 
-		lock (filesByName)
+		lock (_filesByName)
 		{
 			foreach (var behaviorFile in behaviorFiles)
 			{
 				var packFile = cache.LoadPackFileGraph(behaviorFile, this);
 
 				//packFile.DeleteExistingOutput();
-				filesByName.Add(packFile.Name, packFile);
+				_filesByName.Add(packFile.Name, packFile);
 			}
 
-			if (!filesByName.ContainsKey(SkeletonFile.Name))
-				filesByName.Add(SkeletonFile.Name, SkeletonFile);
-			if (!filesByName.ContainsKey(CharacterPackFile.Name))
-				filesByName.Add(CharacterPackFile.Name, CharacterPackFile);
+			if (!_filesByName.ContainsKey(SkeletonFile.Name))
+				_filesByName.Add(SkeletonFile.Name, SkeletonFile);
+			if (!_filesByName.ContainsKey(CharacterPackFile.Name))
+				_filesByName.Add(CharacterPackFile.Name, CharacterPackFile);
 
-			filesByName.Add($"{Identifier}_skeleton", SkeletonFile);
-			filesByName.Add($"{Identifier}_character", CharacterPackFile);
+			_filesByName.Add($"{Identifier}_skeleton", SkeletonFile);
+			_filesByName.Add($"{Identifier}_character", CharacterPackFile);
 
 			//SkeletonFile.DeleteExistingOutput();
 			//CharacterFile.DeleteExistingOutput();
 
-			return filesByName.Keys.ToList();
+			return _filesByName.Keys.ToList();
 		}
 	}
 

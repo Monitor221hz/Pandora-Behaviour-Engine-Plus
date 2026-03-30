@@ -69,7 +69,7 @@ public class AnimDataManagerTests : IDisposable
 
 		manager.SplitAnimDataSingleFile(_projectManager);
 
-		Assert.NotEmpty(manager.animDataList);
+		Assert.NotEmpty(manager.AnimDataList);
 	}
 
 	[Fact]
@@ -83,7 +83,7 @@ public class AnimDataManagerTests : IDisposable
 		using var reader = new StreamReader(_vanillaFilePath);
 		var expectedCount = int.Parse(reader.ReadLine()!);
 
-		Assert.Equal(expectedCount, manager.animDataList.Count);
+		Assert.Equal(expectedCount, manager.AnimDataList.Count);
 	}
 
 	[Fact]
@@ -92,7 +92,7 @@ public class AnimDataManagerTests : IDisposable
 		var manager = CreateManager();
 		manager.SplitAnimDataSingleFile(_projectManager);
 
-		foreach (var projectData in manager.animDataList)
+		foreach (var projectData in manager.AnimDataList)
 		{
 			Assert.NotNull(projectData.Header);
 		}
@@ -146,7 +146,7 @@ public class AnimDataManagerTests : IDisposable
 		manager.SplitAnimDataSingleFile(_projectManager);
 
 		// Find a project that has motion data so the full path is exercised.
-		var targetProject = manager.animDataList.First(p => p.BoundMotionDataProject != null);
+		var targetProject = manager.AnimDataList.First(p => p.BoundMotionDataProject != null);
 
 		targetProject.AddDummyClipData("TestDummyClip");
 
@@ -164,7 +164,7 @@ public class AnimDataManagerTests : IDisposable
 		var manager = CreateManager();
 		manager.SplitAnimDataSingleFile(_projectManager);
 
-		var targetProject = manager.animDataList.First(p => p.BoundMotionDataProject != null);
+		var targetProject = manager.AnimDataList.First(p => p.BoundMotionDataProject != null);
 
 		targetProject.AddDummyClipData("MyUniqueTestClip_42");
 
@@ -181,9 +181,9 @@ public class AnimDataManagerTests : IDisposable
 		var manager = CreateManager();
 		manager.SplitAnimDataSingleFile(_projectManager);
 
-		var originalProjectCount = manager.animDataList.Count;
+		var originalProjectCount = manager.AnimDataList.Count;
 
-		var targetProject = manager.animDataList.First(p => p.BoundMotionDataProject != null);
+		var targetProject = manager.AnimDataList.First(p => p.BoundMotionDataProject != null);
 		var originalLineCount = targetProject.GetLineCount();
 
 		targetProject.AddDummyClipData("ReSplitTestClip");
@@ -200,7 +200,7 @@ public class AnimDataManagerTests : IDisposable
 		);
 
 		Assert.Null(exception);
-		Assert.Equal(originalProjectCount, reSplitManager.animDataList.Count);
+		Assert.Equal(originalProjectCount, reSplitManager.AnimDataList.Count);
 	}
 
 	[Fact]
@@ -209,7 +209,7 @@ public class AnimDataManagerTests : IDisposable
 		var manager = CreateManager();
 		manager.SplitAnimDataSingleFile(_projectManager);
 
-		var targetProject = manager.animDataList.First(p => p.BoundMotionDataProject != null);
+		var targetProject = manager.AnimDataList.First(p => p.BoundMotionDataProject != null);
 
 		var clipNames = new[] { "DummyClipA", "DummyClipB", "DummyClipC" };
 		foreach (var clipName in clipNames)
@@ -233,7 +233,7 @@ public class AnimDataManagerTests : IDisposable
 		var manager = CreateManager();
 		manager.SplitAnimDataSingleFile(_projectManager);
 
-		var targetProject = manager.animDataList.First(p => p.BoundMotionDataProject != null);
+		var targetProject = manager.AnimDataList.First(p => p.BoundMotionDataProject != null);
 
 		var motionData = targetProject.BoundMotionDataProject!;
 		var originalMotionBlockCount = motionData.Blocks.Count;
@@ -249,9 +249,9 @@ public class AnimDataManagerTests : IDisposable
 		var manager = CreateManager();
 		manager.SplitAnimDataSingleFile(_projectManager);
 
-		var originalProjectCount = manager.animDataList.Count;
+		var originalProjectCount = manager.AnimDataList.Count;
 
-		var targetProject = manager.animDataList.First(p => p.BoundMotionDataProject != null);
+		var targetProject = manager.AnimDataList.First(p => p.BoundMotionDataProject != null);
 		targetProject.AddDummyClipData("ProjectCountTestClip");
 
 		manager.MergeAnimDataSingleFile();
@@ -264,7 +264,7 @@ public class AnimDataManagerTests : IDisposable
 		var reSplitManager = new AnimDataManager(reSplitPathContext);
 		reSplitManager.SplitAnimDataSingleFile(_projectManager);
 
-		Assert.Equal(originalProjectCount, reSplitManager.animDataList.Count);
+		Assert.Equal(originalProjectCount, reSplitManager.AnimDataList.Count);
 	}
 
 	[Fact]
@@ -274,7 +274,7 @@ public class AnimDataManagerTests : IDisposable
 		manager.SplitAnimDataSingleFile(_projectManager);
 
 		var projectsWithMotion = manager
-			.animDataList.Where(p => p.BoundMotionDataProject != null)
+			.AnimDataList.Where(p => p.BoundMotionDataProject != null)
 			.Take(2)
 			.ToList();
 
@@ -300,8 +300,8 @@ public class AnimDataManagerTests : IDisposable
 		var reSplitManager = new AnimDataManager(reSplitPathContext);
 		reSplitManager.SplitAnimDataSingleFile(_projectManager);
 
-		var unmodifiedIndex = manager.animDataList.IndexOf(unmodifiedProject);
-		var reSplitUnmodified = reSplitManager.animDataList[unmodifiedIndex];
+		var unmodifiedIndex = manager.AnimDataList.IndexOf(unmodifiedProject);
+		var reSplitUnmodified = reSplitManager.AnimDataList[unmodifiedIndex];
 
 		Assert.Equal(unmodifiedBefore, reSplitUnmodified.ToString());
 		Assert.Equal(unmodifiedMotionBefore, reSplitUnmodified.BoundMotionDataProject!.ToString());
@@ -313,7 +313,7 @@ public class AnimDataManagerTests : IDisposable
 		var manager = CreateManager();
 		manager.SplitAnimDataSingleFile(_projectManager);
 
-		var targetProject = manager.animDataList.First(p => p.BoundMotionDataProject != null);
+		var targetProject = manager.AnimDataList.First(p => p.BoundMotionDataProject != null);
 
 		targetProject.AddDummyClipData("ValidIDTestClip");
 
@@ -340,7 +340,7 @@ public class AnimDataManagerTests : IDisposable
 		manager.SplitAnimDataSingleFile(_projectManager);
 
 		var projectsWithMotion = manager
-			.animDataList.Where(p => p.BoundMotionDataProject != null)
+			.AnimDataList.Where(p => p.BoundMotionDataProject != null)
 			.Take(3)
 			.ToList();
 
@@ -372,7 +372,7 @@ public class AnimDataManagerTests : IDisposable
 		var reSplitManager = new AnimDataManager(reSplitPathContext);
 		reSplitManager.SplitAnimDataSingleFile(_projectManager);
 
-		Assert.Equal(manager.animDataList.Count, reSplitManager.animDataList.Count);
+		Assert.Equal(manager.AnimDataList.Count, reSplitManager.AnimDataList.Count);
 	}
 
 	[Fact]
@@ -381,7 +381,7 @@ public class AnimDataManagerTests : IDisposable
 		var manager = CreateManager();
 		manager.SplitAnimDataSingleFile(_projectManager);
 
-		var targetProject = manager.animDataList.First(p => p.BoundMotionDataProject != null);
+		var targetProject = manager.AnimDataList.First(p => p.BoundMotionDataProject != null);
 
 		var motionData = targetProject.BoundMotionDataProject!;
 		var originalMotionBlockCount = motionData.Blocks.Count;

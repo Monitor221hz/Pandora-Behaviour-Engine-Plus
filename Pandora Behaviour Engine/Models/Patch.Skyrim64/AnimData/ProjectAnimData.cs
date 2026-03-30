@@ -80,7 +80,7 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 			StreamReader reader,
 			IAnimDataManager manager,
 			int lineLimit,
-			[NotNullWhen(true)] out IProjectAnimData? projectAnimData
+			[NotNullWhen(true)] out ProjectAnimData? projectAnimData
 		)
 		{
 			projectAnimData = null;

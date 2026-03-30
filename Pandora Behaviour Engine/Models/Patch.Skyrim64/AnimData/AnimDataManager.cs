@@ -21,8 +21,8 @@ public class AnimDataManager : IAnimDataManager
 
 	private List<string> projectNames = [];
 	private Dictionary<string, Dictionary<int, int>> MotionBlockIndexes { get; set; } = [];
-	internal List<IProjectAnimData> animDataList { get; set; } = [];
-	private List<IMotionData> motionDataList { get; set; } = [];
+	internal List<ProjectAnimData> AnimDataList { get; set; } = [];
+	private List<IMotionData> MotionDataList { get; set; } = [];
 
 	private readonly IEnginePathsFacade _pathContext;
 
@@ -49,7 +49,7 @@ public class AnimDataManager : IAnimDataManager
 
 	private void MapAnimData()
 	{
-		foreach (ProjectAnimData animData in animDataList)
+		foreach (ProjectAnimData animData in AnimDataList)
 		{
 			MapProjectAnimData(animData);
 		}
@@ -85,7 +85,7 @@ public class AnimDataManager : IAnimDataManager
 						$"Reading TemplateAnimData file {TemplateAnimDataSingleFile.Name}, found {NumProjects} projects."
 					);
 					IProject? activeProject = null;
-					IProjectAnimData? animData = null;
+					ProjectAnimData? animData = null;
 					IMotionData? motionData;
 					while ((expectedLine = reader.ReadLine()) != null)
 					{
@@ -127,7 +127,7 @@ public class AnimDataManager : IAnimDataManager
 									projectIndex++;
 									sectionIndex++;
 								}
-								animDataList.Add(animData);
+								AnimDataList.Add(animData);
 								if (activeProject != null)
 								{
 									activeProject.AnimData = animData;
@@ -143,7 +143,7 @@ public class AnimDataManager : IAnimDataManager
 								if (animData != null)
 									animData.BoundMotionDataProject = motionData;
 
-								motionDataList.Add(motionData);
+								MotionDataList.Add(motionData);
 								projectIndex++;
 							}
 						}
@@ -206,7 +206,7 @@ public class AnimDataManager : IAnimDataManager
 
 				for (int i = 0; i < projectNames.Count; i++)
 				{
-					var animData = animDataList[i];
+					var animData = AnimDataList[i];
 					var motionData = animData.BoundMotionDataProject;
 
 					writer.WriteLine(animData.GetLineCount());

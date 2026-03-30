@@ -65,12 +65,12 @@ public class SkyrimPatcher : IPatcher
 {
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-	private List<IModInfo> activeMods { get; set; } = [];
+	private List<IModInfo> _activeMods = [];
 
 	private readonly NemesisAssembler _nemesisAssembler;
 	private readonly PandoraAssembler _pandoraAssembler;
 
-	public void SetTarget(List<IModInfo> mods) => activeMods = mods;
+	public void SetTarget(List<IModInfo> mods) => _activeMods = mods;
 
 	private IMetaDataExporter<IPackFile> exporter;
 
@@ -92,9 +92,9 @@ public class SkyrimPatcher : IPatcher
 	{
 		StringBuilder logBuilder = new("\r\n");
 
-		for (int i = 0; i < activeMods.Count; i++)
+		for (int i = 0; i < _activeMods.Count; i++)
 		{
-			IModInfo mod = activeMods[i];
+			IModInfo mod = _activeMods[i];
 			string modLine = $"Pandora Mod {i + 1} : {mod.Name} - v.{mod.Version}";
 			logBuilder.AppendLine(modLine);
 			logger.Info(modLine);
@@ -138,7 +138,7 @@ public class SkyrimPatcher : IPatcher
 		try
 		{
 			Parallel.ForEach(
-				activeMods,
+				_activeMods,
 				mod =>
 				{
 					switch (mod.Format)

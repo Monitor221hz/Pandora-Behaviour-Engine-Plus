@@ -15,13 +15,13 @@ public class ReplaceElementChange : IPackFileChange
 	public XmlNodeType AssociatedType { get; } = XmlNodeType.Element;
 	public string Target { get; private set; }
 	public string Path { get; private set; }
-	private XElement element { get; set; }
+	private XElement _element;
 
 	public ReplaceElementChange(string target, string path, XElement element)
 	{
 		Target = target;
 		Path = path;
-		this.element = element;
+		_element = element;
 	}
 
 	public bool Apply(IPackFile packFile)
@@ -30,8 +30,8 @@ public class ReplaceElementChange : IPackFileChange
 		{
 			return false;
 		}
-		element = PackFileEditor.ReplaceElement(xmap!, Path, element);
-		return element != null;
+		_element = PackFileEditor.ReplaceElement(xmap!, Path, _element);
+		return _element != null;
 	}
 
 	public bool Revert(PackFile packFile)

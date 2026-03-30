@@ -14,31 +14,31 @@ public class PackFileDispatcher : IPackFileDispatcher
 {
 	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-	private List<IPackFileChange> elementChanges { get; set; } = [];
+	private List<IPackFileChange> _elementChanges = [];
 
-	private List<IPackFileChange> textChanges { get; set; } = [];
+	private List<IPackFileChange> _textChanges = [];
 
-	private List<IPackFileChangeOwner> changeOwners { get; set; } = [];
+	private List<IPackFileChangeOwner> _changeOwners = [];
 
-	private IPackFileValidator packFileValidator { get; set; } = new PackFileValidator();
+	private readonly PackFileValidator _packFileValidator = new();
 
 	public void TrackPotentialNode(IPackFile packFile, string nodeName, XElement element)
 	{
 		packFile.XmlDeserializer.Collect(nodeName, element);
-		packFileValidator.TrackElement(element);
+		_packFileValidator.TrackElement(element);
 	}
 
 	public void AddChangeSet(IPackFileChangeOwner changeOwner)
 	{
-		lock (changeOwners)
+		lock (_changeOwners)
 		{
-			changeOwners.Add(changeOwner);
+			_changeOwners.Add(changeOwner);
 		}
 	}
 
 	public void SortChangeSets()
 	{
-		changeOwners = changeOwners.OrderBy(s => s.Origin.Priority).ToList();
+		_changeOwners = _changeOwners.OrderBy(s => s.Origin.Priority).ToList();
 	}
 
 	public void ApplyChangesForNode(IHavokObject obj, IPackFile packFile)
@@ -47,7 +47,7 @@ public class PackFileDispatcher : IPackFileDispatcher
 		{
 			return;
 		}
-		PackFileChangeSet.ApplyForNode(nodeName, packFile, changeOwners);
+		PackFileChangeSet.ApplyForNode(nodeName, packFile, _changeOwners);
 	}
 
 	public void ApplyChanges(IPackFile packFile)
@@ -60,15 +60,15 @@ public class PackFileDispatcher : IPackFileDispatcher
 		if (packFile is IPackFileGraph graph)
 		{
 			isGraph = true;
-			packFileValidator.ValidateEventsAndVariables(graph);
+			_packFileValidator.ValidateEventsAndVariables(graph);
 		}
-		PackFileChangeSet.ApplyInOrder(packFile, changeOwners);
-		packFileValidator.ValidateTrackedElements();
+		PackFileChangeSet.ApplyInOrder(packFile, _changeOwners);
+		_packFileValidator.ValidateTrackedElements();
 		if (isGraph)
 		{
-			foreach (var changeSet in changeOwners)
+			foreach (var changeSet in _changeOwners)
 			{
-				changeSet.Validate(packFile, packFileValidator);
+				changeSet.Validate(packFile, _packFileValidator);
 			}
 		}
 		//packFile.PushAllNodes();

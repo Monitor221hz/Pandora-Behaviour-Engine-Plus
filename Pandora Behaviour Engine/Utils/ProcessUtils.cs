@@ -57,25 +57,28 @@ public static class ProcessUtils
 				return new ParentProcessInfo(parentPid, detectedManager);
 			}
 
-			if (parentName.Contains("proton"))
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
 			{
-				var managerInProton = DetectManagerFromCmdline(parentPid);
-				if (managerInProton is not ModManager.None)
+				if (parentName.Contains("proton"))
 				{
-					Logger.Info($"Detected launcher: {managerInProton} (Proton)");
-					return new ParentProcessInfo(parentPid, managerInProton);
+					var managerInProton = DetectManagerFromCmdline(parentPid);
+					if (managerInProton is not ModManager.None)
+					{
+						Logger.Info($"Detected launcher: {managerInProton} (Proton)");
+						return new ParentProcessInfo(parentPid, managerInProton);
+					}
+					Logger.Info("Proton detected, but no known mod manager found");
 				}
-				Logger.Info("Proton detected, but no known mod manager found");
-			}
-			else if (parentName.Contains("wine"))
-			{
-				var managerInWine = DetectManagerFromCmdline(parentPid);
-				if (managerInWine is not ModManager.None)
+				else if (parentName.Contains("wine"))
 				{
-					Logger.Info($"Detected launcher: {managerInWine} (Wine)");
-					return new ParentProcessInfo(parentPid, managerInWine);
+					var managerInWine = DetectManagerFromCmdline(parentPid);
+					if (managerInWine is not ModManager.None)
+					{
+						Logger.Info($"Detected launcher: {managerInWine} (Wine)");
+						return new ParentProcessInfo(parentPid, managerInWine);
+					}
+					Logger.Info("Wine detected, but no known mod manager found");
 				}
-				Logger.Info("Wine detected, but no known mod manager found");
 			}
 
 			Logger.Info("No known mod manager detected.");
