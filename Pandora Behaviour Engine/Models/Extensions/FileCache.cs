@@ -8,13 +8,13 @@ namespace Pandora.Models.Extensions;
 
 public class FileCache
 {
-	private readonly Dictionary<string, FileInfo> pathMap = [];
+	private readonly Dictionary<string, FileInfo> _pathMap = [];
 
 	public FileInfo GetFile(string path)
 	{
-		if (!pathMap.TryGetValue(path, out FileInfo? fileInfo))
+		if (!_pathMap.TryGetValue(path, out FileInfo? fileInfo))
 		{
-			pathMap.Add(path, fileInfo = new FileInfo(path));
+			_pathMap.Add(path, fileInfo = new FileInfo(path));
 		}
 
 		return fileInfo;
@@ -26,13 +26,13 @@ public class FileCache
 
 		for (int i = 0; i < fileArray.Length; i++)
 		{
-			if (pathMap.TryGetValue(fileArray[i].FullName, out FileInfo? fileInfo))
+			if (_pathMap.TryGetValue(fileArray[i].FullName, out FileInfo? fileInfo))
 			{
 				fileArray[i] = fileInfo;
 				continue;
 			}
 			fileInfo = fileArray[i];
-			pathMap.Add(fileInfo.FullName, fileInfo);
+			_pathMap.Add(fileInfo.FullName, fileInfo);
 		}
 		return fileArray;
 	}

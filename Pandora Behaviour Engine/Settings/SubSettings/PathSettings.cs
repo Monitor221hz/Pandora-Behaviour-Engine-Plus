@@ -20,7 +20,7 @@ internal sealed class PathSettings(
 	IApplicationPaths appPaths,
 	IUserPaths userPaths) : IPathSettings
 {
-	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 	private GameSettings _gameSettings = null!;
 
 	public IObservable<DirectoryInfo> GameDataChanged => userPaths.GameDataChanged;
@@ -105,7 +105,7 @@ internal sealed class PathSettings(
 		var normalized = validator.Normalize(directory);
 		if (normalized == null)
 		{
-			logger.UiWarn("Selected folder is not a valid game directory.");
+			Logger.UiWarn("Selected folder is not a valid game directory.");
 			throw new InvalidOperationException("Invalid game data directory.");
 		}
 

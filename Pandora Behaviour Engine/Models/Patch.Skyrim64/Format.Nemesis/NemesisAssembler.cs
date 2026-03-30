@@ -31,13 +31,13 @@ public class NemesisAssembler : IPatchAssembler
 	private readonly PandoraBridgedAssembler _pandoraConverter;
 	private readonly IMetaDataExporter<IPackFile> _exporter;
 
-	private static readonly IXExpression replacePattern = new XSkipWrapExpression(
+	private static readonly IXExpression ReplacePattern = new XSkipWrapExpression(
 		new XStep(XmlNodeType.Comment, "CLOSE"),
 		new XStep(XmlNodeType.Comment, "OPEN"),
 		new XStep(XmlNodeType.Comment, "ORIGINAL"),
 		new XStep(XmlNodeType.Comment, "CLOSE")
 	);
-	private static readonly IXExpression insertPattern = new XSkipWrapExpression(
+	private static readonly IXExpression InsertPattern = new XSkipWrapExpression(
 		new XStep(XmlNodeType.Comment, "ORIGINAL"),
 		new XStep(XmlNodeType.Comment, "OPEN"),
 		new XStep(XmlNodeType.Comment, "CLOSE")
@@ -45,7 +45,7 @@ public class NemesisAssembler : IPatchAssembler
 
 	//private XPathLookup lookup = new XPathLookup();
 
-	List<PackFile> packFiles = [];
+	List<PackFile> _packFiles = [];
 
 	public IProjectManager ProjectManager { get; private set; }
 	public IAnimDataManager AnimDataManager { get; private set; }

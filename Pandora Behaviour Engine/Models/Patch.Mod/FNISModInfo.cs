@@ -10,7 +10,8 @@ namespace Pandora.Models.Patch.Mod;
 
 public partial class FNISModInfo : IModInfo
 {
-	private static readonly Regex whiteSpaceRegex = WhiteSpaceRegex();
+	[GeneratedRegex(@"\s+", RegexOptions.Compiled)]
+	private static partial Regex WhiteSpaceRegex { get; }
 	public string Name { get; set; }
 
 	public override int GetHashCode()
@@ -44,9 +45,6 @@ public partial class FNISModInfo : IModInfo
 	{
 		Name = Path.GetFileNameWithoutExtension(file.Name);
 		Folder = file.Directory!;
-		Code = whiteSpaceRegex.Replace(Name, string.Empty);
+		Code = WhiteSpaceRegex.Replace(Name, string.Empty);
 	}
-
-	[GeneratedRegex(@"\s+", RegexOptions.Compiled)]
-	private static partial Regex WhiteSpaceRegex();
 }

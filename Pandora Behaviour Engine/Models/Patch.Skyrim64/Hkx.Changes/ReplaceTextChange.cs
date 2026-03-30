@@ -16,25 +16,25 @@ public class ReplaceTextChange : IPackFileChange
 	public string Target { get; }
 	public string Path { get; private set; }
 
-	private readonly string oldValue;
+	private readonly string _oldValue;
 
-	private readonly string newValue;
+	private readonly string _newValue;
 
-	private readonly string preValue;
+	private readonly string _preValue;
 
 	public ReplaceTextChange(
 		string target,
 		string path,
 		string preValue,
-		string oldvalue,
-		string newvalue
+		string oldValue,
+		string newValue
 	)
 	{
 		Target = target;
 		Path = path;
-		oldValue = oldvalue;
-		newValue = newvalue;
-		this.preValue = preValue;
+		_oldValue = oldValue;
+		_newValue = newValue;
+		_preValue = preValue;
 	}
 
 	public bool Apply(IPackFile packFile)
@@ -43,7 +43,7 @@ public class ReplaceTextChange : IPackFileChange
 		{
 			return false;
 		}
-		return PackFileEditor.ReplaceText(xmap!, Path, preValue, oldValue, newValue);
+		return PackFileEditor.ReplaceText(xmap!, Path, _preValue, _oldValue, _newValue);
 	}
 
 	public bool Revert(PackFile packFile)

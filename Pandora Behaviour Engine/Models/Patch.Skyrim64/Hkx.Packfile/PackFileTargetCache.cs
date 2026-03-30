@@ -16,44 +16,44 @@ namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 /// </summary>
 public class PackFileTargetCache
 {
-	private readonly Dictionary<PackFile, PackFileTarget> packFileChangeSetMap = [];
-	private readonly Dictionary<PackFile, HavokXmlSerializer> packFileSerializerMap = [];
+	private readonly Dictionary<PackFile, PackFileTarget> _packFileChangeSetMap = [];
+	private readonly Dictionary<PackFile, HavokXmlSerializer> _packFileSerializerMap = [];
 
-	private readonly ProjectManager projectManager;
+	private readonly ProjectManager _projectManager;
 
 	public PackFileTargetCache(IModInfo origin, ProjectManager manager)
 	{
 		Origin = origin;
-		projectManager = manager;
+		_projectManager = manager;
 	}
 
-	public IEnumerable<PackFileTarget> Targets => packFileChangeSetMap.Values;
+	public IEnumerable<PackFileTarget> Targets => _packFileChangeSetMap.Values;
 
 	public IModInfo Origin { get; private set; }
 
 	public HavokXmlSerializer GetSerializer(PackFile packFile)
 	{
 		HavokXmlSerializer? serializer = null;
-		lock (packFileSerializerMap)
+		lock (_packFileSerializerMap)
 		{
-			if (packFileSerializerMap.TryGetValue(packFile, out serializer))
+			if (_packFileSerializerMap.TryGetValue(packFile, out serializer))
 			{
 				return serializer;
 			}
 		}
 		serializer = new HavokXmlSerializer();
-		lock (packFileSerializerMap)
+		lock (_packFileSerializerMap)
 		{
-			packFileSerializerMap.Add(packFile, serializer);
+			_packFileSerializerMap.Add(packFile, serializer);
 		}
 		return serializer;
 	}
 
 	public PackFileChangeSet GetChangeSet(PackFile packFile)
 	{
-		lock (packFileChangeSetMap)
+		lock (_packFileChangeSetMap)
 		{
-			return packFileChangeSetMap[packFile].ChangeSet;
+			return _packFileChangeSetMap[packFile].ChangeSet;
 		}
 	}
 
@@ -62,9 +62,9 @@ public class PackFileTargetCache
 		[NotNullWhen(true)] out PackFileChangeSet? changeSet
 	)
 	{
-		lock (packFileChangeSetMap)
+		lock (_packFileChangeSetMap)
 		{
-			if (packFileChangeSetMap.TryGetValue(packFile, out var target))
+			if (_packFileChangeSetMap.TryGetValue(packFile, out var target))
 			{
 				changeSet = target.ChangeSet;
 				return true;
@@ -76,21 +76,21 @@ public class PackFileTargetCache
 
 	public void AddChangeSet(PackFile packFile, PackFileChangeSet changeSet)
 	{
-		lock (packFileChangeSetMap)
+		lock (_packFileChangeSetMap)
 		{
-			if (!packFileChangeSetMap.ContainsKey(packFile))
+			if (!_packFileChangeSetMap.ContainsKey(packFile))
 			{
-				packFileChangeSetMap.Add(packFile, new PackFileTarget(packFile, changeSet));
+				_packFileChangeSetMap.Add(packFile, new PackFileTarget(packFile, changeSet));
 			}
 		}
-		projectManager.TryActivatePackFile(packFile);
+		_projectManager.TryActivatePackFile(packFile);
 	}
 
 	public void AddChange(PackFile packFile, IPackFileChange change)
 	{
-		lock (packFileChangeSetMap)
+		lock (_packFileChangeSetMap)
 		{
-			if (packFileChangeSetMap.TryGetValue(packFile, out var target))
+			if (_packFileChangeSetMap.TryGetValue(packFile, out var target))
 			{
 				lock (target.ChangeSet)
 				{
@@ -99,7 +99,7 @@ public class PackFileTargetCache
 				return;
 			}
 		}
-		projectManager.TryActivatePackFile(packFile);
+		_projectManager.TryActivatePackFile(packFile);
 		var changeSet = new PackFileChangeSet(Origin);
 		changeSet.AddChange(change);
 		AddChangeSet(packFile, changeSet);
@@ -125,9 +125,9 @@ public class PackFileTargetCache
 
 	public void AddElementAsChange(PackFile packFile, XElement element)
 	{
-		lock (packFileChangeSetMap)
+		lock (_packFileChangeSetMap)
 		{
-			if (packFileChangeSetMap.TryGetValue(packFile, out var target))
+			if (_packFileChangeSetMap.TryGetValue(packFile, out var target))
 			{
 				lock (target.ChangeSet)
 				{
@@ -136,7 +136,7 @@ public class PackFileTargetCache
 				return;
 			}
 		}
-		projectManager.TryActivatePackFile(packFile);
+		_projectManager.TryActivatePackFile(packFile);
 		var changeSet = new PackFileChangeSet(Origin);
 		changeSet.AddElementAsChange(element);
 		AddChangeSet(packFile, changeSet);

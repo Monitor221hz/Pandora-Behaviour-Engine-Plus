@@ -63,7 +63,7 @@ public class NemesisPatcher : IPatcher
 
 public class SkyrimPatcher : IPatcher
 {
-	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
 	private List<IModInfo> _activeMods = [];
 
@@ -72,7 +72,7 @@ public class SkyrimPatcher : IPatcher
 
 	public void SetTarget(List<IModInfo> mods) => _activeMods = mods;
 
-	private IMetaDataExporter<IPackFile> exporter;
+	private IMetaDataExporter<IPackFile> _exporter;
 
 	public PatcherFlags Flags { get; private set; } = PatcherFlags.None;
 
@@ -97,7 +97,7 @@ public class SkyrimPatcher : IPatcher
 			IModInfo mod = _activeMods[i];
 			string modLine = $"Pandora Mod {i + 1} : {mod.Name} - v.{mod.Version}";
 			logBuilder.AppendLine(modLine);
-			logger.Info(modLine);
+			Logger.Info(modLine);
 		}
 
 		_nemesisAssembler.GetPostMessages(logBuilder);
@@ -133,7 +133,7 @@ public class SkyrimPatcher : IPatcher
 
 	public async Task<bool> UpdateAsync()
 	{
-		logger.Info($"Skyrim Patcher {GetVersionString()}");
+		Logger.Info($"Skyrim Patcher {GetVersionString()}");
 
 		try
 		{
@@ -158,7 +158,7 @@ public class SkyrimPatcher : IPatcher
 		catch (Exception ex)
 		{
 			Flags |= PatcherFlags.UpdateFailed;
-			logger.Fatal($"Skyrim Patcher > Active Mods > Update > FAILED > {ex}");
+			Logger.Fatal($"Skyrim Patcher > Active Mods > Update > FAILED > {ex}");
 		}
 
 		return !Flags.HasFlag(PatcherFlags.UpdateFailed);

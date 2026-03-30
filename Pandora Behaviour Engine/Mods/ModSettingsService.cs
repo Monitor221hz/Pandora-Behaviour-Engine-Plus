@@ -15,7 +15,7 @@ namespace Pandora.Mods;
 
 public sealed class ModSettingsService : IModSettingsService
 {
-	private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+	private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
 	private readonly IOutputPaths _pathContext;
 
@@ -42,7 +42,7 @@ public sealed class ModSettingsService : IModSettingsService
 		}
 		catch (Exception ex)
 		{
-			logger.Warn(ex, "Failed to load mod settings. Returning empty list.");
+			Logger.Warn(ex, "Failed to load mod settings. Returning empty list.");
 			return [];
 		}
 	}
@@ -62,11 +62,11 @@ public sealed class ModSettingsService : IModSettingsService
 				ModsJsonContext.Default.ListModSaveEntry
 			);
 
-			logger.Info("Mod settings saved.");
+			Logger.Info("Mod settings saved.");
 		}
 		catch (Exception ex)
 		{
-			logger.Error(ex, "Failed to save mod settings.");
+			Logger.Error(ex, "Failed to save mod settings.");
 			throw;
 		}
 	}

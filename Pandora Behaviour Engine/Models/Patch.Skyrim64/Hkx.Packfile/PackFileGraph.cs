@@ -20,17 +20,17 @@ public class PackFileGraph : PackFile, IEquatable<PackFileGraph>, IPackFileGraph
 	public hkbBehaviorGraphStringData StringData { get; private set; }
 	public hkbVariableValueSet VariableValueSet { get; private set; }
 
-	private readonly HashSet<string> customEventBuffer = [];
+	private readonly HashSet<string> _customEventBuffer = [];
 
 	public bool AddEventBuffer(string name)
 	{
-		lock (customEventBuffer)
+		lock (_customEventBuffer)
 		{
-			return customEventBuffer.Add(name);
+			return _customEventBuffer.Add(name);
 		}
 	}
 
-	private readonly Dictionary<string, int> customEventIndices = new(
+	private readonly Dictionary<string, int> _customEventIndices = new(
 		StringComparer.OrdinalIgnoreCase
 	);
 
@@ -84,7 +84,7 @@ public class PackFileGraph : PackFile, IEquatable<PackFileGraph>, IPackFileGraph
 
 	public void FlushEventBuffer(string name)
 	{
-		foreach (var eventName in customEventBuffer)
+		foreach (var eventName in _customEventBuffer)
 		{
 			AddDefaultEvent(eventName);
 		}
@@ -93,9 +93,9 @@ public class PackFileGraph : PackFile, IEquatable<PackFileGraph>, IPackFileGraph
 	public int AddDefaultEvent(string name)
 	{
 		int index = -1;
-		lock (customEventIndices)
+		lock (_customEventIndices)
 		{
-			if (customEventIndices.TryGetValue(name, out index))
+			if (_customEventIndices.TryGetValue(name, out index))
 			{
 				return index;
 			}
@@ -106,7 +106,7 @@ public class PackFileGraph : PackFile, IEquatable<PackFileGraph>, IPackFileGraph
 					index = StringData.eventNames.Count;
 					Data.eventInfos.Add(new hkbEventInfo() { flags = 0 });
 					StringData.eventNames.Add(name);
-					customEventIndices.Add(name, index);
+					_customEventIndices.Add(name, index);
 				}
 			}
 		}
@@ -116,9 +116,9 @@ public class PackFileGraph : PackFile, IEquatable<PackFileGraph>, IPackFileGraph
 	public int FindEvent(string name)
 	{
 		int index;
-		lock (customEventIndices)
+		lock (_customEventIndices)
 		{
-			if (customEventIndices.TryGetValue(name, out index))
+			if (_customEventIndices.TryGetValue(name, out index))
 			{
 				return index;
 			}
@@ -136,7 +136,7 @@ public class PackFileGraph : PackFile, IEquatable<PackFileGraph>, IPackFileGraph
 						)
 						{
 							index = i;
-							customEventIndices.Add(name, index);
+							_customEventIndices.Add(name, index);
 							return index;
 						}
 					}

@@ -20,9 +20,9 @@ namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
 
 public class FNISParser : IFNISParser
 {
-	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-	private static readonly HashSet<string> animTypePrefixes =
+	private static readonly HashSet<string> AnimTypePrefixes =
 	[
 		"b",
 		"s",
@@ -37,14 +37,14 @@ public class FNISParser : IFNISParser
 		"ch",
 	];
 
-	private static readonly Regex hkxRegex = new("\\S*\\.hkx", RegexOptions.IgnoreCase);
+	private static readonly Regex HkxRegex = new("\\S*\\.hkx", RegexOptions.IgnoreCase);
 
-	private static readonly Regex animLineRegex = new(
+	private static readonly Regex AnimLineRegex = new(
 		@"^([^('|\s)]+)\s*(-\S+)*\s*(\S+)\s+(\S+.hkx)(?:[^\S\r\n]+(\S+))*",
 		RegexOptions.Compiled
 	);
 
-	private static readonly Dictionary<string, string> stateMachineMap = new()
+	private static readonly Dictionary<string, string> StateMachineMap = new()
 	{
 		{ "atronachflame~atronachflamebehavior", "#0414" },
 		{ "atronachfrostproject~atronachfrostbehavior", "#0439" },
@@ -97,17 +97,17 @@ public class FNISParser : IFNISParser
 		{ "scribproject~scribbehavior", "#0578" },
 	};
 
-	private static readonly Dictionary<string, string> animListExcludeMap = new()
+	private static readonly Dictionary<string, string> AnimListExcludeMap = new()
 	{
 		{ "dogproject", "wolf" },
 		{ "wolfproject", "dog" },
 	};
-	private static readonly Dictionary<string, string[]> manualScanDirectories = new()
+	private static readonly Dictionary<string, string[]> ManualScanDirectories = new()
 	{
 		{ "canine", ["wolf", "dog"] },
 	};
 
-	private static readonly HashSet<string> humanoidProjectIdentifiers = new(
+	private static readonly HashSet<string> HumanoidProjectIdentifiers = new(
 		StringComparer.OrdinalIgnoreCase
 	)
 	{
@@ -117,13 +117,13 @@ public class FNISParser : IFNISParser
 
 	private readonly IEnginePathsFacade _pathContext;
 	private readonly IProjectManager _projectManager;
-	private readonly HashSet<PackFile> parsedBehaviorFiles = [];
-	private readonly HashSet<Project> skipAnimlistProjects = [];
-	private readonly Dictionary<string, FNISAnimationList> animListFileMap = new(
+	private readonly HashSet<PackFile> _parsedBehaviorFiles = [];
+	private readonly HashSet<Project> _skipAnimListProjects = [];
+	private readonly Dictionary<string, FNISAnimationList> _animListFileMap = new(
 		StringComparer.OrdinalIgnoreCase
 	);
 
-	private readonly HashSet<string> parsedFiles = new(StringComparer.OrdinalIgnoreCase) { };
+	private readonly HashSet<string> _parsedFiles = new(StringComparer.OrdinalIgnoreCase) { };
 	public HashSet<IModInfo> ModInfos { get; private set; } = [];
 
 	public FNISParser(IEnginePathsFacade pathContext, IProjectManager manager)
@@ -144,12 +144,12 @@ public class FNISParser : IFNISParser
 			&& TryFindGraphHumanoid(modFolder, behaviorFolder, out var graphFile)
 		)
 		{
-			ParseAnimlist(animListFile, project, projectManager);
+			ParseAnimList(animListFile, project, projectManager);
 			InjectGraphReference(graphFile, project.BehaviorFile);
 		}
 		else
 		{
-			logger.Warn(
+			Logger.Warn(
 				$"FNIS Parser > Scan FNIS Animations > {modFolder.Name} in {project.Identifier} > FAILED"
 			);
 		}
@@ -168,7 +168,7 @@ public class FNISParser : IFNISParser
 			&& TryFindGraphCreature(creatureName, modFolder, behaviorFolder, out var graphFile)
 		)
 		{
-			ParseAnimlist(animListFile, project, projectManager);
+			ParseAnimList(animListFile, project, projectManager);
 			InjectGraphReference(graphFile, project.BehaviorFile);
 			return true;
 		}
@@ -215,7 +215,7 @@ public class FNISParser : IFNISParser
 			return;
 		}
 
-		bool isHumanoidProject = humanoidProjectIdentifiers.Contains(project.Identifier);
+		bool isHumanoidProject = HumanoidProjectIdentifiers.Contains(project.Identifier);
 		if (isHumanoidProject)
 		{
 			Parallel.ForEach(
@@ -261,7 +261,7 @@ public class FNISParser : IFNISParser
 					)
 				)
 				{
-					logger.Warn(
+					Logger.Warn(
 						$"FNIS Parser > {nameof(ProcessFNISAnimationsCreature)} > {pseudoProjectIdentifier}/{folder.Name} in {project.Identifier} > FAILED"
 					);
 				}
@@ -361,15 +361,15 @@ public class FNISParser : IFNISParser
 
 	private bool InjectGraphReference(FileInfo sourceFile, IPackFileGraph destPackFile)
 	{
-		lock (parsedFiles)
+		lock (_parsedFiles)
 		{
-			if (!parsedFiles.Add(sourceFile.FullName))
+			if (!_parsedFiles.Add(sourceFile.FullName))
 			{
 				return false;
 			}
 		}
 		string stateFolderName;
-		if (!stateMachineMap.TryGetValue(destPackFile.UniqueName, out stateFolderName!))
+		if (!StateMachineMap.TryGetValue(destPackFile.UniqueName, out stateFolderName!))
 		{
 			return false;
 		} //thread safe
@@ -403,15 +403,15 @@ public class FNISParser : IFNISParser
 		return true;
 	}
 
-	private void ParseAnimlist(
+	private void ParseAnimList(
 		FileInfo animListFile,
 		IProject project,
 		IProjectManager projectManager
 	)
 	{
-		lock (parsedFiles)
+		lock (_parsedFiles)
 		{
-			if (!parsedFiles.Add(animListFile.FullName))
+			if (!_parsedFiles.Add(animListFile.FullName))
 			{
 				return;
 			}

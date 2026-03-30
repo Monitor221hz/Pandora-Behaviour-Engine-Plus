@@ -28,7 +28,7 @@ public static class ProcessUtils
 
 	private record ParentProcessInfo(int Pid, ModManager Manager);
 
-	private static readonly List<(string[] keywords, ModManager manager)> _managerDetectors = new()
+	private static readonly List<(string[] keywords, ModManager manager)> ManagerDetectors = new()
 	{
 		(new[] { "modorganizer", "mo2" }, ModManager.ModOrganizer),
 		(new[] { "vortex" }, ModManager.Vortex),
@@ -198,7 +198,7 @@ public static class ProcessUtils
 
 	private static ModManager DetectManagerFromText(string textToSearch)
 	{
-		foreach (var (keywords, manager) in _managerDetectors)
+		foreach (var (keywords, manager) in ManagerDetectors)
 		{
 			if (keywords.Any(keyword => textToSearch.Contains(keyword)))
 			{

@@ -13,7 +13,7 @@ namespace Pandora.Logging.Diagnostics;
 
 public sealed class CrashLogWriter(IUserPaths paths)
 {
-	private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+	private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
 	public void Write(CrashType type, string log)
 	{
@@ -26,7 +26,7 @@ public sealed class CrashLogWriter(IUserPaths paths)
 		}
 		catch (Exception ex)
 		{
-			logger.UiError("Failed to write crash log", ex);
+			Logger.UiError("Failed to write crash log", ex);
 		}
 	}
 

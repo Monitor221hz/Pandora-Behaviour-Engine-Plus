@@ -18,7 +18,7 @@ namespace Pandora.ViewModels;
 
 public partial class LaunchElementViewModel : ViewModelBase, IActivatableViewModel
 {
-	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
 	public IEngineSharedState State { get; }
 
@@ -65,8 +65,8 @@ public partial class LaunchElementViewModel : ViewModelBase, IActivatableViewMod
 
 		var result = await Task.Run(() => _engine.RunAsync(activeMods));
 
-		logger.UiInfo(result.Message);
-		logger.UiInfo($"Launch finished in {result.Duration.TotalSeconds:F2} seconds.");
+		Logger.UiInfo(result.Message);
+		Logger.UiInfo($"Launch finished in {result.Duration.TotalSeconds:F2} seconds.");
 
 		await _modService.SaveSettingsAsync();
 

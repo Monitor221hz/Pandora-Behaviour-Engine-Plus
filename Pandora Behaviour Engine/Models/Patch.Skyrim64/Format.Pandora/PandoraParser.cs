@@ -14,7 +14,7 @@ using ChangeType = IPackFileChange.ChangeType;
 
 public class PandoraParser
 {
-	private static readonly Dictionary<string, ChangeType> changeTypeNameMap = Enum.GetValues(
+	private static readonly Dictionary<string, ChangeType> ChangeTypeNameMap = Enum.GetValues(
 			typeof(ChangeType)
 		)
 		.Cast<ChangeType>()
@@ -243,7 +243,7 @@ public class PandoraParser
 		}
 		foreach (var element in container.Elements())
 		{
-			if (changeTypeNameMap.TryGetValue(element.Name.ToString(), out ChangeType changeType))
+			if (ChangeTypeNameMap.TryGetValue(element.Name.ToString(), out ChangeType changeType))
 			{
 				if (element.HasAttributes)
 				{

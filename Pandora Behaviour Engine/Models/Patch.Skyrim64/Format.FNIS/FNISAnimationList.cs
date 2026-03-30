@@ -15,7 +15,7 @@ namespace Pandora.Patch.Patchers.Skyrim.FNIS;
 
 public partial class FNISAnimationList
 {
-	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
 	[GeneratedRegex(
 		"^([^('|\\s)]+)\\s*(?:-(\\S+)*)?\\s*(\\S+)\\s+(\\S+.hkx)(?:[^\\S\\r\\n]+(\\S+))*",
@@ -23,9 +23,9 @@ public partial class FNISAnimationList
 	)]
 	private static partial Regex FNISAnimLineRegex();
 
-	private static readonly Regex animLineRegex = FNISAnimLineRegex();
+	private static readonly Regex AnimLineRegex = FNISAnimLineRegex();
 
-	private static readonly Dictionary<string, string> linkedCharacterNameMap = new()
+	private static readonly Dictionary<string, string> LinkedCharacterNameMap = new()
 	{
 		{ "defaultmale", "defaultfemale" },
 		{ "defaultfemale", "defaultmale" },

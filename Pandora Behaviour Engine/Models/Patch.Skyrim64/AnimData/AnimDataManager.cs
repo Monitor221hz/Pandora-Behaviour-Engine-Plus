@@ -12,14 +12,14 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData;
 
 public class AnimDataManager : IAnimDataManager
 {
-	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
 	private const string ANIMDATA_FILENAME = "animationdatasinglefile.txt";
 
-	private readonly HashSet<int> usedClipIDs = [];
+	private readonly HashSet<int> _usedClipIDs = [];
 	public int NumClipIDs { get; private set; } = 0;
 
-	private readonly List<string> projectNames = [];
+	private readonly List<string> _projectNames = [];
 	private Dictionary<string, Dictionary<int, int>> MotionBlockIndexes { get; set; } = [];
 	internal List<ProjectAnimData> AnimDataList { get; set; } = [];
 	private List<IMotionData> MotionDataList { get; set; } = [];
@@ -43,7 +43,7 @@ public class AnimDataManager : IAnimDataManager
 	{
 		foreach (string clipId in animData.GetClipIDs())
 		{
-			usedClipIDs.Add(int.Parse(clipId));
+			_usedClipIDs.Add(int.Parse(clipId));
 		}
 	}
 
@@ -57,11 +57,11 @@ public class AnimDataManager : IAnimDataManager
 
 	public int GetNextValidID()
 	{
-		while (usedClipIDs.Contains(LastID))
+		while (_usedClipIDs.Contains(LastID))
 		{
 			LastID--;
 		}
-		usedClipIDs.Add(LastID);
+		_usedClipIDs.Add(LastID);
 		return LastID;
 	}
 
@@ -69,7 +69,7 @@ public class AnimDataManager : IAnimDataManager
 	{
 		LastID = 32767;
 
-		int NumProjects;
+		int numProjects;
 
 		try
 		{
@@ -80,9 +80,9 @@ public class AnimDataManager : IAnimDataManager
 					string? expectedLine;
 					int projectIndex = 0;
 					int sectionIndex = 0;
-					NumProjects = int.Parse(reader.ReadLine()!);
-					logger.Info(
-						$"Reading TemplateAnimData file {TemplateAnimDataSingleFile.Name}, found {NumProjects} projects."
+					numProjects = int.Parse(reader.ReadLine()!);
+					Logger.Info(
+						$"Reading TemplateAnimData file {TemplateAnimDataSingleFile.Name}, found {numProjects} projects."
 					);
 					IProject? activeProject = null;
 					ProjectAnimData? animData = null;
@@ -91,11 +91,11 @@ public class AnimDataManager : IAnimDataManager
 					{
 						if (expectedLine.Contains(".txt"))
 						{
-							projectNames.Add(Path.GetFileNameWithoutExtension(expectedLine));
+							_projectNames.Add(Path.GetFileNameWithoutExtension(expectedLine));
 						}
 						else if (int.TryParse(expectedLine, out int numLines))
 						{
-							string projectName = projectNames[projectIndex].ToLower();
+							string projectName = _projectNames[projectIndex].ToLower();
 
 							if (projectManager.ProjectLoaded(projectName))
 								activeProject = projectManager.LookupProject(projectName);
@@ -151,25 +151,25 @@ public class AnimDataManager : IAnimDataManager
 				}
 			}
 			MapAnimData();
-			logger.Info("Successfully split AnimData into projects and mapped.");
+			Logger.Info("Successfully split AnimData into projects and mapped.");
 		}
 		catch (FormatException ex)
 		{
-			logger.Error(
+			Logger.Error(
 				ex,
 				$"Invalid format while reading TemplateAnimData file {TemplateAnimDataSingleFile.Name}"
 			);
 		}
 		catch (IOException ex)
 		{
-			logger.Error(
+			Logger.Error(
 				ex,
 				$"I/O error while processing TemplateAnimData file {TemplateAnimDataSingleFile.Name}"
 			);
 		}
 		catch (Exception ex)
 		{
-			logger.Fatal(
+			Logger.Fatal(
 				ex,
 				$"Unexpected error while splitting TemplateAnimData from {TemplateAnimDataSingleFile.Name}"
 			);
@@ -190,21 +190,21 @@ public class AnimDataManager : IAnimDataManager
 			)
 			{
 				outputAnimDataSingleFile.Directory.Create();
-				logger.Debug($"Created directory for OutputAnimData output");
+				Logger.Debug($"Created directory for OutputAnimData output");
 			}
 
 			using (var writeStream = outputAnimDataSingleFile.Create())
 			using (var writer = new StreamWriter(writeStream))
 			{
-				writer.WriteLine(projectNames.Count);
-				logger.Info($"Merging {projectNames.Count} projects into OutputAnimData file");
+				writer.WriteLine(_projectNames.Count);
+				Logger.Info($"Merging {_projectNames.Count} projects into OutputAnimData file");
 
-				foreach (var projectName in projectNames)
+				foreach (var projectName in _projectNames)
 				{
 					writer.WriteLine($"{projectName}.txt");
 				}
 
-				for (int i = 0; i < projectNames.Count; i++)
+				for (int i = 0; i < _projectNames.Count; i++)
 				{
 					var animData = AnimDataList[i];
 					var motionData = animData.BoundMotionDataProject;
@@ -220,15 +220,15 @@ public class AnimDataManager : IAnimDataManager
 				}
 			}
 
-			logger.Info($"Successfully merged OutputAnimData file");
+			Logger.Info($"Successfully merged OutputAnimData file");
 		}
 		catch (IOException ex)
 		{
-			logger.Error(ex, $"I/O error while writing OutputAnimData file");
+			Logger.Error(ex, $"I/O error while writing OutputAnimData file");
 		}
 		catch (Exception ex)
 		{
-			logger.Fatal(ex, $"Unexpected error while merging OutputAnimData file");
+			Logger.Fatal(ex, $"Unexpected error while merging OutputAnimData file");
 			throw;
 		}
 	}

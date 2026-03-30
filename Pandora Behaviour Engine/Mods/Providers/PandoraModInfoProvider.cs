@@ -24,7 +24,7 @@ public class PandoraModInfoProvider : FileBasedModInfoProvider
 		{
 			await using var stream = infoFile.OpenRead();
 			using var reader = XmlReader.Create(stream);
-			if (serializer.Deserialize(reader) is PandoraModInfo modInfo)
+			if (Serializer.Deserialize(reader) is PandoraModInfo modInfo)
 			{
 				modInfo.FillData(infoFile.Directory!);
 				return modInfo;
@@ -37,5 +37,5 @@ public class PandoraModInfoProvider : FileBasedModInfoProvider
 		return null;
 	}
 
-	private static readonly XmlSerializer serializer = new(typeof(PandoraModInfo));
+	private static readonly XmlSerializer Serializer = new(typeof(PandoraModInfo));
 }

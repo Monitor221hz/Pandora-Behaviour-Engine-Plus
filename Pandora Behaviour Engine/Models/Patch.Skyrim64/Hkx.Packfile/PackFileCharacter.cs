@@ -31,8 +31,8 @@ public class PackFileCharacter : PackFile, IEquatable<PackFileCharacter>, IPackF
 	public string BehaviorFileName => StringData.behaviorFilename;
 	public string SkeletonFileName => StringData.rigName;
 
-	private HashSet<string> uniqueBaseAnimations = new(StringComparer.OrdinalIgnoreCase);
-	private readonly HashSet<string> uniqueAnimations = new(StringComparer.OrdinalIgnoreCase);
+	private HashSet<string> _uniqueBaseAnimations = new(StringComparer.OrdinalIgnoreCase);
+	private readonly HashSet<string> _uniqueAnimations = new(StringComparer.OrdinalIgnoreCase);
 
 	private object _uniqueAnimationLock = new();
 
@@ -49,7 +49,7 @@ public class PackFileCharacter : PackFile, IEquatable<PackFileCharacter>, IPackF
 
 	private void CacheUniqueBaseAnimations()
 	{
-		uniqueBaseAnimations = StringData.animationNames.ToHashSet();
+		_uniqueBaseAnimations = StringData.animationNames.ToHashSet();
 	}
 
 	[MemberNotNull(nameof(StringData), nameof(Data))]
@@ -96,18 +96,18 @@ public class PackFileCharacter : PackFile, IEquatable<PackFileCharacter>, IPackF
 
 	public bool AddUniqueAnimation(string name)
 	{
-		lock (uniqueBaseAnimations)
+		lock (_uniqueBaseAnimations)
 		{
-			if (uniqueBaseAnimations.Count == 0)
+			if (_uniqueBaseAnimations.Count == 0)
 			{
 				CacheUniqueBaseAnimations();
 			}
-			if (uniqueBaseAnimations.Contains(name))
+			if (_uniqueBaseAnimations.Contains(name))
 			{
 				return false;
 			}
 		}
-		if (uniqueAnimations.Add(name))
+		if (_uniqueAnimations.Add(name))
 		{
 			StringData.animationNames.Add(name);
 			return true;

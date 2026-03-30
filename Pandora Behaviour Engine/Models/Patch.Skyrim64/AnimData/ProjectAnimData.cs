@@ -19,7 +19,7 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 
 		private readonly IAnimDataManager _manager;
 
-		private readonly HashSet<string> dummyClipNames = new HashSet<string>();
+		private readonly HashSet<string> _dummyClipNames = new HashSet<string>();
 
 		public ProjectAnimData(IAnimDataManager manager)
 		{
@@ -60,9 +60,9 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 
 		public void AddDummyClipData(string clipName)
 		{
-			lock (dummyClipNames)
+			lock (_dummyClipNames)
 			{
-				if (dummyClipNames.Contains(clipName))
+				if (_dummyClipNames.Contains(clipName))
 					return;
 			}
 
@@ -70,9 +70,9 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 			_blocks.Add(new ClipDataBlock(clipName, id));
 
 			BoundMotionDataProject?.AddDummyClipMotionData(id);
-			lock (dummyClipNames)
+			lock (_dummyClipNames)
 			{
-				dummyClipNames.Add(clipName);
+				_dummyClipNames.Add(clipName);
 			}
 		}
 

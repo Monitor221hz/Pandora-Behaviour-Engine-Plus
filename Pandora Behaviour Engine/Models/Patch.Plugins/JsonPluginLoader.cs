@@ -14,7 +14,7 @@ namespace Pandora.Models.Patch.Plugins;
 /// </summary>
 public class JsonPluginLoader : IMetaPluginLoader
 {
-	private static readonly JsonSerializerOptions jsonOptions = new()
+	private static readonly JsonSerializerOptions JsonOptions = new()
 	{
 		AllowTrailingCommas = true,
 		PropertyNameCaseInsensitive = true,
@@ -35,7 +35,7 @@ public class JsonPluginLoader : IMetaPluginLoader
 		}
 		using (var readStream = infoFile.OpenRead())
 		{
-			pluginInfo = JsonSerializer.Deserialize<PluginInfo>(readStream, jsonOptions);
+			pluginInfo = JsonSerializer.Deserialize<PluginInfo>(readStream, JsonOptions);
 		}
 		return pluginInfo != null;
 	}

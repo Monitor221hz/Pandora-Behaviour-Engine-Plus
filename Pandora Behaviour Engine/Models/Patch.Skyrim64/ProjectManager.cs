@@ -22,16 +22,16 @@ public class ProjectManager : IProjectManager
 {
 	private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-	private readonly Dictionary<string, IProject> projectMap = new Dictionary<string, IProject>(
+	private readonly Dictionary<string, IProject> _projectMap = new Dictionary<string, IProject>(
 		StringComparer.OrdinalIgnoreCase
 	);
-	private readonly Dictionary<string, IProject> fileProjectMap = new Dictionary<string, IProject>(
+	private readonly Dictionary<string, IProject> _fileProjectMap = new Dictionary<string, IProject>(
 		StringComparer.OrdinalIgnoreCase
 	);
-	private readonly Dictionary<string, IProject> folderProjectMap = new Dictionary<string, IProject>(
+	private readonly Dictionary<string, IProject> _folderProjectMap = new Dictionary<string, IProject>(
 		StringComparer.OrdinalIgnoreCase
 	);
-	private Dictionary<string, List<IProject>> linkedProjectMap = new Dictionary<
+	private Dictionary<string, List<IProject>> _linkedProjectMap = new Dictionary<
 		string,
 		List<IProject>
 	>(StringComparer.OrdinalIgnoreCase);
@@ -39,11 +39,11 @@ public class ProjectManager : IProjectManager
 	private const string VANILLA_PROJECTPATHS_FILENAME = "vanilla_projectpaths.txt";
 
 	private readonly IEnginePathsFacade _pathContext;
-	private IPackFileCache packFileCache = new PackFileConcurrentCache();
+	private IPackFileCache _packFileCache = new PackFileConcurrentCache();
 
 	private readonly IFNISParser _fnisParser;
 
-	private readonly bool CompleteExportSuccess = true;
+	private const bool CompleteExportSuccess = true;
 
 	public HashSet<IPackFile> ActivePackFiles { get; private set; } = [];
 
@@ -71,7 +71,7 @@ public class ProjectManager : IProjectManager
 
 	public void GetAnimationInfo(StringBuilder builder)
 	{
-		var projects = projectMap.Values;
+		var projects = _projectMap.Values;
 		uint totalAnimationCount = 0;
 
 		builder.AppendLine();
@@ -102,9 +102,9 @@ public class ProjectManager : IProjectManager
 	}
 
 	public bool TryGetProject(string name, [NotNullWhen(true)] out IProject? project) =>
-		projectMap.TryGetValue(name, out project);
+		_projectMap.TryGetValue(name, out project);
 
-	public bool ProjectExists(string name) => projectMap.ContainsKey(name);
+	public bool ProjectExists(string name) => _projectMap.ContainsKey(name);
 
 	public void LoadTrackedProjects()
 	{
@@ -178,7 +178,7 @@ public class ProjectManager : IProjectManager
 
 	public void LoadProjectsParallel(List<string> projectPaths)
 	{
-		packFileCache = new PackFileConcurrentCache();
+		_packFileCache = new PackFileConcurrentCache();
 		ConcurrentDictionary<string, IProject> directoryProjectPaths = new();
 		Partitioner<string> partitioner = Partitioner.Create(projectPaths, true);
 		ParallelOptions options = new() { MaxDegreeOfParallelism = Environment.ProcessorCount / 2 };
@@ -215,16 +215,16 @@ public class ProjectManager : IProjectManager
 		if (string.IsNullOrWhiteSpace(projectFilePath))
 			return null;
 
-		lock (projectMap)
+		lock (_projectMap)
 		{
 			var project = Project.Load(
 				new FileInfo(
 					Path.Join(_pathContext.TemplateFolder.FullName, projectFilePath)
 				),
-				packFileCache
+				_packFileCache
 			);
 
-			projectMap.Add(project.Identifier, project);
+			_projectMap.Add(project.Identifier, project);
 
 			//lock (project) ExtractProject(project);
 			return project;
@@ -235,17 +235,17 @@ public class ProjectManager : IProjectManager
 	{
 		if (string.IsNullOrEmpty(projectFilePath))
 			return null;
-		lock (projectMap)
+		lock (_projectMap)
 		{
 			var project = new Project(
-				packFileCache.LoadPackFile(
+				_packFileCache.LoadPackFile(
 					new FileInfo(
 						Path.Join(_pathContext.GameDataFolder.FullName, projectFilePath)
 					)
 				)
 			);
 
-			projectMap.Add(project.Identifier, project);
+			_projectMap.Add(project.Identifier, project);
 
 			return project;
 		}
@@ -260,7 +260,7 @@ public class ProjectManager : IProjectManager
 			outPackFile = default;
 			return false;
 		}
-		outPackFile = (packFileCache.LoadPackFile(fileInfo) as T)!;
+		outPackFile = (_packFileCache.LoadPackFile(fileInfo) as T)!;
 		return true;
 	}
 
@@ -282,23 +282,23 @@ public class ProjectManager : IProjectManager
 			outPackFile = default;
 			return false;
 		}
-		outPackFile = (packFileCache.LoadPackFile(fileInfo) as T)!;
+		outPackFile = (_packFileCache.LoadPackFile(fileInfo) as T)!;
 		return true;
 	}
 
 	private void ExtractProject(IProject project)
 	{
-		lock (fileProjectMap)
+		lock (_fileProjectMap)
 		{
-			List<string> fileNames = project.MapFiles(packFileCache);
+			List<string> fileNames = project.MapFiles(_packFileCache);
 			foreach (string file in fileNames)
 			{
-				fileProjectMap.TryAdd(file, project);
+				_fileProjectMap.TryAdd(file, project);
 			}
 		}
-		lock (folderProjectMap)
+		lock (_folderProjectMap)
 		{
-			folderProjectMap.TryAdd(project.ProjectDirectory!.Name, project);
+			_folderProjectMap.TryAdd(project.ProjectDirectory!.Name, project);
 		}
 	}
 
@@ -306,7 +306,7 @@ public class ProjectManager : IProjectManager
 	{
 		packFile = null;
 		string[] sections = name.Split('~');
-		if (!projectMap.TryGetValue(sections[0], out var project))
+		if (!_projectMap.TryGetValue(sections[0], out var project))
 		{
 			return false;
 		}
@@ -317,7 +317,7 @@ public class ProjectManager : IProjectManager
 	{
 		string[] sections = name.Split('~');
 
-		var targetProject = projectMap[sections[0]];
+		var targetProject = _projectMap[sections[0]];
 		return targetProject.LookupPackFile(sections[1]);
 	}
 
@@ -325,20 +325,20 @@ public class ProjectManager : IProjectManager
 	{
 		string[] sections = name.Split('~');
 
-		if (!projectMap.TryGetValue(sections[0], out var targetProject))
+		if (!_projectMap.TryGetValue(sections[0], out var targetProject))
 			return false;
 
 		return targetProject.ContainsPackFile(sections[1]);
 	}
 
-	public bool ProjectLoaded(string name) => projectMap.ContainsKey(name);
+	public bool ProjectLoaded(string name) => _projectMap.ContainsKey(name);
 
-	public IProject LookupProject(string name) => projectMap[name];
+	public IProject LookupProject(string name) => _projectMap[name];
 
 	public bool TryLookupPackFile(string projectName, string packFileName, out IPackFile? packFile)
 	{
 		packFile = null;
-		if (!projectMap.TryGetValue(projectName, out var project))
+		if (!_projectMap.TryGetValue(projectName, out var project))
 		{
 			return false;
 		}
@@ -361,7 +361,7 @@ public class ProjectManager : IProjectManager
 		{
 			return TryLookupNestedPackFile(name, out packFile);
 		}
-		if (!fileProjectMap.TryGetValue(name, out var project))
+		if (!_fileProjectMap.TryGetValue(name, out var project))
 		{
 			return false;
 		}
@@ -371,7 +371,7 @@ public class ProjectManager : IProjectManager
 
 	public bool TryLookupProjectFolder(string folderName, out IProject? project)
 	{
-		return folderProjectMap.TryGetValue(folderName, out project);
+		return _folderProjectMap.TryGetValue(folderName, out project);
 	}
 
 	public bool TryLookupProjectFolderEx(string folderName, out IProject? project)
@@ -468,7 +468,7 @@ public class ProjectManager : IProjectManager
 		try
 		{
 			Parallel.ForEach(
-				projectMap.Values,
+				_projectMap.Values,
 				project =>
 				{
 					_fnisParser.ScanProjectAnimlist(project);

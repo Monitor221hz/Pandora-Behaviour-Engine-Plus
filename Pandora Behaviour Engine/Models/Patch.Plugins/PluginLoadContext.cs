@@ -9,21 +9,21 @@ namespace Pandora.Models.Patch.Plugins;
 
 internal class PluginLoadContext : AssemblyLoadContext
 {
-	private readonly AssemblyDependencyResolver dependancyResolver;
+	private readonly AssemblyDependencyResolver _dependencyResolver;
 
 	public PluginLoadContext(string pluginPath)
 	{
-		dependancyResolver = new AssemblyDependencyResolver(pluginPath);
+		_dependencyResolver = new AssemblyDependencyResolver(pluginPath);
 	}
 
 	public PluginLoadContext(FileInfo fileInfo)
 	{
-		dependancyResolver = new(fileInfo.FullName);
+		_dependencyResolver = new(fileInfo.FullName);
 	}
 
 	protected override Assembly? Load(AssemblyName assemblyName)
 	{
-		string? assemblyPath = dependancyResolver.ResolveAssemblyToPath(assemblyName);
+		string? assemblyPath = _dependencyResolver.ResolveAssemblyToPath(assemblyName);
 		if (assemblyPath == null)
 		{
 			return null;
@@ -33,7 +33,7 @@ internal class PluginLoadContext : AssemblyLoadContext
 
 	protected override nint LoadUnmanagedDll(string unmanagedDllName)
 	{
-		string? libraryPath = dependancyResolver.ResolveUnmanagedDllToPath(unmanagedDllName);
+		string? libraryPath = _dependencyResolver.ResolveUnmanagedDllToPath(unmanagedDllName);
 		if (libraryPath == null)
 		{
 			return nint.Zero;
