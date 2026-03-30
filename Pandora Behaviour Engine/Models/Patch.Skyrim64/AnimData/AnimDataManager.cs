@@ -26,7 +26,7 @@ public class AnimDataManager : IAnimDataManager
 
 	private readonly IEnginePathsFacade _pathContext;
 
-	public FileInfo OutputAnimDataSingleFile { get; }
+	public FileInfo OutputAnimDataSingleFile => throw new NotImplementedException();
 	public FileInfo TemplateAnimDataSingleFile { get; }
 
 	private int LastID { get; set; } = 32767;

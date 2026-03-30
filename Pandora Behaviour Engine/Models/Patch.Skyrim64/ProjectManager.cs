@@ -10,6 +10,7 @@ using Pandora.Paths.Abstractions;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -77,6 +78,7 @@ public class ProjectManager : IProjectManager
 		builder.AppendLine();
 		foreach (var project in projects)
 		{
+			Debug.Assert(project.CharacterPackFile is not null, "Project must have a character pack file.");
 			var animCount = project.CharacterPackFile.NewAnimationCount;
 			if (animCount == 0)
 			{
@@ -198,6 +200,10 @@ public class ProjectManager : IProjectManager
 				{
 					existingProject.Sibling = project;
 					project.Sibling = existingProject;
+					Debug.Assert(project.CharacterPackFile is not null,
+						"Project must have a character pack file.");
+					Debug.Assert(project.Sibling.CharacterPackFile is not null,
+						"Sibling project must have a character pack file.");
 					project.CharacterPackFile.AttachUniqueAnimationLock(
 						project.Sibling.CharacterPackFile
 					);

@@ -21,7 +21,7 @@ public class AnimSetDataManager : IAnimSetDataManager
 	private readonly IEnginePathsFacade _pathContext;
 
 	public FileInfo TemplateAnimSetDataSingleFile { get; }
-	public FileInfo OutputAnimSetDataSingleFile { get; }
+	public FileInfo OutputAnimSetDataSingleFile => throw new NotImplementedException();
 
 	private readonly FileInfo _vanillaHkxFiles;
 

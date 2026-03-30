@@ -15,6 +15,7 @@ using Pandora.API.Patch.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 using Pandora.Patch.Patchers.Skyrim.FNIS;
 using Pandora.Paths.Abstractions;
+using System.Diagnostics;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
 
@@ -144,6 +145,7 @@ public class FNISParser : IFNISParser
 			&& TryFindGraphHumanoid(modFolder, behaviorFolder, out var graphFile)
 		)
 		{
+			Debug.Assert(project.BehaviorFile is not null, "Project must have a behavior file.");
 			ParseAnimList(animListFile, project, projectManager);
 			InjectGraphReference(graphFile, project.BehaviorFile);
 		}
@@ -168,6 +170,7 @@ public class FNISParser : IFNISParser
 			&& TryFindGraphCreature(creatureName, modFolder, behaviorFolder, out var graphFile)
 		)
 		{
+			Debug.Assert(project.BehaviorFile is not null, "Project must have a behavior file.");
 			ParseAnimList(animListFile, project, projectManager);
 			InjectGraphReference(graphFile, project.BehaviorFile);
 			return true;
@@ -200,6 +203,7 @@ public class FNISParser : IFNISParser
 		}
 		var modAnimationFolders = animationsFolder.GetDirectories();
 
+		Debug.Assert(project.BehaviorFile is not null, "Project must have a behavior file.");
 		var behaviorFolder = new DirectoryInfo(
 			Path.Join(
 				absoluteOutputDirectory.FullName,

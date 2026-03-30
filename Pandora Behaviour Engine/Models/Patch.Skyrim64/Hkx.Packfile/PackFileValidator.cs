@@ -253,7 +253,7 @@ public class PackFileValidator : IPackFileValidator
 		{
 			foreach (IPackFileChange change in changeList)
 			{
-				if (!packFile.TryGetXMap(change.Target, out XMapElement element))
+				if (!packFile.TryGetXMap(change.Target, out XMapElement? element))
 				{
 					continue;
 				}

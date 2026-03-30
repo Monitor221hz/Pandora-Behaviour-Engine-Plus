@@ -21,11 +21,6 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 
 		private readonly HashSet<string> _dummyClipNames = new HashSet<string>();
 
-		public ProjectAnimData(IAnimDataManager manager)
-		{
-			this._manager = manager;
-		}
-
 		public ProjectAnimData(
 			ProjectAnimDataHeader header,
 			List<IClipDataBlock> blocks,
@@ -34,7 +29,7 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 		{
 			Header = header;
 			_blocks = blocks;
-			this._manager = manager;
+			_manager = manager;
 		}
 
 		public IEnumerable<string> GetClipIDs() => _blocks.ConvertAll(b => b.ClipID);

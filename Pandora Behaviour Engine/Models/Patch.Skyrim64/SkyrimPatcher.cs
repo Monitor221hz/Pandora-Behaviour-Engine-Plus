@@ -72,8 +72,6 @@ public class SkyrimPatcher : IPatcher
 
 	public void SetTarget(List<IModInfo> mods) => _activeMods = mods;
 
-	private IMetaDataExporter<IPackFile> _exporter;
-
 	public PatcherFlags Flags { get; private set; } = PatcherFlags.None;
 
 	public Version GetVersion() => Assembly.GetEntryAssembly()!.GetName().Version!;

@@ -4,6 +4,7 @@
 using HKX2E;
 using Pandora.API.Patch.Skyrim64;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
@@ -248,8 +249,15 @@ public partial class BasicAnimation : IFNISAnimation
 	{
 		if (project.Sibling != null)
 		{
+			Debug.Assert(project.Sibling.CharacterPackFile is not null,
+		"Sibling project must have a character pack file.");
+
 			projectManager.TryActivatePackFile(project.Sibling.CharacterPackFile);
 		}
+
+		Debug.Assert(project.CharacterPackFile is not null,
+	"Project must have a character pack file.");
+
 		projectManager.TryActivatePackFile(project.CharacterPackFile);
 		project.CharacterPackFile.AddUniqueAnimation(AnimationFilePath);
 	}
