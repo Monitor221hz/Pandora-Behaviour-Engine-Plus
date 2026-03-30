@@ -8,7 +8,7 @@ namespace Pandora.Models.Extensions;
 
 public class FileCache
 {
-	private Dictionary<string, FileInfo> pathMap = [];
+	private readonly Dictionary<string, FileInfo> pathMap = [];
 
 	public FileInfo GetFile(string path)
 	{

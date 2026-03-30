@@ -39,7 +39,7 @@ public partial class BasicAnimation : IFNISAnimation
 	public string GraphEvent { get; private set; }
 	public string AnimationFilePath { get; private set; }
 
-	private List<string> animObjectNames = [];
+	private readonly List<string> animObjectNames = [];
 
 	public IFNISAnimation? NextAnimation { get; set; } //unused
 

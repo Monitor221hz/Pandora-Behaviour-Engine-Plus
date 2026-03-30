@@ -32,7 +32,7 @@ public class PackFileCharacter : PackFile, IEquatable<PackFileCharacter>, IPackF
 	public string SkeletonFileName => StringData.rigName;
 
 	private HashSet<string> uniqueBaseAnimations = new(StringComparer.OrdinalIgnoreCase);
-	private HashSet<string> uniqueAnimations = new(StringComparer.OrdinalIgnoreCase);
+	private readonly HashSet<string> uniqueAnimations = new(StringComparer.OrdinalIgnoreCase);
 
 	private object _uniqueAnimationLock = new();
 

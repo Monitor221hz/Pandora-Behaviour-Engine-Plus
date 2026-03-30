@@ -14,8 +14,8 @@ public class InsertTextChange : IPackFileChange
 	public XmlNodeType AssociatedType { get; } = XmlNodeType.Text;
 	public string Target { get; }
 	public string Path { get; private set; }
-	private string markerValue;
-	private string value;
+	private readonly string markerValue;
+	private readonly string value;
 
 	public InsertTextChange(string target, string path, string markerValue, string value)
 	{

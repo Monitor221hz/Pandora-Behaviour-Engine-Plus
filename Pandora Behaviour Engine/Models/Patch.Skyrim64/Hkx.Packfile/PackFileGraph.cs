@@ -20,7 +20,7 @@ public class PackFileGraph : PackFile, IEquatable<PackFileGraph>, IPackFileGraph
 	public hkbBehaviorGraphStringData StringData { get; private set; }
 	public hkbVariableValueSet VariableValueSet { get; private set; }
 
-	private HashSet<string> customEventBuffer = [];
+	private readonly HashSet<string> customEventBuffer = [];
 
 	public bool AddEventBuffer(string name)
 	{

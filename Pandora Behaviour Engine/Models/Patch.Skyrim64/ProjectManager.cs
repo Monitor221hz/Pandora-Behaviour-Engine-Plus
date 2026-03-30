@@ -22,13 +22,13 @@ public class ProjectManager : IProjectManager
 {
 	private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-	private Dictionary<string, IProject> projectMap = new Dictionary<string, IProject>(
+	private readonly Dictionary<string, IProject> projectMap = new Dictionary<string, IProject>(
 		StringComparer.OrdinalIgnoreCase
 	);
-	private Dictionary<string, IProject> fileProjectMap = new Dictionary<string, IProject>(
+	private readonly Dictionary<string, IProject> fileProjectMap = new Dictionary<string, IProject>(
 		StringComparer.OrdinalIgnoreCase
 	);
-	private Dictionary<string, IProject> folderProjectMap = new Dictionary<string, IProject>(
+	private readonly Dictionary<string, IProject> folderProjectMap = new Dictionary<string, IProject>(
 		StringComparer.OrdinalIgnoreCase
 	);
 	private Dictionary<string, List<IProject>> linkedProjectMap = new Dictionary<
@@ -43,7 +43,7 @@ public class ProjectManager : IProjectManager
 
 	private readonly IFNISParser _fnisParser;
 
-	private bool CompleteExportSuccess = true;
+	private readonly bool CompleteExportSuccess = true;
 
 	public HashSet<IPackFile> ActivePackFiles { get; private set; } = [];
 

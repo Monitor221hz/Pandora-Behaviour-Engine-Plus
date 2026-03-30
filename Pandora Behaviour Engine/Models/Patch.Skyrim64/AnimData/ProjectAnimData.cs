@@ -17,9 +17,9 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 
 		public IMotionData? BoundMotionDataProject { get; set; }
 
-		private IAnimDataManager _manager;
+		private readonly IAnimDataManager _manager;
 
-		private HashSet<string> dummyClipNames = new HashSet<string>();
+		private readonly HashSet<string> dummyClipNames = new HashSet<string>();
 
 		public ProjectAnimData(IAnimDataManager manager)
 		{

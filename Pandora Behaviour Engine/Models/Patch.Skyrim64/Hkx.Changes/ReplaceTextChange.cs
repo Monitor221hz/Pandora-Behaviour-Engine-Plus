@@ -16,11 +16,11 @@ public class ReplaceTextChange : IPackFileChange
 	public string Target { get; }
 	public string Path { get; private set; }
 
-	private string oldValue;
+	private readonly string oldValue;
 
-	private string newValue;
+	private readonly string newValue;
 
-	private string preValue;
+	private readonly string preValue;
 
 	public ReplaceTextChange(
 		string target,

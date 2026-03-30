@@ -29,7 +29,7 @@ public class AnimSetDataManager : IAnimSetDataManager
 		StringComparer.OrdinalIgnoreCase
 	);
 
-	private IList<string> projectPaths = [];
+	private readonly IList<string> projectPaths = [];
 	private readonly IList<IProjectAnimSetData> animSetDataList = [];
 
 	public Dictionary<string, IProjectAnimSetData> AnimSetDataMap { get; private set; } = [];

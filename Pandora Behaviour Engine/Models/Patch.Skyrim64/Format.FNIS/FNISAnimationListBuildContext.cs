@@ -12,7 +12,7 @@ public class FNISAnimationListBuildContext : IFNISAnimationListBuildContext
 {
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-	private Dictionary<string, hkbStringEventPayload> stringEventPayloadNameMap = [];
+	private readonly Dictionary<string, hkbStringEventPayload> stringEventPayloadNameMap = [];
 
 	public FNISAnimationListBuildContext(
 		IProject targetProject,

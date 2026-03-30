@@ -16,10 +16,10 @@ public class AnimDataManager : IAnimDataManager
 
 	private const string ANIMDATA_FILENAME = "animationdatasinglefile.txt";
 
-	private HashSet<int> usedClipIDs = [];
+	private readonly HashSet<int> usedClipIDs = [];
 	public int NumClipIDs { get; private set; } = 0;
 
-	private List<string> projectNames = [];
+	private readonly List<string> projectNames = [];
 	private Dictionary<string, Dictionary<int, int>> MotionBlockIndexes { get; set; } = [];
 	internal List<ProjectAnimData> AnimDataList { get; set; } = [];
 	private List<IMotionData> MotionDataList { get; set; } = [];

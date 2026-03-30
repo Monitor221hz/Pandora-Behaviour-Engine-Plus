@@ -17,7 +17,7 @@ public class PackFileChangeSet : IPackFileChangeOwner
 {
 	private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-	private Dictionary<string, Dictionary<ChangeType, List<IPackFileChange>>> nodeScopedChangeMap =
+	private readonly Dictionary<string, Dictionary<ChangeType, List<IPackFileChange>>> nodeScopedChangeMap =
 		new(StringComparer.OrdinalIgnoreCase);
 
 	private static readonly IOrderedEnumerable<ChangeType> orderedChangeTypes = Enum.GetValues(

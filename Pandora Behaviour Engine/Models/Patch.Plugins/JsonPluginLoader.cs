@@ -14,7 +14,7 @@ namespace Pandora.Models.Patch.Plugins;
 /// </summary>
 public class JsonPluginLoader : IMetaPluginLoader
 {
-	private static JsonSerializerOptions jsonOptions = new()
+	private static readonly JsonSerializerOptions jsonOptions = new()
 	{
 		AllowTrailingCommas = true,
 		PropertyNameCaseInsensitive = true,

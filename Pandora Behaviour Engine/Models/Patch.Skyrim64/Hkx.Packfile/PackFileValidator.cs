@@ -21,7 +21,7 @@ public class PackFileValidator : IPackFileValidator
 		StringComparer.OrdinalIgnoreCase
 	);
 
-	private List<XElement> registeredElements = [];
+	private readonly List<XElement> registeredElements = [];
 
 	private enum NemesisEntityType : sbyte
 	{

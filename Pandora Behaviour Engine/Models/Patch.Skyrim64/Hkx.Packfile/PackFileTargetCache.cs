@@ -16,10 +16,10 @@ namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 /// </summary>
 public class PackFileTargetCache
 {
-	private Dictionary<PackFile, PackFileTarget> packFileChangeSetMap = [];
-	private Dictionary<PackFile, HavokXmlSerializer> packFileSerializerMap = [];
+	private readonly Dictionary<PackFile, PackFileTarget> packFileChangeSetMap = [];
+	private readonly Dictionary<PackFile, HavokXmlSerializer> packFileSerializerMap = [];
 
-	private ProjectManager projectManager;
+	private readonly ProjectManager projectManager;
 
 	public PackFileTargetCache(IModInfo origin, ProjectManager manager)
 	{
