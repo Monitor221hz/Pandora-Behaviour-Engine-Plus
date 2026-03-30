@@ -4,7 +4,6 @@
 using HKX2E;
 using Pandora.API.Patch.Skyrim64;
 using Pandora.API.Patch.Skyrim64.AnimData;
-using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;

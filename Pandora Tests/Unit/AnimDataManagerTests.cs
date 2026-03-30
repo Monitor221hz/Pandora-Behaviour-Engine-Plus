@@ -3,7 +3,6 @@
 
 using NSubstitute;
 using Pandora.API.Patch.Skyrim64;
-using Pandora.API.Patch.Skyrim64.AnimData;
 using Pandora.Models.Patch.Skyrim64.AnimData;
 using Pandora.Paths.Abstractions;
 
