@@ -1,9 +1,9 @@
-﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using System.Xml;
 using Pandora.API.Patch.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
+using System.Xml;
 
 namespace Pandora.Models.Patch.Skyrim64.Hkx.Changes;
 
@@ -14,15 +14,15 @@ public class InsertTextChange : IPackFileChange
 	public XmlNodeType AssociatedType { get; } = XmlNodeType.Text;
 	public string Target { get; }
 	public string Path { get; private set; }
-	private int _index;
-	private string value;
+	private readonly int _index;
+	private readonly string _value;
 
 	public InsertTextChange(string target, string path, int index, string value)
 	{
 		Target = target;
 		Path = path;
 		_index = index;
-		this.value = value;
+		_value = value;
 	}
 
 	public bool Apply(IPackFile packFile)
@@ -31,6 +31,6 @@ public class InsertTextChange : IPackFileChange
 		{
 			return false;
 		}
-		return PackFileEditor.InsertText(xmap!, Path, _index, value);
+		return PackFileEditor.InsertText(xmap!, Path, _index, _value);
 	}
 }

@@ -19,10 +19,10 @@ public sealed class BehaviourEngine : IBehaviourEngine
 
 	public IEngineConfiguration Configuration { get; private set; }
 
-	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
 	public BehaviourEngine(
-		IEngineRunner runner, 
+		IEngineRunner runner,
 		IEngineStateMachine state,
 		IEngineConfiguration initialConfig)
 	{
@@ -52,13 +52,13 @@ public sealed class BehaviourEngine : IBehaviourEngine
 		if (_state.Current == EngineState.Running)
 			return EngineResult.Fail("Engine is already running.");
 
-		logger.UiClear();
-		logger.UiInfo($"Engine launched with configuration: {Configuration.Name}. Do not exit before the launch is finished.");
+		Logger.UiClear();
+		Logger.UiInfo($"Engine launched with configuration: {Configuration.Name}. Do not exit before the launch is finished.");
 		bool isWaitingForPreload = _state.Current == EngineState.Preloading;
 
 		if (isWaitingForPreload)
 		{
-			logger.UiInfo("Waiting for preload to finish...");
+			Logger.UiInfo("Waiting for preload to finish...");
 		}
 		await _lock.WaitAsync();
 
@@ -66,7 +66,7 @@ public sealed class BehaviourEngine : IBehaviourEngine
 		{
 			if (isWaitingForPreload)
 			{
-				logger.UiInfo("Preload finished.");
+				Logger.UiInfo("Preload finished.");
 			}
 
 			if (_state.Current == EngineState.Running)

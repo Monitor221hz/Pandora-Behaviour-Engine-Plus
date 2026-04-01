@@ -11,10 +11,10 @@ namespace Pandora.Models.Engine;
 
 public interface IBehaviourEngine
 {
-    EngineState State { get; }
-    IObservable<EngineState> StateChanged { get; }
+	EngineState State { get; }
+	IObservable<EngineState> StateChanged { get; }
 
-    Task InitializeAsync();
-    Task<EngineResult> RunAsync(IReadOnlyList<IModInfo> mods);
-    Task SwitchConfigurationAsync(IEngineConfiguration config);
+	Task InitializeAsync();
+	Task<EngineResult> RunAsync(IReadOnlyList<IModInfo> mods);
+	Task SwitchConfigurationAsync(IEngineConfiguration config);
 }

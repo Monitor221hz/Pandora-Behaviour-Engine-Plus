@@ -1,4 +1,4 @@
-﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
 using System;
@@ -28,7 +28,7 @@ public static class ProcessUtils
 
 	private record ParentProcessInfo(int Pid, ModManager Manager);
 
-	private static readonly List<(string[] keywords, ModManager manager)> _managerDetectors = new()
+	private static readonly List<(string[] keywords, ModManager manager)> ManagerDetectors = new()
 	{
 		(new[] { "modorganizer", "mo2" }, ModManager.ModOrganizer),
 		(new[] { "vortex" }, ModManager.Vortex),
@@ -57,25 +57,28 @@ public static class ProcessUtils
 				return new ParentProcessInfo(parentPid, detectedManager);
 			}
 
-			if (parentName.Contains("proton"))
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
 			{
-				var managerInProton = DetectManagerFromCmdline(parentPid);
-				if (managerInProton is not ModManager.None)
+				if (parentName.Contains("proton"))
 				{
-					Logger.Info($"Detected launcher: {managerInProton} (Proton)");
-					return new ParentProcessInfo(parentPid, managerInProton);
+					var managerInProton = DetectManagerFromCmdline(parentPid);
+					if (managerInProton is not ModManager.None)
+					{
+						Logger.Info($"Detected launcher: {managerInProton} (Proton)");
+						return new ParentProcessInfo(parentPid, managerInProton);
+					}
+					Logger.Info("Proton detected, but no known mod manager found");
 				}
-				Logger.Info("Proton detected, but no known mod manager found");
-			}
-			else if (parentName.Contains("wine"))
-			{
-				var managerInWine = DetectManagerFromCmdline(parentPid);
-				if (managerInWine is not ModManager.None)
+				else if (parentName.Contains("wine"))
 				{
-					Logger.Info($"Detected launcher: {managerInWine} (Wine)");
-					return new ParentProcessInfo(parentPid, managerInWine);
+					var managerInWine = DetectManagerFromCmdline(parentPid);
+					if (managerInWine is not ModManager.None)
+					{
+						Logger.Info($"Detected launcher: {managerInWine} (Wine)");
+						return new ParentProcessInfo(parentPid, managerInWine);
+					}
+					Logger.Info("Wine detected, but no known mod manager found");
 				}
-				Logger.Info("Wine detected, but no known mod manager found");
 			}
 
 			Logger.Info("No known mod manager detected.");
@@ -89,7 +92,7 @@ public static class ProcessUtils
 		return new ParentProcessInfo(0, ModManager.None);
 	}
 
-	private static Process GetParent(Process process)
+	private static Process? GetParent(Process process)
 	{
 		try
 		{
@@ -195,7 +198,7 @@ public static class ProcessUtils
 
 	private static ModManager DetectManagerFromText(string textToSearch)
 	{
-		foreach (var (keywords, manager) in _managerDetectors)
+		foreach (var (keywords, manager) in ManagerDetectors)
 		{
 			if (keywords.Any(keyword => textToSearch.Contains(keyword)))
 			{

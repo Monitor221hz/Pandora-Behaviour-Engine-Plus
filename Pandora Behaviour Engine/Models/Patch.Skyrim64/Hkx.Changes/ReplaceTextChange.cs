@@ -1,9 +1,9 @@
-﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using System.Xml;
 using Pandora.API.Patch.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
+using System.Xml;
 
 namespace Pandora.Models.Patch.Skyrim64.Hkx.Changes;
 
@@ -16,24 +16,24 @@ public class ReplaceTextChange : IPackFileChange
 	public string Target { get; }
 	public string Path { get; private set; }
 
-	private string oldValue;
+	private readonly string _oldValue;
 
-	private string newValue;
+	private readonly string _newValue;
 
-	private int _skipChars;
+	private readonly int _skipChars;
 
 	public ReplaceTextChange(
 		string target,
 		string path,
 		int skipChars,
-		string oldvalue,
-		string newvalue
+		string oldValue,
+		string newValue
 	)
 	{
 		Target = target;
 		Path = path;
-		oldValue = oldvalue;
-		newValue = newvalue;
+		_oldValue = oldValue;
+		_newValue = newValue;
 		_skipChars = skipChars;
 	}
 
@@ -43,7 +43,7 @@ public class ReplaceTextChange : IPackFileChange
 		{
 			return false;
 		}
-		return PackFileEditor.ReplaceText(xmap!, Path, _skipChars, oldValue, newValue);
+		return PackFileEditor.ReplaceText(xmap!, Path, _skipChars, _oldValue, _newValue);
 	}
 
 	public bool Revert(PackFile packFile)

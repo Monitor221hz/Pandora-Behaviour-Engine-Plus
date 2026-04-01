@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-﻿namespace Pandora.Platform.CreationEngine.Game;
+namespace Pandora.Platform.CreationEngine.Game;
 
 public class SkyrimDescriptor : IGameDescriptor
 {
@@ -10,10 +10,10 @@ public class SkyrimDescriptor : IGameDescriptor
 	public uint[] SteamAppIds => [489830, 611670];
 	public long? GogAppId => 711230643;
 	public string SubKey => @"SOFTWARE\Wow6432Node\Bethesda Softworks\Skyrim Special Edition";
-	public string[] ExecutableNames => 
+	public string[] ExecutableNames =>
 	[
-		"SkyrimSE.exe", 
-		"SkyrimSELauncher.exe", 
+		"SkyrimSE.exe",
+		"SkyrimSELauncher.exe",
 		"SkyrimVR.exe"
 	];
 }

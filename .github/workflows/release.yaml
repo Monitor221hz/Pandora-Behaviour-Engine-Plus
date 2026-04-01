@@ -142,3 +142,13 @@ jobs:
           output-dir: ${{ matrix.output-dir }}
           zip-path: "${{ matrix.output-dir }}/Pandora_Behaviour_Engine_${{ github.ref_name }}_${{ matrix.rid }}_net.zip"
           github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload to NexusMods
+        if: matrix.rid == 'win-x64'
+        uses: Nexus-Mods/upload-action@v1.0.0-beta.3
+        with:
+          api_key: ${{ secrets.NEXUSMODS_API_KEY }}
+          file_group_id: ${{ secrets.NEXUSMODS_GROUP_ID }}
+          filename: "${{ matrix.output-dir }}/Pandora_Behaviour_Engine_${{ github.ref_name }}_${{ matrix.rid }}_net.zip"
+          display_name: Pandora Behaviour Engine ${{ github.ref_name }}
+          version: ${{ needs.build.outputs.fullSemVer }}

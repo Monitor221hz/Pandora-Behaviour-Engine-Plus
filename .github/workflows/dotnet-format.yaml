@@ -1,0 +1,27 @@
+name: .NET format
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  DOTNET_VERSION: "10.0.x"
+  PROFILE: Debug # Release | Debug
+
+jobs:
+  dotnet-format:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v6
+      with:
+          submodules: recursive
+          fetch-depth: 1
+    - name: Setup .NET & Cache Dependencies
+      uses: ./.github/actions/prepare-dotnet
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+        cache-key-suffix: ${{ env.PROFILE }}
+    - name: Format
+      run: dotnet format --exclude "./Pandora API" --no-restore --verify-no-changes --verbosity diagnostic

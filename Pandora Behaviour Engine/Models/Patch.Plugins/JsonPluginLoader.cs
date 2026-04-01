@@ -1,11 +1,11 @@
-﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using Pandora.API.Patch.Plugins;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
 using System.Text.Json;
-using Pandora.API.Patch.Plugins;
 
 namespace Pandora.Models.Patch.Plugins;
 
@@ -14,7 +14,7 @@ namespace Pandora.Models.Patch.Plugins;
 /// </summary>
 public class JsonPluginLoader : IMetaPluginLoader
 {
-	private static JsonSerializerOptions jsonOptions = new()
+	private static readonly JsonSerializerOptions JsonOptions = new()
 	{
 		AllowTrailingCommas = true,
 		PropertyNameCaseInsensitive = true,
@@ -35,7 +35,7 @@ public class JsonPluginLoader : IMetaPluginLoader
 		}
 		using (var readStream = infoFile.OpenRead())
 		{
-			pluginInfo = JsonSerializer.Deserialize<PluginInfo>(readStream, jsonOptions);
+			pluginInfo = JsonSerializer.Deserialize<PluginInfo>(readStream, JsonOptions);
 		}
 		return pluginInfo != null;
 	}

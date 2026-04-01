@@ -1,11 +1,11 @@
-﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using HKX2E;
 using Pandora.API.Patch.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
 
@@ -23,22 +23,22 @@ public class FurnitureAnimation : BasicAnimation
 	)
 		: base(templateType, flags, graphEvent, animationFilePath, animationObjectNames) { }
 
-	private static readonly hkbEventProperty headTrackingOffEventProperty = new() { id = 20 };
-	private static readonly hkbEventProperty idleChairSittingProperty = new() { id = 14 };
-	private static readonly hkbEventProperty idleFurnitureExitProperty = new() { id = 5 };
-	private static readonly hkbEventProperty headTrackingOnEventProperty = new() { id = 18 };
-	private static readonly hkbVariableBindingSetBinding animationDrivenBinding = new()
+	private static readonly hkbEventProperty HeadTrackingOffEventProperty = new() { id = 20 };
+	private static readonly hkbEventProperty IdleChairSittingProperty = new() { id = 14 };
+	private static readonly hkbEventProperty IdleFurnitureExitProperty = new() { id = 5 };
+	private static readonly hkbEventProperty HeadTrackingOnEventProperty = new() { id = 18 };
+	private static readonly hkbVariableBindingSetBinding AnimationDrivenBinding = new()
 	{
 		bindingType = 0,
 		bitIndex = -1,
 		variableIndex = 1, //bAnimationDriven,
 		memberPath = "isActive",
 	};
-	private static readonly hkbClipTrigger idleFurnitureExitTrigger = new()
+	private static readonly hkbClipTrigger IdleFurnitureExitTrigger = new()
 	{
 		localTime = -0.2f,
 		relativeToEndOfClip = true,
-		_event = idleFurnitureExitProperty,
+		_event = IdleFurnitureExitProperty,
 	};
 
 	public override void BuildFlags(
@@ -60,7 +60,7 @@ public class FurnitureAnimation : BasicAnimation
 			//hkbStateMachineTransitionInfo exitTransition = hkbStateMachineTransitionInfo.GetDefault();
 			//int exitEventIndex = 152;  // IdleChairExitStart
 			//exitTransition.eventId = exitEventIndex;
-			//exitTransition.transition = defaultTransition;
+			//exitTransition.transition = DefaultTransition;
 			//exitTransition.toStateId = lastAnimation.Hash;
 			//exitTransition.toNestedStateId = lastAnimation.Hash;
 			//exitTransitionInfoArray.transitions.Add(exitTransition);
@@ -89,12 +89,12 @@ public class FurnitureAnimation : BasicAnimation
 		if (Flags.HasFlag(FNISAnimFlags.SequenceFinish))
 		{
 			var arrayObject = CreateEventArrayIfNull(stateInfo.exitNotifyEvents);
-			arrayObject.events.Add(headTrackingOnEventProperty);
+			arrayObject.events.Add(HeadTrackingOnEventProperty);
 			stateInfo.exitNotifyEvents = arrayObject;
 
 			var triggerObject = GetOrCreateTriggerArray(clip);
 
-			triggerObject.triggers.Add(idleFurnitureExitTrigger);
+			triggerObject.triggers.Add(IdleFurnitureExitTrigger);
 			//triggerObject.triggers.Add
 			//(
 			//	new hkbClipTrigger()
@@ -134,7 +134,7 @@ public class FurnitureAnimation : BasicAnimation
 		furnitureBehaviorState.SetDefault();
 
 		//variable binding set for animation driven
-		hkbVariableBindingSet bindingSet = new() { bindings = [animationDrivenBinding] };
+		hkbVariableBindingSet bindingSet = new() { bindings = [AnimationDrivenBinding] };
 		string uniqueStateInfoName = $"{modInfo.Code}_{GraphEvent}_State";
 		int stateId = Hash;
 
@@ -186,8 +186,8 @@ public class FurnitureAnimation : BasicAnimation
 		{
 			name = GraphEvent,
 			stateId = stateId,
-			enterNotifyEvents = new() { events = [headTrackingOffEventProperty] },
-			exitNotifyEvents = new() { events = [idleChairSittingProperty] },
+			enterNotifyEvents = new() { events = [HeadTrackingOffEventProperty] },
+			exitNotifyEvents = new() { events = [IdleChairSittingProperty] },
 			generator = enterClip,
 			transitions = exitTransitionInfoArray,
 		};
@@ -202,7 +202,7 @@ public class FurnitureAnimation : BasicAnimation
 		// add root enter transition
 		hkbStateMachineTransitionInfo rootEnterTransition =
 			hkbStateMachineTransitionInfo.GetDefault();
-		rootEnterTransition.transition = defaultTransition;
+		rootEnterTransition.transition = DefaultTransition;
 		rootEnterTransition.eventId = enterEventIndex;
 		rootEnterTransition.toStateId = 4; // furniture state
 		rootEnterTransition.toNestedStateId = stateId;
@@ -226,7 +226,7 @@ public class FurnitureAnimation : BasicAnimation
 
 		// add enter transition manually
 		hkbStateMachineTransitionInfo transition = hkbStateMachineTransitionInfo.GetDefault();
-		transition.transition = defaultTransition;
+		transition.transition = DefaultTransition;
 		transition.eventId = enterEventIndex;
 		transition.toStateId = stateId;
 		transition.flags |=
@@ -241,7 +241,7 @@ public class FurnitureAnimation : BasicAnimation
 			}
 			hkbStateMachineTransitionInfo exitTransition =
 				hkbStateMachineTransitionInfo.GetDefault();
-			exitTransition.transition = defaultTransition;
+			exitTransition.transition = DefaultTransition;
 			exitTransition.eventId = 152;
 			exitTransition.toStateId = lastAnimation.Hash;
 			exitTransition.toNestedStateId = lastAnimation.Hash;

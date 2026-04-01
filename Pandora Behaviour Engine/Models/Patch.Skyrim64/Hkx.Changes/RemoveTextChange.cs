@@ -1,9 +1,9 @@
-﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using System.Xml;
 using Pandora.API.Patch.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
+using System.Xml;
 
 namespace Pandora.Models.Patch.Skyrim64.Hkx.Changes;
 
@@ -13,10 +13,9 @@ public class RemoveTextChange : IPackFileChange
 
 	public XmlNodeType AssociatedType { get; } = XmlNodeType.Text;
 	public string Target { get; }
-
-	private string _remove;
 	public string Path { get; private set; }
-	private int _findFrom;
+	private readonly string _remove;
+	private readonly int _findFrom;
 
 	public RemoveTextChange(string target, string path, string remove, int findFrom)
 	{

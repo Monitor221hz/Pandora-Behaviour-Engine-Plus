@@ -1,4 +1,4 @@
-﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
 using Pandora.API.Patch;
@@ -17,9 +17,9 @@ namespace Pandora.Models.Patch.Skyrim64.Format.Pandora;
 
 public class PandoraAssembler
 {
-	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-	private readonly PandoraNativePatchManager nativeManager = new();
+	private readonly PandoraNativePatchManager _nativeManager = new();
 	private readonly IEnginePathsFacade _pathContext;
 	private readonly IMetaDataExporter<IPackFile> _packFileExporter;
 
@@ -101,19 +101,19 @@ public class PandoraAssembler
 		{
 			foreach (var folder in pluginFolder.GetDirectories())
 			{
-				nativeManager.LoadAssembly(folder);
+				_nativeManager.LoadAssembly(folder);
 			}
 		}
 	}
 
 	public void ApplyNativePatches(RuntimeMode mode, RunOrder order)
 	{
-		nativeManager.ApplyPatches(ProjectManager, mode, order);
+		_nativeManager.ApplyPatches(ProjectManager, mode, order);
 	}
 
 	public void QueueNativePatches()
 	{
-		nativeManager.QueuePatches();
+		_nativeManager.QueuePatches();
 	}
 
 	public void AssembleAnimDataPatch(DirectoryInfo folder)

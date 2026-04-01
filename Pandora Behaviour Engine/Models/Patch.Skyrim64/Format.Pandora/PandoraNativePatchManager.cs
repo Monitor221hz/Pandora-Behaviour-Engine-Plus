@@ -1,33 +1,33 @@
-﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using Pandora.API.Patch;
+using Pandora.API.Patch.Plugins;
+using Pandora.API.Patch.Skyrim64;
+using Pandora.Models.Patch.Plugins;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Pandora.API.Patch;
-using Pandora.API.Patch.Plugins;
-using Pandora.API.Patch.Skyrim64;
-using Pandora.Models.Patch.Plugins;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.Pandora;
 
 public class PandoraNativePatchManager
 {
-	private static readonly IPluginLoader pluginLoader = new PluginLoader();
-	private readonly List<ISkyrim64Patch> patches = [];
-	IEnumerable<IGrouping<RuntimeMode, ISkyrim64Patch>>? patchesByRuntime;
+	private static readonly IPluginLoader PluginLoader = new PluginLoader();
+	private readonly List<ISkyrim64Patch> _patches = [];
+	private IEnumerable<IGrouping<RuntimeMode, ISkyrim64Patch>>? _patchesByRuntime;
 
 	public void QueuePatches()
 	{
-		patchesByRuntime = patches.GroupBy(p => p.Mode);
+		_patchesByRuntime = _patches.GroupBy(p => p.Mode);
 	}
 
 	private IEnumerable<ISkyrim64Patch> Collect(RuntimeMode mode, RunOrder order)
 	{
-		var grouping = patchesByRuntime!.FirstOrDefault(g => g.Key == mode);
+		var grouping = _patchesByRuntime!.FirstOrDefault(g => g.Key == mode);
 		return grouping == null
 			? new List<ISkyrim64Patch>()
 			: grouping.Where(p => p.Order == order);
@@ -65,7 +65,7 @@ public class PandoraNativePatchManager
 			{
 				if (Activator.CreateInstance(type) is ISkyrim64Patch result)
 				{
-					patches.Add(result);
+					_patches.Add(result);
 				}
 			}
 		}
@@ -75,7 +75,7 @@ public class PandoraNativePatchManager
 	{
 		try
 		{
-			if (!pluginLoader.TryLoadPlugin(directoryInfo, out var assembly))
+			if (!PluginLoader.TryLoadPlugin(directoryInfo, out var assembly))
 			{
 				return false;
 			}

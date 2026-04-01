@@ -1,13 +1,13 @@
-﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using NLog;
+using Pandora.API.Patch;
+using Pandora.API.Patch.Skyrim64;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
-using NLog;
-using Pandora.API.Patch;
-using Pandora.API.Patch.Skyrim64;
 
 namespace Pandora.Models.Patch.Skyrim64.Hkx.Changes;
 
@@ -17,14 +17,10 @@ public class PackFileChangeSet : IPackFileChangeOwner
 {
 	private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-	private Dictionary<string, Dictionary<ChangeType, List<IPackFileChange>>> nodeScopedChangeMap =
+	private readonly Dictionary<string, Dictionary<ChangeType, List<IPackFileChange>>> _nodeScopedChangeMap =
 		new(StringComparer.OrdinalIgnoreCase);
 
-	private static readonly IOrderedEnumerable<ChangeType> orderedChangeTypes = Enum.GetValues(
-			typeof(ChangeType)
-		)
-		.Cast<ChangeType>()
-		.OrderBy(t => t);
+	private static readonly IOrderedEnumerable<ChangeType> OrderedChangeTypes = Enum.GetValues<ChangeType>().OrderBy(t => t);
 
 	public IModInfo Origin { get; set; }
 
@@ -50,26 +46,26 @@ public class PackFileChangeSet : IPackFileChangeOwner
 	//public void AddChange(IPackFileChange change) => changes[change.Type].Add(change);
 	public void AddChange(IPackFileChange change)
 	{
-		lock (nodeScopedChangeMap)
+		lock (_nodeScopedChangeMap)
 		{
-			if (nodeScopedChangeMap.TryGetValue(change.Target, out var changeTypedMap))
+			if (_nodeScopedChangeMap.TryGetValue(change.Target, out var changeTypedMap))
 			{
 				changeTypedMap[change.Type].Add(change);
 				return;
 			}
 			changeTypedMap = [];
-			foreach (ChangeType changeType in orderedChangeTypes)
+			foreach (ChangeType changeType in OrderedChangeTypes)
 			{
 				changeTypedMap.Add(changeType, []);
 			}
 			changeTypedMap[change.Type].Add(change);
-			nodeScopedChangeMap.Add(change.Target, changeTypedMap);
+			_nodeScopedChangeMap.Add(change.Target, changeTypedMap);
 		}
 	}
 
 	public static void ApplyInOrder(IPackFile packFile, List<IPackFileChangeOwner> changeSetList)
 	{
-		foreach (ChangeType changeType in orderedChangeTypes)
+		foreach (ChangeType changeType in OrderedChangeTypes)
 		{
 			foreach (var changeSet in changeSetList)
 			{
@@ -92,7 +88,7 @@ public class PackFileChangeSet : IPackFileChangeOwner
 
 	public void ApplyInOrder(IPackFile packFile)
 	{
-		foreach (var changeType in orderedChangeTypes)
+		foreach (var changeType in OrderedChangeTypes)
 		{
 			ApplyForType(packFile, changeType);
 		}
@@ -100,11 +96,11 @@ public class PackFileChangeSet : IPackFileChangeOwner
 
 	public void ApplyForNode(string nodeName, IPackFile packFile)
 	{
-		if (!nodeScopedChangeMap.TryGetValue(nodeName, out var changeTypedMap))
+		if (!_nodeScopedChangeMap.TryGetValue(nodeName, out var changeTypedMap))
 		{
 			return;
 		}
-		foreach (var changeType in orderedChangeTypes)
+		foreach (var changeType in OrderedChangeTypes)
 		{
 			var changeList = changeTypedMap[changeType];
 			for (int i = changeList.Count - 1; i >= 0; i--)
@@ -123,7 +119,7 @@ public class PackFileChangeSet : IPackFileChangeOwner
 
 	public void ApplyForType(IPackFile packFile, ChangeType changeType)
 	{
-		foreach (var changeTypedMap in nodeScopedChangeMap.Values)
+		foreach (var changeTypedMap in _nodeScopedChangeMap.Values)
 		{
 			var changeList = changeTypedMap[changeType];
 			foreach (var change in changeList)
@@ -140,9 +136,9 @@ public class PackFileChangeSet : IPackFileChangeOwner
 
 	public void Apply(IPackFile packFile)
 	{
-		foreach (ChangeType changeType in orderedChangeTypes)
+		foreach (ChangeType changeType in OrderedChangeTypes)
 		{
-			foreach (var changeTypedMap in nodeScopedChangeMap.Values)
+			foreach (var changeTypedMap in _nodeScopedChangeMap.Values)
 			{
 				var changeList = changeTypedMap[changeType];
 				foreach (var change in changeList)
@@ -160,9 +156,9 @@ public class PackFileChangeSet : IPackFileChangeOwner
 
 	public void Validate(IPackFile packFile, IPackFileValidator validator)
 	{
-		foreach (ChangeType changeType in orderedChangeTypes)
+		foreach (ChangeType changeType in OrderedChangeTypes)
 		{
-			foreach (var changeTypedMap in nodeScopedChangeMap.Values)
+			foreach (var changeTypedMap in _nodeScopedChangeMap.Values)
 			{
 				validator.Validate(packFile, changeTypedMap[changeType]);
 			}

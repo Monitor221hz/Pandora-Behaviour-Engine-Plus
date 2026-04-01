@@ -1,19 +1,19 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-﻿using Pandora.Logging.Extensions;
+using NLog;
+using Pandora.Logging.Extensions;
 using Pandora.Paths.Abstractions;
+using Pandora.Paths.Extensions;
 using System;
 using System.IO;
 using System.Text;
-using Pandora.Paths.Extensions;
-using NLog;
 
 namespace Pandora.Logging.Diagnostics;
 
 public sealed class CrashLogWriter(IUserPaths paths)
 {
-	private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+	private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
 	public void Write(CrashType type, string log)
 	{
@@ -26,7 +26,7 @@ public sealed class CrashLogWriter(IUserPaths paths)
 		}
 		catch (Exception ex)
 		{
-			logger.UiError("Failed to write crash log", ex);
+			Logger.UiError("Failed to write crash log", ex);
 		}
 	}
 

@@ -1,11 +1,11 @@
-﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using Pandora.API.Patch.Skyrim64;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using Pandora.API.Patch.Skyrim64;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
 
@@ -29,8 +29,8 @@ struct FNISAnimPreset
 
 public class FNISAnimationFactory
 {
-	private static readonly char[] lineWhitespace = [' ', '\t'];
-	private static readonly Dictionary<string, FNISAnimPreset> animTypePrefixes = new(
+	private static readonly char[] LineWhitespace = [' ', '\t'];
+	private static readonly Dictionary<string, FNISAnimPreset> AnimTypePrefixes = new(
 		StringComparer.OrdinalIgnoreCase
 	)
 	{
@@ -47,7 +47,7 @@ public class FNISAnimationFactory
 		{ "aa", new(FNISAnimType.Alternate) },
 		{ "ch", new(FNISAnimType.Chair) },
 	};
-	private static readonly Dictionary<string, FNISAnimFlags> animFlagValues = new()
+	private static readonly Dictionary<string, FNISAnimFlags> AnimFlagValues = new()
 	{
 		{ "a", FNISAnimFlags.Acyclic },
 		{ "o", FNISAnimFlags.AnimObjects },
@@ -61,7 +61,7 @@ public class FNISAnimationFactory
 		{ "st", FNISAnimFlags.Sticky },
 		{ "Tn", FNISAnimFlags.TransitionNext },
 	};
-	private readonly Stack<IFNISAnimation> headAnimationStack = new();
+	private readonly Stack<IFNISAnimation> _headAnimationStack = new();
 
 	private BasicAnimation Create(
 		FNISAnimType templateType,
@@ -98,7 +98,7 @@ public class FNISAnimationFactory
 					animationObjectNames
 				);
 			case FNISAnimType.SequencedContinued:
-				if (!headAnimationStack.TryPop(out var prevAnimation))
+				if (!_headAnimationStack.TryPop(out var prevAnimation))
 				{
 					return new BasicAnimation(
 						templateType,
@@ -146,10 +146,10 @@ public class FNISAnimationFactory
 	)
 	{
 		string[] args = line.Split(
-			lineWhitespace,
+			LineWhitespace,
 			StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
 		);
-		if (!animTypePrefixes.TryGetValue(args[0], out FNISAnimPreset animPreset))
+		if (!AnimTypePrefixes.TryGetValue(args[0], out FNISAnimPreset animPreset))
 		{
 			animation = null;
 			return false;
@@ -161,7 +161,7 @@ public class FNISAnimationFactory
 			string[] flagValues = args[1].Substring(1).Split(',');
 			foreach (string flagValue in flagValues)
 			{
-				if (animFlagValues.TryGetValue(flagValue, out FNISAnimFlags flag))
+				if (AnimFlagValues.TryGetValue(flagValue, out FNISAnimFlags flag))
 				{
 					flags |= flag;
 				}
@@ -184,7 +184,7 @@ public class FNISAnimationFactory
 			animationPath,
 			animObjectNames
 		);
-		headAnimationStack.Push(animation);
+		_headAnimationStack.Push(animation);
 		//switch (animPreset.AnimationType)
 		//{
 		//	case FNISAnimType.OffsetArm:

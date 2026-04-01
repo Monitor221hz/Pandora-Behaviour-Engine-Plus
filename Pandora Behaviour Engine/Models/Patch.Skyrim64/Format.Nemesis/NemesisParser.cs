@@ -1,6 +1,9 @@
-﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using Pandora.API.Patch;
+using Pandora.API.Patch.Skyrim64;
+using Pandora.Models.Patch.Skyrim64.Hkx.Changes;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,9 +11,6 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
-using Pandora.API.Patch;
-using Pandora.API.Patch.Skyrim64;
-using Pandora.Models.Patch.Skyrim64.Hkx.Changes;
 using XmlCake.Linq;
 using XmlCake.Linq.Expressions;
 
@@ -60,13 +60,13 @@ public class NemesisParser
 
 	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger(); //to do: move logger into inheritable base class
 
-	private static readonly XSkipWrapExpression replacePattern = new(
+	private static readonly XSkipWrapExpression ReplacePattern = new(
 		new XStep(XmlNodeType.Comment, "CLOSE"),
 		new XStep(XmlNodeType.Comment, "OPEN"),
 		new XStep(XmlNodeType.Comment, "ORIGINAL"),
 		new XStep(XmlNodeType.Comment, "CLOSE")
 	);
-	private static readonly XSkipWrapExpression insertPattern = new(
+	private static readonly XSkipWrapExpression InsertPattern = new(
 		new XStep(XmlNodeType.Comment, "ORIGINAL"),
 		new XStep(XmlNodeType.Comment, "OPEN"),
 		new XStep(XmlNodeType.Comment, "CLOSE")
@@ -274,7 +274,7 @@ public class NemesisParser
 		IXPathLookup lookup
 	)
 	{
-		XMatchCollection matchCollection = replacePattern.Matches(nodes);
+		XMatchCollection matchCollection = ReplacePattern.Matches(nodes);
 		if (!matchCollection.Success)
 			return false;
 		foreach (XMatch match in matchCollection)
@@ -295,7 +295,7 @@ public class NemesisParser
 		IXPathLookup lookup
 	)
 	{
-		XMatchCollection matchCollection = insertPattern.Matches(nodes);
+		XMatchCollection matchCollection = InsertPattern.Matches(nodes);
 		if (!matchCollection.Success)
 			return false;
 		foreach (XMatch match in matchCollection)

@@ -1,4 +1,4 @@
-﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
 using Avalonia;
@@ -34,7 +34,7 @@ public partial class App : Application
 			var serviceCollection = new ServiceCollection();
 
 			serviceCollection.AddPandoraServices();
-			
+
 			Services = serviceCollection.BuildServiceProvider();
 
 			var bootstrapper = Services.GetRequiredService<AppBootstrapper>();
@@ -82,5 +82,5 @@ public partial class App : Application
 	/// <summary>
 	/// Gets the <see cref="IServiceProvider"/> instance to resolve application services.
 	/// </summary>
-	public IServiceProvider Services { get; private set; }
+	public IServiceProvider? Services { get; private set; }
 }

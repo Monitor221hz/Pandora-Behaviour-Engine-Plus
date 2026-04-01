@@ -1,19 +1,19 @@
-﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using HKX2E;
 using Pandora.API.Patch.Skyrim64;
-using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
 
 public partial class BasicAnimation : IFNISAnimation
 {
-	protected static readonly hkbBlendingTransitionEffect defaultTransition;
+	protected static readonly hkbBlendingTransitionEffect DefaultTransition;
 
-	private static readonly Dictionary<string, FNISAnimFlags> animFlagValues = new()
+	private static readonly Dictionary<string, FNISAnimFlags> AnimFlagValues = new()
 	{
 		{ "a", FNISAnimFlags.Acyclic },
 		{ "o", FNISAnimFlags.AnimObjects },
@@ -40,7 +40,7 @@ public partial class BasicAnimation : IFNISAnimation
 	public string GraphEvent { get; private set; }
 	public string AnimationFilePath { get; private set; }
 
-	private List<string> animObjectNames = [];
+	private readonly List<string> _animObjectNames = [];
 
 	public IFNISAnimation? NextAnimation { get; set; } //unused
 
@@ -48,10 +48,10 @@ public partial class BasicAnimation : IFNISAnimation
 
 	static BasicAnimation()
 	{
-		defaultTransition = hkbBlendingTransitionEffect.GetDefault();
-		defaultTransition.name = "DefaultTransition_0.6";
-		defaultTransition.duration = 0.6f;
-		defaultTransition.eventMode = (sbyte)EventMode.EVENT_MODE_PROCESS_ALL;
+		DefaultTransition = hkbBlendingTransitionEffect.GetDefault();
+		DefaultTransition.name = "DefaultTransition_0.6";
+		DefaultTransition.duration = 0.6f;
+		DefaultTransition.eventMode = (sbyte)EventMode.EVENT_MODE_PROCESS_ALL;
 	}
 
 	/// <summary>
@@ -67,7 +67,7 @@ public partial class BasicAnimation : IFNISAnimation
 			var optionValues = match.Groups[2].Value.Split(',');
 			foreach (var optionValue in optionValues)
 			{
-				if (animFlagValues.TryGetValue(optionValue, out FNISAnimFlags animFlags))
+				if (AnimFlagValues.TryGetValue(optionValue, out FNISAnimFlags animFlags))
 				{
 					Flags |= animFlags;
 				}
@@ -83,7 +83,7 @@ public partial class BasicAnimation : IFNISAnimation
 		{
 			foreach (Capture capture in match.Groups[5].Captures)
 			{
-				animObjectNames.Add(capture.Value);
+				_animObjectNames.Add(capture.Value);
 			}
 		}
 		Hash = GetPositiveHash(GraphEvent);
@@ -106,7 +106,7 @@ public partial class BasicAnimation : IFNISAnimation
 		GraphEvent = graphEvent;
 		AnimationFilePath = animationFilePath;
 		NextAnimation = nextAnimation;
-		animObjectNames = animationObjectNames;
+		_animObjectNames = animationObjectNames;
 		Hash = GetPositiveHash(GraphEvent);
 	}
 
@@ -168,7 +168,7 @@ public partial class BasicAnimation : IFNISAnimation
 			var enterEventList = enterEventsExist ? stateInfo.enterNotifyEvents!.events : [];
 			var exitEventList = exitEventsExist ? stateInfo.exitNotifyEvents!.events : [];
 			hkbStringEventPayload payload;
-			foreach (var animObjectName in animObjectNames)
+			foreach (var animObjectName in _animObjectNames)
 			{
 				payload = new hkbStringEventPayload() { data = animObjectName };
 				lock (enterEventList)
@@ -249,8 +249,15 @@ public partial class BasicAnimation : IFNISAnimation
 	{
 		if (project.Sibling != null)
 		{
+			Debug.Assert(project.Sibling.CharacterPackFile is not null,
+		"Sibling project must have a character pack file.");
+
 			projectManager.TryActivatePackFile(project.Sibling.CharacterPackFile);
 		}
+
+		Debug.Assert(project.CharacterPackFile is not null,
+	"Project must have a character pack file.");
+
 		projectManager.TryActivatePackFile(project.CharacterPackFile);
 		project.CharacterPackFile.AddUniqueAnimation(AnimationFilePath);
 	}

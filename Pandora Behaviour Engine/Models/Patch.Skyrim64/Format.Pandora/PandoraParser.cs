@@ -1,12 +1,12 @@
-﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using Pandora.API.Patch.Skyrim64;
+using Pandora.Models.Patch.Skyrim64.Hkx.Changes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
-using Pandora.API.Patch.Skyrim64;
-using Pandora.Models.Patch.Skyrim64.Hkx.Changes;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.Pandora;
 
@@ -14,7 +14,7 @@ using ChangeType = IPackFileChange.ChangeType;
 
 public class PandoraParser
 {
-	private static readonly Dictionary<string, ChangeType> changeTypeNameMap = Enum.GetValues(
+	private static readonly Dictionary<string, ChangeType> ChangeTypeNameMap = Enum.GetValues(
 			typeof(ChangeType)
 		)
 		.Cast<ChangeType>()
@@ -244,7 +244,7 @@ public class PandoraParser
 		}
 		foreach (var element in container.Elements())
 		{
-			if (changeTypeNameMap.TryGetValue(element.Name.ToString(), out ChangeType changeType))
+			if (ChangeTypeNameMap.TryGetValue(element.Name.ToString(), out ChangeType changeType))
 			{
 				if (element.HasAttributes)
 				{

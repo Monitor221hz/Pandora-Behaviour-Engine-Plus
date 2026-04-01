@@ -13,7 +13,7 @@ namespace Pandora.Configuration;
 
 public sealed class EngineConfigurationService : IEngineConfigurationService
 {
-	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
 	private readonly IPluginManager _pluginManager;
 	private readonly IEngineConfigurationFactory<SkyrimConfiguration> _skyrimFactory;
@@ -53,7 +53,7 @@ public sealed class EngineConfigurationService : IEngineConfigurationService
 
 		if (_pluginManager.EngineConfigurationPlugins.Count > 0)
 		{
-			logger.UiInfo("Plugins loaded.");
+			Logger.UiInfo("Plugins loaded.");
 		}
 
 		if (useSkyrimDebug64)

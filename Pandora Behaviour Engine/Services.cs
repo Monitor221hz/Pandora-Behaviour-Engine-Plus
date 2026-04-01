@@ -21,7 +21,7 @@ namespace Pandora;
 
 public static class Services
 {
-	extension (IServiceCollection serviceCollection)
+	extension(IServiceCollection serviceCollection)
 	{
 		public IServiceCollection AddPandoraServices()
 		{

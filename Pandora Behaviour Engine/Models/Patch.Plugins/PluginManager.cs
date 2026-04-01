@@ -1,18 +1,18 @@
-﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using Pandora.API.Patch.Config;
+using Pandora.API.Patch.Plugins;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using Pandora.API.Patch.Config;
-using Pandora.API.Patch.Plugins;
 
 namespace Pandora.Models.Patch.Plugins;
 
 public sealed class PluginManager : IPluginManager
 {
-	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
 	private readonly List<IEngineConfigurationPlugin> _plugins = new();
 	public IReadOnlyList<IEngineConfigurationPlugin> EngineConfigurationPlugins => _plugins;
@@ -21,8 +21,8 @@ public sealed class PluginManager : IPluginManager
 	{
 		if (assemblyDirectory == null || !assemblyDirectory.Exists) return;
 
-        var pluginsDir = new DirectoryInfo(Path.Combine(assemblyDirectory.FullName, "Plugins"));
-        if (!pluginsDir.Exists) 
+		var pluginsDir = new DirectoryInfo(Path.Combine(assemblyDirectory.FullName, "Plugins"));
+		if (!pluginsDir.Exists)
 			return;
 
 		foreach (var pluginDir in pluginsDir.GetDirectories())
@@ -30,14 +30,14 @@ public sealed class PluginManager : IPluginManager
 			try
 			{
 #if DEBUG
-                LoadPluginDebug(pluginDir);
+				LoadPluginDebug(pluginDir);
 #else
 				LoadPluginRelease(pluginDir);
 #endif
 			}
 			catch (Exception ex)
 			{
-				logger.Error(ex, "Failed to load plugin from directory {Dir}", pluginDir.FullName);
+				Logger.Error(ex, "Failed to load plugin from directory {Dir}", pluginDir.FullName);
 			}
 		}
 	}
@@ -50,7 +50,7 @@ public sealed class PluginManager : IPluginManager
 		IMetaPluginLoader metaLoader = new JsonPluginLoader();
 		if (!metaLoader.TryLoadMetadata(pluginDir, out var pluginInfo))
 		{
-			logger.Warn("No metadata found for plugin {Dir}", pluginDir.FullName);
+			Logger.Warn("No metadata found for plugin {Dir}", pluginDir.FullName);
 			return;
 		}
 
@@ -63,7 +63,7 @@ public sealed class PluginManager : IPluginManager
 		var pluginDll = new FileInfo(Path.Combine(pluginDir.FullName, $"{pluginDir.Name}.dll"));
 		if (!pluginDll.Exists)
 		{
-			logger.Warn("Plugin DLL not found: {Dll}", pluginDll.FullName);
+			Logger.Warn("Plugin DLL not found: {Dll}", pluginDll.FullName);
 			return;
 		}
 
@@ -83,12 +83,12 @@ public sealed class PluginManager : IPluginManager
 				if (Activator.CreateInstance(type) is IEngineConfigurationPlugin plugin)
 				{
 					_plugins.Add(plugin);
-					logger.Info("Loaded plugin configuration: {Plugin}", type.FullName);
+					Logger.Info("Loaded plugin configuration: {Plugin}", type.FullName);
 				}
 			}
 			catch (Exception ex)
 			{
-				logger.Error(ex, "Failed to instantiate plugin type {Type}", type.FullName);
+				Logger.Error(ex, "Failed to instantiate plugin type {Type}", type.FullName);
 			}
 		}
 	}

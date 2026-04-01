@@ -1,6 +1,9 @@
-﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using HKX2E;
+using HKX2E.Mapper;
+using Pandora.API.Patch.Skyrim64;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,9 +11,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using HKX2E;
-using HKX2E.Mapper;
-using Pandora.API.Patch.Skyrim64;
 using XmlCake.Linq;
 
 namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
@@ -23,9 +23,9 @@ public class PackFile : IEquatable<PackFile>, IPackFile
     public HavokXmlMetaDataSerializer Serializer { get; private set; } = new();
     public hkRootLevelContainer Container { get; private set; }
 
-    public static readonly string ROOT_CONTAINER_NAME = "__data__";
+    public static readonly string RootContainerName = "__data__";
 
-    public static readonly string ROOT_CONTAINER_INSERT_PATH = "__data__/top";
+    public static readonly string RootContainerInsertPath = "__data__/top";
 
     private static readonly string TemplateRootPath = Path.Combine(
         Path.GetDirectoryName(Process.GetCurrentProcess().MainModule?.FileName)!,
@@ -39,18 +39,18 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 
     public FileInfo OutputHandle { get; private set; }
 
-    private readonly string relativeOutputFilePath;
+    private readonly string _relativeOutputFilePath;
     public string RelativeOutputDirectoryPath { get; }
 
     public FileInfo RebaseOutput(DirectoryInfo exportDirectory)
     {
-        OutputHandle = new FileInfo(Path.Join(exportDirectory.FullName, relativeOutputFilePath));
+        OutputHandle = new FileInfo(Path.Join(exportDirectory.FullName, _relativeOutputFilePath));
         return OutputHandle;
     }
 
     public FileInfo GetOutputHandle(DirectoryInfo exportDirectory)
     {
-        return new FileInfo(Path.Join(exportDirectory.FullName, relativeOutputFilePath));
+        return new FileInfo(Path.Join(exportDirectory.FullName, _relativeOutputFilePath));
     }
 
     public static bool DebugFiles { get; set; } = false;
@@ -60,30 +60,30 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 
     public bool ExportSuccess { get; private set; } = true;
 
-    private static HashSet<FileInfo> exportedFiles = [];
+    private static HashSet<FileInfo> _exportedFiles = [];
 
-    protected readonly Dictionary<IHavokObject, XMapElement> objectElementMap = new(
+    protected readonly Dictionary<IHavokObject, XMapElement> ObjectElementMap = new(
         ReferenceEqualityComparer.Instance
     );
 
     public void ApplyChanges() => Dispatcher.ApplyChanges(this);
 
-    public IEnumerable<XElement> IndexedElements => objectElementMap.Values;
+    public IEnumerable<XElement> IndexedElements => ObjectElementMap.Values;
 
     public IProject? ParentProject
     {
-        get => parentProject;
+        get => _parentProject;
         set
         {
-            parentProject = value;
+            _parentProject = value;
             UniqueName = $"{ParentProject?.Identifier}~{Name}";
         }
     }
-    protected ILookup<string, XElement>? classLookup = null;
-    public int NodeCount => classLookup == null ? 0 : classLookup.Count;
+    protected ILookup<string, XElement>? ClassLookup = null;
+    public int NodeCount => ClassLookup == null ? 0 : ClassLookup.Count;
 
-    private bool active = false;
-    private IProject? parentProject;
+    private bool _active = false;
+    private IProject? _parentProject;
 
     public PackFile(FileInfo file, IProject? project)
     {
@@ -92,8 +92,8 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 
         var relativePathInsideTemplate = Path.GetRelativePath(TemplateRootPath, file.FullName);
 
-        relativeOutputFilePath = Path.Combine("meshes", relativePathInsideTemplate);
-        RelativeOutputDirectoryPath = Path.GetDirectoryName(relativeOutputFilePath)!;
+        _relativeOutputFilePath = Path.Combine("meshes", relativePathInsideTemplate);
+        RelativeOutputDirectoryPath = Path.GetDirectoryName(_relativeOutputFilePath)!;
 
         using (var stream = file.OpenRead())
         {
@@ -117,13 +117,13 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 
     public virtual void Load() { }
 
-    [MemberNotNull(nameof(classLookup))]
+    [MemberNotNull(nameof(ClassLookup))]
     public void BuildClassLookup()
     {
         //classLookup = Map.NavigateTo(PackFile.ROOT_CONTAINER_NAME).Elements().ToLookup(e => e.Attribute("class")!.Value);
     }
 
-    protected bool CanActivate() => !active;
+    protected bool CanActivate() => !_active;
 
     /// <summary>
     /// This should only be called by the project manager.
@@ -132,7 +132,7 @@ public class PackFile : IEquatable<PackFile>, IPackFile
     {
         if (!CanActivate())
             return;
-        active = true;
+        _active = true;
     }
 
     public virtual void PopPriorityXmlAsObjects() { }
@@ -146,7 +146,7 @@ public class PackFile : IEquatable<PackFile>, IPackFile
     {
         if (
             XmlDeserializer.TryGetObject(nodeName, out var keyObject)
-            && objectElementMap.TryGetValue(keyObject, out var xmap)
+            && ObjectElementMap.TryGetValue(keyObject, out var xmap)
             && xmap.PathExists(path)
         )
         {
@@ -158,23 +158,23 @@ public class PackFile : IEquatable<PackFile>, IPackFile
     public bool TargetExists(string nodeName)
     {
         return XmlDeserializer.TryGetObject(nodeName, out var keyObject)
-            && objectElementMap.ContainsKey(keyObject);
+            && ObjectElementMap.ContainsKey(keyObject);
     }
 
     public bool TryGetXMap(string nodeName, [NotNullWhen(true)] out XMapElement? xmap)
     {
         if (XmlDeserializer.TryGetObject(nodeName, out var keyObject))
         {
-            return objectElementMap.TryGetValue(keyObject, out xmap);
+            return ObjectElementMap.TryGetValue(keyObject, out xmap);
         }
         xmap = null;
         return false;
     }
 
-    [MemberNotNull(nameof(classLookup))]
+    [MemberNotNull(nameof(ClassLookup))]
     public void TryBuildClassLookup()
     {
-        if (classLookup == null)
+        if (ClassLookup == null)
         {
             BuildClassLookup();
         }
@@ -184,19 +184,19 @@ public class PackFile : IEquatable<PackFile>, IPackFile
     {
         TryBuildClassLookup();
 
-        return classLookup[className].First();
+        return ClassLookup[className].First();
     }
 
     public bool PopObjectAsXml<T>(T node)
         where T : IHavokObject
     {
-        if (objectElementMap.ContainsKey(node))
+        if (ObjectElementMap.ContainsKey(node))
         {
             return false;
         }
         XMapElement mappedElement = new(Serializer.SerializeObject(node));
         mappedElement.MapSlice(mappedElement);
-        objectElementMap.Add(node, mappedElement);
+        ObjectElementMap.Add(node, mappedElement);
         return true;
     }
 
@@ -214,10 +214,10 @@ public class PackFile : IEquatable<PackFile>, IPackFile
     {
         XMapElement? element;
         string? name;
-        lock (objectElementMap)
+        lock (ObjectElementMap)
         {
             if (
-                !objectElementMap.TryGetValue(targetObject, out element)
+                !ObjectElementMap.TryGetValue(targetObject, out element)
                 || !Serializer.TryGetName(targetObject, out name)
             )
             {
@@ -234,9 +234,9 @@ public class PackFile : IEquatable<PackFile>, IPackFile
                 //PartialDeserializer.UpdatePropertyReferences(name, obj);
                 XmlDeserializer.UpdateMapping(name, targetObject);
             }
-            lock (objectElementMap)
+            lock (ObjectElementMap)
             {
-                objectElementMap.Remove(targetObject);
+                ObjectElementMap.Remove(targetObject);
             }
         }
         catch (Exception ex)
@@ -249,10 +249,10 @@ public class PackFile : IEquatable<PackFile>, IPackFile
     public T GetPushXmlAsObject<T>(T targetObject)
         where T : class, IHavokObject
     {
-        lock (objectElementMap)
+        lock (ObjectElementMap)
         {
             if (
-                !objectElementMap.TryGetValue(targetObject, out XMapElement? element)
+                !ObjectElementMap.TryGetValue(targetObject, out XMapElement? element)
                 || !Serializer.TryGetName(targetObject, out string? name)
             )
             {
@@ -269,7 +269,7 @@ public class PackFile : IEquatable<PackFile>, IPackFile
                     //PartialDeserializer.UpdatePropertyReferences(name, obj);
                     XmlDeserializer.UpdateMapping(name, targetObject);
                 }
-                objectElementMap.Remove(targetObject);
+                ObjectElementMap.Remove(targetObject);
             }
             catch (Exception ex)
             {
@@ -298,7 +298,7 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 
     public virtual void PushXmlAsObjects()
     {
-        foreach (var kvp in objectElementMap.OrderBy(kvp => BinaryDeserializer.GetOrder(kvp.Key)))
+        foreach (var kvp in ObjectElementMap.OrderBy(kvp => BinaryDeserializer.GetOrder(kvp.Key)))
         {
             IHavokObject? obj = null;
             try
@@ -316,7 +316,7 @@ public class PackFile : IEquatable<PackFile>, IPackFile
             //PartialDeserializer.UpdatePropertyReferences(name, obj);
             XmlDeserializer.UpdateMapping(name, kvp.Key);
         }
-        objectElementMap.Clear();
+        ObjectElementMap.Clear();
     }
 
     public bool Equals(PackFile? other)

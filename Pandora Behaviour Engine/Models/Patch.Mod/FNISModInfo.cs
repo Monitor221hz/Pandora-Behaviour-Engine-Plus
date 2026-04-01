@@ -1,16 +1,17 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using Pandora.API.Patch;
 using System;
 using System.IO;
 using System.Text.RegularExpressions;
-using Pandora.API.Patch;
 
 namespace Pandora.Models.Patch.Mod;
 
 public partial class FNISModInfo : IModInfo
 {
-	private static readonly Regex whiteSpaceRegex = WhiteSpaceRegex();
+	[GeneratedRegex(@"\s+", RegexOptions.Compiled)]
+	private static partial Regex WhiteSpaceRegex { get; }
 	public string Name { get; set; }
 
 	public override int GetHashCode()
@@ -44,9 +45,6 @@ public partial class FNISModInfo : IModInfo
 	{
 		Name = Path.GetFileNameWithoutExtension(file.Name);
 		Folder = file.Directory!;
-		Code = whiteSpaceRegex.Replace(Name, string.Empty);
+		Code = WhiteSpaceRegex.Replace(Name, string.Empty);
 	}
-
-	[GeneratedRegex(@"\s+", RegexOptions.Compiled)]
-	private static partial Regex WhiteSpaceRegex();
 }
