@@ -1,21 +1,46 @@
-name: bleeding edge nexus upload
+name: bleeding edge preview
 
 on:
-  workflow_run:
-    workflows: ["build preview x64 win"]
-    types:
-      - completed
+  pull_request:
+    branches:
+      - "preview"
+  push:
     branches:
       - "preview"
 
 env:
   DOTNET_VERSION: "10.0.x"
-  PROFILE: Release
   NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
 
 jobs:
+  build:
+    permissions:
+      contents: read
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 1
+
+      - name: Set output paths
+        id: set-paths
+        shell: pwsh
+        run: |
+          $output_dir='./Pandora Behaviour Engine/bin/Debug/net10.0'
+          echo "output_dir=$output_dir" >> $env:GITHUB_OUTPUT
+
+      - name: Build & Test -> Upload a Build Artifact
+        uses: ./.github/actions/build-and-test
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+          configuration: Debug
+          solution-path: "./Pandora+.slnx"
+          output-dir: ${{ steps.set-paths.outputs.output_dir }}
+
   publish-bleeding-edge:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: github.event_name == 'push'
+    needs: build
     permissions:
       contents: read
     runs-on: windows-latest
@@ -23,7 +48,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.workflow_run.head_sha }}
           submodules: recursive
           fetch-depth: 0 # needed for git describe
 
@@ -31,7 +55,7 @@ jobs:
         uses: ./.github/actions/prepare-dotnet
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
-          cache-key-suffix: ${{ env.PROFILE }}
+          cache-key-suffix: Release
 
       - name: Determine Version
         id: version_step
@@ -62,7 +86,7 @@ jobs:
         shell: pwsh
         run: |
           dotnet publish "./Pandora Behaviour Engine/Pandora Behaviour Engine.csproj" `
-            -c ${{ env.PROFILE }} `
+            -c Release `
             -r ${{ steps.set_paths.outputs.rid }} `
             -o "${{ steps.set_paths.outputs.output_dir }}" `
             --self-contained true `
@@ -93,4 +117,4 @@ jobs:
           filename: ${{ steps.set_paths.outputs.zip_path }}
           display_name: Pandora Behaviour Engine preview ${{ steps.version_step.outputs.version }}
           version: ${{ steps.version_step.outputs.version }}
-          description: "Latest generated release from the preview branch. Newer, but less tested."
+          description: "Latest generated preview release. Newer, less stable."
