@@ -121,6 +121,6 @@ jobs:
           api_key: ${{ secrets.NEXUSMODS_API_KEY }}
           file_group_id: ${{ secrets.NEXUSMODS_GROUP_ID_BLD }}
           filename: ${{ steps.set_paths.outputs.zip_path }}
-          display_name: Pandora Behaviour Engine preview ${{ steps.preview_version.outputs.version }}
+          display_name: Pandora Behaviour Engine Preview
           version: ${{ steps.preview_version.outputs.version }}
           description: "Latest generated preview release. Use if you want/need unreleased features. May contain bugs."
