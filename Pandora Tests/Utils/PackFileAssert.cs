@@ -3,7 +3,6 @@
 
 using HKX2E;
 using Pandora.API.Patch.Skyrim64;
-using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
 namespace PandoraTests.Utils;
 
@@ -44,10 +43,12 @@ public class PackFileAssert
 	public static void ValidPackFile(IPackFileCharacter character)
 	{
 		Assert.NotNull(character.ParentProject);
+		Assert.NotNull(character.ParentProject.CharacterPackFile);
 
 		if (character.ParentProject.Sibling != null)
 		{
-			PackFileAssert.ValidSiblingAnimations(
+			Assert.NotNull(character.ParentProject.Sibling.CharacterPackFile);
+			ValidSiblingAnimations(
 				character.ParentProject.CharacterPackFile,
 				character.ParentProject.Sibling.CharacterPackFile
 			);

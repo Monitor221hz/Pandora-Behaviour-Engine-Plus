@@ -17,14 +17,9 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 
 		public IMotionData? BoundMotionDataProject { get; set; }
 
-		private IAnimDataManager _manager;
+		private readonly IAnimDataManager _manager;
 
-		private HashSet<string> dummyClipNames = new HashSet<string>();
-
-		public ProjectAnimData(IAnimDataManager manager)
-		{
-			this._manager = manager;
-		}
+		private readonly HashSet<string> _dummyClipNames = new HashSet<string>();
 
 		public ProjectAnimData(
 			ProjectAnimDataHeader header,
@@ -34,7 +29,7 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 		{
 			Header = header;
 			_blocks = blocks;
-			this._manager = manager;
+			_manager = manager;
 		}
 
 		public IEnumerable<string> GetClipIDs() => _blocks.ConvertAll(b => b.ClipID);
@@ -60,9 +55,9 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 
 		public void AddDummyClipData(string clipName)
 		{
-			lock (dummyClipNames)
+			lock (_dummyClipNames)
 			{
-				if (dummyClipNames.Contains(clipName))
+				if (_dummyClipNames.Contains(clipName))
 					return;
 			}
 
@@ -70,9 +65,9 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 			_blocks.Add(new ClipDataBlock(clipName, id));
 
 			BoundMotionDataProject?.AddDummyClipMotionData(id);
-			lock (dummyClipNames)
+			lock (_dummyClipNames)
 			{
-				dummyClipNames.Add(clipName);
+				_dummyClipNames.Add(clipName);
 			}
 		}
 
@@ -80,7 +75,7 @@ namespace Pandora.Models.Patch.Skyrim64.AnimData
 			StreamReader reader,
 			IAnimDataManager manager,
 			int lineLimit,
-			[NotNullWhen(true)] out IProjectAnimData? projectAnimData
+			[NotNullWhen(true)] out ProjectAnimData? projectAnimData
 		)
 		{
 			projectAnimData = null;

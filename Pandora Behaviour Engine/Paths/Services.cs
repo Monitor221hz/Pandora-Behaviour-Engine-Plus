@@ -4,7 +4,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Pandora.Paths.Abstractions;
 using Pandora.Paths.Validation;
-using Pandora.Settings;
 
 namespace Pandora.Paths;
 

@@ -32,7 +32,7 @@ public sealed class AppBootstrapper(
 	EngineOrchestrator orchestrator,
 	LaunchOptions launchOptions)
 {
-	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
 	public void InitializeSync()
 	{
@@ -51,11 +51,11 @@ public sealed class AppBootstrapper(
 
 		if (ProcessUtils.IsLaunchedFromModManager)
 		{
-			logger.Info("Launched from Mod Manager: {ModManager}", modManager);
+			Logger.Info("Launched from Mod Manager: {ModManager}", modManager);
 		}
 		else
 		{
-			logger.Info("Not launched from a known Mod Manager");
+			Logger.Info("Not launched from a known Mod Manager");
 		}
 
 
@@ -77,7 +77,7 @@ public sealed class AppBootstrapper(
 		}
 		catch (Exception ex)
 		{
-			logger.Fatal(ex, "Startup failed");
+			Logger.Fatal(ex, "Startup failed");
 		}
 	}
 }

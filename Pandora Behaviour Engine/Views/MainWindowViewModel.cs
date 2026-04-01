@@ -21,7 +21,7 @@ namespace Pandora.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase, IScreen, IActivatableViewModel
 {
-	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
 	private readonly PageFactory _pageFactory;
 	private readonly ISettingsService _settingsService;
@@ -121,7 +121,7 @@ public partial class MainWindowViewModel : ViewModelBase, IScreen, IActivatableV
 			var viewModel = _pageFactory.GetPage(uri);
 			if (viewModel == null)
 			{
-				logger.Warn($"[Router] Page not found for URI: '{uri}'");
+				Logger.Warn($"[Router] Page not found for URI: '{uri}'");
 				return;
 			}
 
@@ -129,7 +129,7 @@ public partial class MainWindowViewModel : ViewModelBase, IScreen, IActivatableV
 		}
 		catch (Exception ex)
 		{
-			logger.Error(ex, $"Error navigating to page '{uri}'");
+			Logger.Error(ex, $"Error navigating to page '{uri}'");
 		}
 	}
 }

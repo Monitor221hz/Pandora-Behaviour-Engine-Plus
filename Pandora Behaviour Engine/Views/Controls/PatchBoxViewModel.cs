@@ -19,7 +19,7 @@ namespace Pandora.ViewModels;
 
 public partial class PatchBoxViewModel : ViewModelBase, IActivatableViewModel
 {
-	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
 	private readonly IModService _modService;
 

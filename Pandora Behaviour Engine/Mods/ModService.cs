@@ -22,7 +22,7 @@ namespace Pandora.Mods;
 
 public class ModService : IModService, IDisposable
 {
-	private static readonly NLog.Logger logger = LogManager.GetCurrentClassLogger();
+	private static readonly NLog.Logger Logger = LogManager.GetCurrentClassLogger();
 
 	private readonly IModLoaderService _loader;
 	private readonly IModSettingsService _settings;
@@ -92,7 +92,7 @@ public class ModService : IModService, IDisposable
 
 		Source.Load(modVMs);
 
-		logger.UiInfo($"{Source.Count} mods loaded.");
+		Logger.UiInfo($"{Source.Count} mods loaded.");
 	}
 
 	public async Task SaveSettingsAsync()

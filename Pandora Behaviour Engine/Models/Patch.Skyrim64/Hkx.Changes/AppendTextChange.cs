@@ -13,13 +13,13 @@ public class AppendTextChange : IPackFileChange
 	public XmlNodeType AssociatedType { get; } = XmlNodeType.Text;
 	public string Target { get; private set; }
 	public string Path { get; private set; }
-	private string value { get; set; }
+	private readonly string _value;
 
 	public AppendTextChange(string target, string path, string value)
 	{
 		Target = target;
 		Path = path;
-		this.value = value;
+		_value = value;
 	}
 
 	public bool Apply(IPackFile packFile)
@@ -28,7 +28,7 @@ public class AppendTextChange : IPackFileChange
 		{
 			return false;
 		}
-		PackFileEditor.AppendText(xmap!, Path, value);
+		PackFileEditor.AppendText(xmap!, Path, _value);
 		return true;
 	}
 }

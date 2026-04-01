@@ -2,7 +2,6 @@
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
 using Pandora.API.Patch.Config;
-using Pandora.API.Patch.Engine.Config;
 
 namespace ExamplePlugin;
 

@@ -21,16 +21,16 @@ public class AnimSetDataManager : IAnimSetDataManager
 	private readonly IEnginePathsFacade _pathContext;
 
 	public FileInfo TemplateAnimSetDataSingleFile { get; }
-	public FileInfo OutputAnimSetDataSingleFile { get; }
+	public FileInfo OutputAnimSetDataSingleFile => throw new NotImplementedException();
 
 	private readonly FileInfo _vanillaHkxFiles;
 
-	private HashSet<string> vanillaAnimationPaths = new HashSet<string>(
+	private HashSet<string> _vanillaAnimationPaths = new HashSet<string>(
 		StringComparer.OrdinalIgnoreCase
 	);
 
-	private IList<string> projectPaths = [];
-	private readonly IList<IProjectAnimSetData> animSetDataList = [];
+	private readonly IList<string> _projectPaths = [];
+	private readonly IList<IProjectAnimSetData> _animSetDataList = [];
 
 	public Dictionary<string, IProjectAnimSetData> AnimSetDataMap { get; private set; } = [];
 
@@ -54,21 +54,21 @@ public class AnimSetDataManager : IAnimSetDataManager
 			{
 				using (var reader = new StreamReader(readStream))
 				{
-					int NumProjects = int.Parse(reader.ReadLine()!);
-					for (int i = 0; i < NumProjects; i++)
+					int numProjects = int.Parse(reader.ReadLine()!);
+					for (int i = 0; i < numProjects; i++)
 					{
-						projectPaths.Add(reader.ReadLineOrEmpty());
+						_projectPaths.Add(reader.ReadLineOrEmpty());
 					}
 
-					for (int i = 0; i < NumProjects; i++)
+					for (int i = 0; i < numProjects; i++)
 					{
 						if (!ProjectAnimSetData.TryRead(reader, out var animSetData))
 						{
 							return false;
 						}
-						animSetDataList.Add(animSetData);
+						_animSetDataList.Add(animSetData);
 						AnimSetDataMap.Add(
-							Path.GetFileNameWithoutExtension(projectPaths[i]),
+							Path.GetFileNameWithoutExtension(_projectPaths[i]),
 							animSetData
 						);
 
@@ -130,15 +130,15 @@ public class AnimSetDataManager : IAnimSetDataManager
 			using (var writeStream = outputAnimSetDataSingleFile.Create())
 			using (var writer = new StreamWriter(writeStream))
 			{
-				writer.WriteLine(projectPaths.Count);
-				Logger.Info($"Merging {projectPaths.Count} projects into OutputAnimSetData file");
+				writer.WriteLine(_projectPaths.Count);
+				Logger.Info($"Merging {_projectPaths.Count} projects into OutputAnimSetData file");
 
-				foreach (var projectPath in projectPaths)
+				foreach (var projectPath in _projectPaths)
 				{
 					writer.WriteLine(projectPath);
 				}
 
-				foreach (ProjectAnimSetData animSetData in animSetDataList)
+				foreach (ProjectAnimSetData animSetData in _animSetDataList)
 				{
 					writer.Write(animSetData);
 				}

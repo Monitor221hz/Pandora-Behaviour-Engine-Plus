@@ -2,7 +2,6 @@
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
 using NSubstitute;
-using Pandora.API.Patch.Skyrim64.AnimSetData;
 using Pandora.Models.Patch.Skyrim64.AnimSetData;
 using Pandora.Paths.Abstractions;
 

@@ -16,12 +16,12 @@ public class PackFileValidator : IPackFileValidator
 {
 	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-	private readonly Dictionary<string, int> eventIndices = new();
-	private readonly Dictionary<string, int> variableIndices = new(
+	private readonly Dictionary<string, int> _eventIndices = new();
+	private readonly Dictionary<string, int> _variableIndices = new(
 		StringComparer.OrdinalIgnoreCase
 	);
 
-	private List<XElement> registeredElements = [];
+	private readonly List<XElement> _registeredElements = [];
 
 	private enum NemesisEntityType : sbyte
 	{
@@ -30,11 +30,11 @@ public class PackFileValidator : IPackFileValidator
 		Variable,
 	}
 
-	public void TrackElement(XElement element) => registeredElements.Add(element);
+	public void TrackElement(XElement element) => _registeredElements.Add(element);
 
 	private int GetEventIndex(ReadOnlySpan<char> key)
 	{
-		if (!eventIndices.TryGetValue(key.ToString(), out var value))
+		if (!_eventIndices.TryGetValue(key.ToString(), out var value))
 		{
 			return -1;
 		}
@@ -43,7 +43,7 @@ public class PackFileValidator : IPackFileValidator
 
 	private int GetVariableIndex(ReadOnlySpan<char> key)
 	{
-		if (!variableIndices.TryGetValue(key.ToString(), out var value))
+		if (!_variableIndices.TryGetValue(key.ToString(), out var value))
 		{
 			return -1;
 		}
@@ -85,15 +85,15 @@ public class PackFileValidator : IPackFileValidator
 		List<hkbVariableValue> variableValues = [];
 		List<hkbVariableInfo> variableInfos = [];
 
-		eventIndices.Clear();
-		variableIndices.Clear();
+		_eventIndices.Clear();
+		_variableIndices.Clear();
 
 		int duplicateVariableCount = 0;
 		int duplicateEventCount = 0;
 		for (int i = 0; i < initialEventNames.Length; i++)
 		{
 			var eventName = initialEventNames[i];
-			if (!eventIndices.TryAdd(eventName, i - duplicateEventCount) && i >= eventLowerBound)
+			if (!_eventIndices.TryAdd(eventName, i - duplicateEventCount) && i >= eventLowerBound)
 			{
 				Logger.Warn(
 					$"Validator > {graph.ParentProject?.Identifier}~{graph.Name} > Duplicate Event > {eventName} > Index > {i} > SKIPPED"
@@ -108,7 +108,7 @@ public class PackFileValidator : IPackFileValidator
 		{
 			var variableName = initialVariableNames[i];
 			if (
-				!variableIndices.TryAdd(variableName, i - duplicateVariableCount)
+				!_variableIndices.TryAdd(variableName, i - duplicateVariableCount)
 				&& i >= variableLowerBound
 			)
 			{
@@ -239,9 +239,9 @@ public class PackFileValidator : IPackFileValidator
 
 	public void ValidateTrackedElements()
 	{
-		foreach (XElement element in registeredElements)
+		foreach (XElement element in _registeredElements)
 		{
-			ValidateElementContent(element, eventIndices, variableIndices);
+			ValidateElementContent(element, _eventIndices, _variableIndices);
 		}
 	}
 
@@ -253,11 +253,11 @@ public class PackFileValidator : IPackFileValidator
 		{
 			foreach (IPackFileChange change in changeList)
 			{
-				if (!packFile.TryGetXMap(change.Target, out XMapElement element))
+				if (!packFile.TryGetXMap(change.Target, out XMapElement? element))
 				{
 					continue;
 				}
-				ValidateElementContent(element, eventIndices, variableIndices);
+				ValidateElementContent(element, _eventIndices, _variableIndices);
 			}
 		}
 	}

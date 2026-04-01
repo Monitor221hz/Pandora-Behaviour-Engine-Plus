@@ -14,15 +14,15 @@ public class InsertTextChange : IPackFileChange
 	public XmlNodeType AssociatedType { get; } = XmlNodeType.Text;
 	public string Target { get; }
 	public string Path { get; private set; }
-	private string markerValue;
-	private string value;
+	private readonly string _markerValue;
+	private readonly string _value;
 
 	public InsertTextChange(string target, string path, string markerValue, string value)
 	{
 		Target = target;
 		Path = path;
-		this.markerValue = markerValue;
-		this.value = value;
+		_markerValue = markerValue;
+		_value = value;
 	}
 
 	public bool Apply(IPackFile packFile)
@@ -31,6 +31,6 @@ public class InsertTextChange : IPackFileChange
 		{
 			return false;
 		}
-		return PackFileEditor.InsertText(xmap!, Path, markerValue, value);
+		return PackFileEditor.InsertText(xmap!, Path, _markerValue, _value);
 	}
 }

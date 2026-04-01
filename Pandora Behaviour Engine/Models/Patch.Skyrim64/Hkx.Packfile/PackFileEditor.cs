@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Pandora.API.Patch.Skyrim64;
 using Pandora.Models.Extensions;
 using System;
 using System.Text.RegularExpressions;
@@ -12,7 +11,7 @@ namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 
 public partial class PackFileEditor
 {
-	private static readonly char[] trimChars = ['\t', '\r', '\n', ')', '('];
+	private static readonly char[] TrimChars = ['\t', '\r', '\n', ')', '('];
 
 	[GeneratedRegex(@"(?:\s|\(|\))+", RegexOptions.Compiled)]
 	private static partial Regex WhiteSpaceRegex { get; }
@@ -22,13 +21,13 @@ public partial class PackFileEditor
 
 	private static string NormalizeElementValue(XElement element)
 	{
-		var value = WhiteSpaceRegex.Replace(element.Value.Trim(trimChars), " ");
+		var value = WhiteSpaceRegex.Replace(element.Value.Trim(TrimChars), " ");
 		return value;
 	}
 
 	private static string NormalizeStringValue(string value)
 	{
-		return WhiteSpaceRegex.Replace(value.Trim(trimChars), " ");
+		return WhiteSpaceRegex.Replace(value.Trim(TrimChars), " ");
 	}
 
 	public static XElement ReplaceElement(IXMap xmap, string path, XElement element) =>

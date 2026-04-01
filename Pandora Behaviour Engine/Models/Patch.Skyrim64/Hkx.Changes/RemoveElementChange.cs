@@ -16,7 +16,7 @@ public class RemoveElementChange : IPackFileChange
 
 	public string Target { get; }
 	public string Path { get; private set; }
-	private XElement? element { get; set; }
+	private XElement? _element;
 
 	public RemoveElementChange(string target, string path)
 	{
@@ -30,7 +30,7 @@ public class RemoveElementChange : IPackFileChange
 		{
 			return false;
 		}
-		element = PackFileEditor.RemoveElement(xmap!, Path);
+		_element = PackFileEditor.RemoveElement(xmap!, Path);
 		return !xmap!.PathExists(Path);
 	}
 }

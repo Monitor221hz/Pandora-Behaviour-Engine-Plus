@@ -7,6 +7,7 @@ using Pandora.Models.Patch.Mod;
 using Pandora.Models.Patch.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.Format.FNIS;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -15,7 +16,7 @@ namespace Pandora.Patch.Patchers.Skyrim.FNIS;
 
 public partial class FNISAnimationList
 {
-	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
 	[GeneratedRegex(
 		"^([^('|\\s)]+)\\s*(?:-(\\S+)*)?\\s*(\\S+)\\s+(\\S+.hkx)(?:[^\\S\\r\\n]+(\\S+))*",
@@ -23,9 +24,9 @@ public partial class FNISAnimationList
 	)]
 	private static partial Regex FNISAnimLineRegex();
 
-	private static readonly Regex animLineRegex = FNISAnimLineRegex();
+	private static readonly Regex AnimLineRegex = FNISAnimLineRegex();
 
-	private static readonly Dictionary<string, string> linkedCharacterNameMap = new()
+	private static readonly Dictionary<string, string> LinkedCharacterNameMap = new()
 	{
 		{ "defaultmale", "defaultfemale" },
 		{ "defaultfemale", "defaultmale" },
@@ -81,6 +82,7 @@ public partial class FNISAnimationList
 
 	public void BuildAllAnimations(IProject project, IProjectManager projectManager)
 	{
+		Debug.Assert(project.CharacterPackFile is not null, "Project must have a character pack file.");
 		if (project.Sibling == null)
 		{
 			foreach (BasicAnimation animation in Animations)

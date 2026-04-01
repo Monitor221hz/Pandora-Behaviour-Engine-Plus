@@ -10,9 +10,9 @@ namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
 
 public class FNISAnimationListBuildContext : IFNISAnimationListBuildContext
 {
-	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-	private Dictionary<string, hkbStringEventPayload> stringEventPayloadNameMap = [];
+	private readonly Dictionary<string, hkbStringEventPayload> _stringEventPayloadNameMap = [];
 
 	public FNISAnimationListBuildContext(
 		IProject targetProject,
@@ -33,17 +33,17 @@ public class FNISAnimationListBuildContext : IFNISAnimationListBuildContext
 	public hkbStringEventPayload BuildCommonStringEventPayload(string name)
 	{
 		hkbStringEventPayload? payload;
-		lock (stringEventPayloadNameMap)
+		lock (_stringEventPayloadNameMap)
 		{
-			if (stringEventPayloadNameMap.TryGetValue(name, out payload))
+			if (_stringEventPayloadNameMap.TryGetValue(name, out payload))
 			{
 				return payload;
 			}
 		}
 		payload = new hkbStringEventPayload() { data = name };
-		lock (stringEventPayloadNameMap)
+		lock (_stringEventPayloadNameMap)
 		{
-			stringEventPayloadNameMap.Add(name, payload);
+			_stringEventPayloadNameMap.Add(name, payload);
 		}
 		return payload;
 	}

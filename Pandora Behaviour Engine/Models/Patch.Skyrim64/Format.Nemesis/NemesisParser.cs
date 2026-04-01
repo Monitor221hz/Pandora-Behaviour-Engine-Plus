@@ -20,13 +20,13 @@ public class NemesisParser
 {
 	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger(); //to do: move logger into inheritable base class
 
-	private static readonly XSkipWrapExpression replacePattern = new(
+	private static readonly XSkipWrapExpression ReplacePattern = new(
 		new XStep(XmlNodeType.Comment, "CLOSE"),
 		new XStep(XmlNodeType.Comment, "OPEN"),
 		new XStep(XmlNodeType.Comment, "ORIGINAL"),
 		new XStep(XmlNodeType.Comment, "CLOSE")
 	);
-	private static readonly XSkipWrapExpression insertPattern = new(
+	private static readonly XSkipWrapExpression InsertPattern = new(
 		new XStep(XmlNodeType.Comment, "ORIGINAL"),
 		new XStep(XmlNodeType.Comment, "OPEN"),
 		new XStep(XmlNodeType.Comment, "CLOSE")
@@ -280,7 +280,7 @@ public class NemesisParser
 		XPathLookup lookup
 	)
 	{
-		XMatchCollection matchCollection = replacePattern.Matches(nodes);
+		XMatchCollection matchCollection = ReplacePattern.Matches(nodes);
 		if (!matchCollection.Success)
 			return false;
 		foreach (XMatch match in matchCollection)
@@ -297,7 +297,7 @@ public class NemesisParser
 		XPathLookup lookup
 	)
 	{
-		XMatchCollection matchCollection = insertPattern.Matches(nodes);
+		XMatchCollection matchCollection = InsertPattern.Matches(nodes);
 		if (!matchCollection.Success)
 			return false;
 		foreach (XMatch match in matchCollection)

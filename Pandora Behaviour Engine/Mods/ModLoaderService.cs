@@ -15,7 +15,7 @@ namespace Pandora.Mods;
 
 public class ModLoaderService : IModLoaderService
 {
-	private static readonly NLog.Logger logger = LogManager.GetCurrentClassLogger();
+	private static readonly NLog.Logger Logger = LogManager.GetCurrentClassLogger();
 
 	private readonly IEnumerable<IModInfoProvider> _providers;
 
@@ -43,7 +43,7 @@ public class ModLoaderService : IModLoaderService
 			}
 			catch (Exception ex)
 			{
-				logger.Warn(
+				Logger.Warn(
 					ex,
 					$"Error loading mods from directory '{p.path}' using provider '{p.provider.GetType().Name}'."
 				);
