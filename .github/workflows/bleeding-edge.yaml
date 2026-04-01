@@ -71,7 +71,7 @@ jobs:
         shell: pwsh
         run: |
           $short_sha = '${{ github.sha }}'.Substring(0, 7)
-          $version = "${{ steps.version_step.outputs.fullSemVer }}-preview-$short_sha"
+          $version = "${{ steps.version_step.outputs.majorMinorPatch }}-preview-$short_sha"
 
           echo "version=$version" >> $env:GITHUB_OUTPUT
 
