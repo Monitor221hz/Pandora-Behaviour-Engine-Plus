@@ -2,11 +2,11 @@ name: bleeding edge nexus upload
 
 on:
   workflow_run:
-    workflows: ["build & tests"]
+    workflows: ["build preview x64 win"]
     types:
       - completed
     branches:
-      - "main"
+      - "preview"
 
 env:
   DOTNET_VERSION: "10.0.x"
@@ -40,7 +40,7 @@ jobs:
           $latest_tag = git describe --tags --abbrev=0 2>$null
           if (-not $latest_tag) { $latest_tag = '0.0.0' } else { $latest_tag = $latest_tag.TrimStart('v') }
           $short_sha = '${{ github.sha }}'.Substring(0, 7)
-          $version = "$latest_tag-preview+$short_sha"
+          $version = "$latest_tag-preview-$short_sha"
 
           echo "version=$version" >> $env:GITHUB_OUTPUT
           echo "base_version=$latest_tag" >> $env:GITHUB_OUTPUT
