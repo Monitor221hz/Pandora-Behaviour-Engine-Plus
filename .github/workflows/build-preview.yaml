@@ -1,0 +1,41 @@
+name: build preview x64 win
+
+on:
+  pull_request:
+    branches:
+      - "preview"
+  push:
+    branches:
+      - "preview"
+
+env:
+  DOTNET_VERSION: "10.0.x"
+  PROFILE: Debug
+  NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
+
+jobs:
+  build:
+    permissions:
+      contents: read
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 1
+
+      - name: Set output paths
+        id: set-paths
+        shell: pwsh
+        run: |
+          $output_dir='./Pandora Behaviour Engine/bin/${{ env.PROFILE }}/net10.0'
+
+          echo "output_dir=$output_dir" >> $env:GITHUB_OUTPUT
+
+      - name: Build & Test -> Upload a Build Artifact
+        uses: ./.github/actions/build-and-test
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+          configuration: ${{ env.PROFILE }}
+          solution-path: "./Pandora+.slnx"
+          output-dir: ${{ steps.set-paths.outputs.output_dir }}
