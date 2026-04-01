@@ -1,0 +1,96 @@
+name: bleeding edge nexus upload
+
+on:
+  workflow_run:
+    workflows: ["build preview x64 win"]
+    types:
+      - completed
+    branches:
+      - "preview"
+
+env:
+  DOTNET_VERSION: "10.0.x"
+  PROFILE: Release
+  NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
+
+jobs:
+  publish-bleeding-edge:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    permissions:
+      contents: read
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          submodules: recursive
+          fetch-depth: 0 # needed for git describe
+
+      - name: Setup .NET & Cache Dependencies
+        uses: ./.github/actions/prepare-dotnet
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+          cache-key-suffix: ${{ env.PROFILE }}
+
+      - name: Determine Version
+        id: version_step
+        shell: pwsh
+        run: |
+          $latest_tag = git describe --tags --abbrev=0 2>$null
+          if (-not $latest_tag) { $latest_tag = '0.0.0' } else { $latest_tag = $latest_tag.TrimStart('v') }
+          $short_sha = '${{ github.sha }}'.Substring(0, 7)
+          $version = "$latest_tag-preview-$short_sha"
+
+          echo "version=$version" >> $env:GITHUB_OUTPUT
+          echo "base_version=$latest_tag" >> $env:GITHUB_OUTPUT
+
+      - name: Set output paths
+        id: set_paths
+        shell: pwsh
+        run: |
+          $rid = 'win-x64'
+          $output_dir = '${{ github.workspace }}/Output.BleedingEdge'
+          $zip_file_name = "Pandora_Behaviour_Engine_Plus_Preview_${rid}_net.zip"
+          $zip_path = "$output_dir/$zip_file_name"
+
+          echo "rid=$rid" >> $env:GITHUB_OUTPUT
+          echo "output_dir=$output_dir" >> $env:GITHUB_OUTPUT
+          echo "zip_path=$zip_path" >> $env:GITHUB_OUTPUT
+
+      - name: Publish Self-Contained
+        shell: pwsh
+        run: |
+          dotnet publish "./Pandora Behaviour Engine/Pandora Behaviour Engine.csproj" `
+            -c ${{ env.PROFILE }} `
+            -r ${{ steps.set_paths.outputs.rid }} `
+            -o "${{ steps.set_paths.outputs.output_dir }}" `
+            --self-contained true `
+            /p:PublishSingleFile=true `
+            /p:IncludeAllContentForSelfExtract=true `
+            /p:Version=${{ steps.version_step.outputs.base_version }} `
+            /p:AssemblyVersion=${{ steps.version_step.outputs.base_version }} `
+            /p:FileVersion=${{ steps.version_step.outputs.base_version }} `
+            /p:InformationalVersion=${{ steps.version_step.outputs.version }} `
+            /p:DebugType=none `
+            /p:DebugSymbols=false
+
+      - name: Create Zip
+        shell: pwsh
+        run: |
+          $outputDir = Resolve-Path '${{ steps.set_paths.outputs.output_dir }}'
+          $zipPath = '${{ steps.set_paths.outputs.zip_path }}'
+
+          Write-Host "Zipping from $outputDir => $zipPath"
+
+          Compress-Archive -Path "$outputDir/*" -DestinationPath "$zipPath"
+
+      - name: Upload to NexusMods
+        uses: Nexus-Mods/upload-action@v1.0.0-beta.3
+        with:
+          api_key: ${{ secrets.NEXUSMODS_API_KEY }}
+          file_group_id: ${{ secrets.NEXUSMODS_GROUP_ID_BLD }}
+          filename: ${{ steps.set_paths.outputs.zip_path }}
+          display_name: Pandora Behaviour Engine preview ${{ steps.version_step.outputs.version }}
+          version: ${{ steps.version_step.outputs.version }}
+          description: "Latest generated release from the preview branch. Newer, but less tested."
