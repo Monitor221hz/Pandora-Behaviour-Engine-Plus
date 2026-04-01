@@ -431,7 +431,7 @@ public class FNISParser : IFNISParser
 		}
 		catch (Exception ex)
 		{
-			logger.Warn(
+			Logger.Warn(
 				$"FNIS Parser > Serialize > Animlist > {animListFile.Name} > FAILED > {ex.ToString()}"
 			);
 			return;
