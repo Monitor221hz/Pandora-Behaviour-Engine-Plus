@@ -117,4 +117,4 @@ jobs:
           filename: ${{ steps.set_paths.outputs.zip_path }}
           display_name: Pandora Behaviour Engine preview ${{ steps.version_step.outputs.version }}
           version: ${{ steps.version_step.outputs.version }}
-          description: "Latest generated preview release. Newer, less stable."
+          description: "Latest generated preview release. Use if you want/need unreleased features. May contain bugs."
