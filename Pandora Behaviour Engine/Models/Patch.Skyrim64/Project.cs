@@ -5,6 +5,7 @@ using HKX2E;
 using Pandora.API.Patch.Skyrim64;
 using Pandora.API.Patch.Skyrim64.AnimData;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -47,6 +48,7 @@ public class Project : IEquatable<Project>, IProject
 	public IPackFileSkeleton? SkeletonFile { get; private set; }
 	public IPackFileGraph? BehaviorFile { get; private set; }
 	public IProjectAnimData? AnimData { get; set; }
+	public ConcurrentBag<AlternateAnimation> AlternateAnimations { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
 	public Project(IPackFile projectFile)
 	{
