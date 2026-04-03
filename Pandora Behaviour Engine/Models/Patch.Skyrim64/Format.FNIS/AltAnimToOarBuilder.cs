@@ -452,7 +452,7 @@ public class AltAnimToOarBuilder
 
 		if (!File.Exists(path))
 		{
-			return new Dictionary<string, AAGroupDefinition>().ToFrozenDictionary();
+			return FrozenDictionary<string, AAGroupDefinition>.Empty;
 		}
 
 		string json = File.ReadAllText(path);
