@@ -464,7 +464,7 @@ public class AltAnimToOarBuilder
 
 		var result = JsonSerializer.Deserialize<Dictionary<string, AAGroupDefinition>>(json, options);
 
-		return (result ?? new Dictionary<string, AAGroupDefinition>()).ToFrozenDictionary();
+		return result?.ToFrozenDictionary() ?? FrozenDictionary<string, AAGroupDefinition>.Empty;
 	}
 
 	private string ResolveOutputRoot()
