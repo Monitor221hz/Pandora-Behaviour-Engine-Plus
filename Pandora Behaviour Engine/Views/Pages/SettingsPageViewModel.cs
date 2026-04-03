@@ -10,6 +10,8 @@ using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Reactive.Disposables.Fluent;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -70,9 +72,14 @@ public partial class SettingsPageViewModel : RoutableViewModelBase, IActivatable
 	[ReactiveCommand]
 	private async Task PickGameDirectory()
 	{
+		var initialDirectory = _settings.Paths.GameData.Parent;
+		var suggestedFileName = initialDirectory is null
+			? null
+			: _gameDescriptor.ExecutableNames.FirstOrDefault(x => File.Exists(Path.Join(initialDirectory.FullName, x)));
 		var file = await _diskDialog.OpenFileAsync(
 			$"Select {_gameDescriptor.Name} Executable",
-			_settings.Paths.GameData,
+			initialDirectory,
+			suggestedFileName: suggestedFileName,
 			["*.exe"]);
 
 		if (file != null && file.Directory != null)

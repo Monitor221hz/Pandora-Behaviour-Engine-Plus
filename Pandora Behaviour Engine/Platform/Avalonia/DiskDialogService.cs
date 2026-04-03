@@ -33,7 +33,7 @@ public sealed class DiskDialogService(Window window) : IDiskDialogService
 	}
 
 
-	public async Task<FileInfo?> OpenFileAsync(string title, DirectoryInfo? initialDirectory = null, params string[] patterns)
+	public async Task<FileInfo?> OpenFileAsync(string title, DirectoryInfo? initialDirectory = null, string? suggestedFileName = null, params string[] patterns)
 	{
 		var startLocation = await GetStartLocationAsync(initialDirectory);
 
@@ -46,7 +46,8 @@ public sealed class DiskDialogService(Window window) : IDiskDialogService
 				[
 					new(title) { Patterns = patterns },
 				],
-				SuggestedStartLocation = startLocation
+				SuggestedStartLocation = startLocation,
+				SuggestedFileName = suggestedFileName,
 			}
 		);
 
