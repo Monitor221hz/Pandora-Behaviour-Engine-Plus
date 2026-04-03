@@ -62,6 +62,7 @@ public class FNISAnimationFactory
 		{ "Tn", FNISAnimFlags.TransitionNext },
 	};
 	private readonly Stack<IFNISAnimation> _headAnimationStack = new();
+	private AlternateAnimation? _pendingAA;
 
 	private BasicAnimation Create(
 		FNISAnimType templateType,
@@ -142,13 +143,51 @@ public class FNISAnimationFactory
 	public bool CreateFromLine(
 		string animRoot,
 		string line,
-		[NotNullWhen(true)] out BasicAnimation? animation
+		[NotNullWhen(true)] out BasicAnimation? animation,
+		out AlternateAnimation? altAnimation
 	)
 	{
+
 		string[] args = line.Split(
 			LineWhitespace,
 			StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
 		);
+
+		// Alternate ---------------------------------------------------------------------------------------------------
+		altAnimation = null;
+
+		// Syntax: AAprefix <prefix: str>
+		if (args[0].Equals("AAprefix", StringComparison.OrdinalIgnoreCase))
+		{
+			if (_pendingAA != null)
+			{
+				altAnimation = _pendingAA; // <- Need: To support 1 list multi AA definition.
+			}
+
+			_pendingAA = new AlternateAnimation(line[9..].Trim(), animRoot);
+			animation = null;
+			return false;
+		}
+		// Syntax: AAset <group: str> <slots: int>
+		if (_pendingAA != null && args[0].Equals("AAset", StringComparison.OrdinalIgnoreCase))
+		{
+			if (args.Length >= 3 && int.TryParse(args[2], out int slots))
+			{
+				_pendingAA.Sets.Add(new AASet(args[1], slots));
+			}
+			animation = null;
+			return false;
+		}
+		// When other syntax come, then finalize the pending AA and clear it.
+		if (_pendingAA != null)
+		{
+			altAnimation = _pendingAA;
+			_pendingAA = null;
+			animation = null;
+			return false;
+		}
+		// Alternate End -----------------------------------------------------------------------------------------------
+
 		if (!AnimTypePrefixes.TryGetValue(args[0], out FNISAnimPreset animPreset))
 		{
 			animation = null;
@@ -208,5 +247,18 @@ public class FNISAnimationFactory
 		//		break;
 		//}
 		return true;
+	}
+
+	/// <summary>
+	/// Returns the pending alternate animation if it exists and clears it.
+	///
+	/// In the 1-line push pattern, if List.txt ends with `AASet`, it is never assigned to altAnimation.
+	/// This fn prevents that issue.
+	/// </summary>
+	public AlternateAnimation? FinalizePendingAA()
+	{
+		var altAnimation = _pendingAA;
+		_pendingAA = null;
+		return altAnimation;
 	}
 }

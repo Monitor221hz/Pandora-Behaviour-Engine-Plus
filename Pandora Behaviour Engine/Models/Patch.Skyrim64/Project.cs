@@ -5,6 +5,7 @@ using HKX2E;
 using Pandora.API.Patch.Skyrim64;
 using Pandora.API.Patch.Skyrim64.AnimData;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -26,6 +27,8 @@ public class Project : IEquatable<Project>, IProject
 	}
 
 	private readonly Dictionary<string, IPackFile> _filesByName = [];
+
+	public ConcurrentBag<AlternateAnimation> AlternateAnimations { get; set; } = new();
 
 	public string Identifier { get; private set; } = string.Empty;
 
