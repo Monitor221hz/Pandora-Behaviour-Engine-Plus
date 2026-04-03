@@ -286,7 +286,7 @@ public class AltAnimToOarBuilder
 
 				dump.AppendLine($"    (\"{group}\", \"{prefix}\"): {baseValue},");
 			}
-			dump.Append("}");
+			dump.Append('}');
 
 			_logger.Debug(dump.ToString());
 		}
