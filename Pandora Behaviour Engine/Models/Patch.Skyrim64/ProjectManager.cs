@@ -480,6 +480,16 @@ public class ProjectManager : IProjectManager
 					_fnisParser.ScanProjectAnimlist(project);
 				}
 			);
+			var allAltAnim = new ConcurrentBag<AlternateAnimation>(
+				_projectMap.Values.AsParallel().SelectMany(p =>
+				{
+					_fnisParser.ScanProjectAnimlist(p);
+					return p.AlternateAnimations;
+				})
+			);
+			var builder = new AltAnimToOarBuilder(allAltAnim, _pathContext);
+			builder.Build();
+			builder.PushAAVars(this);
 		}
 		catch (Exception ex)
 		{
