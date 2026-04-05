@@ -16,9 +16,10 @@ public sealed class ApplicationPaths : IApplicationPaths
 
 	public FileInfo PathConfig => _pathConfig.Value;
 	private readonly Lazy<FileInfo> _pathConfig;
+	private readonly Lazy<DirectoryInfo> _assemblyDirectory;
 
 	public DirectoryInfo AppDataDirectory => new(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) / "Pandora Behaviour Engine");
-	public DirectoryInfo AssemblyDirectory => new(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule!.FileName!)!);
+	public DirectoryInfo AssemblyDirectory => _assemblyDirectory.Value;
 	public DirectoryInfo EngineDirectory => new(AssemblyDirectory.FullName / PANDORA_ENGINE_FOLDERNAME);
 	public DirectoryInfo TemplateDirectory => new(EngineDirectory.FullName / "Skyrim" / "Template");
 
@@ -28,5 +29,8 @@ public sealed class ApplicationPaths : IApplicationPaths
 			AppDataDirectory.Create();
 
 		_pathConfig = new Lazy<FileInfo>(() => new FileInfo(AppDataDirectory.FullName / CONFIG_FILE));
+#pragma warning disable CA1839 // Use 'Environment.ProcessPath' in USVFS, this would return the virtualized path, while we want the real path.
+		_assemblyDirectory = new Lazy<DirectoryInfo>(() => new DirectoryInfo(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule!.FileName)!));
+#pragma warning restore CA1839 // Use 'Environment.ProcessPath'
 	}
 }
