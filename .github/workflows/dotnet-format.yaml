@@ -1,11 +1,10 @@
 name: .NET format
 
 on:
-  pull_request:
   push:
-    branches:
-      - "main"
-      - "preview"
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 env:
   DOTNET_VERSION: "10.0.x"

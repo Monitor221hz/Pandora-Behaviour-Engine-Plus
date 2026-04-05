@@ -1,6 +1,9 @@
 name: bleeding edge preview
 
 on:
+  pull_request:
+    branches:
+      - "preview"
   push:
     branches:
       - "preview"
