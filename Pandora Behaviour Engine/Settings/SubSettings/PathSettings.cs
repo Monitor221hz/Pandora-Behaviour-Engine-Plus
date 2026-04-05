@@ -32,9 +32,7 @@ internal sealed class PathSettings(
 	public DirectoryInfo GameData => userPaths.GameData;
 	public DirectoryInfo Output => userPaths.Output;
 
-	public bool IsGameDataValid =>
-		!GameData.FullName.Equals(appPaths.AssemblyDirectory.FullName, StringComparison.OrdinalIgnoreCase)
-		&& validator.IsValid(GameData);
+	public bool IsGameDataValid => validator.IsValid(GameData);
 
 	public bool NeedsUserSelection => !IsGameDataValid;
 
