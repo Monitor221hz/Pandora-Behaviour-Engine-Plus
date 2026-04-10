@@ -1,17 +1,20 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Pandora.API.Patch;
-using ReactiveUI;
-using ReactiveUI.SourceGenerators;
 using System;
 using System.IO;
 using System.Reactive.Disposables.Fluent;
 using System.Reactive.Linq;
+using Pandora.API.Patch;
+using ReactiveUI;
+using ReactiveUI.SourceGenerators;
 
 namespace Pandora.ViewModels;
 
-public partial class ModInfoViewModel : ViewModelBase, IEquatable<ModInfoViewModel>, IActivatableViewModel
+public partial class ModInfoViewModel
+	: ViewModelBase,
+		IEquatable<ModInfoViewModel>,
+		IActivatableViewModel
 {
 	public IModInfo ModInfo { get; }
 

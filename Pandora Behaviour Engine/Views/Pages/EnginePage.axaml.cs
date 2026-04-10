@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using System;
+using System.Reactive.Disposables.Fluent;
+using System.Reactive.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -10,11 +15,6 @@ using Avalonia.Styling;
 using Pandora.ViewModels;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
-using System;
-using System.Reactive.Disposables.Fluent;
-using System.Reactive.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Pandora.Views;
 
@@ -35,26 +35,33 @@ public partial class EnginePage : ReactiveUserControl<EnginePageViewModel>
 				.Subscribe(x => UpdateGridLayout(x.Item1.Width, x.Item2))
 				.DisposeWith(disposables);
 
-			Observable.FromEventPattern<RoutedEventArgs>(
+			Observable
+				.FromEventPattern<RoutedEventArgs>(
 					h => LogBox.LogExpander.Expanded += h,
-					h => LogBox.LogExpander.Expanded -= h)
+					h => LogBox.LogExpander.Expanded -= h
+				)
 				.Select(_ => true)
 				.Merge(
-					Observable.FromEventPattern<RoutedEventArgs>(
-						h => LogBox.LogExpander.Collapsed += h,
-						h => LogBox.LogExpander.Collapsed -= h)
-					.Select(_ => false)
+					Observable
+						.FromEventPattern<RoutedEventArgs>(
+							h => LogBox.LogExpander.Collapsed += h,
+							h => LogBox.LogExpander.Collapsed -= h
+						)
+						.Select(_ => false)
 				)
 				.Subscribe(async isExpanded => await AnimateLogBox(isExpanded))
 				.DisposeWith(disposables);
 
-			Observable.FromEventPattern<VectorEventArgs>(
+			Observable
+				.FromEventPattern<VectorEventArgs>(
 					h => MySplitter.DragCompleted += h,
-					h => MySplitter.DragCompleted -= h)
+					h => MySplitter.DragCompleted -= h
+				)
 				.Subscribe(_ =>
 				{
 					var h = RootGrid.RowDefinitions[3].ActualHeight;
-					if (h > 50) _lastLogBoxHeight = h;
+					if (h > 50)
+						_lastLogBoxHeight = h;
 				})
 				.DisposeWith(disposables);
 		});
@@ -75,7 +82,8 @@ public partial class EnginePage : ReactiveUserControl<EnginePageViewModel>
 		double startHeight = rowDef.ActualHeight;
 		double targetHeight = isExpanded ? Math.Max(_lastLogBoxHeight, 128) : 54;
 
-		if (Math.Abs(startHeight - targetHeight) < 1) return;
+		if (Math.Abs(startHeight - targetHeight) < 1)
+			return;
 
 		if (isExpanded)
 		{
@@ -107,10 +115,7 @@ public partial class EnginePage : ReactiveUserControl<EnginePageViewModel>
 
 			await Task.WhenAll(heightTask, opacityTask);
 		}
-		catch (OperationCanceledException)
-		{
-
-		}
+		catch (OperationCanceledException) { }
 		finally
 		{
 			if (!isExpanded && !token.IsCancellationRequested)
@@ -129,7 +134,8 @@ public partial class EnginePage : ReactiveUserControl<EnginePageViewModel>
 		if (!isExpanded && isWide)
 			isWide = false;
 
-		if (_wasWideLayout == isWide) return;
+		if (_wasWideLayout == isWide)
+			return;
 		_wasWideLayout = isWide;
 
 		static void Place(Control ctrl, int r, int rs, int c, int cs, Thickness margin)

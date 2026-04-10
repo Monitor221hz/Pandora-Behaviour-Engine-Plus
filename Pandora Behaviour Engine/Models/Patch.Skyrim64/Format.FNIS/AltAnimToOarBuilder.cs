@@ -1,11 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using HKX2E;
-using Nito.HashAlgorithms;
-using Pandora.API.Patch.Skyrim64;
-using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
-using Pandora.Paths.Abstractions;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Frozen;
@@ -16,6 +11,11 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using HKX2E;
+using Nito.HashAlgorithms;
+using Pandora.API.Patch.Skyrim64;
+using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
+using Pandora.Paths.Abstractions;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
 
@@ -27,8 +27,10 @@ internal record OARNamespaceConfig
 {
 	[JsonPropertyName("name")]
 	public string Name { get; set; } = "";
+
 	[JsonPropertyName("description")]
 	public string Description { get; set; } = "";
+
 	[JsonPropertyName("author")]
 	public string Author { get; set; } = "";
 }
@@ -37,8 +39,10 @@ internal record OARConfig
 {
 	[JsonPropertyName("name")]
 	public string Name { get; set; } = "";
+
 	[JsonPropertyName("description")]
 	public string Description { get; set; } = "";
+
 	[JsonPropertyName("priority")]
 	public int Priority { get; set; } = int.MaxValue;
 
@@ -67,6 +71,7 @@ internal record OARValueA
 {
 	[JsonPropertyName("graphVariable")]
 	public string GraphVariable { get; set; } = "";
+
 	[JsonPropertyName("graphVariableType")]
 	public string GraphVariableType { get; set; } = "Int";
 }
@@ -88,6 +93,7 @@ internal record DynFNISAaConfig
 
 	[JsonPropertyName("fnis_version")]
 	public string FnisVersion { get; set; } = "V07.06.00.0";
+
 	[JsonPropertyName("fnis_creature_version")]
 	public string FnisCreatureVersion { get; set; } = "V07.06.00.0";
 
@@ -132,10 +138,13 @@ internal record DynFNISAaMod
 {
 	[JsonPropertyName("prefix")]
 	public string Prefix { get; set; } = "";
+
 	[JsonPropertyName("name")]
 	public string Name { get; set; } = "";
+
 	[JsonPropertyName("mod_id")]
 	public int ModId { get; set; }
+
 	[JsonPropertyName("groups")]
 	public List<DynFNISAaGroup> Groups { get; set; } = new();
 }
@@ -144,6 +153,7 @@ internal record DynFNISAaGroup
 {
 	[JsonPropertyName("name")]
 	public string Name { get; set; } = "";
+
 	/// <summary>
 	/// As FNIS is already set to 0, we will start from 1.
 	/// </summary>
@@ -176,7 +186,10 @@ public class AltAnimToOarBuilder
 
 	private readonly string _outputRoot;
 
-	public AltAnimToOarBuilder(ConcurrentBag<AlternateAnimation> alternateAnimations, IEnginePathsFacade pathContext)
+	public AltAnimToOarBuilder(
+		ConcurrentBag<AlternateAnimation> alternateAnimations,
+		IEnginePathsFacade pathContext
+	)
 	{
 		_alternateAnimations = alternateAnimations;
 		_pathContext = pathContext;
@@ -204,17 +217,21 @@ public class AltAnimToOarBuilder
 
 				if (!_groupDefs.TryGetValue(group, out var groupDef))
 				{
-					_logger.Warn($"FNISAA to OAR Builder > Missing {group} in GroupDef (prefix={prefix}) > SKIPPED");
+					_logger.Warn(
+						$"FNISAA to OAR Builder > Missing {group} in GroupDef (prefix={prefix}) > SKIPPED"
+					);
 					continue;
 				}
 
 				if (!_baseMap.TryGetValue((prefix, group), out var baseValue))
 				{
-					_logger.Warn($"FNISAA to OAR Builder > Missing key(prefix={prefix}, group={group}) in BaseMap > SKIPPED");
+					_logger.Warn(
+						$"FNISAA to OAR Builder > Missing key(prefix={prefix}, group={group}) in BaseMap > SKIPPED"
+					);
 					continue;
 				}
 
-				var outNamespaceDir = Path.Combine(_outputRoot, modName);  // e.g., `.../OpenAnimationReplacer/XPMSE`
+				var outNamespaceDir = Path.Combine(_outputRoot, modName); // e.g., `.../OpenAnimationReplacer/XPMSE`
 				Directory.CreateDirectory(outNamespaceDir);
 				WriteNamespaceConfig(outNamespaceDir, modName);
 
@@ -229,7 +246,8 @@ public class AltAnimToOarBuilder
 
 						CopyAnimations(anim.AnimRoot, prefix, slot, groupDef, outDir);
 						WriteConfig(group, slot, baseValue, dirName, outDir);
-					});
+					}
+				);
 			}
 		}
 
@@ -292,7 +310,13 @@ public class AltAnimToOarBuilder
 		}
 	}
 
-	private void CopyAnimations(string animRoot, string prefix, int slot, AAGroupDefinition groupDef, string outDir)
+	private void CopyAnimations(
+		string animRoot,
+		string prefix,
+		int slot,
+		AAGroupDefinition groupDef,
+		string outDir
+	)
 	{
 		foreach (var animPath in groupDef.Animations)
 		{
@@ -325,16 +349,9 @@ public class AltAnimToOarBuilder
 
 			if (isMale)
 			{
-				var femaleSubDir = Path.Combine(
-					Path.GetDirectoryName(subDir) ?? "",
-					"female"
-				);
+				var femaleSubDir = Path.Combine(Path.GetDirectoryName(subDir) ?? "", "female");
 
-				var femaleOutputPath = Path.Combine(
-					outDir,
-					femaleSubDir,
-					fileName
-				);
+				var femaleOutputPath = Path.Combine(outDir, femaleSubDir, fileName);
 
 				CopyIfExists(inputPath, femaleOutputPath);
 			}
@@ -355,8 +372,11 @@ public class AltAnimToOarBuilder
 		{
 			if (_logger.IsDebugEnabled)
 			{
-				var relative = Path.GetRelativePath(_pathContext.GameDataFolder.FullName, inputPath).Replace('\\', '/');
-				_logger.Info($"FNISAA to OAR Builder > Missing animation file > {relative}> SKIPPED");
+				var relative = Path.GetRelativePath(_pathContext.GameDataFolder.FullName, inputPath)
+					.Replace('\\', '/');
+				_logger.Info(
+					$"FNISAA to OAR Builder > Missing animation file > {relative}> SKIPPED"
+				);
 			}
 			return;
 		}
@@ -368,12 +388,13 @@ public class AltAnimToOarBuilder
 	{
 		var config = new OARNamespaceConfig { Name = modId };
 
-		var json = JsonSerializer.Serialize(config, new JsonSerializerOptions
-		{
-			WriteIndented = true
-		});
+		var json = JsonSerializer.Serialize(
+			config,
+			new JsonSerializerOptions { WriteIndented = true }
+		);
 
-		if (json != null) File.WriteAllText(Path.Combine(outDir, "config.json"), json);
+		if (json != null)
+			File.WriteAllText(Path.Combine(outDir, "config.json"), json);
 	}
 
 	private void WriteConfig(string group, int slot, int baseValue, string dirName, string outDir)
@@ -385,25 +406,23 @@ public class AltAnimToOarBuilder
 			Conditions =
 			[
 				new OARCondition
-			{
-				ValueA = new OARValueA
 				{
-					GraphVariable = $"FNISaa{group}" // e.g., `FNISaa_mt`
+					ValueA = new OARValueA
+					{
+						GraphVariable = $"FNISaa{group}" // e.g., `FNISaa_mt`
+					},
+					ValueB = new OARValueB { Value = baseValue + slot },
 				},
-				ValueB = new OARValueB
-				{
-					Value = baseValue + slot
-				}
-			}
-			]
+			],
 		};
 
-		var json = JsonSerializer.Serialize(config, new JsonSerializerOptions
-		{
-			WriteIndented = true
-		});
+		var json = JsonSerializer.Serialize(
+			config,
+			new JsonSerializerOptions { WriteIndented = true }
+		);
 
-		if (json != null) File.WriteAllText(Path.Combine(outDir, "config.json"), json);
+		if (json != null)
+			File.WriteAllText(Path.Combine(outDir, "config.json"), json);
 	}
 
 	/// <summary>
@@ -413,33 +432,40 @@ public class AltAnimToOarBuilder
 	{
 		var mods = _alternateAnimations
 			.GroupBy(a => a.Prefix)
-			.Select((group, modIndex) => new DynFNISAaMod
-			{
-				Prefix = group.Key,
-				Name = group.Key,
-				ModId = modIndex,
-
-				Groups = group
-					.SelectMany(a => a.Sets)
-					.GroupBy(s => s.Group)
-					.Select(g => new DynFNISAaGroup
+			.Select(
+				(group, modIndex) =>
+					new DynFNISAaMod
 					{
-						Name = g.Key,
-						Base = _baseMap.TryGetValue((group.Key, g.Key), out var b)
-							? b
-							: 1
-					})
-					.ToList()
-			})
+						Prefix = group.Key,
+						Name = group.Key,
+						ModId = modIndex,
+
+						Groups = group
+							.SelectMany(a => a.Sets)
+							.GroupBy(s => s.Group)
+							.Select(g => new DynFNISAaGroup
+							{
+								Name = g.Key,
+								Base = _baseMap.TryGetValue((group.Key, g.Key), out var b) ? b : 1,
+							})
+							.ToList(),
+					}
+			)
 			.ToList();
 
 		var config = new DynFNISAaConfig(mods);
-		var json = JsonSerializer.Serialize(config, new JsonSerializerOptions
-		{
-			WriteIndented = true
-		});
+		var json = JsonSerializer.Serialize(
+			config,
+			new JsonSerializerOptions { WriteIndented = true }
+		);
 
-		var path = Path.Combine(_pathContext.OutputFolder.FullName, "SKSE", "Plugins", "fnis_aa", "config.json");
+		var path = Path.Combine(
+			_pathContext.OutputFolder.FullName,
+			"SKSE",
+			"Plugins",
+			"fnis_aa",
+			"config.json"
+		);
 
 		Directory.CreateDirectory(Path.GetDirectoryName(path)!);
 		File.WriteAllText(path, json, new UTF8Encoding(false)); // no-BOM utf8
@@ -448,7 +474,10 @@ public class AltAnimToOarBuilder
 	/// TODO: Change to compile time hash table?
 	private FrozenDictionary<string, AAGroupDefinition> LoadGroupDefinitions()
 	{
-		string path = Path.Combine(_pathContext.TemplateFolder.FullName, "Alternate_AnimationGroups.json");
+		string path = Path.Combine(
+			_pathContext.TemplateFolder.FullName,
+			"Alternate_AnimationGroups.json"
+		);
 
 		if (!File.Exists(path))
 		{
@@ -457,19 +486,22 @@ public class AltAnimToOarBuilder
 
 		string json = File.ReadAllText(path);
 
-		var options = new JsonSerializerOptions
-		{
-			PropertyNameCaseInsensitive = true
-		};
+		var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
-		var result = JsonSerializer.Deserialize<Dictionary<string, AAGroupDefinition>>(json, options);
+		var result = JsonSerializer.Deserialize<Dictionary<string, AAGroupDefinition>>(
+			json,
+			options
+		);
 
 		return result?.ToFrozenDictionary() ?? FrozenDictionary<string, AAGroupDefinition>.Empty;
 	}
 
 	private string ResolveOutputRoot()
 	{
-		return Path.Combine(_pathContext.OutputMeshesFolder.FullName, "actors/character/animations/OpenAnimationReplacer");
+		return Path.Combine(
+			_pathContext.OutputMeshesFolder.FullName,
+			"actors/character/animations/OpenAnimationReplacer"
+		);
 	}
 
 	/// <summary>
@@ -479,8 +511,10 @@ public class AltAnimToOarBuilder
 	/// </summary>
 	public void PushAAVars(IProjectManager projectManager)
 	{
-		if (!projectManager.TryLookupPackFile("0_master", out var packFile)
-			|| packFile is not PackFileGraph graph)
+		if (
+			!projectManager.TryLookupPackFile("0_master", out var packFile)
+			|| packFile is not PackFileGraph graph
+		)
 		{
 			_logger.Warn("FNISAA to OAR Builder > PushAAVars > 0_master not found > FAILED");
 			return;
@@ -492,7 +526,9 @@ public class AltAnimToOarBuilder
 
 		if (stringData == null || valueSet == null || graphData == null)
 		{
-			_logger.Warn("FNISAA to OAR Builder > PushAAVars > graph data(0_master) missing > FAILED");
+			_logger.Warn(
+				"FNISAA to OAR Builder > PushAAVars > graph data(0_master) missing > FAILED"
+			);
 			return;
 		}
 
@@ -543,15 +579,13 @@ public class AltAnimToOarBuilder
 
 		lock (infos)
 		{
-			infos.Add(new hkbVariableInfo
-			{
-				type = (sbyte)VariableType.VARIABLE_TYPE_INT32,
-				role = new hkbRoleAttribute
+			infos.Add(
+				new hkbVariableInfo
 				{
-					role = (short)Role.ROLE_DEFAULT,
-					flags = 0
+					type = (sbyte)VariableType.VARIABLE_TYPE_INT32,
+					role = new hkbRoleAttribute { role = (short)Role.ROLE_DEFAULT, flags = 0 },
 				}
-			});
+			);
 		}
 	}
 }

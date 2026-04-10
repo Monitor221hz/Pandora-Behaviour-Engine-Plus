@@ -8,5 +8,5 @@ public enum CrashType
 	UnhandledException,
 	UnobservedTaskException,
 	UiThread,
-	ReactiveUI
+	ReactiveUI,
 }
