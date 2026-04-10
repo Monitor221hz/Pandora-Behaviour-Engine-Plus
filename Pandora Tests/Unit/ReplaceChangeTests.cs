@@ -14,131 +14,152 @@ namespace PandoraTests.Unit;
 
 public class ReplaceChangeTests
 {
-    [Fact]
-    public void ApplyReplaceChange_Element_Succeeds()
-    {
-        XElement originalElement = Resources.TestElement;
-        XMapElement mapElement = new(originalElement);
-        mapElement.MapAll();
-        var packFile = Substitute.For<IPackFile>();
-        packFile
-            .TryGetXMap(Arg.Any<string>(), out Arg.Any<XMapElement?>())
-            .Returns(s =>
-            {
-                s[1] = mapElement;
-                return true;
-            });
+	[Fact]
+	public void ApplyReplaceChange_Element_Succeeds()
+	{
+		XElement originalElement = Resources.TestElement;
+		XMapElement mapElement = new(originalElement);
+		mapElement.MapAll();
+		var packFile = Substitute.For<IPackFile>();
+		packFile
+			.TryGetXMap(Arg.Any<string>(), out Arg.Any<XMapElement?>())
+			.Returns(s =>
+			{
+				s[1] = mapElement;
+				return true;
+			});
 
-        var newElement = new XElement("replaced");
-        var change = new ReplaceElementChange("#0069", "generators", newElement);
-        var elements = mapElement.Elements();
-        Assert.True(change.Apply(packFile));
-        Assert.Contains<XElement>(newElement, elements);
-    }
+		var newElement = new XElement("replaced");
+		var change = new ReplaceElementChange("#0069", "generators", newElement);
+		var elements = mapElement.Elements();
+		Assert.True(change.Apply(packFile));
+		Assert.Contains<XElement>(newElement, elements);
+	}
 
-    [Fact]
-    public void ApplyReplaceChange_ElementPathMissing_FailsUnchanged()
-    {
-        XElement originalElement = Resources.TestElement;
-        XMapElement mapElement = new(originalElement);
-        mapElement.MapAll();
-        var packFile = Substitute.For<IPackFile>();
-        packFile
-            .TryGetXMap(Arg.Any<string>(), out Arg.Any<XMapElement?>())
-            .Returns(s =>
-            {
-                s[1] = mapElement;
-                return true;
-            });
+	[Fact]
+	public void ApplyReplaceChange_ElementPathMissing_FailsUnchanged()
+	{
+		XElement originalElement = Resources.TestElement;
+		XMapElement mapElement = new(originalElement);
+		mapElement.MapAll();
+		var packFile = Substitute.For<IPackFile>();
+		packFile
+			.TryGetXMap(Arg.Any<string>(), out Arg.Any<XMapElement?>())
+			.Returns(s =>
+			{
+				s[1] = mapElement;
+				return true;
+			});
 
-        var newElement = new XElement("replaced");
-        var change = new ReplaceElementChange("#0069", "nonexistant", newElement);
-        var elements = mapElement.Elements();
-        Assert.False(change.Apply(packFile));
-        Assert.DoesNotContain<XElement>(newElement, elements);
-    }
+		var newElement = new XElement("replaced");
+		var change = new ReplaceElementChange("#0069", "nonexistant", newElement);
+		var elements = mapElement.Elements();
+		Assert.False(change.Apply(packFile));
+		Assert.DoesNotContain<XElement>(newElement, elements);
+	}
 
-    [Fact]
-    public void ApplyReplaceChange_Text_Succeeds()
-    {
-        XMapElement mapElement = new(Resources.TestElement);
-        mapElement.MapAll();
-        var packFile = Substitute.For<IPackFile>();
-        packFile
-            .TryGetXMap(Arg.Any<string>(), out Arg.Any<XMapElement?>())
-            .Returns(s =>
-            {
-                s[1] = mapElement;
-                return true;
-            });
-        var change = new ReplaceTextChange("#0069", "generators", 30, "#0005 #0005", "#5000");
-        Assert.True(change.Apply(packFile));
-        var elements = mapElement.Elements();
-        var generatorsValue = elements.First(e => e.Attribute("name")?.Value == "generators").Value;
-        Assert.Contains("#5000", generatorsValue);
-        Assert.Contains("#0005", generatorsValue);
-    }
+	[Fact]
+	public void ApplyReplaceChange_Text_Succeeds()
+	{
+		XMapElement mapElement = new(Resources.TestElement);
+		mapElement.MapAll();
+		var packFile = Substitute.For<IPackFile>();
+		packFile
+			.TryGetXMap(Arg.Any<string>(), out Arg.Any<XMapElement?>())
+			.Returns(s =>
+			{
+				s[1] = mapElement;
+				return true;
+			});
+		var change = new ReplaceTextChange("#0069", "generators", 30, "#0005 #0005", "#5000");
+		Assert.True(change.Apply(packFile));
+		var elements = mapElement.Elements();
+		var generatorsValue = elements.First(e => e.Attribute("name")?.Value == "generators").Value;
+		Assert.Contains("#5000", generatorsValue);
+		Assert.Contains("#0005", generatorsValue);
+	}
 
-    [Fact]
-    public void ApplyReplaceChange_TextPathMissing_FailsUnchanged()
-    {
-        XMapElement mapElement = new(Resources.TestElement);
-        mapElement.MapAll();
-        var packFile = Substitute.For<IPackFile>();
-        packFile
-            .TryGetXMap(Arg.Any<string>(), out Arg.Any<XMapElement?>())
-            .Returns(s =>
-            {
-                s[1] = mapElement;
-                return true;
-            });
-        var change = new ReplaceTextChange("#0069", "something", 30, "#0005 #0005", "#5000");
-        Assert.False(change.Apply(packFile));
-        var elements = mapElement.Elements();
-        var generatorsValue = elements.First(e => e.Attribute("name")?.Value == "generators").Value;
-        Assert.DoesNotContain("#5000", generatorsValue);
-        Assert.Contains("#0005 #0005 #0005", generatorsValue);
-    }
+	[Fact]
+	public void ApplyReplaceChange_TextPathMissing_FailsUnchanged()
+	{
+		XMapElement mapElement = new(Resources.TestElement);
+		mapElement.MapAll();
+		var packFile = Substitute.For<IPackFile>();
+		packFile
+			.TryGetXMap(Arg.Any<string>(), out Arg.Any<XMapElement?>())
+			.Returns(s =>
+			{
+				s[1] = mapElement;
+				return true;
+			});
+		var change = new ReplaceTextChange("#0069", "something", 30, "#0005 #0005", "#5000");
+		Assert.False(change.Apply(packFile));
+		var elements = mapElement.Elements();
+		var generatorsValue = elements.First(e => e.Attribute("name")?.Value == "generators").Value;
+		Assert.DoesNotContain("#5000", generatorsValue);
+		Assert.Contains("#0005 #0005 #0005", generatorsValue);
+	}
 
-    [Fact]
-    public void ApplyReplaceChange_TextValueMissing_FailsUnchanged()
-    {
-        XMapElement mapElement = new(Resources.TestElement);
-        mapElement.MapAll();
-        var packFile = Substitute.For<IPackFile>();
-        packFile
-            .TryGetXMap(Arg.Any<string>(), out Arg.Any<XMapElement?>())
-            .Returns(s =>
-            {
-                s[1] = mapElement;
-                return true;
-            });
-        var change = new ReplaceTextChange("#0069", "generators", 30, "#6969", "#5000");
-        Assert.False(change.Apply(packFile));
-        var elements = mapElement.Elements();
-        var generatorsValue = elements.First(e => e.Attribute("name")?.Value == "generators").Value;
-        Assert.DoesNotContain("#5000", generatorsValue);
-        Assert.Contains("#0005 #0005 #0005", generatorsValue);
-    }
+	[Fact]
+	public void ApplyReplaceChange_TextValueMissing_FailsUnchanged()
+	{
+		XMapElement mapElement = new(Resources.TestElement);
+		mapElement.MapAll();
+		var packFile = Substitute.For<IPackFile>();
+		packFile
+			.TryGetXMap(Arg.Any<string>(), out Arg.Any<XMapElement?>())
+			.Returns(s =>
+			{
+				s[1] = mapElement;
+				return true;
+			});
+		var change = new ReplaceTextChange("#0069", "generators", 30, "#6969", "#5000");
+		Assert.False(change.Apply(packFile));
+		var elements = mapElement.Elements();
+		var generatorsValue = elements.First(e => e.Attribute("name")?.Value == "generators").Value;
+		Assert.DoesNotContain("#5000", generatorsValue);
+		Assert.Contains("#0005 #0005 #0005", generatorsValue);
+	}
 
-    [Fact]
-    public void ApplyReplaceChange_TextIndexOutOfRange_FailsUnchanged()
-    {
-        XMapElement mapElement = new(Resources.TestElement);
-        mapElement.MapAll();
-        var packFile = Substitute.For<IPackFile>();
-        packFile
-            .TryGetXMap(Arg.Any<string>(), out Arg.Any<XMapElement?>())
-            .Returns(s =>
-            {
-                s[1] = mapElement;
-                return true;
-            });
-        var change = new ReplaceTextChange("#0069", "generators", 999, "#0005 #0005", "#5000");
-        Assert.False(change.Apply(packFile));
-        var elements = mapElement.Elements();
-        var generatorsValue = elements.First(e => e.Attribute("name")?.Value == "generators").Value;
-        Assert.DoesNotContain("#5000", generatorsValue);
-        Assert.Contains("#0005 #0005 #0005", generatorsValue);
-    }
+	[Fact]
+	public void ApplyReplaceChange_TextIndexOutOfRange_FailsUnchanged()
+	{
+		XMapElement mapElement = new(Resources.TestElement);
+		mapElement.MapAll();
+		var packFile = Substitute.For<IPackFile>();
+		packFile
+			.TryGetXMap(Arg.Any<string>(), out Arg.Any<XMapElement?>())
+			.Returns(s =>
+			{
+				s[1] = mapElement;
+				return true;
+			});
+		var change = new ReplaceTextChange("#0069", "generators", 999, "#0005 #0005", "#5000");
+		Assert.False(change.Apply(packFile));
+		var elements = mapElement.Elements();
+		var generatorsValue = elements.First(e => e.Attribute("name")?.Value == "generators").Value;
+		Assert.DoesNotContain("#5000", generatorsValue);
+		Assert.Contains("#0005 #0005 #0005", generatorsValue);
+	}
+
+	[Fact]
+	public void ApplyReplaceChange_Element_TryGetXMapFails_ReturnsFalse()
+	{
+		var packFile = Substitute.For<IPackFile>();
+		packFile.TryGetXMap(Arg.Any<string>(), out Arg.Any<XMapElement?>()).Returns(false);
+
+		var newElement = new XElement("replaced");
+		var change = new ReplaceElementChange("#0069", "generators", newElement);
+		Assert.False(change.Apply(packFile));
+	}
+
+	[Fact]
+	public void ApplyReplaceChange_Text_TryGetXMapFails_ReturnsFalse()
+	{
+		var packFile = Substitute.For<IPackFile>();
+		packFile.TryGetXMap(Arg.Any<string>(), out Arg.Any<XMapElement?>()).Returns(false);
+
+		var change = new ReplaceTextChange("#0069", "generators", 30, "#0005 #0005", "#5000");
+		Assert.False(change.Apply(packFile));
+	}
 }
