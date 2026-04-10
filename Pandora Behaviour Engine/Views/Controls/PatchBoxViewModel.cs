@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using System;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Reactive.Disposables.Fluent;
+using System.Reactive.Linq;
 using Avalonia.Controls;
 using DynamicData;
 using DynamicData.Binding;
@@ -9,11 +14,6 @@ using Pandora.Mods.Extensions;
 using Pandora.Utils;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
-using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Reactive.Disposables.Fluent;
-using System.Reactive.Linq;
 
 namespace Pandora.ViewModels;
 
@@ -41,7 +41,8 @@ public partial class PatchBoxViewModel : ViewModelBase, IActivatableViewModel
 	public PatchBoxViewModel(
 		IModService modService,
 		IEngineSharedState state,
-		DataGridOptionsViewModel dataGridOptions)
+		DataGridOptionsViewModel dataGridOptions
+	)
 	{
 		_modService = modService;
 
@@ -49,12 +50,15 @@ public partial class PatchBoxViewModel : ViewModelBase, IActivatableViewModel
 		DataGridOptions = dataGridOptions;
 
 		_modService
-		   .Connect()
-		   .AutoRefresh(x => x.Priority)
-		   .Filter(this.WhenAnyValue(x => x.State.SearchTerm).Select(ModViewModelExtensions.BuildNameFilter))
-		   .Sort(SortExpressionComparer<ModInfoViewModel>.Ascending(x => x.Priority))
-		   .Bind(out _modViewModels)
-		   .Subscribe();
+			.Connect()
+			.AutoRefresh(x => x.Priority)
+			.Filter(
+				this.WhenAnyValue(x => x.State.SearchTerm)
+					.Select(ModViewModelExtensions.BuildNameFilter)
+			)
+			.Sort(SortExpressionComparer<ModInfoViewModel>.Ascending(x => x.Priority))
+			.Bind(out _modViewModels)
+			.Subscribe();
 
 		this.WhenActivated(disposables =>
 		{

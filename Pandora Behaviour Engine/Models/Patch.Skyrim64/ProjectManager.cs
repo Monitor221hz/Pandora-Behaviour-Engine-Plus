@@ -1,12 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using NLog;
-using Pandora.API.Patch;
-using Pandora.API.Patch.Skyrim64;
-using Pandora.Models.Patch.Skyrim64.Format.FNIS;
-using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
-using Pandora.Paths.Abstractions;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -16,6 +10,12 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NLog;
+using Pandora.API.Patch;
+using Pandora.API.Patch.Skyrim64;
+using Pandora.Models.Patch.Skyrim64.Format.FNIS;
+using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
+using Pandora.Paths.Abstractions;
 
 namespace Pandora.Models.Patch.Skyrim64;
 
@@ -26,12 +26,14 @@ public class ProjectManager : IProjectManager
 	private readonly Dictionary<string, IProject> _projectMap = new Dictionary<string, IProject>(
 		StringComparer.OrdinalIgnoreCase
 	);
-	private readonly Dictionary<string, IProject> _fileProjectMap = new Dictionary<string, IProject>(
-		StringComparer.OrdinalIgnoreCase
-	);
-	private readonly Dictionary<string, IProject> _folderProjectMap = new Dictionary<string, IProject>(
-		StringComparer.OrdinalIgnoreCase
-	);
+	private readonly Dictionary<string, IProject> _fileProjectMap = new Dictionary<
+		string,
+		IProject
+	>(StringComparer.OrdinalIgnoreCase);
+	private readonly Dictionary<string, IProject> _folderProjectMap = new Dictionary<
+		string,
+		IProject
+	>(StringComparer.OrdinalIgnoreCase);
 	private Dictionary<string, List<IProject>> _linkedProjectMap = new Dictionary<
 		string,
 		List<IProject>
@@ -78,7 +80,10 @@ public class ProjectManager : IProjectManager
 		builder.AppendLine();
 		foreach (var project in projects)
 		{
-			Debug.Assert(project.CharacterPackFile is not null, "Project must have a character pack file.");
+			Debug.Assert(
+				project.CharacterPackFile is not null,
+				"Project must have a character pack file."
+			);
 			var animCount = project.CharacterPackFile.NewAnimationCount;
 			if (animCount == 0)
 			{
@@ -200,10 +205,14 @@ public class ProjectManager : IProjectManager
 				{
 					existingProject.Sibling = project;
 					project.Sibling = existingProject;
-					Debug.Assert(project.CharacterPackFile is not null,
-						"Project must have a character pack file.");
-					Debug.Assert(project.Sibling.CharacterPackFile is not null,
-						"Sibling project must have a character pack file.");
+					Debug.Assert(
+						project.CharacterPackFile is not null,
+						"Project must have a character pack file."
+					);
+					Debug.Assert(
+						project.Sibling.CharacterPackFile is not null,
+						"Sibling project must have a character pack file."
+					);
 					project.CharacterPackFile.AttachUniqueAnimationLock(
 						project.Sibling.CharacterPackFile
 					);
@@ -224,9 +233,7 @@ public class ProjectManager : IProjectManager
 		lock (_projectMap)
 		{
 			var project = Project.Load(
-				new FileInfo(
-					Path.Join(_pathContext.TemplateFolder.FullName, projectFilePath)
-				),
+				new FileInfo(Path.Join(_pathContext.TemplateFolder.FullName, projectFilePath)),
 				_packFileCache
 			);
 
@@ -245,9 +252,7 @@ public class ProjectManager : IProjectManager
 		{
 			var project = new Project(
 				_packFileCache.LoadPackFile(
-					new FileInfo(
-						Path.Join(_pathContext.GameDataFolder.FullName, projectFilePath)
-					)
+					new FileInfo(Path.Join(_pathContext.GameDataFolder.FullName, projectFilePath))
 				)
 			);
 

@@ -4,6 +4,7 @@
 #pragma warning disable IDE0005
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 #pragma warning restore IDE0005
 using System.IO;
@@ -15,7 +16,6 @@ using Pandora.API.Patch.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 using Pandora.Patch.Patchers.Skyrim.FNIS;
 using Pandora.Paths.Abstractions;
-using System.Diagnostics;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
 

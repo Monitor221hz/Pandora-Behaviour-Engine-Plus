@@ -138,9 +138,7 @@ public class ArgumentsParsingTests : IDisposable
 	{
 		var args = argsTemplate.Select(arg => string.Format(arg, path)).ToArray();
 
-		_output.WriteLine(
-			$"Testing: ` {string.Join(" ", args)} `"
-		);
+		_output.WriteLine($"Testing: ` {string.Join(" ", args)} `");
 		var options = _parser.Parse(args);
 
 		Assert.NotNull(options.SkyrimGameDirectory);
@@ -151,9 +149,7 @@ public class ArgumentsParsingTests : IDisposable
 	{
 		var args = new[] { string.Format(formatTemplate, path) };
 
-		_output.WriteLine(
-			$"Testing combined argument: `{args[0]}`"
-		);
+		_output.WriteLine($"Testing combined argument: `{args[0]}`");
 		var options = _parser.Parse(args);
 
 		Assert.NotNull(options.SkyrimGameDirectory);
@@ -167,9 +163,7 @@ public class ArgumentsParsingTests : IDisposable
 		var outputPath = _tempDirWithSpaces.FullName;
 		var args = argsTemplate.Select(arg => string.Format(arg, skyrimPath, outputPath)).ToArray();
 
-		_output.WriteLine(
-			$"Testing multiple arguments: `{string.Join(" ", args)}`"
-		);
+		_output.WriteLine($"Testing multiple arguments: `{string.Join(" ", args)}`");
 		var options = _parser.Parse(args);
 
 		Assert.NotNull(options.SkyrimGameDirectory);

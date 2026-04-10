@@ -10,5 +10,5 @@ public enum EngineState
 	Ready,
 	Running,
 	Success,
-	Error
+	Error,
 }
