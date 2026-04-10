@@ -3,6 +3,7 @@
 
 using System;
 using System.IO;
+using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using System.Reactive.Linq;
 using Pandora.API.Patch;
@@ -14,29 +15,29 @@ namespace Pandora.ViewModels;
 public partial class ModInfoViewModel
 	: ViewModelBase,
 		IEquatable<ModInfoViewModel>,
-		IActivatableViewModel
+		IActivatableViewModel, // maybe not needed
+		IDisposable
 {
 	public IModInfo ModInfo { get; }
 
 	public ViewModelActivator Activator { get; } = new();
 
+	private readonly CompositeDisposable _disposables = new();
+
 	public ModInfoViewModel(IModInfo modInfo)
 	{
 		ModInfo = modInfo;
 
-		this.WhenActivated(disposables =>
-		{
-			this.WhenAnyValue(x => x.Active)
-				.DistinctUntilChanged()
-				.Subscribe(val => ModInfo.Active = val)
-				.DisposeWith(disposables);
+		this.WhenAnyValue(x => x.Priority)
+			.Subscribe(val => ModInfo.Priority = val)
+			.DisposeWith(_disposables);
 
-			this.WhenAnyValue(x => x.Priority)
-				.DistinctUntilChanged()
-				.Subscribe(val => ModInfo.Priority = val)
-				.DisposeWith(disposables);
-		});
+		this.WhenAnyValue(x => x.Active)
+			.Subscribe(val => ModInfo.Active = val)
+			.DisposeWith(_disposables);
 	}
+
+	public void Dispose() => _disposables.Dispose();
 
 	public string Name => ModInfo.Name;
 	public string Author => ModInfo.Author;
