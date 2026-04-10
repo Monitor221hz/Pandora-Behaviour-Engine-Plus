@@ -12,27 +12,33 @@ public sealed class NLogConfigurator : INLogConfigurator
 {
 	public void Configure(Target fileTarget, Target uiTarget)
 	{
-		LogManager.Setup()
-			.SetupInternalLogger(b => b
-				.LogToConsole(true)
-				.SetMinimumLogLevel(LogLevel.Trace))
+		LogManager
+			.Setup()
+			.SetupInternalLogger(b => b.LogToConsole(true).SetMinimumLogLevel(LogLevel.Trace))
 			.LoadConfiguration(builder =>
 			{
 				// File Logger
-				builder.ForLogger()
-					.FilterDynamic(new ConditionBasedFilter
-					{
-						Condition = "equals('${event-properties:ui}', true)",
-						Action = FilterResult.Ignore
-					}, filterDefaultAction: FilterResult.Log)
+				builder
+					.ForLogger()
+					.FilterDynamic(
+						new ConditionBasedFilter
+						{
+							Condition = "equals('${event-properties:ui}', true)",
+							Action = FilterResult.Ignore,
+						},
+						filterDefaultAction: FilterResult.Log
+					)
 					.WriteTo(fileTarget);
 				// UI Logger
-				builder.ForLogger()
-					.FilterDynamic(new ConditionBasedFilter
-					{
-						Condition = "equals('${event-properties:ui}', true)",
-						Action = FilterResult.Log
-					})
+				builder
+					.ForLogger()
+					.FilterDynamic(
+						new ConditionBasedFilter
+						{
+							Condition = "equals('${event-properties:ui}', true)",
+							Action = FilterResult.Log,
+						}
+					)
 					.WriteTo(uiTarget);
 			});
 	}

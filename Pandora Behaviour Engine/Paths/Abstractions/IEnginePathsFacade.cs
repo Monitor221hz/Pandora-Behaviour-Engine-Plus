@@ -14,7 +14,6 @@ public interface IEnginePathsFacade
 	DirectoryInfo TemplateFolder { get; }
 	DirectoryInfo EngineFolder { get; }
 
-
 	DirectoryInfo OutputEngineFolder { get; }
 	DirectoryInfo OutputMeshesFolder { get; }
 

@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using System;
 using Avalonia.Media;
 using FluentAvalonia.UI.Windowing;
-using System;
 
 namespace Pandora.Platform.Windows;
 
@@ -23,7 +23,9 @@ public static class WindowsPlatformHelper
 			{
 				case WindowVisualState.Idle:
 					window.PlatformFeatures.SetWindowBorderColor(DefaultBorderColor);
-					window.PlatformFeatures.SetTaskBarProgressBarState(TaskBarProgressBarState.None);
+					window.PlatformFeatures.SetTaskBarProgressBarState(
+						TaskBarProgressBarState.None
+					);
 					break;
 
 				case WindowVisualState.Running:
@@ -40,10 +42,11 @@ public static class WindowsPlatformHelper
 					break;
 
 				case WindowVisualState.Error:
-					window.PlatformFeatures.SetTaskBarProgressBarState(TaskBarProgressBarState.Error);
+					window.PlatformFeatures.SetTaskBarProgressBarState(
+						TaskBarProgressBarState.Error
+					);
 					break;
 			}
 		}
 	}
-
 }

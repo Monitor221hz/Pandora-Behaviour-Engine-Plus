@@ -9,5 +9,4 @@ public interface ILogEventStream : IDisposable
 {
 	IObservable<LogUiEvent> Events { get; }
 	bool Publish(LogUiEvent evt);
-
 }

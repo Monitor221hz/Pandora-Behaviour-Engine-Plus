@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Pandora.API.Patch;
-using Pandora.API.Patch.Engine.Config;
-using Pandora.Logging.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Pandora.API.Patch;
+using Pandora.API.Patch.Engine.Config;
+using Pandora.Logging.Extensions;
 
 namespace Pandora.Models.Engine;
 
@@ -24,7 +24,8 @@ public sealed class BehaviourEngine : IBehaviourEngine
 	public BehaviourEngine(
 		IEngineRunner runner,
 		IEngineStateMachine state,
-		IEngineConfiguration initialConfig)
+		IEngineConfiguration initialConfig
+	)
 	{
 		_runner = runner;
 		_state = state;
@@ -53,7 +54,9 @@ public sealed class BehaviourEngine : IBehaviourEngine
 			return EngineResult.Fail("Engine is already running.");
 
 		Logger.UiClear();
-		Logger.UiInfo($"Engine launched with configuration: {Configuration.Name}. Do not exit before the launch is finished.");
+		Logger.UiInfo(
+			$"Engine launched with configuration: {Configuration.Name}. Do not exit before the launch is finished."
+		);
 		bool isWaitingForPreload = _state.Current == EngineState.Preloading;
 
 		if (isWaitingForPreload)
@@ -159,5 +162,4 @@ public sealed class BehaviourEngine : IBehaviourEngine
 	{
 		_lock.Dispose();
 	}
-
 }

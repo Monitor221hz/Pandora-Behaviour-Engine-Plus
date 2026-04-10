@@ -26,15 +26,20 @@ public sealed class KeyboardModMoveBehavior : Behavior<DataGrid>
 	private void OnKeyDown(object? sender, KeyEventArgs e)
 	{
 		int direction = 0;
-		if (e.Key == Key.OemMinus || e.Key == Key.Subtract) direction = -1;
-		else if (e.Key == Key.OemPlus || e.Key == Key.Add) direction = 1;
+		if (e.Key == Key.OemMinus || e.Key == Key.Subtract)
+			direction = -1;
+		else if (e.Key == Key.OemPlus || e.Key == Key.Add)
+			direction = 1;
 
-		if (direction == 0) return;
+		if (direction == 0)
+			return;
 
 		var dataGrid = AssociatedObject;
 
-		if (dataGrid?.DataContext is not PatchBoxViewModel vm ||
-			dataGrid.SelectedItem is not ModInfoViewModel selectedMod)
+		if (
+			dataGrid?.DataContext is not PatchBoxViewModel vm
+			|| dataGrid.SelectedItem is not ModInfoViewModel selectedMod
+		)
 			return;
 
 		bool moved = vm.ModViewModels.TryMoveAndRecalculate(selectedMod, direction);

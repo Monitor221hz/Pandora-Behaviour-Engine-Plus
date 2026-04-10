@@ -1,6 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reactive.Disposables.Fluent;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
@@ -10,12 +16,6 @@ using Pandora.Views.Pages.DTOs;
 using Pandora.Views.Pages.Factories;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reactive.Disposables.Fluent;
-using System.Reactive.Linq;
-using System.Threading.Tasks;
 
 namespace Pandora.ViewModels;
 
@@ -40,7 +40,8 @@ public partial class MainWindowViewModel : ViewModelBase, IScreen, IActivatableV
 	public MainWindowViewModel(
 		PageFactory pageFactory,
 		EngineMenuViewModel engineMenuVM,
-		ISettingsService settingsService)
+		ISettingsService settingsService
+	)
 	{
 		_pageFactory = pageFactory;
 		EngineMenuVM = engineMenuVM;
@@ -52,7 +53,7 @@ public partial class MainWindowViewModel : ViewModelBase, IScreen, IActivatableV
 
 		NavigationItems =
 		[
-			new NavigationItem("Engine", new PathIconSource { Data = engineIcon }, Routes.Engine)
+			new NavigationItem("Engine", new PathIconSource { Data = engineIcon }, Routes.Engine),
 		];
 
 		FooterNavigationItems =
@@ -72,8 +73,8 @@ public partial class MainWindowViewModel : ViewModelBase, IScreen, IActivatableV
 				.InvokeCommand(NavigateToUriCommand)
 				.DisposeWith(disposables);
 
-			Router.CurrentViewModel
-				.WhereNotNull()
+			Router
+				.CurrentViewModel.WhereNotNull()
 				.Select(vm => FindMenuItemByRoute(vm.UrlPathSegment))
 				.WhereNotNull()
 				.BindTo(this, x => x.SelectedMenuItem)
@@ -97,9 +98,13 @@ public partial class MainWindowViewModel : ViewModelBase, IScreen, IActivatableV
 		SelectedMenuItem = FindMenuItemByRoute(targetRoute) ?? NavigationItems.FirstOrDefault();
 	}
 
-	private static T? GetResource<T>(string key) where T : class
+	private static T? GetResource<T>(string key)
+		where T : class
 	{
-		if (Application.Current?.TryFindResource(key, out var resource) == true && resource is T tResource)
+		if (
+			Application.Current?.TryFindResource(key, out var resource) == true
+			&& resource is T tResource
+		)
 		{
 			return tResource;
 		}
@@ -108,9 +113,9 @@ public partial class MainWindowViewModel : ViewModelBase, IScreen, IActivatableV
 
 	private NavigationItem? FindMenuItemByRoute(string? route)
 	{
-		if (string.IsNullOrEmpty(route)) return null;
-		return NavigationItems.Concat(FooterNavigationItems)
-							  .FirstOrDefault(i => i.Route == route);
+		if (string.IsNullOrEmpty(route))
+			return null;
+		return NavigationItems.Concat(FooterNavigationItems).FirstOrDefault(i => i.Route == route);
 	}
 
 	[ReactiveCommand]

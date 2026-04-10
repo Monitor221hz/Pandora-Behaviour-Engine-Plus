@@ -1,19 +1,22 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Pandora.API.Patch.Config;
-using Pandora.ViewModels;
-using ReactiveUI;
-using ReactiveUI.SourceGenerators;
 using System;
 using System.Collections.ObjectModel;
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using System.Reactive.Linq;
+using Pandora.API.Patch.Config;
+using Pandora.ViewModels;
+using ReactiveUI;
+using ReactiveUI.SourceGenerators;
 
 namespace Pandora.Configuration.ViewModels;
 
-public partial class ConfigurationOptionViewModel : ViewModelBase, IEngineConfigurationViewModel, IDisposable
+public partial class ConfigurationOptionViewModel
+	: ViewModelBase,
+		IEngineConfigurationViewModel,
+		IDisposable
 {
 	private readonly IEngineConfigurationService _configService;
 
@@ -31,14 +34,15 @@ public partial class ConfigurationOptionViewModel : ViewModelBase, IEngineConfig
 	public ConfigurationOptionViewModel(
 		string name,
 		IEngineConfigurationFactory factory,
-		IEngineConfigurationService configService)
+		IEngineConfigurationService configService
+	)
 	{
 		Name = name;
 		Factory = factory;
 		_configService = configService;
 
-		_isCheckedHelper = _configService.CurrentFactoryChanged
-			.Select(current => current == Factory)
+		_isCheckedHelper = _configService
+			.CurrentFactoryChanged.Select(current => current == Factory)
 			.ObserveOn(RxApp.MainThreadScheduler)
 			.ToProperty(this, x => x.IsChecked)
 			.DisposeWith(_disposables);

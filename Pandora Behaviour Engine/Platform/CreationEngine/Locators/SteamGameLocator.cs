@@ -1,18 +1,19 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using System.IO;
 using GameFinder.RegistryUtils;
 using GameFinder.StoreHandlers.Steam;
 using GameFinder.StoreHandlers.Steam.Models.ValueTypes;
 using NexusMods.Paths;
-using System.IO;
 
 namespace Pandora.Platform.CreationEngine.Locators;
 
 public sealed class SteamGameLocator(
 	IGameDescriptor gameDescriptor,
 	IRegistry? registry,
-	IFileSystem fileSystem) : IGameLocator
+	IFileSystem fileSystem
+) : IGameLocator
 {
 	public DirectoryInfo? TryLocateGameData()
 	{

@@ -1,15 +1,16 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Pandora.Paths.Abstractions;
 using System.IO;
+using Pandora.Paths.Abstractions;
 
 namespace Pandora.Paths;
 
 public sealed class EnginePathsFacade(
 	IApplicationPaths appPaths,
 	IUserPaths userPaths,
-	IOutputPaths outputPaths) : IEnginePathsFacade
+	IOutputPaths outputPaths
+) : IEnginePathsFacade
 {
 	public DirectoryInfo GameDataFolder => userPaths.GameData;
 	public DirectoryInfo OutputFolder => userPaths.Output;
