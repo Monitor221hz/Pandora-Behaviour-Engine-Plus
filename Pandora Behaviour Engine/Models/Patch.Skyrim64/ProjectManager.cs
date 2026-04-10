@@ -478,13 +478,13 @@ public class ProjectManager : IProjectManager
 		);
 		try
 		{
-			Parallel.ForEach(
-				_projectMap.Values,
-				project =>
-				{
-					_fnisParser.ScanProjectAnimlist(project);
-				}
-			);
+			// Parallel.ForEach(
+			// 	_projectMap.Values,
+			// 	project =>
+			// 	{
+			// 		_fnisParser.ScanProjectAnimlist(project);
+			// 	}
+			// );
 			var allAltAnim = new ConcurrentBag<AlternateAnimation>(
 				_projectMap
 					.Values.AsParallel()
