@@ -91,7 +91,7 @@ public class SkyrimPatcher : IPatcher
 		for (int i = 0; i < _activeMods.Count; i++)
 		{
 			IModInfo mod = _activeMods[i];
-			string modLine = $"Pandora Mod {i + 1} : {mod.Name} - v.{mod.Version}";
+			string modLine = $"Pandora Mod {mod.Priority} : {mod.Name} - v.{mod.Version}";
 			logBuilder.AppendLine(modLine);
 			Logger.Info(modLine);
 		}
