@@ -1,6 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reactive.Disposables.Fluent;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
 using Pandora.Platform.Avalonia;
 using Pandora.Platform.CreationEngine;
 using Pandora.Settings;
@@ -8,11 +15,6 @@ using Pandora.Views.Pages;
 using Pandora.Views.Pages.DTOs;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
-using System;
-using System.Collections.Generic;
-using System.Reactive.Disposables.Fluent;
-using System.Reactive.Linq;
-using System.Threading.Tasks;
 
 namespace Pandora.ViewModels;
 
@@ -42,27 +44,27 @@ public partial class SettingsPageViewModel : RoutableViewModelBase, IActivatable
 		ISettingsService settings,
 		IDiskDialogService diskDialog,
 		IGameDescriptor gameDescriptor,
-		IScreen screen) : base(screen)
+		IScreen screen
+	)
+		: base(screen)
 	{
 		_settings = settings;
 		_diskDialog = diskDialog;
 		_gameDescriptor = gameDescriptor;
 
-		_gameDataPathHelper = _settings.Paths.GameDataChanged
-			.Select(d => d.FullName)
+		_gameDataPathHelper = _settings
+			.Paths.GameDataChanged.Select(d => d.FullName)
 			.ToProperty(this, x => x.GameDataPath);
 
-		_outputPathHelper = _settings.Paths.OutputChanged
-			.Select(d => d.FullName)
+		_outputPathHelper = _settings
+			.Paths.OutputChanged.Select(d => d.FullName)
 			.ToProperty(this, x => x.OutputPath);
 
 		this.WhenActivated(disposables =>
 		{
 			if (_settings.Paths.NeedsUserSelection)
 			{
-				Observable.StartAsync(PickGameDirectory)
-					.Subscribe()
-					.DisposeWith(disposables);
+				Observable.StartAsync(PickGameDirectory).Subscribe().DisposeWith(disposables);
 			}
 		});
 	}
@@ -70,10 +72,18 @@ public partial class SettingsPageViewModel : RoutableViewModelBase, IActivatable
 	[ReactiveCommand]
 	private async Task PickGameDirectory()
 	{
+		var initialDirectory = _settings.Paths.GameData.Parent;
+		var suggestedFileName = initialDirectory is null
+			? null
+			: _gameDescriptor.ExecutableNames.FirstOrDefault(x =>
+				File.Exists(Path.Join(initialDirectory.FullName, x))
+			);
 		var file = await _diskDialog.OpenFileAsync(
 			$"Select {_gameDescriptor.Name} Executable",
-			_settings.Paths.GameData,
-			["*.exe"]);
+			initialDirectory,
+			suggestedFileName: suggestedFileName,
+			["*.exe"]
+		);
 
 		if (file != null && file.Directory != null)
 		{
@@ -86,7 +96,8 @@ public partial class SettingsPageViewModel : RoutableViewModelBase, IActivatable
 	{
 		var folder = await _diskDialog.OpenFolderAsync(
 			"Select Output Directory",
-			_settings.Paths.Output);
+			_settings.Paths.Output
+		);
 
 		if (folder != null && folder.Exists)
 		{

@@ -1,123 +1,136 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net10.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
-    <RootNamespace>Pandora</RootNamespace>
-    <ApplicationIcon>Assets\pandora.ico</ApplicationIcon>
-    <AssemblyName>Pandora Behaviour Engine+</AssemblyName>
-    <GenerateAssemblyInformationalVersionAttribute>true</GenerateAssemblyInformationalVersionAttribute>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net10.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+		<RootNamespace>Pandora</RootNamespace>
+		<ApplicationIcon>Assets\pandora.ico</ApplicationIcon>
+		<AssemblyName>Pandora Behaviour Engine+</AssemblyName>
+		<GenerateAssemblyInformationalVersionAttribute>true</GenerateAssemblyInformationalVersionAttribute>
 		<SatelliteResourceLanguages>none</SatelliteResourceLanguages>
-    <CETCompat>false</CETCompat>
-    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
-  </PropertyGroup>
-  <ItemGroup>
-    <InternalsVisibleTo Include="Pandora Tests" />
-  </ItemGroup>
+		<CETCompat>false</CETCompat>
+		<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <AvaloniaResource Include="Assets\**" />
-    <Content Include="Assets\pandora.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Avalonia.AvaloniaEdit" Version="11.3.0" />
-    <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.3.10" />
-    <PackageReference Include="Avalonia.Desktop" Version="11.3.10" />
-    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.10" />
-    <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-    <PackageReference
-      Condition="'$(Configuration)' == 'Debug'"
-      Include="Avalonia.Diagnostics"
-      Version="11.3.6"
-    />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.6" />
-    <PackageReference Include="GameFinder" Version="4.9.0" />
-    <PackageReference Include="GameFinder.StoreHandlers.GOG" Version="4.9.0" />
-    <PackageReference Include="GameFinder.StoreHandlers.Steam" Version="4.9.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.1" />
-    <PackageReference Include="ReactiveUI.Avalonia" Version="11.3.8" />
-    <PackageReference Include="System.CommandLine" Version="2.0.1" />
-    <PackageReference Include="System.Interactive.Async" Version="7.0.0" />
-    <PackageReference Include="Testably.Abstractions" Version="10.0.0" />
-    <PackageReference Include="Vanara.PInvoke.NtDll" Version="4.2.1" />
-    <PackageReference Include="System.Management" Version="10.0.1" />
-    <PackageReference Include="Xaml.Behaviors.Avalonia" Version="11.3.9" />
-    <PackageReference Include="DynamicData" Version="9.4.1" />
-    <PackageReference Include="FluentAvaloniaUI" Version="2.4.1" />
-    <PackageReference Include="Nito.HashAlgorithms" Version="1.0.1" />
-    <PackageReference Include="NLog" Version="6.0.7" />
-    <PackageReference Include="ReactiveUI" Version="22.3.1" />
-    <PackageReference Include="ReactiveUI.SourceGenerators" Version="2.5.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.1" />
-    <PackageReference Include="Xaml.Behaviors.Interactions.DragAndDrop.DataGrid" Version="11.3.9.3" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Pandora API\HKX2-Enhanced-Library\HKX2\HKX2E.csproj" />
-    <ProjectReference Include="..\Pandora API\Pandora API\Pandora API.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <AvaloniaResource Update="Assets\Icons.axaml">
-      <SubType>Designer</SubType>
-    </AvaloniaResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Update="Properties\GUISettings.Designer.cs">
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>GUISettings.settings</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="Nemesis_Engine\**\*.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-    </None>
-    <None Update="Nemesis_Engine\**\info.ini">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="Pandora_Engine\**\*.hkx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-    </None>
-    <None Update="Pandora_Engine\**\*.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-    </None>
-    <None Update="Pandora_Engine\**\*.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-    </None>
-    <None Update="Pandora_Engine\**\info.ini">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="FNIS.esp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-    </None>
-    <!--<None Update="Plugins\Test Plugin\plugin.json">
+	<ItemGroup>
+		<InternalsVisibleTo Include="Pandora Tests" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<AvaloniaResource Include="Assets\**" />
+		<Content Include="Assets\pandora.ico" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Avalonia.AvaloniaEdit" Version="11.3.0" />
+		<PackageReference Include="Avalonia.Controls.DataGrid" Version="11.3.10" />
+		<PackageReference Include="Avalonia.Desktop" Version="11.3.10" />
+		<PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.10" />
+		<!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+		<PackageReference
+			Condition="'$(Configuration)' == 'Debug'"
+			Include="Avalonia.Diagnostics"
+			Version="11.3.10"
+		/>
+		<PackageReference Include="GameFinder" Version="4.9.0" />
+		<PackageReference Include="GameFinder.StoreHandlers.GOG" Version="4.9.0" />
+		<PackageReference Include="GameFinder.StoreHandlers.Steam" Version="4.9.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.1" />
+		<PackageReference Include="ReactiveUI.Avalonia" Version="11.3.8" />
+		<PackageReference Include="System.CommandLine" Version="2.0.1" />
+		<PackageReference Include="System.Interactive.Async" Version="7.0.0" />
+		<PackageReference Include="Testably.Abstractions" Version="10.0.0" />
+		<PackageReference Include="Vanara.PInvoke.NtDll" Version="4.2.1" />
+		<PackageReference Include="System.Management" Version="10.0.1" />
+		<PackageReference Include="Xaml.Behaviors.Avalonia" Version="11.3.9" />
+		<PackageReference Include="DynamicData" Version="9.4.1" />
+		<PackageReference Include="FluentAvaloniaUI" Version="2.4.1" />
+		<PackageReference Include="Nito.HashAlgorithms" Version="1.0.1" />
+		<PackageReference Include="NLog" Version="6.0.7" />
+		<PackageReference Include="ReactiveUI" Version="22.3.1" />
+		<PackageReference Include="ReactiveUI.SourceGenerators" Version="2.5.1">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.1" />
+		<PackageReference
+			Include="Xaml.Behaviors.Interactions.DragAndDrop.DataGrid"
+			Version="11.3.9.3"
+		/>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Pandora API\HKX2-Enhanced-Library\HKX2\HKX2E.csproj" />
+		<ProjectReference Include="..\Pandora API\Pandora API\Pandora API.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<AvaloniaResource Update="Assets\Icons.axaml">
+			<SubType>Designer</SubType>
+		</AvaloniaResource>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Properties\GUISettings.Designer.cs">
+			<DesignTimeSharedInput>True</DesignTimeSharedInput>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>GUISettings.settings</DependentUpon>
+		</Compile>
+	</ItemGroup>
+	<ItemGroup>
+		<None Update="Nemesis_Engine\**\*.txt">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+		</None>
+		<None Update="Nemesis_Engine\**\info.ini">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+		</None>
+	</ItemGroup>
+	<ItemGroup>
+		<None Update="Pandora_Engine\**\*.hkx">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+		</None>
+		<None Update="Pandora_Engine\**\*.xml">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+		</None>
+		<None Update="Pandora_Engine\**\*.txt">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+		</None>
+		<None Update="Pandora_Engine\**\info.ini">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+		</None>
+		<None Update="Pandora_Engine\**\*.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+		</None>
+	</ItemGroup>
+	<ItemGroup>
+		<None Update="FNIS.esp">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+		</None>
+		<!--<None Update="Plugins\Test Plugin\plugin.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </None>-->
+<<<<<<< HEAD
     <None Update="Properties\GUISettings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>GUISettings.Designer.cs</LastGenOutput>
@@ -137,4 +150,29 @@
   <ItemGroup>
     <None Include="C:\Users\minth\Source\Repos\Pandora\Pandora Behaviour Engine\.editorconfig" />
   </ItemGroup>
+=======
+		<None Update="Properties\GUISettings.settings">
+			<Generator>SettingsSingleFileGenerator</Generator>
+			<LastGenOutput>GUISettings.Designer.cs</LastGenOutput>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<EditorConfigFiles Remove="C:\Users\minth\Source\Repos\Pandora\Pandora Behaviour Engine\.editorconfig" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<AvaloniaResource Include="Themes\DataGrid\*.axaml">
+			<SubType>Designer</SubType>
+		</AvaloniaResource>
+	</ItemGroup>
+
+	<ItemGroup>
+		<AvaloniaResource Include="Themes\PandoraStyles.axaml" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="C:\Users\minth\Source\Repos\Pandora\Pandora Behaviour Engine\.editorconfig" />
+	</ItemGroup>
+>>>>>>> preview
 </Project>

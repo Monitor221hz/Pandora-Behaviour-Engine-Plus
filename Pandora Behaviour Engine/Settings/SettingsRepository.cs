@@ -1,17 +1,20 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Pandora.Paths.Abstractions;
-using Pandora.Settings.DTOs;
 using System;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Pandora.Paths.Abstractions;
+using Pandora.Settings.DTOs;
 
 namespace Pandora.Settings;
 
 [JsonSerializable(typeof(RootConfiguration))]
-[JsonSourceGenerationOptions(WriteIndented = true, PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
+[JsonSourceGenerationOptions(
+	WriteIndented = true,
+	PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase
+)]
 public partial class PandoraJsonContext : JsonSerializerContext;
 
 public sealed class SettingsRepository(IApplicationPaths appPaths) : ISettingsRepository
@@ -26,10 +29,11 @@ public sealed class SettingsRepository(IApplicationPaths appPaths) : ISettingsRe
 		try
 		{
 			using var stream = _configFile.OpenRead();
-			if (stream.Length == 0) return new RootConfiguration();
+			if (stream.Length == 0)
+				return new RootConfiguration();
 
 			return JsonSerializer.Deserialize(stream, PandoraJsonContext.Default.RootConfiguration)
-				   ?? new RootConfiguration();
+				?? new RootConfiguration();
 		}
 		catch (Exception)
 		{

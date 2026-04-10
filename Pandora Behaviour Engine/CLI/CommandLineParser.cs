@@ -21,15 +21,9 @@ public sealed class CommandLineParser
 
 	public CommandLineParser()
 	{
-		_outputOption = new("--output", ["-o"])
-		{
-			Description = "Output directory"
-		};
+		_outputOption = new("--output", ["-o"]) { Description = "Output directory" };
 
-		_tesvOption = new("--tesv", ["-tesv"])
-		{
-			Description = "Skyrim root directory"
-		};
+		_tesvOption = new("--tesv", ["-tesv"]) { Description = "Skyrim root directory" };
 
 		_autoRunOption = new("--auto_run", ["-ar"]);
 		_autoCloseOption = new("--auto_close", ["-ac"]);
@@ -77,13 +71,7 @@ public sealed class CommandLineParser
 			parseResult.Invoke();
 		}
 
-		return new LaunchOptions(
-			output,
-			tesv,
-			autoRun,
-			autoClose,
-			debug64
-		);
+		return new LaunchOptions(output, tesv, autoRun, autoClose, debug64);
 	}
 
 	/// <summary>

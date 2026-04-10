@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Avalonia.Controls;
-using Avalonia.Platform.Storage;
 using System.IO;
 using System.Threading.Tasks;
+using Avalonia.Controls;
+using Avalonia.Platform.Storage;
 
 namespace Pandora.Platform.Avalonia;
 
@@ -12,7 +12,10 @@ public sealed class DiskDialogService(Window window) : IDiskDialogService
 {
 	private readonly Window _window = window;
 
-	public async Task<DirectoryInfo?> OpenFolderAsync(string title, DirectoryInfo? initialDirectory = null)
+	public async Task<DirectoryInfo?> OpenFolderAsync(
+		string title,
+		DirectoryInfo? initialDirectory = null
+	)
 	{
 		var startLocation = await GetStartLocationAsync(initialDirectory);
 
@@ -21,7 +24,7 @@ public sealed class DiskDialogService(Window window) : IDiskDialogService
 			{
 				Title = title,
 				AllowMultiple = false,
-				SuggestedStartLocation = startLocation
+				SuggestedStartLocation = startLocation,
 			}
 		);
 
@@ -32,8 +35,12 @@ public sealed class DiskDialogService(Window window) : IDiskDialogService
 		return localPath is null ? null : new DirectoryInfo(localPath);
 	}
 
-
-	public async Task<FileInfo?> OpenFileAsync(string title, DirectoryInfo? initialDirectory = null, params string[] patterns)
+	public async Task<FileInfo?> OpenFileAsync(
+		string title,
+		DirectoryInfo? initialDirectory = null,
+		string? suggestedFileName = null,
+		params string[] patterns
+	)
 	{
 		var startLocation = await GetStartLocationAsync(initialDirectory);
 
@@ -42,11 +49,9 @@ public sealed class DiskDialogService(Window window) : IDiskDialogService
 			{
 				Title = title,
 				AllowMultiple = false,
-				FileTypeFilter =
-				[
-					new(title) { Patterns = patterns },
-				],
-				SuggestedStartLocation = startLocation
+				FileTypeFilter = [new(title) { Patterns = patterns }],
+				SuggestedStartLocation = startLocation,
+				SuggestedFileName = suggestedFileName,
 			}
 		);
 
@@ -56,8 +61,6 @@ public sealed class DiskDialogService(Window window) : IDiskDialogService
 		var localPath = files[0].TryGetLocalPath();
 		return new FileInfo(localPath!);
 	}
-
-
 
 	private async Task<IStorageFolder?> GetStartLocationAsync(DirectoryInfo? initialDirectory)
 	{

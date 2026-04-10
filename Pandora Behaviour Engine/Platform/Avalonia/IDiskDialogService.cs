@@ -9,5 +9,10 @@ namespace Pandora.Platform.Avalonia;
 public interface IDiskDialogService
 {
 	Task<DirectoryInfo?> OpenFolderAsync(string title, DirectoryInfo? initialDirectory = null);
-	Task<FileInfo?> OpenFileAsync(string title, DirectoryInfo? initialDirectory = null, params string[] patterns);
+	Task<FileInfo?> OpenFileAsync(
+		string title,
+		DirectoryInfo? initialDirectory,
+		string? suggestedFileName = null,
+		params string[] patterns
+	);
 }

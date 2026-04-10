@@ -24,10 +24,14 @@ public class TestCapturingExporter : IMetaDataExporter<IPackFile>
 	}
 
 	public void LoadMetaData() => _realExporter.LoadMetaData();
-	public void SaveMetaData(IEnumerable<IPackFile> packFiles) => _realExporter.SaveMetaData(packFiles);
+
+	public void SaveMetaData(IEnumerable<IPackFile> packFiles) =>
+		_realExporter.SaveMetaData(packFiles);
 
 	public DirectoryInfo GetExportDirectory() => _realExporter.GetExportDirectory();
+
 	public bool Export(IPackFile obj) => _realExporter.Export(obj);
+
 	public IPackFile Import(FileInfo file) => _realExporter.Import(file);
 
 	public bool ExportParallel(IEnumerable<IPackFile> objs, bool useExportMethodFallback = false)

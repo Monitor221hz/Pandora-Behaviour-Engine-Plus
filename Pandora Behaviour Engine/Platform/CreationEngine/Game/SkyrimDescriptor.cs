@@ -10,10 +10,5 @@ public class SkyrimDescriptor : IGameDescriptor
 	public uint[] SteamAppIds => [489830, 611670];
 	public long? GogAppId => 711230643;
 	public string SubKey => @"SOFTWARE\Wow6432Node\Bethesda Softworks\Skyrim Special Edition";
-	public string[] ExecutableNames =>
-	[
-		"SkyrimSE.exe",
-		"SkyrimSELauncher.exe",
-		"SkyrimVR.exe"
-	];
+	public string[] ExecutableNames => ["SkyrimSE.exe", "SkyrimSELauncher.exe", "SkyrimVR.exe"];
 }

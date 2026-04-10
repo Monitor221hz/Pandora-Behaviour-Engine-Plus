@@ -1,17 +1,17 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 using Pandora.API.Patch;
 using Pandora.API.Patch.IOManagers;
 using Pandora.API.Patch.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.Format.Nemesis;
 using Pandora.Models.Patch.Skyrim64.Format.Pandora;
 using Pandora.Utils;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using static Pandora.API.Patch.IPatcher;
 
 namespace Pandora.Models.Patch.Skyrim64;
@@ -78,9 +78,7 @@ public class SkyrimPatcher : IPatcher
 
 	public string GetVersionString() => AppInfo.Version;
 
-	public SkyrimPatcher(
-		NemesisAssembler nemesisAssembler,
-		PandoraAssembler pandoraAssembler)
+	public SkyrimPatcher(NemesisAssembler nemesisAssembler, PandoraAssembler pandoraAssembler)
 	{
 		_nemesisAssembler = nemesisAssembler;
 		_pandoraAssembler = pandoraAssembler;
@@ -93,7 +91,7 @@ public class SkyrimPatcher : IPatcher
 		for (int i = 0; i < _activeMods.Count; i++)
 		{
 			IModInfo mod = _activeMods[i];
-			string modLine = $"Pandora Mod {i + 1} : {mod.Name} - v.{mod.Version}";
+			string modLine = $"Pandora Mod {mod.Priority} : {mod.Name} - v.{mod.Version}";
 			logBuilder.AppendLine(modLine);
 			Logger.Info(modLine);
 		}

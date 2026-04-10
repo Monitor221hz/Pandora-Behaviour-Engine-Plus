@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using System;
+using System.Threading.Tasks;
 using Pandora.CLI;
 using Pandora.Configuration;
 using Pandora.Logging.Diagnostics;
@@ -13,8 +15,6 @@ using Pandora.Platform.Windows;
 using Pandora.Settings;
 using Pandora.Themes;
 using Pandora.Utils;
-using System;
-using System.Threading.Tasks;
 
 namespace Pandora;
 
@@ -30,13 +30,13 @@ public sealed class AppBootstrapper(
 	IModService modService,
 	IBehaviourEngine engine,
 	EngineOrchestrator orchestrator,
-	LaunchOptions launchOptions)
+	LaunchOptions launchOptions
+)
 {
 	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
 	public void InitializeSync()
 	{
-
 		appExceptionHandler.Initialize();
 
 		settings.Initialize();
@@ -57,7 +57,6 @@ public sealed class AppBootstrapper(
 		{
 			Logger.Info("Not launched from a known Mod Manager");
 		}
-
 
 		orchestrator.Initialize();
 

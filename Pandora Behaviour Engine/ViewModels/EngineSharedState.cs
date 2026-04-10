@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Pandora.Models.Engine;
-using Pandora.Paths.Abstractions;
-using ReactiveUI;
-using ReactiveUI.SourceGenerators;
 using System;
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using System.Reactive.Linq;
+using Pandora.Models.Engine;
+using Pandora.Paths.Abstractions;
+using ReactiveUI;
+using ReactiveUI.SourceGenerators;
 
 namespace Pandora.ViewModels;
 
@@ -37,28 +37,29 @@ public sealed partial class EngineSharedState : ReactiveObject, IEngineSharedSta
 	[Reactive]
 	private EngineState _engineState;
 
-	public EngineSharedState(
-		IUserPaths paths)
+	public EngineSharedState(IUserPaths paths)
 	{
-		_outputFolderUriHelper = paths.OutputChanged
-			.Select(d => d.FullName)
+		_outputFolderUriHelper = paths
+			.OutputChanged.Select(d => d.FullName)
 			.ToProperty(this, x => x.OutputFolderUri)
 			.DisposeWith(_disposables);
 
-		_isOutputFolderCustomSetHelper = paths.OutputChanged
-			.CombineLatest(
+		_isOutputFolderCustomSetHelper = paths
+			.OutputChanged.CombineLatest(
 				paths.GameDataChanged,
-				(outDir, gameDir) => !outDir.FullName.Equals(gameDir.FullName))
+				(outDir, gameDir) => !outDir.FullName.Equals(gameDir.FullName)
+			)
 			.ToProperty(this, x => x.IsOutputFolderCustomSet)
 			.DisposeWith(_disposables);
 
-		_outputDirectoryMessageHelper = paths.OutputChanged
-			.CombineLatest(
+		_outputDirectoryMessageHelper = paths
+			.OutputChanged.CombineLatest(
 				paths.GameDataChanged,
 				(outDir, gameDir) =>
 					outDir.FullName == gameDir.FullName
 						? $"Custom output dir not set. Files output to:"
-						: string.Empty)
+						: string.Empty
+			)
 			.ToProperty(this, x => x.OutputDirectoryMessage)
 			.DisposeWith(_disposables);
 	}

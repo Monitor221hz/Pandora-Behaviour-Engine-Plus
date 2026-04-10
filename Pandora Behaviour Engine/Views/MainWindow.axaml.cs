@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using System;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Windowing;
 using Pandora.Platform.Windows;
@@ -9,7 +10,6 @@ using Pandora.Views.Pages;
 using Pandora.Views.Pages.DTOs;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
-using System;
 
 namespace Pandora.Views;
 
@@ -44,9 +44,13 @@ public partial class MainWindow : AppWindow
 		TitleBar.Height = 32;
 	}
 
-	private void NavPanelOnSelectionChanged(object? sender, NavigationViewSelectionChangedEventArgs e)
+	private void NavPanelOnSelectionChanged(
+		object? sender,
+		NavigationViewSelectionChangedEventArgs e
+	)
 	{
-		if (ViewModel is null) return;
+		if (ViewModel is null)
+			return;
 
 		if (e.SelectedItem is NavigationItem item)
 		{

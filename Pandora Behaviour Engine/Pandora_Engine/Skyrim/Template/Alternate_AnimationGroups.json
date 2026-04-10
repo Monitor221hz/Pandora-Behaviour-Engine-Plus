@@ -1,0 +1,809 @@
+{
+  "_mtidle": {
+    "id": 0,
+    "count": 21,
+    "animations": ["male/mt_idle.hkx"]
+  },
+  "_1hmidle": {
+    "id": 1,
+    "count": 8,
+    "animations": ["1hm_idle.hkx", "sneak1hm_idle.hkx"]
+  },
+  "_2hmidle": {
+    "id": 2,
+    "count": 2,
+    "animations": ["2hm_idle.hkx"]
+  },
+  "_2hwidle": {
+    "id": 3,
+    "count": 2,
+    "animations": ["2hw_idle.hkx"]
+  },
+  "_bowidle": {
+    "id": 4,
+    "count": 6,
+    "animations": ["bow_idledrawn.hkx", "bow_idleheld.hkx", "sneakbow_idledrawn.hkx"]
+  },
+  "_cbowidle": {
+    "id": 5,
+    "count": 10,
+    "animations": [
+      "dlc01/crossbow_idledrawn.hkx",
+      "dlc01/crossbow_idledrawndwarven.hkx",
+      "dlc01/crossbow_idleheld.hkx",
+      "dlc01/sneakcrossbow_idledrawn.hkx",
+      "dlc01/sneakcrossbow_idledrawndwarven.hkx"
+    ]
+  },
+  "_h2hidle": {
+    "id": 6,
+    "count": 3,
+    "animations": ["h2h_idle.hkx", "sneakh2h_idle.hkx"]
+  },
+  "_magidle": {
+    "id": 7,
+    "count": 7,
+    "animations": ["mlh_idle.hkx", "mrh_idle.hkx"]
+  },
+  "_sneakidle": {
+    "id": 8,
+    "count": 5,
+    "animations": ["sneakmtidle.hkx"]
+  },
+  "_staffidle": {
+    "id": 9,
+    "count": 10,
+    "animations": ["staff_idle.hkx", "staffright_idle.hkx"]
+  },
+  "_mt": {
+    "id": 10,
+    "count": 10,
+    "animations": ["male/mt_runforward.hkx", "male/mt_walkforward.hkx"]
+  },
+  "_mtx": {
+    "id": 11,
+    "count": 58,
+    "animations": [
+      "male/mt_runbackward.hkx",
+      "male/mt_runbackwardleft.hkx",
+      "male/mt_runbackwardright.hkx",
+      "male/mt_runforwardleft.hkx",
+      "male/mt_runforwardright.hkx",
+      "male/mt_runleft.hkx",
+      "male/mt_runright.hkx",
+      "male/mt_walkbackward.hkx",
+      "male/mt_walkbackwardleft.hkx",
+      "male/mt_walkbackwardright.hkx",
+      "male/mt_walkforwardleft.hkx",
+      "male/mt_walkforwardright.hkx",
+      "male/mt_walkleft.hkx",
+      "male/mt_walkright.hkx"
+    ]
+  },
+  "_mtturn": {
+    "id": 12,
+    "count": 20,
+    "animations": [
+      "mt_turnleft360.hkx",
+      "mt_turnleft60.hkx",
+      "mt_turnright360.hkx",
+      "mt_turnright60.hkx",
+      "male/npc_turnleft180.hkx",
+      "male/npc_turnleft90.hkx",
+      "male/npc_turnright180.hkx",
+      "male/npc_turnright90.hkx",
+      "male/npc_turntowalkleft180.hkx",
+      "male/npc_turntowalkleft90.hkx",
+      "male/npc_turntowalkright180.hkx",
+      "male/npc_turntowalkright90.hkx"
+    ]
+  },
+  "_1hmmt": {
+    "id": 13,
+    "count": 80,
+    "animations": [
+      "1hm_runbackward.hkx",
+      "1hm_runforward.hkx",
+      "1hm_walkbackward.hkx",
+      "1hm_walkforward.hkx",
+      "1hm_runbackwardleft.hkx",
+      "1hm_runbackwardright.hkx",
+      "1hm_runforwardleft.hkx",
+      "1hm_runforwardright.hkx",
+      "1hm_runleft.hkx",
+      "1hm_runright.hkx",
+      "1hm_walkbackwardleft.hkx",
+      "1hm_walkbackwardright.hkx",
+      "1hm_walkforwardleft.hkx",
+      "1hm_walkforwardright.hkx",
+      "1hm_walkleft.hkx",
+      "1hm_walkright.hkx",
+      "1hm_turnleft180.hkx",
+      "1hm_turnleft60.hkx",
+      "1hm_turnright180.hkx",
+      "1hm_turnright60.hkx",
+      "1hm_runstrafeleft.hkx",
+      "1hm_runstraferight.hkx"
+    ]
+  },
+  "_2hmmt": {
+    "id": 14,
+    "count": 76,
+    "animations": [
+      "2hm_runbackward.hkx",
+      "2hm_runforward.hkx",
+      "2hm_walkbackward.hkx",
+      "2hm_walkforward.hkx",
+      "2hm_runbackwardleft.hkx",
+      "2hm_runbackwardright.hkx",
+      "2hm_runforwardleft.hkx",
+      "2hm_runforwardright.hkx",
+      "2hm_runleft.hkx",
+      "2hm_runright.hkx",
+      "2hm_walkbackwardleft.hkx",
+      "2hm_walkbackwardright.hkx",
+      "2hm_walkforwardleft.hkx",
+      "2hm_walkforwardright.hkx",
+      "2hm_walkleft.hkx",
+      "2hm_walkright.hkx",
+      "2hm_turnleft180.hkx",
+      "2hm_turnleft60.hkx",
+      "2hm_turnright180.hkx",
+      "2hm_turnright60.hkx",
+      "2hw_runarmblend.hkx",
+      "2hw_walkarmblend.hkx"
+    ]
+  },
+  "_bowmt": {
+    "id": 15,
+    "count": 106,
+    "animations": [
+      "bow_runbackward.hkx",
+      "bow_runbackwardleft.hkx",
+      "bow_runbackwardright.hkx",
+      "bow_runforward.hkx",
+      "bow_runforwardleft.hkx",
+      "bow_runforwardright.hkx",
+      "bow_runleft.hkx",
+      "bow_runright.hkx",
+      "bow_walkbackward.hkx",
+      "bow_walkbackwardleft.hkx",
+      "bow_walkbackwardright.hkx",
+      "bow_walkforward.hkx",
+      "bow_walkforwardleft.hkx",
+      "bow_walkforwardright.hkx",
+      "bow_walkleft.hkx",
+      "bow_walkright.hkx",
+      "bowdrawn_walkbackward.hkx",
+      "bowdrawn_walkbackwardleft.hkx",
+      "bowdrawn_walkbackwardright.hkx",
+      "bowdrawn_walkforward.hkx",
+      "bowdrawn_walkforwardleft.hkx",
+      "bowdrawn_walkforwardright.hkx",
+      "bowdrawn_walkleft.hkx",
+      "bowdrawn_walkright.hkx",
+      "bow_turnleft180.hkx",
+      "bow_turnleft60.hkx",
+      "bow_turnright180.hkx",
+      "bow_turnright60.hkx",
+      "bowdrawn_turnleft180.hkx",
+      "bowdrawn_turnleft60.hkx",
+      "bowdrawn_turnright180.hkx",
+      "bowdrawn_turnright60.hkx",
+      "bow_runstrafeleft.hkx",
+      "bow_runstraferight.hkx"
+    ]
+  },
+  "_magmt": {
+    "id": 16,
+    "count": 130,
+    "animations": [
+      "mag_runbackward.hkx",
+      "mag_runbackwardleft.hkx",
+      "mag_runbackwardright.hkx",
+      "mag_runforward.hkx",
+      "mag_runforwardleft.hkx",
+      "mag_runforwardright.hkx",
+      "mag_runleft.hkx",
+      "mag_runright.hkx",
+      "mag_walkbackward.hkx",
+      "mag_walkbackwardleft.hkx",
+      "mag_walkbackwardright.hkx",
+      "mag_walkforward.hkx",
+      "mag_walkforwardleft.hkx",
+      "mag_walkforwardright.hkx",
+      "mag_walkleft.hkx",
+      "mag_walkright.hkx",
+      "mag_turnleft180.hkx",
+      "mag_turnleft60.hkx",
+      "mag_turnright180.hkx",
+      "mag_turnright60.hkx"
+    ]
+  },
+  "_magcastmt": {
+    "id": 17,
+    "count": 102,
+    "animations": [
+      "magcast_runbackward.hkx",
+      "magcast_runbackwrdleft.hkx",
+      "magcast_runbckwrdright.hkx",
+      "magcast_runforward.hkx",
+      "magcast_runforwardleft.hkx",
+      "magcast_runfrwrdright.hkx",
+      "magcast_runleft.hkx",
+      "magcast_runright.hkx",
+      "magcast_walkbackward.hkx",
+      "magcast_walkbckwrdleft.hkx",
+      "magcast_walkbckwrdrht.hkx",
+      "magcast_walkforward.hkx",
+      "magcast_walkforwrdleft.hkx",
+      "magcast_walkfrwrdright.hkx",
+      "magcast_walkleft.hkx",
+      "magcast_walkright.hkx",
+      "magcast_turnleft180.hkx",
+      "magcast_turnleft60.hkx",
+      "magcast_turnright180.hkx",
+      "magcast_turnright60.hkx"
+    ]
+  },
+  "_sneakmt": {
+    "id": 18,
+    "count": 191,
+    "animations": [
+      "sneakrun_backward.hkx",
+      "sneakrun_bckwrdleft.hkx",
+      "sneakrun_bckwrdright.hkx",
+      "sneakrun_forward.hkx",
+      "sneakrun_frwrdleft.hkx",
+      "sneakrun_frwrdright.hkx",
+      "sneakrun_left.hkx",
+      "sneakrun_right.hkx",
+      "sneakwalk_bckward.hkx",
+      "sneakwalk_bckwrdleft.hkx",
+      "sneakwalk_bckwrdright.hkx",
+      "sneakwalk_forward.hkx",
+      "sneakwalk_frwrdright.hkx",
+      "sneakwalk_fwrwrdleft.hkx",
+      "sneakwalk_left.hkx",
+      "sneakwalk_right.hkx",
+      "sneak_npcturnleft90.hkx",
+      "sneak_npcturnright90.hkx",
+      "sneak_turnleft180.hkx",
+      "sneak_turnleft60.hkx",
+      "sneak_turnright180.hkx",
+      "sneak_turnright60.hkx"
+    ]
+  },
+  "_1hmatk": {
+    "id": 19,
+    "count": 47,
+    "animations": [
+      "1hm_attackforwardsprint.hkx",
+      "1hm_attackleft.hkx",
+      "1hm_attackleftintro.hkx",
+      "1hm_attackright.hkx",
+      "1hm_attackrightintro.hkx",
+      "1hm_runbwdattackleft.hkx",
+      "1hm_runbwdattackleftintro.hkx",
+      "1hm_runbwdattackright.hkx",
+      "1hm_runbwdattackrightintro.hkx",
+      "1hm_runfwdattackleft.hkx",
+      "1hm_runfwdattackleftintro.hkx",
+      "1hm_runfwdattackright.hkx",
+      "1hm_runfwdattackrightintro.hkx",
+      "1hm_runleftattackleft.hkx",
+      "1hm_runleftattackleftintro.hkx",
+      "1hm_runleftattackright.hkx",
+      "1hm_runleftattackrightintro.hkx",
+      "1hm_runrightattackleft.hkx",
+      "1hm_runrightattackleftintro.hkx",
+      "1hm_runrightattackrt.hkx",
+      "1hm_runrightattackrtintro.hkx",
+      "1hm_walkbwdattackleft.hkx",
+      "1hm_walkbwdattackleftintro.hkx",
+      "1hm_walkbwdattackright.hkx",
+      "1hm_walkbwdattackrightintro.hkx",
+      "1hm_walkfwdattackleft.hkx",
+      "1hm_walkfwdattackleftintro.hkx",
+      "1hm_walkfwdattackright.hkx",
+      "1hm_walkfwdattackrightintro.hkx",
+      "1hm_walkleftattackleft.hkx",
+      "1hm_walkleftattackleftintro.hkx",
+      "1hm_walkleftattackright.hkx",
+      "1hm_walkleftattackrightintro.hkx",
+      "1hm_walkrightattackleft.hkx",
+      "1hm_walkrightattackleftintro.hkx",
+      "1hm_walkrtattackright.hkx",
+      "1hm_walkrtattackrightintro.hkx",
+      "1hmlefthand_attackforwardsprint.hkx",
+      "sneak_1hmattack.hkx",
+      "sneak_1hmattackintro.hkx",
+      "sneak_1hmattacklefthand.hkx",
+      "1hm_recoilleft.hkx",
+      "1hm_recoilright.hkx",
+      "1hm_recoiltimed.hkx"
+    ]
+  },
+  "_1hmatkpow": {
+    "id": 20,
+    "count": 18,
+    "animations": [
+      "1hm_attackpower.hkx",
+      "1hm_attackpowerbwd.hkx",
+      "1hm_attackpowerforwardsprint.hkx",
+      "1hm_attackpowerfwd.hkx",
+      "1hm_attackpowerleft.hkx",
+      "1hm_attackpowerright.hkx",
+      "1hm_sneakattackpower.hkx",
+      "1hm_sneakattackpowerback.hkx",
+      "1hm_sneakattackpowerforward.hkx",
+      "1hm_sneakattackpowerleft.hkx",
+      "1hm_sneakattackpowerright.hkx",
+      "1hmlefthand_attackpowerforwardsprint.hkx",
+      "sneak_1hmattackpowerlefthand.hkx"
+    ]
+  },
+  "_1hmblock": {
+    "id": 21,
+    "count": 9,
+    "animations": [
+      "1hm_blockanticipate.hkx",
+      "1hm_blockbash.hkx",
+      "1hm_blockbashintro.hkx",
+      "1hm_blockbashpower.hkx",
+      "1hm_blockhit.hkx",
+      "1hm_blockhita.hkx",
+      "1hm_blockhitb.hkx",
+      "1hm_blockidle.hkx"
+    ]
+  },
+  "_1hmstag": {
+    "id": 22,
+    "count": 9,
+    "animations": [
+      "1hm_staggerbacklarge.hkx",
+      "1hm_staggerbacklargest.hkx",
+      "1hm_staggerbackmedium.hkx",
+      "1hm_staggerbacksmall.hkx",
+      "1hm_staggerbacksmallest.hkx",
+      "1hm_staggerforwardlarge.hkx",
+      "1hm_staggerforwardlargest.hkx",
+      "1hm_staggerforwardmedium.hkx",
+      "1hm_staggerforwardsmall.hkx"
+    ]
+  },
+  "_2hmatk": {
+    "id": 23,
+    "count": 63,
+    "animations": [
+      "2hm_attackforwardsprint.hkx",
+      "2hm_attackleft.hkx",
+      "2hm_attackleftintro.hkx",
+      "2hm_attackright.hkx",
+      "2hm_attackrightintro.hkx",
+      "2hm_runbwdattackleft.hkx",
+      "2hm_runbwdattackleftintro.hkx",
+      "2hm_runbwdattackright.hkx",
+      "2hm_runbwdattackrightintro.hkx",
+      "2hm_runfwdattackleft.hkx",
+      "2hm_runfwdattackleftintro.hkx",
+      "2hm_runfwdattackright.hkx",
+      "2hm_runfwdattackrightintro.hkx",
+      "2hm_runleftattackleft.hkx",
+      "2hm_runleftattackleftintro.hkx",
+      "2hm_runleftattackright.hkx",
+      "2hm_runleftattackrightintro.hkx",
+      "2hm_runrightattackleft.hkx",
+      "2hm_runrightattackleftintro.hkx",
+      "2hm_runrightattackrt.hkx",
+      "2hm_runrightattackrtintro.hkx",
+      "2hm_walkbwdattackleft.hkx",
+      "2hm_walkbwdattackleftintro.hkx",
+      "2hm_walkbwdattackright.hkx",
+      "2hm_walkbwdattackrightintro.hkx",
+      "2hm_walkfwdattackleft.hkx",
+      "2hm_walkfwdattackleftintro.hkx",
+      "2hm_walkfwdattackright.hkx",
+      "2hm_walkfwdattackrightintro.hkx",
+      "2hm_walkleftattackleft.hkx",
+      "2hm_walkleftattackleftintro.hkx",
+      "2hm_walkleftattackright.hkx",
+      "2hm_walkleftattackrightintro.hkx",
+      "2hm_walkrightattackleft.hkx",
+      "2hm_walkrightattackleftintro.hkx",
+      "2hm_walkrtattackright.hkx",
+      "2hm_walkrtattackrightintro.hkx",
+      "2hm_runstrafeleft.hkx",
+      "2hm_runstraferight.hkx",
+      "sneak_2hmattack.hkx",
+      "2hm_recoilleft.hkx",
+      "2hm_recoilright.hkx",
+      "2hm_recoiltimed.hkx"
+    ]
+  },
+  "_2hmatkpow": {
+    "id": 24,
+    "count": 8,
+    "animations": [
+      "2hm_attackpower.hkx",
+      "2hm_attackpower3slashcombo.hkx",
+      "2hm_attackpowerbwd.hkx",
+      "2hm_attackpowerforward.hkx",
+      "2hm_attackpowerforwardsprint.hkx",
+      "2hm_attackpowerleft.hkx",
+      "2hm_attackpowerright.hkx"
+    ]
+  },
+  "_2hmblock": {
+    "id": 25,
+    "count": 9,
+    "animations": [
+      "2hm_blockanticipate.hkx",
+      "2hm_blockbash.hkx",
+      "2hm_blockbashintro.hkx",
+      "2hm_blockbashpower.hkx",
+      "2hm_blockhit.hkx",
+      "2hm_blockhita.hkx",
+      "2hm_blockhitb.hkx",
+      "2hm_blockidle.hkx"
+    ]
+  },
+  "_2hmstag": {
+    "id": 26,
+    "count": 6,
+    "animations": [
+      "2hm_staggerbacklarge.hkx",
+      "2hm_staggerbacklargest.hkx",
+      "2hm_staggerbackmedium.hkx",
+      "2hm_staggerbacksmall.hkx",
+      "2hm_staggerbacksmallest.hkx"
+    ]
+  },
+  "_2hwatk": {
+    "id": 27,
+    "count": 22,
+    "animations": [
+      "2hw_attackforwardsprint.hkx",
+      "2hw_attackleft.hkx",
+      "2hw_attackright.hkx",
+      "2hw_runbwdattackleft.hkx",
+      "2hw_runbwdattackright.hkx",
+      "2hw_runfwdattackleft.hkx",
+      "2hw_runfwdattackright.hkx",
+      "2hw_runleftattackleft.hkx",
+      "2hw_runleftattackright.hkx",
+      "2hw_runrightattackleft.hkx",
+      "2hw_runrightattackrt.hkx",
+      "2hw_walkbwdattackleft.hkx",
+      "2hw_walkbwdattackright.hkx",
+      "2hw_walkfwdattackleft.hkx",
+      "2hw_walkfwdattackright.hkx",
+      "2hw_walkleftattackleft.hkx",
+      "2hw_walkleftattackright.hkx",
+      "2hw_walkrightattackleft.hkx",
+      "2hw_walkrtattackright.hkx",
+      "sneak_2hwattack.hkx",
+      "2hw_recoilleft.hkx",
+      "2hw_recoilright.hkx"
+    ]
+  },
+  "_2hwatkpow": {
+    "id": 28,
+    "count": 7,
+    "animations": [
+      "2hw_attackpower.hkx",
+      "2hw_attackpowerbwd.hkx",
+      "2hw_attackpowerforward.hkx",
+      "2hw_attackpowerforwardsprint.hkx",
+      "2hw_attackpowerleft.hkx",
+      "2hw_attackpowerright.hkx"
+    ]
+  },
+  "_2hwblock": {
+    "id": 29,
+    "count": 9,
+    "animations": [
+      "2hw_blockanticipate.hkx",
+      "2hw_blockbash.hkx",
+      "2hw_blockbashintro.hkx",
+      "2hw_blockbashpower.hkx",
+      "2hw_blockhit.hkx",
+      "2hw_blockhita.hkx",
+      "2hw_blockhitb.hkx",
+      "2hw_blockidle.hkx"
+    ]
+  },
+  "_2hwstag": {
+    "id": 30,
+    "count": 4,
+    "animations": [
+      "2hw_staggerbacklarge.hkx",
+      "2hw_staggerbackmedium.hkx",
+      "2hw_staggerbacksmall.hkx",
+      "2hw_staggerbacksmallest.hkx"
+    ]
+  },
+  "_bowatk": {
+    "id": 31,
+    "count": 8,
+    "animations": ["bow_drawlight.hkx", "bow_release.hkx", "sneakbow_drawlight.hkx", "sneakbow_release.hkx"]
+  },
+  "_bowblock": {
+    "id": 32,
+    "count": 7,
+    "animations": [
+      "bow_blockanticipate.hkx",
+      "bow_blockbash.hkx",
+      "bow_blockbashintro.hkx",
+      "bow_blockbashpower.hkx",
+      "bow_blockhit.hkx",
+      "bow_blockidle.hkx"
+    ]
+  },
+  "_h2hatk": {
+    "id": 33,
+    "count": 18,
+    "animations": [
+      "h2h_attackleft.hkx",
+      "h2h_attackright.hkx",
+      "h2h_runbackattackleft.hkx",
+      "h2h_runbackattackright.hkx",
+      "h2h_runforwardattackleft.hkx",
+      "h2h_runforwardattackright.hkx",
+      "h2h_runleftattackleft.hkx",
+      "h2h_runleftattackright.hkx",
+      "h2h_runrightattackleft.hkx",
+      "h2h_runrightattackright.hkx",
+      "sneak_h2hattacklefthand.hkx",
+      "sneak_h2hattackrighthand.hkx"
+    ]
+  },
+  "_h2hatkpow": {
+    "id": 34,
+    "count": 4,
+    "animations": [
+      "h2h_attackpowerforwardlefthand.hkx",
+      "h2h_attackpowerforwardrighthand.hkx",
+      "h2h_attackrightpowerforward.hkx"
+    ]
+  },
+  "_h2hstag": {
+    "id": 35,
+    "count": 5,
+    "animations": [
+      "h2h_staggerbacklarge.hkx",
+      "h2h_staggerbacklargest.hkx",
+      "h2h_staggerbackmedium.hkx",
+      "h2h_staggerbacksmall.hkx",
+      "h2h_staggerbacksmallest.hkx"
+    ]
+  },
+  "_magatk": {
+    "id": 36,
+    "count": 79,
+    "animations": [
+      "mlh_1hm_attackforward.hkx",
+      "mlh_1hm_attackforwardintro.hkx",
+      "mlh_aimedconcentration.hkx",
+      "mlh_chargeloop.hkx",
+      "mlh_preaimedcon.hkx",
+      "mlh_precharge.hkx",
+      "mlh_preready.hkx",
+      "mlh_preselfcon.hkx",
+      "mlh_pretelekinesis.hkx",
+      "mlh_prewardcharge.hkx",
+      "mlh_prewardloop.hkx",
+      "mlh_readyloop.hkx",
+      "mlh_release.hkx",
+      "mlh_selfchargeloop.hkx",
+      "mlh_selfconcentration.hkx",
+      "mlh_selfreadyloop.hkx",
+      "mlh_selfrelease.hkx",
+      "mlh_telekinesisloop.hkx",
+      "mlh_wardcharge.hkx",
+      "mlh_wardloop.hkx",
+      "mlhmrh_aimedconcentrationloop.hkx",
+      "mrh_aimedconcentration.hkx",
+      "mrh_chargeloop.hkx",
+      "mrh_preaimedcon.hkx",
+      "mrh_precharge.hkx",
+      "mrh_preselfcon.hkx",
+      "mrh_pretelekinesis.hkx",
+      "mrh_prewardcharge.hkx",
+      "mrh_prewardloop.hkx",
+      "mrh_readyloop.hkx",
+      "mrh_release.hkx",
+      "mrh_selfchargeloop.hkx",
+      "mrh_selfconcentration.hkx",
+      "mrh_selfprecharge.hkx",
+      "mrh_selfreadyloop.hkx",
+      "mrh_selfrelease.hkx",
+      "mrh_telekinesisloop.hkx",
+      "mrh_wardcharge.hkx",
+      "mrh_wardloop.hkx"
+    ]
+  },
+  "_1hmeqp": {
+    "id": 37,
+    "count": 5,
+    "animations": ["1hm_equip.hkx", "1hm_unequip.hkx", "1hm_boundswordequip.hkx"]
+  },
+  "_2hweqp": {
+    "id": 38,
+    "count": 2,
+    "animations": ["2hw_equip.hkx", "2hw_unequip.hkx"]
+  },
+  "_2hmeqp": {
+    "id": 39,
+    "count": 2,
+    "animations": ["2hc_equip.hkx", "2hc_unequip.hkx"]
+  },
+  "_axeeqp": {
+    "id": 40,
+    "count": 4,
+    "animations": ["axe_equip.hkx", "axe_unequip.hkx"]
+  },
+  "_boweqp": {
+    "id": 41,
+    "count": 2,
+    "animations": ["bow_equip.hkx", "bow_unequip.hkx"]
+  },
+  "_cboweqp": {
+    "id": 42,
+    "count": 2,
+    "animations": ["dlc01/crossbow_equip.hkx"]
+  },
+  "_dageqp": {
+    "id": 43,
+    "count": 4,
+    "animations": ["dag_equip.hkx", "dag_unequip.hkx"]
+  },
+  "_h2heqp": {
+    "id": 44,
+    "count": 4,
+    "animations": ["h2h_equip.hkx", "h2h_unequip.hkx"]
+  },
+  "_maceqp": {
+    "id": 45,
+    "count": 4,
+    "animations": ["mac_equip.hkx", "mac_unequip.hkx"]
+  },
+  "_mageqp": {
+    "id": 46,
+    "count": 11,
+    "animations": [
+      "mlh_equip.hkx",
+      "mlh_unequip.hkx",
+      "mrh_equip.hkx",
+      "mrh_unequip.hkx",
+      "mrh_and_mlh_equip.hkx",
+      "mrh_and_mlh_forceequip.hkx",
+      "mrh_and_mlh_unequip.hkx"
+    ]
+  },
+  "_stfeqp": {
+    "id": 47,
+    "count": 5,
+    "animations": ["stf_equip.hkx", "staffright_equip.hkx"]
+  },
+  "_shout": {
+    "id": 48,
+    "count": 15,
+    "animations": [
+      "1hm_shout_exhale.hkx",
+      "1hm_shout_exhale_long.hkx",
+      "1hm_shout_exhale_medium.hkx",
+      "1hm_shout_inhale.hkx",
+      "mt_shout_exhale.hkx",
+      "mt_shout_exhale_long.hkx",
+      "mt_shout_exhale_medium.hkx",
+      "mt_shout_inhale.hkx",
+      "sneak1hm_shout_exhale.hkx",
+      "sneak1hm_shout_exhale_long.hkx",
+      "sneak1hm_shout_exhale_medium.hkx",
+      "sneak1hm_shout_inhale.hkx"
+    ]
+  },
+  "_magcon": {
+    "id": 49,
+    "count": 37,
+    "animations": [
+      "dmagaimconcharge.hkx",
+      "dmagaimconloop.hkx",
+      "dmagaimrelease.hkx",
+      "dmagpreaimcon.hkx",
+      "dmagpreaimconcharge.hkx",
+      "dmagpreselfcon.hkx",
+      "dmagpreselfconcharge.hkx",
+      "dmagselfconcharge.hkx",
+      "dmagselfconloop.hkx",
+      "dmagselfrelease.hkx"
+    ]
+  },
+  "_dw": {
+    "id": 50,
+    "count": 44,
+    "animations": [
+      "dw_attackpowerback.hkx",
+      "dw_attackpowerforward.hkx",
+      "dw_attackpowerknifeslashcombo.hkx",
+      "dw_attackpowerleft.hkx",
+      "dw_attackpowerright.hkx",
+      "dw_attackpowerstab.hkx",
+      "dw_recoilright.hkx",
+      "dw_recoiltimed.hkx",
+      "dw_shieldadjustment.hkx",
+      "dw1hm1hm_attackright.hkx",
+      "dw1hm1hm_powerattack.hkx",
+      "dw1hm1hm_specialattackpower.hkx",
+      "dw1hm1hmblockbash.hkx",
+      "dw1hm1hmblockbashintro.hkx",
+      "dw1hm1hmblockbashpower.hkx",
+      "dw1hm1hmblockidle.hkx",
+      "dw1hm1hmidle.hkx",
+      "dw1hm1hmmovingblockidle.hkx",
+      "dwrunback_attackright.hkx",
+      "dwrunforward_attackright.hkx",
+      "dwrunleft_attackright.hkx",
+      "dwrunright_attackright.hkx",
+      "dwwalkback_attackright.hkx",
+      "dwwalkforward_attackright.hkx",
+      "dwwalkleft_attackright.hkx",
+      "dwwalkright_attackright.hkx"
+    ]
+  },
+  "_jump": {
+    "id": 51,
+    "count": 15,
+    "animations": [
+      "mt_jump.hkx",
+      "mt_jumpfall.hkx",
+      "mt_jumpfallleft.hkx",
+      "mt_jumpfallright.hkx",
+      "mt_jumpfast.hkx",
+      "mt_jumpfastleft.hkx",
+      "mt_jumpfastright.hkx",
+      "mt_jumpland.hkx",
+      "mt_jumplandleft.hkx",
+      "mt_jumplandright.hkx"
+    ]
+  },
+  "_sprint": {
+    "id": 52,
+    "count": 16,
+    "animations": [
+      "dw_sprintforwardsword.hkx",
+      "2hm_sprintforwardsword.hkx",
+      "2hw_sprintforwardsword.hkx",
+      "bow_sprint.hkx",
+      "dodgeback.hkx",
+      "dodgeleft.hkx",
+      "dodgeright.hkx",
+      "sneakrun_forwardroll.hkx",
+      "magic_sprintforward.hkx",
+      "male/mt_sprintforward.hkx",
+      "mt_sprintforwardsword.hkx",
+      "shd_blockbashsprint.hkx",
+      "staffrightleft_sprint.hkx"
+    ]
+  },
+  "_shield": {
+    "id": 53,
+    "count": 19,
+    "animations": [
+      "shd_blockanticipate.hkx",
+      "shd_blockbash.hkx",
+      "shd_blockbashintro.hkx",
+      "shd_blockbashpower.hkx",
+      "shd_blockhit.hkx",
+      "shd_blockhit_vara.hkx",
+      "shd_blockhit_varb.hkx",
+      "shd_blockidle.hkx",
+      "shd_equip_1hmout.hkx",
+      "shd_turnleft180.hkx",
+      "shd_turnleft60.hkx",
+      "shd_turnright180.hkx",
+      "shd_turnright60.hkx"
+    ]
+  }
+}

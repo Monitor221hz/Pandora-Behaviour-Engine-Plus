@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using System;
 using NLog;
 using NLog.Targets;
-using System;
 
 namespace Pandora.Logging.NLogger.UI;
 
@@ -28,7 +28,7 @@ public sealed class ObservableNLogTarget(ILogEventStream stream) : TargetWithLay
 	private static bool IsClearCommand(LogEventInfo logEvent)
 	{
 		return logEvent.Properties.TryGetValue("ui_command", out var cmd)
-			   && cmd is string s
-			   && s.Equals("clear", StringComparison.OrdinalIgnoreCase);
+			&& cmd is string s
+			&& s.Equals("clear", StringComparison.OrdinalIgnoreCase);
 	}
 }

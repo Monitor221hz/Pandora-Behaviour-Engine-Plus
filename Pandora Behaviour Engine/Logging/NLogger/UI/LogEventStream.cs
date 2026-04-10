@@ -21,8 +21,9 @@ public sealed class LogEventStream : ILogEventStream, IDisposable
 			{
 				SingleWriter = false,
 				SingleReader = false,
-				FullMode = BoundedChannelFullMode.DropOldest
-			});
+				FullMode = BoundedChannelFullMode.DropOldest,
+			}
+		);
 
 		_replay = new ReplaySubject<LogUiEvent>(replayCapacity);
 

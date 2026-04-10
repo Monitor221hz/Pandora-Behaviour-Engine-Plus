@@ -1,16 +1,16 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Pandora.Configuration;
-using Pandora.Mods.Abstractions;
-using Pandora.Paths.Abstractions;
-using Pandora.Platform.Windows;
-using Pandora.ViewModels;
 using System;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using System.Reactive.Linq;
+using Pandora.Configuration;
+using Pandora.Mods.Abstractions;
+using Pandora.Paths.Abstractions;
+using Pandora.Platform.Windows;
+using Pandora.ViewModels;
 
 namespace Pandora.Models.Engine;
 
@@ -20,33 +20,36 @@ public sealed class EngineOrchestrator(
 	IBehaviourEngine engine,
 	IEngineConfigurationService configService,
 	IEngineSharedState state,
-	IWindowStateService windowService) : IDisposable
+	IWindowStateService windowService
+) : IDisposable
 {
 	private readonly CompositeDisposable _disposables = [];
 
 	public void Initialize()
 	{
-		userPaths.GameDataChanged
-			.Skip(1)
+		userPaths
+			.GameDataChanged.Skip(1)
 			.SelectMany(_ => Observable.FromAsync(mods.RefreshModsAsync))
 			.Subscribe()
 			.DisposeWith(_disposables);
 
-		configService.CurrentFactoryChanged
-			.DistinctUntilChanged()
-			.Select(factory => Observable.FromAsync(() =>
-				engine.SwitchConfigurationAsync(factory.Create())))
+		configService
+			.CurrentFactoryChanged.DistinctUntilChanged()
+			.Select(factory =>
+				Observable.FromAsync(() => engine.SwitchConfigurationAsync(factory.Create()))
+			)
 			.Concat()
 			.Subscribe()
 			.DisposeWith(_disposables);
 
-
-		engine.StateChanged.Subscribe(s =>
-		{
-			state.EngineState = s;
-			state.IsEngineRunning = s == EngineState.Running;
-			state.IsPreloading = s == EngineState.Preloading;
-		}).DisposeWith(_disposables);
+		engine
+			.StateChanged.Subscribe(s =>
+			{
+				state.EngineState = s;
+				state.IsEngineRunning = s == EngineState.Running;
+				state.IsPreloading = s == EngineState.Preloading;
+			})
+			.DisposeWith(_disposables);
 
 		engine.StateChanged.Subscribe(HandleWindowState).DisposeWith(_disposables);
 	}
