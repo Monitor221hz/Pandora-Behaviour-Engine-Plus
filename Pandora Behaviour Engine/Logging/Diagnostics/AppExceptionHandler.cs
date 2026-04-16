@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using Avalonia.Threading;
+using ReactiveUI;
 using System;
 using System.Reactive;
 using System.Threading.Tasks;
-using Avalonia.Threading;
-using ReactiveUI;
 
 namespace Pandora.Logging.Diagnostics;
 

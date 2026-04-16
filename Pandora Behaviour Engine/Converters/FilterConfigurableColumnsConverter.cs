@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using Avalonia.Controls;
+using Avalonia.Data.Converters;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using Avalonia.Controls;
-using Avalonia.Data.Converters;
 
 namespace Pandora.Converters;
 

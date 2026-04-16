@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using System;
-using System.Threading.Tasks;
 using Pandora.CLI;
 using Pandora.Configuration;
 using Pandora.Logging.Diagnostics;
@@ -15,6 +13,8 @@ using Pandora.Platform.Windows;
 using Pandora.Settings;
 using Pandora.Themes;
 using Pandora.Utils;
+using System;
+using System.Threading.Tasks;
 
 namespace Pandora;
 
