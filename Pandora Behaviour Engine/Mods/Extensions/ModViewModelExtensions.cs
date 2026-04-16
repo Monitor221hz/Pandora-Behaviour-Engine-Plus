@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Pandora.API.Patch;
-using Pandora.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Pandora.API.Patch;
+using Pandora.ViewModels;
 
 namespace Pandora.Mods.Extensions;
 
@@ -18,6 +18,7 @@ public static class ModViewModelExtensions
 
 		return mod => mod.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase);
 	}
+
 	extension(ModInfoViewModel vm)
 	{
 		public bool IsPandora => vm.Code.IsPandora();
@@ -49,8 +50,7 @@ public static class ModViewModelExtensions
 				mod.Active = true;
 			}
 
-			var sorted = mods
-				.OrderBy(m => m.IsPandora)
+			var sorted = mods.OrderBy(m => m.IsPandora)
 				.ThenBy(m => m.Name, StringComparer.OrdinalIgnoreCase);
 
 			sorted.RecalculatePriorities();
@@ -60,8 +60,7 @@ public static class ModViewModelExtensions
 
 		public void NormalizePriorities()
 		{
-			var sorted = mods
-				.OrderBy(m => m.IsPandora)
+			var sorted = mods.OrderBy(m => m.IsPandora)
 				.ThenBy(m => m.Priority)
 				.ThenBy(m => m.Name, StringComparer.OrdinalIgnoreCase);
 
@@ -74,18 +73,23 @@ public static class ModViewModelExtensions
 		{
 			var proxyList = mods.ToList();
 
-			if (proxyList.Count < 2) return false;
+			if (proxyList.Count < 2)
+				return false;
 
-			if (itemToMove.IsPandora) return false;
+			if (itemToMove.IsPandora)
+				return false;
 
 			int oldIndex = proxyList.IndexOf(itemToMove);
-			if (oldIndex < 0) return false;
+			if (oldIndex < 0)
+				return false;
 
 			int newIndex = oldIndex + direction;
 
-			if (newIndex < 0 || newIndex >= proxyList.Count) return false;
+			if (newIndex < 0 || newIndex >= proxyList.Count)
+				return false;
 
-			if (proxyList[newIndex].IsPandora) return false;
+			if (proxyList[newIndex].IsPandora)
+				return false;
 
 			proxyList.RemoveAt(oldIndex);
 			proxyList.Insert(newIndex, itemToMove);
@@ -97,8 +101,7 @@ public static class ModViewModelExtensions
 
 		public List<IModInfo> GetSortedActiveMods()
 		{
-			return mods
-				.Where(m => m.Active)
+			return mods.Where(m => m.Active)
 				.OrderBy(m => m.Priority)
 				.ThenBy(m => !m.IsPandora)
 				.Select(m => m.ModInfo)

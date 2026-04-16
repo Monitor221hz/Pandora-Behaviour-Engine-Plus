@@ -9,7 +9,6 @@ public static class PathExtensions
 {
 	extension(string)
 	{
-		public static string operator /(string left, string right)
-			=> Path.Combine(left, right);
+		public static string operator /(string left, string right) => Path.Combine(left, right);
 	}
 }

@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using System;
+using System.Collections.Generic;
+using System.Reactive.Subjects;
 using Pandora.API.Patch.Config;
 using Pandora.Logging.Extensions;
 using Pandora.Models.Patch.Configs;
 using Pandora.Models.Patch.Plugins;
-using System;
-using System.Collections.Generic;
-using System.Reactive.Subjects;
 
 namespace Pandora.Configuration;
 
@@ -30,7 +30,8 @@ public sealed class EngineConfigurationService : IEngineConfigurationService
 	public EngineConfigurationService(
 		IPluginManager pluginManager,
 		IEngineConfigurationFactory<SkyrimConfiguration> skyrimFactory,
-		IEngineConfigurationFactory<SkyrimDebugConfiguration> skyrimDebugFactory)
+		IEngineConfigurationFactory<SkyrimDebugConfiguration> skyrimDebugFactory
+	)
 	{
 		_pluginManager = pluginManager;
 		_skyrimFactory = skyrimFactory;
@@ -72,22 +73,19 @@ public sealed class EngineConfigurationService : IEngineConfigurationService
 	}
 
 	public void RegisterConfiguration(
-	IEngineConfigurationFactory factory,
-	string displayName,
-	string? menuPath)
+		IEngineConfigurationFactory factory,
+		string displayName,
+		string? menuPath
+	)
 	{
-		_availableConfigs.Add(
-			new EngineConfigDescriptor(factory, displayName, menuPath));
+		_availableConfigs.Add(new EngineConfigDescriptor(factory, displayName, menuPath));
 	}
 
-	public void RegisterConfiguration(
-	IEngineConfigurationFactory factory,
-	string displayName)
+	public void RegisterConfiguration(IEngineConfigurationFactory factory, string displayName)
 	{
-		_availableConfigs.Add(
-			new EngineConfigDescriptor(factory, displayName));
+		_availableConfigs.Add(new EngineConfigDescriptor(factory, displayName));
 	}
 
-
-	public IReadOnlyCollection<EngineConfigDescriptor> GetAvailableConfigurations() => _availableConfigs;
+	public IReadOnlyCollection<EngineConfigDescriptor> GetAvailableConfigurations() =>
+		_availableConfigs;
 }

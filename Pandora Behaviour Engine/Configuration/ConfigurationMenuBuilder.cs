@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Pandora.Configuration.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Pandora.Configuration.ViewModels;
 
 namespace Pandora.Configuration;
 
@@ -15,7 +15,8 @@ public static class ConfigurationMenuBuilder
 
 	public static ObservableCollection<IEngineConfigurationViewModel> BuildTree(
 		IEnumerable<EngineConfigDescriptor> descriptors,
-		IEngineConfigurationService configService)
+		IEngineConfigurationService configService
+	)
 	{
 		var rootItems = new ObservableCollection<IEngineConfigurationViewModel>();
 
@@ -30,7 +31,8 @@ public static class ConfigurationMenuBuilder
 	private static void InsertIntoTree(
 		ObservableCollection<IEngineConfigurationViewModel> collection,
 		EngineConfigDescriptor desc,
-		IEngineConfigurationService service)
+		IEngineConfigurationService service
+	)
 	{
 		if (string.IsNullOrWhiteSpace(desc.MenuPath))
 		{

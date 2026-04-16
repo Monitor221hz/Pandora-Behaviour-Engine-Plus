@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Pandora.API.Patch.Config;
-using Pandora.API.Patch.Plugins;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using Pandora.API.Patch.Config;
+using Pandora.API.Patch.Plugins;
 
 namespace Pandora.Models.Patch.Plugins;
 
@@ -19,7 +19,8 @@ public sealed class PluginManager : IPluginManager
 
 	public void LoadAllPlugins(DirectoryInfo assemblyDirectory)
 	{
-		if (assemblyDirectory == null || !assemblyDirectory.Exists) return;
+		if (assemblyDirectory == null || !assemblyDirectory.Exists)
+			return;
 
 		var pluginsDir = new DirectoryInfo(Path.Combine(assemblyDirectory.FullName, "Plugins"));
 		if (!pluginsDir.Exists)
@@ -68,7 +69,9 @@ public sealed class PluginManager : IPluginManager
 		}
 
 		var loader = new PluginLoadContext(pluginDll.FullName);
-		var assembly = loader.LoadFromAssemblyName(AssemblyName.GetAssemblyName(pluginDll.FullName));
+		var assembly = loader.LoadFromAssemblyName(
+			AssemblyName.GetAssemblyName(pluginDll.FullName)
+		);
 		RegisterConfigurationsFromAssembly(assembly);
 	}
 
@@ -76,7 +79,8 @@ public sealed class PluginManager : IPluginManager
 	{
 		foreach (var type in assembly.GetTypes())
 		{
-			if (!typeof(IEngineConfigurationPlugin).IsAssignableFrom(type)) continue;
+			if (!typeof(IEngineConfigurationPlugin).IsAssignableFrom(type))
+				continue;
 
 			try
 			{

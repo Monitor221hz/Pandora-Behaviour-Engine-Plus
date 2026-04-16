@@ -14,13 +14,18 @@ public sealed class WindowStateService(MainWindow window) : IWindowStateService
 		var savedHeight = Properties.GUISettings.Default.WindowHeight;
 		var savedWidth = Properties.GUISettings.Default.WindowWidth;
 
-		if (savedHeight > 100) window.Height = savedHeight;
-		if (savedWidth > 100) window.Width = savedWidth;
+		if (savedHeight > 100)
+			window.Height = savedHeight;
+		if (savedWidth > 100)
+			window.Width = savedWidth;
 	}
 
 	public void SetVisualState(WindowVisualState state) => window.SetVisualState(state);
+
 	public void FlashWindow() => window.FlashUntilFocused();
 
 	public void Shutdown() =>
-		(Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Shutdown();
+		(
+			Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime
+		)?.Shutdown();
 }

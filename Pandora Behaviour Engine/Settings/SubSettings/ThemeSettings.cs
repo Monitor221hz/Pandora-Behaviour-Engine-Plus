@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Pandora.Platform.Avalonia;
-using Pandora.Settings.DTOs;
 using System;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using Pandora.Platform.Avalonia;
+using Pandora.Settings.DTOs;
 
 namespace Pandora.Settings.SubSettings;
 
@@ -30,11 +30,11 @@ internal sealed class ThemeSettings : IThemeSettings, IDisposable
 		}
 
 		_themeSubject
-		   .Skip(1)
-		   .Subscribe(theme =>
-		   {
-			   _appSettings.Theme = theme;
-		   });
+			.Skip(1)
+			.Subscribe(theme =>
+			{
+				_appSettings.Theme = theme;
+			});
 	}
 
 	public AppTheme Theme
@@ -42,7 +42,8 @@ internal sealed class ThemeSettings : IThemeSettings, IDisposable
 		get => _themeSubject.Value;
 		set
 		{
-			if (_themeSubject.Value == value) return;
+			if (_themeSubject.Value == value)
+				return;
 			_appSettings.Theme = value;
 			_themeSubject.OnNext(value);
 		}

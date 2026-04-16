@@ -1,6 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Text;
+using System.Threading.Tasks;
+using System.Xml;
 using NLog;
 using Pandora.API.Patch;
 using Pandora.API.Patch.IOManagers;
@@ -11,13 +18,6 @@ using Pandora.Models.Patch.Skyrim64.AnimData;
 using Pandora.Models.Patch.Skyrim64.Format.Pandora;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 using Pandora.Paths.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
 using XmlCake.Linq.Expressions;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.Nemesis;
@@ -52,13 +52,13 @@ public class NemesisAssembler : IPatchAssembler
 	public IAnimSetDataManager AnimSetDataManager { get; private set; }
 
 	public NemesisAssembler(
-	   IEnginePathsFacade pathContext,
-	   IMetaDataExporter<IPackFile> exporter,
-	   IProjectManager projectManager,
-	   IAnimDataManager animDataManager,
-	   IAnimSetDataManager animSetDataManager,
-	   PandoraBridgedAssembler bridgedAssembler
-   )
+		IEnginePathsFacade pathContext,
+		IMetaDataExporter<IPackFile> exporter,
+		IProjectManager projectManager,
+		IAnimDataManager animDataManager,
+		IAnimSetDataManager animSetDataManager,
+		PandoraBridgedAssembler bridgedAssembler
+	)
 	{
 		_pathContext = pathContext;
 		_exporter = exporter;
@@ -68,7 +68,6 @@ public class NemesisAssembler : IPatchAssembler
 
 		_pandoraConverter = bridgedAssembler;
 	}
-
 
 	public void LoadResources()
 	{
@@ -288,7 +287,9 @@ public class NemesisAssembler : IPatchAssembler
 			exportFiles.Add(
 				(
 					packFile.InputHandle,
-					new FileInfo(Path.Join(_pathContext.GameDataFolder.FullName, packFile.InputHandle.Name))
+					new FileInfo(
+						Path.Join(_pathContext.GameDataFolder.FullName, packFile.InputHandle.Name)
+					)
 				)
 			);
 		}
