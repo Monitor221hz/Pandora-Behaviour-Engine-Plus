@@ -31,7 +31,7 @@ public class ReplaceElementChange : IPackFileChange
 			return false;
 		}
 		_element = PackFileEditor.ReplaceElement(xmap!, Path, _element);
-		return _element != null;
+		return _element != null && _element.Parent != null;
 	}
 
 	public bool Revert(PackFile packFile)
