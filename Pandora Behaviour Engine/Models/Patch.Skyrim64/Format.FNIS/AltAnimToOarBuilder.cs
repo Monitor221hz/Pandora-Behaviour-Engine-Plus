@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using HKX2E;
+using Nito.HashAlgorithms;
+using Pandora.API.Patch.Skyrim64;
+using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
+using Pandora.Paths.Abstractions;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Frozen;
@@ -11,11 +16,6 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using HKX2E;
-using Nito.HashAlgorithms;
-using Pandora.API.Patch.Skyrim64;
-using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
-using Pandora.Paths.Abstractions;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
 

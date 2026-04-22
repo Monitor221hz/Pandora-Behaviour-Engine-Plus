@@ -1,11 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using System;
-using System.Reactive.Disposables.Fluent;
-using System.Reactive.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -15,6 +10,11 @@ using Avalonia.Styling;
 using Pandora.ViewModels;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
+using System;
+using System.Reactive.Disposables.Fluent;
+using System.Reactive.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Pandora.Views;
 

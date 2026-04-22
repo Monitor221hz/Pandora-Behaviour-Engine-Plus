@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using System;
 using NLog;
 using Pandora.Logging.NLogger.Abstractions;
 using Pandora.Logging.NLogger.Environment;
 using Pandora.Paths.Extensions;
+using System;
 
 namespace Pandora.Logging.NLogger;
 
