@@ -24,8 +24,8 @@ public sealed class DependencyInjectedCluster : IDisposable
 		var root = new DirectoryInfo(Environment.CurrentDirectory);
 		root.Create();
 
-		var gameDataDir = new DirectoryInfo(Path.Combine(root.FullName, "Data"));
-		var outputDir = new DirectoryInfo(Path.Combine(root.FullName, "Output"));
+		var gameDataDir = new DirectoryInfo(Path.Join(root.FullName, "Data"));
+		var outputDir = new DirectoryInfo(Path.Join(root.FullName, "Output"));
 
 		gameDataDir.Create();
 		outputDir.Create();
@@ -34,8 +34,7 @@ public sealed class DependencyInjectedCluster : IDisposable
 		var meshesDir = outputDir.CreateSubdirectory("meshes");
 
 		var appEngineDir = root.CreateSubdirectory("Pandora_Engine");
-		var templateDir = appEngineDir.CreateSubdirectory(Path.Combine("Skyrim", "Template"));
-
+		var templateDir = appEngineDir.CreateSubdirectory(Path.Join("Skyrim", "Template"));
 		var userPathsSub = Substitute.For<IUserPaths>();
 
 		userPathsSub.Output.Returns(outputDir);
@@ -49,8 +48,8 @@ public sealed class DependencyInjectedCluster : IDisposable
 		appPathsSub.AssemblyDirectory.Returns(assemblyDir);
 		appPathsSub.EngineDirectory.Returns(appEngineDir);
 		appPathsSub.TemplateDirectory.Returns(templateDir);
-		appPathsSub.PathConfig.Returns(
-			new FileInfo(Path.Combine(appEngineDir.FullName, "Paths.json"))
+		appPathsSub.ConfigFile.Returns(
+			new FileInfo(Path.Join(assemblyDir.FullName, "Settings.json"))
 		);
 
 		services.AddSingleton(appPathsSub);
@@ -60,10 +59,10 @@ public sealed class DependencyInjectedCluster : IDisposable
 		outputPathsSub.PandoraEngineDirectory.Returns(pandoraEngineDir);
 		outputPathsSub.MeshesDirectory.Returns(meshesDir);
 		outputPathsSub.PreviousOutputFile.Returns(
-			new FileInfo(Path.Combine(pandoraEngineDir.FullName, "PreviousOutput.txt"))
+			new FileInfo(Path.Join(pandoraEngineDir.FullName, "PreviousOutput.txt"))
 		);
 		outputPathsSub.ActiveModsFile.Returns(
-			new FileInfo(Path.Combine(pandoraEngineDir.FullName, "ActiveMods.json"))
+			new FileInfo(Path.Join(pandoraEngineDir.FullName, "ActiveMods.json"))
 		);
 
 		services.AddSingleton(outputPathsSub);

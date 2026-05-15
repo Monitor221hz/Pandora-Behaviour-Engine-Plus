@@ -19,5 +19,5 @@ public interface IEnginePathsFacade
 
 	FileInfo OutputPreviousFile { get; }
 	FileInfo ActiveModsFile { get; }
-	FileInfo PathConfig { get; }
+	FileInfo ConfigFile { get; }
 }
