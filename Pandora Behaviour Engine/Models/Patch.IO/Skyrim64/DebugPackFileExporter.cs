@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using System.IO;
 using HKX2E;
 using Pandora.API.Patch.Skyrim64;
 using Pandora.Paths.Abstractions;
+using System.IO;
 
 namespace Pandora.Models.Patch.IO.Skyrim64;
 

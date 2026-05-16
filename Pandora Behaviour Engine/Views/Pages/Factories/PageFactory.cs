@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using System;
 using ReactiveUI;
+using System;
 
 namespace Pandora.Views.Pages.Factories;
 

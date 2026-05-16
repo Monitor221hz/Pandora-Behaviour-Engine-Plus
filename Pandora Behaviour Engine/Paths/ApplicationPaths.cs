@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using Pandora.Paths.Abstractions;
+using Pandora.Paths.Extensions;
 using System;
 using System.Diagnostics;
 using System.IO;
-using Pandora.Paths.Abstractions;
-using Pandora.Paths.Extensions;
 
 namespace Pandora.Paths;
 

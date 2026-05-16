@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using System;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Windowing;
 using Pandora.Platform.Windows;
@@ -10,6 +9,7 @@ using Pandora.Views.Pages;
 using Pandora.Views.Pages.DTOs;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
+using System;
 
 namespace Pandora.Views;
 

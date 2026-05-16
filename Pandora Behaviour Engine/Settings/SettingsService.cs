@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using Pandora.Platform.CreationEngine;
+using Pandora.Settings.DTOs;
+using Pandora.Settings.SubSettings;
 using System;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
-using Pandora.Platform.CreationEngine;
-using Pandora.Settings.DTOs;
-using Pandora.Settings.SubSettings;
 
 namespace Pandora.Settings;
 

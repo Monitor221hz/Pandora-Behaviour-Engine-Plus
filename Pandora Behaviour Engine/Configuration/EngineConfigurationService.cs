@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using System;
-using System.Collections.Generic;
-using System.Reactive.Subjects;
 using Pandora.API.Patch.Config;
 using Pandora.Logging.Extensions;
 using Pandora.Models.Patch.Configs;
 using Pandora.Models.Patch.Plugins;
+using System;
+using System.Collections.Generic;
+using System.Reactive.Subjects;
 
 namespace Pandora.Configuration;
 
