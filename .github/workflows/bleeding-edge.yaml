@@ -15,7 +15,7 @@ jobs:
       contents: read
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           submodules: recursive
           fetch-depth: 1
@@ -43,7 +43,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           submodules: recursive
           fetch-depth: 0 # needed for git describe
@@ -55,13 +55,13 @@ jobs:
           cache-key-suffix: Release
 
       - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v4.1.0
+        uses: gittools/actions/gitversion/setup@v4.5.0
         with:
           versionSpec: "6.3.x"
 
       - name: Determine Version
         id: version_step
-        uses: gittools/actions/gitversion/execute@v4.1.0
+        uses: gittools/actions/gitversion/execute@v4.5.0
 
       - name: Set preview version
         id: preview_version
@@ -113,7 +113,7 @@ jobs:
           Compress-Archive -Path "$outputDir/*" -DestinationPath "$zipPath"
 
       - name: Upload to NexusMods
-        uses: Nexus-Mods/upload-action@v1.0.0-beta.3
+        uses: Nexus-Mods/upload-action@v1.0.0-beta.5
         with:
           api_key: ${{ secrets.NEXUSMODS_API_KEY }}
           file_group_id: ${{ secrets.NEXUSMODS_GROUP_ID_BLD }}
@@ -121,3 +121,6 @@ jobs:
           display_name: Pandora Behaviour Engine Preview
           version: ${{ steps.preview_version.outputs.version }}
           description: "Latest generated preview release. Use if you want/need unreleased features. May contain bugs."
+          primary_mod_manager_download: false
+          allow_mod_manager_download: true
+          show_requirements_pop_up: true

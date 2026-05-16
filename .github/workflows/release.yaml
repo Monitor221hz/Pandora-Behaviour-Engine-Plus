@@ -23,7 +23,7 @@ jobs:
       informationalVersion: ${{ steps.version_step.outputs.informationalVersion }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           submodules: recursive
           fetch-depth: 0 # 0 need for GitVersion
@@ -35,13 +35,13 @@ jobs:
           cache-key-suffix: ${{ env.PROFILE }}
 
       - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v4.1.0
+        uses: gittools/actions/gitversion/setup@v4.5.0
         with:
           versionSpec: "6.3.x"
 
       - name: Determine Version
         id: version_step
-        uses: gittools/actions/gitversion/execute@v4.1.0
+        uses: gittools/actions/gitversion/execute@v4.5.0
 
       - name: Set output paths
         id: set_paths
@@ -107,7 +107,7 @@ jobs:
           #   output-dir: Output.Linux-Musl-x64
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           submodules: recursive
           fetch-depth: 1
@@ -145,10 +145,13 @@ jobs:
 
       - name: Upload to NexusMods
         if: matrix.rid == 'win-x64'
-        uses: Nexus-Mods/upload-action@v1.0.0-beta.3
+        uses: Nexus-Mods/upload-action@v1.0.0-beta.5
         with:
           api_key: ${{ secrets.NEXUSMODS_API_KEY }}
           file_group_id: ${{ secrets.NEXUSMODS_GROUP_ID }}
           filename: "${{ matrix.output-dir }}/Pandora_Behaviour_Engine_${{ github.ref_name }}_${{ matrix.rid }}_net.zip"
           display_name: Pandora Behaviour Engine ${{ github.ref_name }}
           version: ${{ needs.build.outputs.fullSemVer }}
+          primary_mod_manager_download: true
+          allow_mod_manager_download: true
+          show_requirements_pop_up: true
