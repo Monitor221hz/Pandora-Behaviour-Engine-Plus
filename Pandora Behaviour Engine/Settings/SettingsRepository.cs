@@ -19,7 +19,7 @@ public partial class PandoraJsonContext : JsonSerializerContext;
 
 public sealed class SettingsRepository(IApplicationPaths appPaths) : ISettingsRepository
 {
-	private readonly FileInfo _configFile = appPaths.PathConfig;
+	private readonly FileInfo _configFile = appPaths.ConfigFile;
 
 	public RootConfiguration Load()
 	{
@@ -43,9 +43,6 @@ public sealed class SettingsRepository(IApplicationPaths appPaths) : ISettingsRe
 
 	public void Save(RootConfiguration data)
 	{
-		if (!_configFile.Directory!.Exists)
-			_configFile.Directory.Create();
-
 		using var stream = _configFile.Create();
 		JsonSerializer.Serialize(stream, data, PandoraJsonContext.Default.RootConfiguration);
 	}

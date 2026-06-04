@@ -21,5 +21,5 @@ public interface IApplicationPaths
 	DirectoryInfo AssemblyDirectory { get; }
 	DirectoryInfo TemplateDirectory { get; }
 	DirectoryInfo EngineDirectory { get; }
-	FileInfo PathConfig { get; }
+	FileInfo ConfigFile { get; }
 }

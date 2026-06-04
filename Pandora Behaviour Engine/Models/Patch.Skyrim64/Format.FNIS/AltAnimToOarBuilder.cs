@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
@@ -186,6 +187,12 @@ public class AltAnimToOarBuilder
 
 	private readonly string _outputRoot;
 
+	/// <summary>
+	/// Although this isn't actually necessary, we automatically decrement the priority to prevent duplicates
+	/// because some users are concerned about priority duplication warnings.
+	/// </summary>
+	private int _priorityCounter = int.MaxValue;
+
 	public AltAnimToOarBuilder(
 		ConcurrentBag<AlternateAnimation> alternateAnimations,
 		IEnginePathsFacade pathContext
@@ -244,10 +251,11 @@ public class AltAnimToOarBuilder
 
 						Directory.CreateDirectory(outDir);
 
+						int priority = Interlocked.Decrement(ref _priorityCounter);
+
 						CopyAnimations(anim.AnimRoot, prefix, slot, groupDef, outDir);
-						WriteConfig(group, slot, baseValue, dirName, outDir);
-					}
-				);
+						WriteConfig(group, slot, baseValue, dirName, outDir, priority);
+					});
 			}
 		}
 
@@ -397,7 +405,7 @@ public class AltAnimToOarBuilder
 			File.WriteAllText(Path.Combine(outDir, "config.json"), json);
 	}
 
-	private void WriteConfig(string group, int slot, int baseValue, string dirName, string outDir)
+	private void WriteConfig(string group, int slot, int baseValue, string dirName, string outDir, int priority)
 	{
 		var config = new OARConfig
 		{
@@ -414,6 +422,7 @@ public class AltAnimToOarBuilder
 					ValueB = new OARValueB { Value = baseValue + slot },
 				},
 			],
+			Priority = priority
 		};
 
 		var json = JsonSerializer.Serialize(

@@ -19,7 +19,7 @@ public sealed class EnginePathsFacade(
 	public DirectoryInfo TemplateFolder => appPaths.TemplateDirectory;
 	public DirectoryInfo EngineFolder => appPaths.EngineDirectory;
 
-	public FileInfo PathConfig => appPaths.PathConfig;
+	public FileInfo ConfigFile => appPaths.ConfigFile;
 
 	public DirectoryInfo OutputEngineFolder => outputPaths.PandoraEngineDirectory;
 	public DirectoryInfo OutputMeshesFolder => outputPaths.MeshesDirectory;
