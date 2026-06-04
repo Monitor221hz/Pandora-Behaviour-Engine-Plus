@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using System;
-using System.Reactive.Disposables;
-using System.Reactive.Disposables.Fluent;
-using System.Reactive.Linq;
 using Pandora.Models.Engine;
 using Pandora.Paths.Abstractions;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
+using System;
+using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
+using System.Reactive.Linq;
 
 namespace Pandora.ViewModels;
 
