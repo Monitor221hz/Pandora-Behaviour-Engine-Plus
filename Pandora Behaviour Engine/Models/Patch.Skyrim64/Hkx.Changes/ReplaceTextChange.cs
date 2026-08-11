@@ -20,12 +20,12 @@ public class ReplaceTextChange : IPackFileChange
 
 	private readonly string _newValue;
 
-	private readonly string _preValue;
+	private readonly int _skipChars;
 
 	public ReplaceTextChange(
 		string target,
 		string path,
-		string preValue,
+		int skipChars,
 		string oldValue,
 		string newValue
 	)
@@ -34,7 +34,7 @@ public class ReplaceTextChange : IPackFileChange
 		Path = path;
 		_oldValue = oldValue;
 		_newValue = newValue;
-		_preValue = preValue;
+		_skipChars = skipChars;
 	}
 
 	public bool Apply(IPackFile packFile)
@@ -43,7 +43,7 @@ public class ReplaceTextChange : IPackFileChange
 		{
 			return false;
 		}
-		return PackFileEditor.ReplaceText(xmap!, Path, _preValue, _oldValue, _newValue);
+		return PackFileEditor.ReplaceText(xmap!, Path, _skipChars, _oldValue, _newValue);
 	}
 
 	public bool Revert(PackFile packFile)

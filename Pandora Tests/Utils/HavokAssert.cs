@@ -71,11 +71,11 @@ public static class HavokAssert
 			{
 #if DEBUG
 
-				if (isDebuggerAttached)
-				{
-					Debug.WriteLine((string)accessor[havokObject, propertyInfo.Name]);
-				}
 
+                //if (isDebuggerAttached)
+                //{
+                //    Debug.WriteLine((string)accessor[havokObject, propertyInfo.Name]);
+                //}
 #endif
 				continue;
 			}

@@ -30,11 +30,7 @@
 		<PackageReference Include="Avalonia.Desktop" Version="11.3.10" />
 		<PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.10" />
 		<!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-		<PackageReference
-			Condition="'$(Configuration)' == 'Debug'"
-			Include="Avalonia.Diagnostics"
-			Version="11.3.10"
-		/>
+		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.10" />
 		<PackageReference Include="GameFinder" Version="4.9.0" />
 		<PackageReference Include="GameFinder.StoreHandlers.GOG" Version="4.9.0" />
 		<PackageReference Include="GameFinder.StoreHandlers.Steam" Version="4.9.0" />
@@ -43,6 +39,8 @@
 		<PackageReference Include="System.CommandLine" Version="2.0.1" />
 		<PackageReference Include="System.Interactive.Async" Version="7.0.0" />
 		<PackageReference Include="Testably.Abstractions" Version="10.0.0" />
+		<PackageReference Include="Tmds.DBus" Version="0.92.0" />
+		<PackageReference Include="Tmds.DBus.Protocol" Version="0.92.0" />
 		<PackageReference Include="Vanara.PInvoke.NtDll" Version="4.2.1" />
 		<PackageReference Include="System.Management" Version="10.0.1" />
 		<PackageReference Include="Xaml.Behaviors.Avalonia" Version="11.3.9" />
@@ -56,10 +54,7 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.1" />
-		<PackageReference
-			Include="Xaml.Behaviors.Interactions.DragAndDrop.DataGrid"
-			Version="11.3.9.3"
-		/>
+		<PackageReference Include="Xaml.Behaviors.Interactions.DragAndDrop.DataGrid" Version="11.3.9.3" />
 	</ItemGroup>
 
 	<ItemGroup>
