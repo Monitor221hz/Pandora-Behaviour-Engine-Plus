@@ -113,12 +113,13 @@ jobs:
           Compress-Archive -Path "$outputDir/*" -DestinationPath "$zipPath"
 
       - name: Upload to NexusMods
-        uses: Nexus-Mods/upload-action@v1.0.0-beta.3
+        uses: Nexus-Mods/upload-action@v1.0.0-beta.9
         with:
           api_key: ${{ secrets.NEXUSMODS_API_KEY }}
-          file_group_id: ${{ secrets.NEXUSMODS_GROUP_ID_BLD }}
+          file_id: ${{ secrets.NEXUSMODS_GROUP_ID_BLD }}
           filename: ${{ steps.set_paths.outputs.zip_path }}
           display_name: Pandora Behaviour Engine Preview
           version: ${{ steps.preview_version.outputs.version }}
+          show_requirements_pop_up: true
           description: "Latest generated preview release. Use if you want/need unreleased features. May contain bugs."
           category: optional
