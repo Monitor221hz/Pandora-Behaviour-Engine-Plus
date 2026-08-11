@@ -152,3 +152,6 @@ jobs:
           filename: "${{ matrix.output-dir }}/Pandora_Behaviour_Engine_${{ github.ref_name }}_${{ matrix.rid }}_net.zip"
           display_name: Pandora Behaviour Engine ${{ github.ref_name }}
           version: ${{ needs.build.outputs.fullSemVer }}
+          update_mod_version: true
+          primary_mod_manager_download: true
+          
