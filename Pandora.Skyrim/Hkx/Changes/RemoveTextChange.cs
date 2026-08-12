@@ -1,0 +1,42 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
+
+using Pandora.API.Patch.Skyrim64;
+using Pandora.Skyrim.Hkx.Packfile;
+using System.Xml;
+
+namespace Pandora.Skyrim.Hkx.Changes;
+
+public class RemoveTextChange : IPackFileChange
+{
+	public IPackFileChange.ChangeType Type { get; } = IPackFileChange.ChangeType.Remove;
+
+	public XmlNodeType AssociatedType { get; } = XmlNodeType.Text;
+	public string Target { get; }
+	public string Path { get; private set; }
+	private readonly string _remove;
+	private readonly int _findFrom;
+
+	public RemoveTextChange(string target, string path, string remove, int findFrom)
+	{
+		Target = target;
+		Path = path;
+		_findFrom = findFrom;
+		_remove = remove;
+	}
+
+	public bool Apply(IPackFile packFile)
+	{
+		if (!packFile.TryGetXMap(Target, out var xmap))
+		{
+			return false;
+		}
+		return PackFileEditor.RemoveText(xmap!, Path, _remove, _findFrom);
+	}
+
+	public bool Revert(PackFile packFile)
+	{
+		//PackFileEditor.InsertText(packFile, Path, value);
+		return true;
+	}
+}

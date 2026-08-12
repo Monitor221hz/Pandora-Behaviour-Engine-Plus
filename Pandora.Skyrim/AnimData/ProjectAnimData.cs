@@ -1,0 +1,131 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
+
+using Pandora.API.Patch.Skyrim64.AnimData;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using System.Text;
+
+namespace Pandora.Skyrim.AnimData
+{
+	public class ProjectAnimData : IProjectAnimData
+	{
+		public IProjectAnimDataHeader Header { get; private set; }
+
+		private readonly List<IClipDataBlock> _blocks = new List<IClipDataBlock>();
+
+		public IMotionData? BoundMotionDataProject { get; set; }
+
+		private readonly IAnimDataManager _manager;
+
+		private readonly HashSet<string> _dummyClipNames = new HashSet<string>();
+
+		public ProjectAnimData(
+			ProjectAnimDataHeader header,
+			List<IClipDataBlock> blocks,
+			IAnimDataManager manager
+		)
+		{
+			Header = header;
+			_blocks = blocks;
+			_manager = manager;
+		}
+
+		public IEnumerable<string> GetClipIDs() => _blocks.ConvertAll(b => b.ClipID);
+
+		public void AddClipData(IClipDataBlock dataBlock, IClipMotionDataBlock motionDataBlock)
+		{
+			var id = _manager.GetNextValidID().ToString();
+			dataBlock.ClipID = id;
+			motionDataBlock.ClipID = id;
+
+			AddClipData(dataBlock);
+
+			BoundMotionDataProject?.AddClipMotionData(motionDataBlock);
+		}
+
+		public void AddClipData(IClipDataBlock dataBlock)
+		{
+			lock (_blocks)
+			{
+				_blocks.Add(dataBlock);
+			}
+		}
+
+		public void AddDummyClipData(string clipName)
+		{
+			lock (_dummyClipNames)
+			{
+				if (_dummyClipNames.Contains(clipName))
+					return;
+			}
+
+			var id = _manager.GetNextValidID().ToString();
+			_blocks.Add(new ClipDataBlock(clipName, id));
+
+			BoundMotionDataProject?.AddDummyClipMotionData(id);
+			lock (_dummyClipNames)
+			{
+				_dummyClipNames.Add(clipName);
+			}
+		}
+
+		public static bool TryReadProject(
+			StreamReader reader,
+			IAnimDataManager manager,
+			int lineLimit,
+			[NotNullWhen(true)] out ProjectAnimData? projectAnimData
+		)
+		{
+			projectAnimData = null;
+			if (!ProjectAnimDataHeader.TryReadBlock(reader, out var header))
+			{
+				return false;
+			}
+
+			lineLimit -= header.GetLineCount() + 1;
+			string? whiteSpace = "";
+			List<IClipDataBlock> blocks = [];
+			while (whiteSpace != null && lineLimit > 0)
+			{
+				if (!ClipDataBlock.TryReadBlock(reader, out var block))
+				{
+					break;
+				}
+				blocks.Add(block);
+				lineLimit -= block.GetLineCount();
+
+				whiteSpace = reader.ReadLine();
+				lineLimit--;
+			}
+			projectAnimData = new ProjectAnimData(header, blocks, manager);
+
+			return true;
+		}
+
+		public override string ToString()
+		{
+			StringBuilder sb = new StringBuilder();
+			sb.Append(Header.ToString());
+			if (_blocks.Count > 0)
+			{
+				sb.AppendJoin("\r\n", _blocks);
+			}
+			return sb.ToString();
+			//byte[] bytes = Encoding.Default.GetBytes(sb.ToString());
+			//return Encoding.UTF8.GetString(bytes);
+		}
+
+		public int GetLineCount()
+		{
+			int i = Header.GetLineCount() + 1;
+			foreach (ClipDataBlock block in _blocks)
+			{
+				i += block.GetLineCount();
+				i++;
+			}
+			return i;
+		}
+	}
+}

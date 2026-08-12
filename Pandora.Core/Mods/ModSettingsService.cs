@@ -1,0 +1,74 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
+
+using NLog;
+using Pandora.Core.DTOs;
+using Pandora.Core.Mods.Abstractions;
+using Pandora.Core.Paths.Abstractions;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
+using System.Threading.Tasks;
+
+namespace Pandora.Core.Mods;
+
+public sealed class ModSettingsService : IModSettingsService
+{
+	private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+	private readonly IOutputPaths _pathContext;
+
+	public ModSettingsService(IOutputPaths pathContext)
+	{
+		_pathContext = pathContext;
+	}
+
+	public async Task<List<ModSaveEntry>> LoadAsync()
+	{
+		var path = _pathContext.ActiveModsFile.FullName;
+		if (!File.Exists(path))
+			return [];
+
+		try
+		{
+			using var stream = File.OpenRead(path);
+
+			var result = await JsonSerializer.DeserializeAsync(
+				stream,
+				ModsJsonContext.Default.ListModSaveEntry
+			);
+
+			return result ?? [];
+		}
+		catch (Exception ex)
+		{
+			Logger.Warn(ex, "Failed to load mod settings. Returning empty list.");
+			return [];
+		}
+	}
+
+	public async Task SaveAsync(IEnumerable<ModSaveEntry> entries)
+	{
+		try
+		{
+			var path = _pathContext.ActiveModsFile.FullName;
+
+			Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+
+			using var stream = File.Create(path);
+			await JsonSerializer.SerializeAsync(
+				stream,
+				[.. entries],
+				ModsJsonContext.Default.ListModSaveEntry
+			);
+
+			Logger.Info("Mod settings saved.");
+		}
+		catch (Exception ex)
+		{
+			Logger.Error(ex, "Failed to save mod settings.");
+			throw;
+		}
+	}
+}

@@ -1,0 +1,41 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
+
+using Pandora.API.Patch.Skyrim64;
+using Pandora.Skyrim.Hkx.Packfile;
+using System.Xml;
+using System.Xml.Linq;
+
+namespace Pandora.Skyrim.Hkx.Changes;
+
+public class ReplaceElementChange : IPackFileChange
+{
+	public IPackFileChange.ChangeType Type { get; } = IPackFileChange.ChangeType.Replace;
+
+	public XmlNodeType AssociatedType { get; } = XmlNodeType.Element;
+	public string Target { get; private set; }
+	public string Path { get; private set; }
+	private XElement _element;
+
+	public ReplaceElementChange(string target, string path, XElement element)
+	{
+		Target = target;
+		Path = path;
+		_element = element;
+	}
+
+	public bool Apply(IPackFile packFile)
+	{
+		if (!packFile.TryGetXMap(Target, out var xmap))
+		{
+			return false;
+		}
+		_element = PackFileEditor.ReplaceElement(xmap!, Path, _element);
+		return _element != null && _element.Parent != null;
+	}
+
+	public bool Revert(PackFile packFile)
+	{
+		return Apply(packFile);
+	}
+}

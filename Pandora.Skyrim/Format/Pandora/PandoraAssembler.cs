@@ -1,0 +1,220 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Xml.Linq;
+using Pandora.API.Patch;
+using Pandora.API.Patch.IOManagers;
+using Pandora.API.Patch.Skyrim64;
+using Pandora.API.Patch.Skyrim64.AnimData;
+using Pandora.API.Patch.Skyrim64.AnimSetData;
+using Pandora.Skyrim.AnimSetData;
+using Pandora.Skyrim.Hkx.Changes;
+using Pandora.Core.Paths.Abstractions;
+
+namespace Pandora.Skyrim.Format.Pandora;
+
+public class PandoraAssembler
+{
+	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
+	private readonly PandoraNativePatchManager _nativeManager = new();
+	private readonly IEnginePathsFacade _pathContext;
+	private readonly IMetaDataExporter<IPackFile> _packFileExporter;
+
+	public IProjectManager ProjectManager { get; private set; }
+
+	public PandoraAssembler(
+		IEnginePathsFacade pathContext,
+		IMetaDataExporter<IPackFile> exporter,
+		IProjectManager projectManager
+	)
+	{
+		_pathContext = pathContext;
+		_packFileExporter = exporter;
+		ProjectManager = projectManager;
+	}
+
+	public bool AssemblePackFilePatch(FileInfo file, IModInfo modInfo)
+	{
+		var name = Path.GetFileNameWithoutExtension(file.Name);
+		IPackFile targetPackFile;
+		if (!ProjectManager.TryActivatePackFilePriority(name, out targetPackFile!))
+		{
+			return false;
+		}
+
+		var changeSet = new PackFileChangeSet(modInfo);
+
+		XElement container;
+		try
+		{
+			using (FileStream stream = file.OpenRead())
+			{
+				container = XElement.Load(stream);
+			}
+		}
+		catch (Exception ex)
+		{
+		Logger.Error(
+			$"Pandora Assembler > Mod \"{modInfo.Name}\" > File \"{file.FullName}\" > Load > FAILED > {ex.Message}"
+		);
+			return false;
+		}
+
+		var editContainer = container;
+		PandoraParser.ParseEdits(editContainer, targetPackFile, changeSet);
+
+		targetPackFile.Dispatcher.AddChangeSet(changeSet);
+		return true;
+	}
+
+	public void AssemblePatch(IModInfo modInfo)
+	{
+		var patchFolder = new DirectoryInfo(Path.Join(modInfo.Folder.FullName, "patches"));
+		if (patchFolder.Exists)
+		{
+			foreach (var file in patchFolder.GetFiles("*.xml"))
+			{
+				AssemblePackFilePatch(file, modInfo);
+			}
+		}
+
+		var pluginFolder = new DirectoryInfo(Path.Join(modInfo.Folder.FullName, "native"));
+		if (pluginFolder.Exists)
+		{
+			foreach (var folder in pluginFolder.GetDirectories())
+			{
+				_nativeManager.LoadAssembly(folder);
+			}
+		}
+	}
+
+	public void ApplyNativePatches(RuntimeMode mode, RunOrder order)
+	{
+		_nativeManager.ApplyPatches(ProjectManager, mode, order);
+	}
+
+	public void QueueNativePatches()
+	{
+		_nativeManager.QueuePatches();
+	}
+
+	public void AssembleAnimDataPatch(DirectoryInfo folder)
+	{
+		var files = folder.GetFiles();
+		foreach (var file in files)
+		{
+			if (
+				!file.Exists
+				|| !ProjectManager.TryGetProject(
+					Path.GetFileNameWithoutExtension(file.Name.ToLower()),
+					out IProject? targetProject
+				)
+			)
+				continue;
+
+			using (var readStream = file.OpenRead())
+			{
+				using (var reader = new StreamReader(readStream))
+				{
+					string? expectedLine;
+					while ((expectedLine = reader.ReadLine()) != null)
+					{
+						if (string.IsNullOrWhiteSpace(expectedLine))
+							continue;
+						targetProject!.AnimData?.AddDummyClipData(expectedLine);
+					}
+				}
+			}
+		}
+	}
+
+	public void AssembleAnimSetDataPatch(DirectoryInfo directoryInfo) //not exactly Nemesis format but this format is just simpler
+	{
+		IProjectAnimSetData? targetAnimSetData;
+
+		foreach (DirectoryInfo subDirInfo in directoryInfo.GetDirectories())
+		{
+			if (
+				!ProjectManager.TryGetProject(subDirInfo.Name, out var project)
+				|| project.AnimSetData == null
+			)
+			{
+				continue;
+			}
+			targetAnimSetData = project.AnimSetData;
+			var patchFiles = subDirInfo.GetFiles();
+
+			foreach (var patchFile in patchFiles)
+			{
+				if (
+					!targetAnimSetData.AnimSetsByName.TryGetValue(
+						patchFile.Name,
+						out IAnimSet? targetAnimSet
+					)
+				)
+				{
+					continue;
+				}
+
+				using (var readStream = patchFile.OpenRead())
+				{
+					using (var reader = new StreamReader(readStream))
+					{
+						string? expectedPath;
+						while ((expectedPath = reader.ReadLine()) != null)
+						{
+							if (string.IsNullOrWhiteSpace(expectedPath))
+								continue;
+
+							string animationName = Path.GetFileNameWithoutExtension(expectedPath);
+							string folder = Path.GetDirectoryName(expectedPath)!;
+							var animInfo = new SetCachedAnimInfo().Encode(folder, animationName);
+							targetAnimSet.AddAnimInfo(animInfo);
+						}
+					}
+				}
+			}
+		}
+		foreach (FileInfo patchFile in directoryInfo.GetFiles("*.txt"))
+		{
+			if (
+				!ProjectManager.TryGetProject(patchFile.Name, out var project)
+				|| project.AnimSetData == null
+			)
+			{
+				continue;
+			}
+			targetAnimSetData = project.AnimSetData;
+			List<ISetCachedAnimInfo> animInfos = [];
+			using (var readStream = patchFile.OpenRead())
+			{
+				using (var reader = new StreamReader(readStream))
+				{
+					string? expectedPath;
+					while ((expectedPath = reader.ReadLine()) != null)
+					{
+						if (string.IsNullOrWhiteSpace(expectedPath))
+							continue;
+
+						string animationName = Path.GetFileNameWithoutExtension(expectedPath);
+						string folder = Path.GetDirectoryName(expectedPath)!;
+						var animInfo = new SetCachedAnimInfo().Encode(folder, animationName);
+						animInfos.Add(animInfo);
+					}
+				}
+			}
+			foreach (var animSet in targetAnimSetData.AnimSets)
+			{
+				foreach (var animInfo in animInfos)
+				{
+					animSet.AddAnimInfo(animInfo);
+				}
+			}
+			break;
+		}
+	}
+}

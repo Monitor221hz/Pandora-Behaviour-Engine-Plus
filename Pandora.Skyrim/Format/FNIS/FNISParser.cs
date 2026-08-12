@@ -1,0 +1,448 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
+
+#pragma warning disable IDE0005
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+#pragma warning restore IDE0005
+using System.IO;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using HKX2E;
+using Pandora.API.Patch;
+using Pandora.API.Patch.Skyrim64;
+using Pandora.Skyrim.Hkx.Packfile;
+using Pandora.Patch.Patchers.Skyrim.FNIS;
+using Pandora.Core.Paths.Abstractions;
+
+namespace Pandora.Skyrim.Format.FNIS;
+
+public class FNISParser : IFNISParser
+{
+	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
+	private static readonly HashSet<string> AnimTypePrefixes =
+	[
+		"b",
+		"s",
+		"so",
+		"fu",
+		"fuo",
+		"+",
+		"ofa",
+		"pa",
+		"km",
+		"aa",
+		"ch",
+	];
+
+	private static readonly Regex HkxRegex = new("\\S*\\.hkx", RegexOptions.IgnoreCase);
+
+	private static readonly Regex AnimLineRegex = new(
+		@"^([^('|\s)]+)\s*(-\S+)*\s*(\S+)\s+(\S+.hkx)(?:[^\S\r\n]+(\S+))*",
+		RegexOptions.Compiled
+	);
+
+	private static readonly Dictionary<string, string> StateMachineMap = new()
+	{
+		{ "atronachflame~atronachflamebehavior", "#0414" },
+		{ "atronachfrostproject~atronachfrostbehavior", "#0439" },
+		{ "atronachstormproject~atronachstormbehavior", "#0369" },
+		{ "bearproject~bearbehavior", "#0151" },
+		{ "chaurusproject~chaurusbehavior", "#0509" },
+		{ "dogproject~dogbehavior", "#0144" },
+		{ "wolfproject~wolfbehavior", "#0169" },
+		{ "defaultfemale~0_master", "#0340" },
+		{ "defaultmale~0_master", "#0340" },
+		{ "firstperson~0_master", "#0167" },
+		{ "spherecenturion~scbehavior", "#0780" },
+		{ "dwarvenspidercenturionproject~dwarvenspiderbehavior", "#0394" },
+		{ "steamproject~steambehavior", "#0538" },
+		{ "falmerproject~falmerbehavior", "#1294" },
+		{ "frostbitespiderproject~frostbitespiderbehavior", "#0402" },
+		{ "giantproject~giantbehavior", "#0795" },
+		{ "goatproject~goatbehavior", "#0140" },
+		{ "highlandcowproject~h-cowbehavior", "#0152" },
+		{ "deerproject~deerbehavior", "#0145" },
+		{ "dragonproject~dragonbehavior", "#1610" },
+		{ "dragon_priest~dragon_priest", "#0758" },
+		{ "draugrproject~draugrbehavior", "#2026" },
+		{ "draugrskeletonproject~draugrbehavior", "#2026" },
+		{ "hagravenproject~havgravenbehavior", "#0634" },
+		{ "horkerproject~horkerbehavior", "#0161" },
+		{ "horseproject~horsebehavior", "#0493" },
+		{ "icewraithproject~icewraithbehavior", "#0262" },
+		{ "mammothproject~mammothbehavior", "#0155" },
+		{ "mudcrabproject~mudcrabbehavior", "#0481" },
+		{ "sabrecatproject~sabrecatbehavior", "#0140" },
+		{ "skeeverproject~skeeverbehavior", "#0132" },
+		{ "slaughterfishproject~slaughterfishbehavior", "#0128" },
+		{ "spriggan~sprigganbehavior", "#0610" },
+		{ "trollproject~trollbehavior", "#0708" },
+		{ "vampirelord~vampirelord", "#1114" },
+		{ "werewolfbeastproject~werewolfbehavior", "#1207" },
+		{ "wispproject~wispbehavior", "#0410" },
+		{ "witchlightproject~witchlightbehavior", "#0152" },
+		{ "chickenproject~chickenbehavior", "#0322" },
+		{ "hareproject~harebehavior", "#0297" },
+		{ "chaurusflyer~chaurusflyerbehavior", "#0402" },
+		{ "vampirebruteproject~vampirebrutebehavior", "#0502" },
+		{ "benthiclurkerproject~benthiclurkerbehavior", "#0708" },
+		{ "boarproject~boarbehavior", "#0584" },
+		{ "ballistacenturion~bcbehavior", "#0475" },
+		{ "hmdaedra~hmdaedra", "#0490" },
+		{ "netchproject~netchbehavior", "#0279" },
+		{ "rieklingproject~rieklingbehavior", "#0730" },
+		{ "scribproject~scribbehavior", "#0578" },
+	};
+
+	private static readonly Dictionary<string, string> AnimListExcludeMap = new()
+	{
+		{ "dogproject", "wolf" },
+		{ "wolfproject", "dog" },
+	};
+	private static readonly Dictionary<string, string[]> ManualScanDirectories = new()
+	{
+		{ "canine", ["wolf", "dog"] },
+	};
+
+	private static readonly HashSet<string> HumanoidProjectIdentifiers = new(
+		StringComparer.OrdinalIgnoreCase
+	)
+	{
+		"defaultmale",
+		"defaultfemale",
+	};
+
+	private readonly IEnginePathsFacade _pathContext;
+	private readonly IProjectManager _projectManager;
+	private readonly HashSet<PackFile> _parsedBehaviorFiles = [];
+	private readonly HashSet<Project> _skipAnimListProjects = [];
+	private readonly Dictionary<string, FNISAnimationList> _animListFileMap = new(
+		StringComparer.OrdinalIgnoreCase
+	);
+
+	private readonly HashSet<string> _parsedFiles = new(StringComparer.OrdinalIgnoreCase) { };
+	public HashSet<IModInfo> ModInfos { get; private set; } = [];
+
+	public FNISParser(IEnginePathsFacade pathContext, IProjectManager manager)
+	{
+		_pathContext = pathContext;
+		_projectManager = manager;
+	}
+
+	private void ProcessFNISAnimationsHumanoid(
+		DirectoryInfo modFolder,
+		DirectoryInfo behaviorFolder,
+		IProject project,
+		IProjectManager projectManager
+	)
+	{
+		if (
+			TryFindAnimlistHumanoid(modFolder, project, out var animListFile)
+			&& TryFindGraphHumanoid(modFolder, behaviorFolder, out var graphFile)
+		)
+		{
+			Debug.Assert(project.BehaviorFile is not null, "Project must have a behavior file.");
+			ParseAnimList(animListFile, project, projectManager);
+			InjectGraphReference(graphFile, project.BehaviorFile);
+		}
+		else
+		{
+			Logger.Warn(
+				$"FNIS Parser > Scan FNIS Animations > {modFolder.Name} in {project.Identifier} > FAILED"
+			);
+		}
+	}
+
+	private bool ProcessFNISAnimationsCreature(
+		string creatureName,
+		DirectoryInfo modFolder,
+		DirectoryInfo behaviorFolder,
+		IProject project,
+		IProjectManager projectManager
+	)
+	{
+		if (
+			TryFindAnimlistCreature(creatureName, modFolder, project, out var animListFile)
+			&& TryFindGraphCreature(creatureName, modFolder, behaviorFolder, out var graphFile)
+		)
+		{
+			Debug.Assert(project.BehaviorFile is not null, "Project must have a behavior file.");
+			ParseAnimList(animListFile, project, projectManager);
+			InjectGraphReference(graphFile, project.BehaviorFile);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	public void ScanProjectAnimations(IProject project, DirectoryInfo absoluteOutputDirectory)
+	{
+		//lock (skipAnimlistProjects)
+		//{
+		//	if (skipAnimlistProjects.Contains(project))
+		//	{
+		//		return;
+		//	}
+		//	if (project.Sibling != null)
+		//	{
+		//		skipAnimlistProjects.Add(project.Sibling);
+		//	}
+		//}
+		var animationsFolder = new DirectoryInfo(
+			Path.Join(absoluteOutputDirectory.FullName, "animations")
+		);
+		if (!animationsFolder.Exists)
+		{
+			return;
+		}
+		var modAnimationFolders = animationsFolder.GetDirectories();
+
+		Debug.Assert(project.BehaviorFile is not null, "Project must have a behavior file.");
+		var behaviorFolder = new DirectoryInfo(
+			Path.Join(
+				absoluteOutputDirectory.FullName,
+				project.BehaviorFile.InputHandle.Directory!.Name
+			)
+		);
+		if (!behaviorFolder.Exists || behaviorFolder.Parent == null)
+		{
+			return;
+		}
+		if (modAnimationFolders.Length == 0)
+		{
+			return;
+		}
+
+		bool isHumanoidProject = HumanoidProjectIdentifiers.Contains(project.Identifier);
+		if (isHumanoidProject)
+		{
+			Parallel.ForEach(
+				modAnimationFolders,
+				folder =>
+				{
+					ProcessFNISAnimationsHumanoid(folder, behaviorFolder, project, _projectManager);
+				}
+			);
+			return;
+		}
+		// creatures only
+		var pseudoProjectIdentifier = behaviorFolder.Parent.Name;
+		//if (manualScanDirectories.TryGetValue(pseudoProjectIdentifier, out var scanNames))
+		//{
+		//	foreach (var scanName in scanNames)
+		//	{
+		//		Parallel.ForEach(modAnimationFolders, folder =>
+		//		{
+		//			ProcessFNISAnimationsCreature(scanName, folder, behaviorFolder, project, projectManager);
+		//		});
+		//	}
+		//	return;
+		//}
+		Parallel.ForEach(
+			modAnimationFolders,
+			folder =>
+			{
+				if (
+					!ProcessFNISAnimationsCreature(
+						pseudoProjectIdentifier,
+						folder,
+						behaviorFolder,
+						project,
+						_projectManager
+					)
+					&& !ProcessFNISAnimationsCreature(
+						project.Identifier.Replace("project", string.Empty),
+						folder,
+						behaviorFolder,
+						project,
+						_projectManager
+					)
+				)
+				{
+					Logger.Warn(
+						$"FNIS Parser > {nameof(ProcessFNISAnimationsCreature)} > {pseudoProjectIdentifier}/{folder.Name} in {project.Identifier} > FAILED"
+					);
+				}
+				;
+			}
+		);
+	}
+
+	public void ScanProjectAnimlist(IProject project)
+	{
+		var currentDirectory = new DirectoryInfo(
+			Path.Join(
+				_pathContext.GameDataFolder.FullName,
+				project.ProjectFile.RelativeOutputDirectoryPath
+			)
+		);
+
+		ScanProjectAnimations(project, currentDirectory);
+	}
+
+	private static bool TryFindGraphHumanoid(
+		DirectoryInfo folder,
+		DirectoryInfo behaviorFolder,
+		[NotNullWhen(true)] out FileInfo? graphFile
+	)
+	{
+		graphFile = new(Path.Join(behaviorFolder.FullName, $"FNIS_{folder.Name}_Behavior.hkx"));
+		return graphFile.Exists;
+	}
+
+	private static bool TryFindGraphCreature(
+		string creatureName,
+		DirectoryInfo folder,
+		DirectoryInfo behaviorFolder,
+		[NotNullWhen(true)] out FileInfo? graphFile
+	)
+	{
+		graphFile = new(Path.Join(behaviorFolder.FullName, $"FNIS_{creatureName}_Behavior.hkx"));
+		if (!graphFile.Exists)
+		{
+			graphFile = new(
+				Path.Join(
+					behaviorFolder.FullName,
+					$"FNIS_{folder.Name}_{creatureName}_Behavior.hkx"
+				)
+			);
+			if (!graphFile.Exists)
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private static bool TryFindAnimlistHumanoid(
+		DirectoryInfo folder,
+		IProject project,
+		[NotNullWhen(true)] out FileInfo? animListFile
+	)
+	{
+		animListFile = new FileInfo(Path.Join(folder.FullName, $"FNIS_{folder.Name}_List.txt"));
+		return animListFile.Exists;
+	}
+
+	private static bool TryFindAnimlistCreature(
+		string creatureName,
+		DirectoryInfo folder,
+		IProject project,
+		[NotNullWhen(true)] out FileInfo? animListFile
+	)
+	{
+		string listName = folder.Name;
+		animListFile = new FileInfo(
+			Path.Join(folder.FullName, $"FNIS_{folder.Name}_{creatureName}_List.txt")
+		);
+		return animListFile.Exists;
+		//if (!animListFile.Exists)
+		//{
+		//	if (!manualScanDirectories.TryGetValue(creatureName, out var scanNames)) { return false; }
+		//	foreach (string scanName in scanNames)
+		//	{
+		//		listName = scanName;
+		//		animListFile = animListFile = new FileInfo(Path.Join(folder.FullName, $"FNIS_{folder.Name}_{creatureName}_List.txt"));
+		//		if (animListFile.Exists)
+		//		{
+		//			break;
+		//		}
+		//	}
+		//	if (!animListFile.Exists)
+		//	{
+		//		logger.Warn($"FNIS Parser > Find > Animlist > {folder.Name} in {project.Identifier} > FAILED");
+		//		return false;
+		//	}
+		//}
+		//return true;
+	}
+
+	private bool InjectGraphReference(FileInfo sourceFile, IPackFileGraph destPackFile)
+	{
+		lock (_parsedFiles)
+		{
+			if (!_parsedFiles.Add(sourceFile.FullName))
+			{
+				return false;
+			}
+		}
+		string stateFolderName;
+		if (!StateMachineMap.TryGetValue(destPackFile.UniqueName, out stateFolderName!))
+		{
+			return false;
+		} //thread safe
+		_projectManager.TryActivatePackFile(destPackFile);
+		string nameWithoutExtension = Path.GetFileNameWithoutExtension(sourceFile.Name);
+		string graphPath =
+			$"{destPackFile.InputHandle.Directory?.Name}\\{nameWithoutExtension}.hkx";
+
+		hkbBehaviorReferenceGenerator refGenerator = new()
+		{
+			name = nameWithoutExtension,
+			variableBindingSet = null,
+			userData = 0,
+			behaviorName = graphPath,
+		};
+		hkbStateMachineStateInfo stateInfo = new()
+		{
+			name = "PN_StateInfo",
+			enable = true,
+			probability = 1.0f,
+			stateId = graphPath.GetHashCode() & 0xfffffff,
+			generator = refGenerator,
+		};
+		hkbStateMachine rootState = destPackFile.GetPushedObjectAs<hkbStateMachine>(
+			stateFolderName
+		);
+		lock (rootState)
+		{
+			rootState.states.Add(stateInfo);
+		}
+		return true;
+	}
+
+	private void ParseAnimList(
+		FileInfo animListFile,
+		IProject project,
+		IProjectManager projectManager
+	)
+	{
+		lock (_parsedFiles)
+		{
+			if (!_parsedFiles.Add(animListFile.FullName))
+			{
+				return;
+			}
+		}
+		FNISAnimationList animList;
+#if DEBUG
+		animList = FNISAnimationList.FromFile(animListFile);
+#else
+
+		try
+		{
+			animList = FNISAnimationList.FromFile(animListFile);
+		}
+		catch (Exception ex)
+		{
+			Logger.Warn(
+				$"FNIS Parser > Serialize > Animlist > {animListFile.Name} > FAILED > {ex.ToString()}"
+			);
+			return;
+		}
+#endif
+		animList.BuildAllBehaviors(project, projectManager);
+		animList.BuildAllAnimations(_pathContext.TemplateFolder, project, projectManager);
+
+		lock (ModInfos)
+		{
+			ModInfos.Add(animList.ModInfo);
+		}
+	}
+}

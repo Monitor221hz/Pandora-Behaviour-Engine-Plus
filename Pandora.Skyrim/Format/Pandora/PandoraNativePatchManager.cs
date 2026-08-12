@@ -1,0 +1,90 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
+
+using Pandora.API.Patch;
+using Pandora.API.Patch.Plugins;
+using Pandora.API.Patch.Skyrim64;
+using Pandora.Core.Patch.Plugins;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+
+namespace Pandora.Skyrim.Format.Pandora;
+
+public class PandoraNativePatchManager
+{
+	private static readonly IPluginLoader PluginLoader = new PluginLoader();
+	private readonly List<ISkyrim64Patch> _patches = [];
+	private IEnumerable<IGrouping<RuntimeMode, ISkyrim64Patch>>? _patchesByRuntime;
+
+	public void QueuePatches()
+	{
+		_patchesByRuntime = _patches.GroupBy(p => p.Mode);
+	}
+
+	private IEnumerable<ISkyrim64Patch> Collect(RuntimeMode mode, RunOrder order)
+	{
+		var grouping = _patchesByRuntime!.FirstOrDefault(g => g.Key == mode);
+		return grouping == null
+			? new List<ISkyrim64Patch>()
+			: grouping.Where(p => p.Order == order);
+	}
+
+	public void ApplyPatches(IProjectManager manager, RuntimeMode mode, RunOrder order)
+	{
+		var targets = Collect(mode, order);
+		if (targets.Count() == 0)
+		{
+			return;
+		}
+		switch (mode)
+		{
+			case RuntimeMode.Serial:
+				foreach (var patch in targets)
+				{
+					patch.Run(manager);
+				}
+				break;
+			case RuntimeMode.Parallel:
+				Parallel.ForEach(targets, t => t.Run(manager));
+				break;
+		}
+	}
+
+	private void RegisterPatches(Assembly assembly)
+	{
+		foreach (Type type in assembly.GetTypes())
+		{
+			if (
+				typeof(ISkyrim64Patch).IsAssignableFrom(type)
+				&& type.GetConstructor(Type.EmptyTypes) != null
+			)
+			{
+				if (Activator.CreateInstance(type) is ISkyrim64Patch result)
+				{
+					_patches.Add(result);
+				}
+			}
+		}
+	}
+
+	public bool LoadAssembly(DirectoryInfo directoryInfo)
+	{
+		try
+		{
+			if (!PluginLoader.TryLoadPlugin(directoryInfo, out var assembly))
+			{
+				return false;
+			}
+			RegisterPatches(assembly);
+			return true;
+		}
+		catch (Exception e)
+		{
+			return false;
+		}
+	}
+}

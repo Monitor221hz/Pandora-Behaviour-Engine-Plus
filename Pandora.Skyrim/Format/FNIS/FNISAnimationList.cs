@@ -1,0 +1,179 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
+
+using Pandora.API.Patch;
+using Pandora.API.Patch.Skyrim64;
+using Pandora.Core.Patch.Mod;
+using Pandora.Skyrim;
+using Pandora.Skyrim.Format.FNIS;
+using Pandora.Core.Paths.Abstractions;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+
+namespace Pandora.Patch.Patchers.Skyrim.FNIS;
+
+public partial class FNISAnimationList
+{
+	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
+	[GeneratedRegex(
+		"^([^('|\\s)]+)\\s*(?:-(\\S+)*)?\\s*(\\S+)\\s+(\\S+.hkx)(?:[^\\S\\r\\n]+(\\S+))*",
+		RegexOptions.Compiled
+	)]
+	private static partial Regex FNISAnimLineRegex();
+
+	private static readonly Regex AnimLineRegex = FNISAnimLineRegex();
+
+	private static readonly Dictionary<string, string> LinkedCharacterNameMap = new()
+	{
+		{ "defaultmale", "defaultfemale" },
+		{ "defaultfemale", "defaultmale" },
+		{ "draugrskeletonproject", "draugrproject" },
+		{ "draugrproject", "draugrskeletonproject" },
+		{ "wolfproject", "dogproject" },
+		{ "dogproject", "wolfproject" },
+	};
+
+	public List<BasicAnimation> Animations { get; private set; } = [];
+	public List<AlternateAnimation> AlternateAnimations { get; private set; } = [];
+	public IModInfo ModInfo { get; private set; }
+
+	private FNISAnimationList(IModInfo modInfo)
+	{
+		ModInfo = modInfo;
+	}
+
+	public static FNISAnimationList FromFile(FileInfo file)
+	{
+		FNISModInfo modInfo = new(file);
+		var animlist = new FNISAnimationList(modInfo);
+		if (file.Directory == null || file.Directory.Parent == null)
+		{
+			return animlist;
+		}
+		string animRoot = Path.Combine(file.Directory.Parent.Name, file.Directory.Name);
+		using (var readStream = File.OpenRead(file.FullName))
+		{
+			using (var reader = new StreamReader(readStream))
+			{
+				FNISAnimationFactory factory = new();
+				string? expectedLine;
+				while ((expectedLine = reader.ReadLine()) != null)
+				{
+					if (string.IsNullOrWhiteSpace(expectedLine) || expectedLine[0] == '\'')
+					{
+						continue;
+					}
+					if (
+						factory.CreateFromLine(
+							animRoot,
+							expectedLine,
+							out var animation,
+							out var altAnimation
+						)
+					)
+					{
+						animlist.Animations.Add(animation);
+					}
+					//else
+					//{
+					//	logger.Warn($"FNIS Animlist > New Animation > From Line > FAILED > String > \"{expectedLine}\" > File > {file.Name}");
+					//}
+					if (altAnimation != null)
+					{
+						animlist.AlternateAnimations.Add(altAnimation);
+					}
+				}
+				if (factory.FinalizePendingAA() is AlternateAnimation pendingAltAnimation)
+				{
+					animlist.AlternateAnimations.Add(pendingAltAnimation);
+				}
+			}
+		}
+
+		return animlist;
+	}
+
+	public void BuildAllAnimations(
+		DirectoryInfo templateFolder,
+		IProject project,
+		IProjectManager projectManager
+	)
+	{
+		Debug.Assert(
+			project.CharacterPackFile is not null,
+			"Project must have a character pack file."
+		);
+		FNISAnimationListBuildContext buildContext = new(project, projectManager, ModInfo);
+		foreach (var item in AlternateAnimations)
+		{
+			project.AlternateAnimations.Add(item);
+		}
+
+		if (project.Sibling == null)
+		{
+			foreach (BasicAnimation animation in Animations)
+			{
+				lock (project.CharacterPackFile.GetUniqueAnimationLock())
+					animation.BuildAnimation(templateFolder, buildContext);
+			}
+		}
+		else
+		{
+			foreach (BasicAnimation animation in Animations)
+			{
+				lock (project.CharacterPackFile.GetUniqueAnimationLock())
+				{
+					animation.BuildAnimation(templateFolder, buildContext);
+					animation.BuildAnimation(
+						templateFolder,
+						new FNISAnimationListBuildContext(project.Sibling, projectManager, ModInfo)
+					);
+				}
+			}
+		}
+	}
+
+	//public void BuildAllAnimations(Project project, Project sibling, ProjectManager projectManager)
+	//{
+	//	foreach (BasicAnimation animation in Animations)
+	//	{
+	//		animation.BuildAnimation(project, projectManager);
+	//		animation.BuildAnimation(sibling, projectManager);
+	//	}
+	//}
+	//public void BuildAllAnimations(ProjectManager projectManager, params Project[] projects)
+	//{
+	//	foreach (BasicAnimation animation in Animations)
+	//	{
+	//		foreach(Project project in projects)
+	//		{
+	//			animation.BuildAnimation(project, projectManager);
+	//		}
+	//	}
+
+	public void BuildAllBehaviorsParallel(Project project, ProjectManager projectManager)
+	{
+		FNISAnimationListBuildContext buildContext = new(project, projectManager, ModInfo);
+		Parallel.ForEach(
+			Animations,
+			animation =>
+			{
+				animation.BuildBehavior(buildContext);
+			}
+		);
+	}
+
+	public bool BuildAllBehaviors(IProject project, IProjectManager projectManager)
+	{
+		FNISAnimationListBuildContext buildContext = new(project, projectManager, ModInfo);
+		foreach (BasicAnimation animation in Animations)
+		{
+			animation.BuildBehavior(buildContext);
+		}
+		return true;
+	}
+}
