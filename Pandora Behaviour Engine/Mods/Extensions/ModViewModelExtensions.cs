@@ -2,6 +2,7 @@
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
 using Pandora.API.Patch;
+using Pandora.Core.Mods.Extensions;
 using Pandora.ViewModels;
 using System;
 using System.Collections.Generic;

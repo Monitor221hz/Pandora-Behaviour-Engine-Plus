@@ -3,14 +3,14 @@
 
 using Pandora.API.Patch;
 using Pandora.API.Patch.Engine.Config;
-using Pandora.Models.Patch.Skyrim64;
+using Pandora.Core.Patch;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Pandora.Models.Engine;
+namespace Pandora.Core.Engine;
 
 public sealed class EngineRunner : IEngineRunner
 {

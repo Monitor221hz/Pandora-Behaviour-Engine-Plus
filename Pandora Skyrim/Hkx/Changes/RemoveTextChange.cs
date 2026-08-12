@@ -2,10 +2,10 @@
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
 using Pandora.API.Patch.Skyrim64;
-using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
+using Pandora.Skyrim.Hkx.Packfile;
 using System.Xml;
 
-namespace Pandora.Models.Patch.Skyrim64.Hkx.Changes;
+namespace Pandora.Skyrim.Hkx.Changes;
 
 public class RemoveTextChange : IPackFileChange
 {

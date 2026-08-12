@@ -3,7 +3,7 @@
 
 using System;
 
-namespace Pandora.Logging.NLogger.UI;
+namespace Pandora.Core.Logging.NLogger.UI;
 
 public interface ILogEventStream : IDisposable
 {

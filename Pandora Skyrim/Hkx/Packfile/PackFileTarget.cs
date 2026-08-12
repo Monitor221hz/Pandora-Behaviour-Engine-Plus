@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Pandora.Models.Patch.Skyrim64.Hkx.Changes;
+using Pandora.Skyrim.Hkx.Changes;
 
-namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
+namespace Pandora.Skyrim.Hkx.Packfile;
 
 /// <summary>
 /// A loosely coupled collection of a pack file and a change set.

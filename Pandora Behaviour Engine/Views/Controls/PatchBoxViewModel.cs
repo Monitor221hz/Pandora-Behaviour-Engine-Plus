@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using DynamicData;
 using DynamicData.Binding;
 using Pandora.Mods.Abstractions;
+using Pandora.Core.Mods.Extensions;
 using Pandora.Mods.Extensions;
 using Pandora.Utils;
 using ReactiveUI;
@@ -21,7 +22,7 @@ public partial class PatchBoxViewModel : ViewModelBase, IActivatableViewModel
 {
 	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-	private readonly IModService _modService;
+	private readonly IModUIService _modService;
 
 	public IEngineSharedState State { get; }
 
@@ -39,7 +40,7 @@ public partial class PatchBoxViewModel : ViewModelBase, IActivatableViewModel
 	public ViewModelActivator Activator { get; } = new();
 
 	public PatchBoxViewModel(
-		IModService modService,
+		IModUIService modService,
 		IEngineSharedState state,
 		DataGridOptionsViewModel dataGridOptions
 	)

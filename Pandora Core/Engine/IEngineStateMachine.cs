@@ -3,7 +3,7 @@
 
 using System;
 
-namespace Pandora.Models.Engine;
+namespace Pandora.Core.Engine;
 
 public interface IEngineStateMachine
 {

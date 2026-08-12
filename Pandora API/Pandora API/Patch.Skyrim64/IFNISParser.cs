@@ -9,7 +9,7 @@ using System.IO;
 using Pandora.API.Patch;
 using Pandora.API.Patch.Skyrim64;
 
-namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
+namespace Pandora.Skyrim.Format.FNIS;
 
 public interface IFNISParser
 {

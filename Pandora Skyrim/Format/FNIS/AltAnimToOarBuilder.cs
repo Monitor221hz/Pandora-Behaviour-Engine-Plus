@@ -4,8 +4,8 @@
 using HKX2E;
 using Nito.HashAlgorithms;
 using Pandora.API.Patch.Skyrim64;
-using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
-using Pandora.Paths.Abstractions;
+using Pandora.Skyrim.Hkx.Packfile;
+using Pandora.Core.Paths.Abstractions;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Frozen;
@@ -18,7 +18,7 @@ using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
+namespace Pandora.Skyrim.Format.FNIS;
 
 #region OAR Configuration
 

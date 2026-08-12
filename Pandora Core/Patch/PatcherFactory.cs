@@ -6,7 +6,7 @@ using Pandora.API.Patch;
 using Pandora.API.Patch.Engine.Config;
 using System;
 
-namespace Pandora.Models.Patch.Skyrim64;
+namespace Pandora.Core.Patch;
 
 public sealed class PatcherFactory : IPatcherFactory, IDisposable
 {

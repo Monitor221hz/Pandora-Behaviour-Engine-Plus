@@ -3,7 +3,7 @@
 
 using System.Collections.Generic;
 
-namespace Pandora.Settings.DTOs;
+namespace Pandora.Core.Settings.DTOs;
 
 public class RootConfiguration
 {

@@ -7,8 +7,8 @@
 //using NexusMods.Paths;
 //using NSubstitute;
 //using Pandora.API.Utils;
-//using Pandora.Utils;
-//using Pandora.Utils.Skyrim;
+//using Pandora.Core.Utils;
+//using Pandora.Core.Utils.Skyrim;
 //using Testably.Abstractions.Testing;
 
 //namespace PandoraTests.Unit;
@@ -18,7 +18,7 @@
 //public class SkyrimPathResolverPriorityTests : IDisposable
 //{
 //    private readonly ITestOutputHelper _output;
-//    private readonly Pandora.Utils.IRuntimeEnvironment _mockEnvironment;
+//    private readonly Pandora.Core.Utils.IRuntimeEnvironment _mockEnvironment;
 //    private readonly IRegistry _mockRegistry;
 //    private readonly IFileSystem _mockFileSystem;
 

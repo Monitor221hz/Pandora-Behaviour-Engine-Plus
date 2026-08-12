@@ -6,7 +6,7 @@ using System;
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace Pandora.Models.Patch.Mod;
+namespace Pandora.Core.Patch.Mod;
 
 public partial class FNISModInfo : IModInfo
 {

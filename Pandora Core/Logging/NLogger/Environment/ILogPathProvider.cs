@@ -4,7 +4,7 @@
 using System;
 using System.IO;
 
-namespace Pandora.Logging.NLogger.Environment;
+namespace Pandora.Core.Logging.NLogger.Environment;
 
 public interface ILogPathProvider
 {

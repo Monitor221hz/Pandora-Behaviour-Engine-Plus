@@ -7,7 +7,7 @@ using System.IO;
 using System.Reflection;
 using System.Text.Json;
 
-namespace Pandora.Models.Patch.Plugins;
+namespace Pandora.Core.Patch.Plugins;
 
 /// <summary>
 /// Retired for safety reasons. DO NOT USE UNLESS DEBUGGING.

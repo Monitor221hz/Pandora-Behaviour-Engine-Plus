@@ -3,7 +3,7 @@
 
 using System.IO;
 
-namespace Pandora.Paths.Abstractions;
+namespace Pandora.Core.Paths.Abstractions;
 
 public interface IApplicationPaths
 {

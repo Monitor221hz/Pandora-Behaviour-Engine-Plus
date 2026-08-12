@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace Pandora.DTOs;
+namespace Pandora.Core.DTOs;
 
 public record ModSaveEntry(string Code, bool Active, uint Priority);
 

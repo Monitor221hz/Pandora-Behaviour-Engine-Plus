@@ -7,7 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 
-namespace Pandora.Models.Patch.Skyrim64.AnimData
+namespace Pandora.Skyrim.AnimData
 {
 	public class ProjectAnimData : IProjectAnimData
 	{

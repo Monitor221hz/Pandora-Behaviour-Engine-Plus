@@ -4,7 +4,7 @@
 using System;
 using System.Reactive.Subjects;
 
-namespace Pandora.Models.Engine;
+namespace Pandora.Core.Engine;
 
 public sealed class EngineStateMachine : IEngineStateMachine
 {

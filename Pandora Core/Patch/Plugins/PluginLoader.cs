@@ -5,7 +5,7 @@ using Pandora.API.Patch.Plugins;
 using System.IO;
 using System.Reflection;
 
-namespace Pandora.Models.Patch.Plugins;
+namespace Pandora.Core.Patch.Plugins;
 
 public class PluginLoader : IPluginLoader
 {

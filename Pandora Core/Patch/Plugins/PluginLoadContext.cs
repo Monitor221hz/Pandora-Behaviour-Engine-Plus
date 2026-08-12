@@ -5,7 +5,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.Loader;
 
-namespace Pandora.Models.Patch.Plugins;
+namespace Pandora.Core.Patch.Plugins;
 
 internal class PluginLoadContext : AssemblyLoadContext
 {

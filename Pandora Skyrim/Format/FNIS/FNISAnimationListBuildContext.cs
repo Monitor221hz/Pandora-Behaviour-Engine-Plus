@@ -6,7 +6,7 @@ using Pandora.API.Patch;
 using Pandora.API.Patch.Skyrim64;
 using System.Collections.Generic;
 
-namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
+namespace Pandora.Skyrim.Format.FNIS;
 
 public class FNISAnimationListBuildContext : IFNISAnimationListBuildContext
 {

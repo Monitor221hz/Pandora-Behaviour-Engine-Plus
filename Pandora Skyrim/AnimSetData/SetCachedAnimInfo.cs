@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 
-namespace Pandora.Models.Patch.Skyrim64.AnimSetData;
+namespace Pandora.Skyrim.AnimSetData;
 
 public class SetCachedAnimInfo : ISetCachedAnimInfo
 {

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Pandora.Mods.Abstractions;
+namespace Pandora.Core.Mods.Abstractions;
 
 public interface IModLoaderService
 {

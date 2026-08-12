@@ -5,7 +5,7 @@ using Pandora.API.Patch.Config;
 using System;
 using System.Collections.Generic;
 
-namespace Pandora.Configuration;
+namespace Pandora.Core.Configuration;
 
 public interface IEngineConfigurationService
 {

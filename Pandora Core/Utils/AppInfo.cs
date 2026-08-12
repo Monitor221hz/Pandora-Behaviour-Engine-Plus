@@ -3,7 +3,7 @@
 
 using System.Reflection;
 
-namespace Pandora.Utils;
+namespace Pandora.Core.Utils;
 
 public static class AppInfo
 {

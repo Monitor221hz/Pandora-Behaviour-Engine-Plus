@@ -3,13 +3,13 @@
 
 using HKX2E;
 using Pandora.API.Patch.Skyrim64;
-using Pandora.Models.Patch.Skyrim64.AnimSetData;
-using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
+using Pandora.Skyrim.AnimSetData;
+using Pandora.Skyrim.Hkx.Packfile;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
+namespace Pandora.Skyrim.Format.FNIS;
 
 public class PairedAnimation : BasicAnimation
 {

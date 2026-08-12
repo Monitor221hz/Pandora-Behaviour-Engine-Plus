@@ -7,7 +7,7 @@
 using System.Xml.Linq;
 using NSubstitute;
 using Pandora.API.Patch.Skyrim64;
-using Pandora.Models.Patch.Skyrim64.Hkx.Changes;
+using Pandora.Skyrim.Hkx.Changes;
 using XmlCake.Linq;
 
 namespace PandoraTests.Unit;

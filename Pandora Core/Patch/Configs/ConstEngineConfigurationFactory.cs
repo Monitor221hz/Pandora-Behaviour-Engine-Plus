@@ -5,7 +5,7 @@ using Pandora.API.Patch.Config;
 using Pandora.API.Patch.Engine.Config;
 using System;
 
-namespace Pandora.Models.Patch.Configs;
+namespace Pandora.Core.Patch.Configs;
 
 public class ConstEngineConfigurationFactory<T>(Func<T> producer) : IEngineConfigurationFactory<T>
 	where T : class, IEngineConfiguration

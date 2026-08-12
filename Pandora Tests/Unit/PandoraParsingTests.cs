@@ -5,8 +5,8 @@ using System.Xml.Linq;
 using NSubstitute;
 using Pandora.API.Patch;
 using Pandora.API.Patch.Skyrim64;
-using Pandora.Models.Patch.Skyrim64.Format.Pandora;
-using Pandora.Models.Patch.Skyrim64.Hkx.Changes;
+using Pandora.Skyrim.Format.Pandora;
+using Pandora.Skyrim.Hkx.Changes;
 
 using ChangeType = Pandora.API.Patch.Skyrim64.IPackFileChange.ChangeType;
 

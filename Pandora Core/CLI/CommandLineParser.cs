@@ -6,7 +6,7 @@ using System.CommandLine;
 using System.IO;
 using System.Linq;
 
-namespace Pandora.CLI;
+namespace Pandora.Core.CLI;
 
 public sealed class CommandLineParser
 {

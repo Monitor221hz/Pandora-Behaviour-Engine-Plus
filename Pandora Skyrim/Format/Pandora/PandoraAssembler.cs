@@ -10,11 +10,11 @@ using Pandora.API.Patch.IOManagers;
 using Pandora.API.Patch.Skyrim64;
 using Pandora.API.Patch.Skyrim64.AnimData;
 using Pandora.API.Patch.Skyrim64.AnimSetData;
-using Pandora.Models.Patch.Skyrim64.AnimSetData;
-using Pandora.Models.Patch.Skyrim64.Hkx.Changes;
-using Pandora.Paths.Abstractions;
+using Pandora.Skyrim.AnimSetData;
+using Pandora.Skyrim.Hkx.Changes;
+using Pandora.Core.Paths.Abstractions;
 
-namespace Pandora.Models.Patch.Skyrim64.Format.Pandora;
+namespace Pandora.Skyrim.Format.Pandora;
 
 public class PandoraAssembler
 {

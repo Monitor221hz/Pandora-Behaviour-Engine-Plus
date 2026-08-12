@@ -7,10 +7,10 @@ using Pandora.API.Patch.IOManagers;
 using Pandora.API.Patch.Skyrim64;
 using Pandora.API.Patch.Skyrim64.AnimData;
 using Pandora.API.Patch.Skyrim64.AnimSetData;
-using Pandora.Models.Patch.Skyrim64.AnimData;
-using Pandora.Models.Patch.Skyrim64.Format.Pandora;
-using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
-using Pandora.Paths.Abstractions;
+using Pandora.Skyrim.AnimData;
+using Pandora.Skyrim.Format.Pandora;
+using Pandora.Skyrim.Hkx.Packfile;
+using Pandora.Core.Paths.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using XmlCake.Linq.Expressions;
 
-namespace Pandora.Models.Patch.Skyrim64.Format.Nemesis;
+namespace Pandora.Skyrim.Format.Nemesis;
 
 public class NemesisAssembler : IPatchAssembler
 {

@@ -6,7 +6,7 @@ using NexusMods.Paths;
 using System;
 using System.IO;
 
-namespace Pandora.Platform.CreationEngine.Locators;
+namespace Pandora.Core.Platform.CreationEngine.Locators;
 
 public sealed class RegistryGameLocator(
 	IGameDescriptor gameDescriptor,

@@ -2,8 +2,8 @@
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
 using Pandora.Platform.Avalonia;
-using Pandora.Platform.CreationEngine;
-using Pandora.Settings;
+using Pandora.Core.Platform.CreationEngine;
+using Pandora.Core.Settings;
 using Pandora.Views.Pages;
 using Pandora.Views.Pages.DTOs;
 using ReactiveUI;

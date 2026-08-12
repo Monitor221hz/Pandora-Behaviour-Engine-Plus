@@ -1,15 +1,17 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
 using DynamicData;
 using DynamicData.Binding;
 using NLog;
 using Pandora.API.Patch;
-using Pandora.DTOs;
-using Pandora.Logging.Extensions;
+using Pandora.Core.DTOs;
+using Pandora.Core.Logging.Extensions;
+using Pandora.Core.Mods.Abstractions;
+using Pandora.Core.Mods.Extensions;
+using Pandora.Core.Paths.Abstractions;
 using Pandora.Mods.Abstractions;
 using Pandora.Mods.Extensions;
-using Pandora.Paths.Abstractions;
 using Pandora.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -20,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace Pandora.Mods;
 
-public class ModService : IModService, IDisposable
+public class ModService : IModService, IModUIService, IDisposable
 {
 	private static readonly NLog.Logger Logger = LogManager.GetCurrentClassLogger();
 

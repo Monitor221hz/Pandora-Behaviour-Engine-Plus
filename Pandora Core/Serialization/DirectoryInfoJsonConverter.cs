@@ -6,7 +6,7 @@ using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Pandora.Converters;
+namespace Pandora.Core.Serialization;
 
 public class DirectoryInfoJsonConverter : JsonConverter<DirectoryInfo?>
 {

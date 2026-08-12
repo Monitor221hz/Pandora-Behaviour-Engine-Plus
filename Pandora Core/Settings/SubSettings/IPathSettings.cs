@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Pandora.Settings.DTOs;
+using Pandora.Core.Settings.DTOs;
 using System;
 using System.IO;
 
-namespace Pandora.Settings.SubSettings;
+namespace Pandora.Core.Settings.SubSettings;
 
 public interface IPathSettings : INotifySettingsChanged
 {

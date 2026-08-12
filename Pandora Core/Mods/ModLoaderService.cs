@@ -3,15 +3,15 @@
 
 using NLog;
 using Pandora.API.Patch;
-using Pandora.Mods.Abstractions;
-using Pandora.Mods.Providers;
+using Pandora.Core.Mods.Abstractions;
+using Pandora.Core.Mods.Providers;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Pandora.Mods;
+namespace Pandora.Core.Mods;
 
 public class ModLoaderService : IModLoaderService
 {

@@ -60,6 +60,8 @@
 	<ItemGroup>
 		<ProjectReference Include="..\HKX2-Enhanced-Library\HKX2\HKX2E.csproj" />
 		<ProjectReference Include="..\Pandora API\Pandora API\Pandora API.csproj" />
+		<ProjectReference Include="..\Pandora Core\Pandora Core.csproj" />
+		<ProjectReference Include="..\Pandora Skyrim\Pandora Skyrim.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -120,11 +122,9 @@
 			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 		</None>
-		<!--<None Update="Plugins\Test Plugin\plugin.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-    </None>-->
+	</ItemGroup>
+
+	<ItemGroup>
 		<None Update="Properties\GUISettings.settings">
 			<Generator>SettingsSingleFileGenerator</Generator>
 			<LastGenOutput>GUISettings.Designer.cs</LastGenOutput>

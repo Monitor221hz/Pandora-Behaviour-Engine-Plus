@@ -4,9 +4,9 @@
 using Pandora.API.Patch;
 using Pandora.API.Patch.IOManagers;
 using Pandora.API.Patch.Skyrim64;
-using Pandora.Models.Patch.Skyrim64.Format.Nemesis;
-using Pandora.Models.Patch.Skyrim64.Format.Pandora;
-using Pandora.Utils;
+using Pandora.Skyrim.Format.Nemesis;
+using Pandora.Skyrim.Format.Pandora;
+using Pandora.Core.Utils;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -14,7 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static Pandora.API.Patch.IPatcher;
 
-namespace Pandora.Models.Patch.Skyrim64;
+namespace Pandora.Skyrim;
 
 public class NemesisPatcher : IPatcher
 {

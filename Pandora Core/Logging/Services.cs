@@ -2,13 +2,13 @@
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
 using Microsoft.Extensions.DependencyInjection;
-using Pandora.Logging.Diagnostics;
-using Pandora.Logging.NLogger;
-using Pandora.Logging.NLogger.Abstractions;
-using Pandora.Logging.NLogger.Environment;
-using Pandora.Logging.NLogger.UI;
+using Pandora.Core.Logging.Diagnostics;
+using Pandora.Core.Logging.NLogger;
+using Pandora.Core.Logging.NLogger.Abstractions;
+using Pandora.Core.Logging.NLogger.Environment;
+using Pandora.Core.Logging.NLogger.UI;
 
-namespace Pandora.Logging;
+namespace Pandora.Core.Logging;
 
 public static class Services
 {
@@ -24,7 +24,6 @@ public static class Services
 				.AddSingleton<INLogConfigurator, NLogConfigurator>()
 				.AddSingleton<LogFilePathUpdater>()
 				.AddSingleton<LoggingBootstrapper>()
-				.AddSingleton<AppExceptionHandler>()
 				.AddSingleton<CrashReporter>()
 				.AddSingleton<CrashLogBuilder>()
 				.AddSingleton<CrashLogWriter>();

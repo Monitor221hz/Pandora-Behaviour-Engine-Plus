@@ -3,10 +3,10 @@
 
 using HKX2E;
 using Pandora.API.Patch.Skyrim64;
-using Pandora.Paths.Abstractions;
+using Pandora.Core.Paths.Abstractions;
 using System.IO;
 
-namespace Pandora.Models.Patch.IO.Skyrim64;
+namespace Pandora.Skyrim.Patch.IO;
 
 public class DebugPackFileExporter : BasePackFileExporter
 {

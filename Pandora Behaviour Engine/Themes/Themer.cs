@@ -4,8 +4,8 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Styling;
-using Pandora.Platform.Avalonia;
-using Pandora.Settings.SubSettings;
+using Pandora.Core.Settings;
+using Pandora.Core.Settings.SubSettings;
 using System;
 using System.Reactive.Linq;
 

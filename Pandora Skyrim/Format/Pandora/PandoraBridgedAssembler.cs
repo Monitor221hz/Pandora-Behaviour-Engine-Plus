@@ -2,11 +2,11 @@
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
 using Pandora.API.Patch;
-using Pandora.Models.Patch.Skyrim64.Hkx.Changes;
-using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
+using Pandora.Skyrim.Hkx.Changes;
+using Pandora.Skyrim.Hkx.Packfile;
 using System.IO;
 
-namespace Pandora.Models.Patch.Skyrim64.Format.Pandora;
+namespace Pandora.Skyrim.Format.Pandora;
 
 public class PandoraBridgedAssembler
 {

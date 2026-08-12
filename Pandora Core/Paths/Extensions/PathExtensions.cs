@@ -3,7 +3,7 @@
 
 using System.IO;
 
-namespace Pandora.Paths.Extensions;
+namespace Pandora.Core.Paths.Extensions;
 
 public static class PathExtensions
 {

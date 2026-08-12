@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
-namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
+namespace Pandora.Skyrim.Format.FNIS;
 
 struct FNISAnimPreset
 {

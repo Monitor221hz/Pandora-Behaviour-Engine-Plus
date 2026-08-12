@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Pandora.Models.Patch.Mod;
+namespace Pandora.Core.Patch.Mod;
 
 public class NemesisModInfo : IModInfo
 {

@@ -4,9 +4,9 @@
 using NLog;
 using Pandora.API.Patch;
 using Pandora.API.Patch.Skyrim64;
-using Pandora.Models.Patch.Skyrim64.Format.FNIS;
-using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
-using Pandora.Paths.Abstractions;
+using Pandora.Skyrim.Format.FNIS;
+using Pandora.Skyrim.Hkx.Packfile;
+using Pandora.Core.Paths.Abstractions;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -17,7 +17,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Pandora.Models.Patch.Skyrim64;
+namespace Pandora.Skyrim;
 
 public class ProjectManager : IProjectManager
 {

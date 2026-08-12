@@ -4,7 +4,7 @@
 using Avalonia;
 using Avalonia.Xaml.Interactivity;
 using AvaloniaEdit;
-using Pandora.Logging.NLogger.UI;
+using Pandora.Core.Logging.NLogger.UI;
 using ReactiveUI;
 using System;
 using System.Reactive.Linq;

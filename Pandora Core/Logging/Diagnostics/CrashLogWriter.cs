@@ -2,14 +2,14 @@
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
 using NLog;
-using Pandora.Logging.Extensions;
-using Pandora.Paths.Abstractions;
-using Pandora.Paths.Extensions;
+using Pandora.Core.Logging.Extensions;
+using Pandora.Core.Paths.Abstractions;
+using Pandora.Core.Paths.Extensions;
 using System;
 using System.IO;
 using System.Text;
 
-namespace Pandora.Logging.Diagnostics;
+namespace Pandora.Core.Logging.Diagnostics;
 
 public sealed class CrashLogWriter(IUserPaths paths)
 {

@@ -2,10 +2,10 @@
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
 using Pandora.API.Patch.Engine.Config;
-using Pandora.Models.Patch.Skyrim64;
+using Pandora.Skyrim;
 using System;
 
-namespace Pandora.Models.Patch.Configs;
+namespace Pandora.Skyrim.Configuration;
 
 public class SkyrimConfiguration : IEngineConfiguration
 {

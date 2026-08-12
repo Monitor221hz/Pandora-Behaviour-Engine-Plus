@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using static Vanara.PInvoke.NtDll;
 
-namespace Pandora.Utils;
+namespace Pandora.Core.Utils;
 
 public static class ProcessUtils
 {

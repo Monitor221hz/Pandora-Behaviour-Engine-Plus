@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Pandora.CLI;
+using Pandora.Core.CLI;
 using System.IO;
 
-namespace Pandora.Platform.CreationEngine.Locators;
+namespace Pandora.Core.Platform.CreationEngine.Locators;
 
 public sealed class CommandLineGameLocator(LaunchOptions options) : IGameLocator
 {

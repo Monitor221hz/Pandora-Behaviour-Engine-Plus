@@ -3,7 +3,7 @@
 
 using System.Collections.Generic;
 
-namespace Pandora.Models.Extensions;
+namespace Pandora.Core.Extensions;
 
 public static class ListExtensions
 {

@@ -3,7 +3,7 @@
 
 using System.IO;
 
-namespace Pandora.Models.Patch.IO;
+namespace Pandora.Core.Patch.IO;
 
 public interface IPathManager
 {

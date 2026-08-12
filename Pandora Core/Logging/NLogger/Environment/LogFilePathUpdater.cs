@@ -6,7 +6,7 @@ using System;
 using System.IO;
 using System.Reactive.Linq;
 
-namespace Pandora.Logging.NLogger.Environment;
+namespace Pandora.Core.Logging.NLogger.Environment;
 
 public sealed class LogFilePathUpdater(ILogPathProvider paths) : IDisposable
 {

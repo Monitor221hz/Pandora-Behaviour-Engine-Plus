@@ -3,9 +3,9 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Pandora.Platform.Avalonia;
-using Pandora.Platform.CreationEngine;
-using Pandora.Platform.CreationEngine.Game;
-using Pandora.Platform.CreationEngine.Locators;
+using Pandora.Core.Platform.CreationEngine;
+using Pandora.Core.Platform.CreationEngine.Locators;
+using Pandora.Skyrim.Platform;
 using Pandora.Platform.Windows;
 using Pandora.Views;
 

@@ -6,7 +6,7 @@ using GameFinder.StoreHandlers.GOG;
 using NexusMods.Paths;
 using System.IO;
 
-namespace Pandora.Platform.CreationEngine.Locators;
+namespace Pandora.Core.Platform.CreationEngine.Locators;
 
 public sealed class GogGameLocator(
 	IGameDescriptor gameDescriptor,

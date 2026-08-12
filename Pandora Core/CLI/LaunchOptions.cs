@@ -3,7 +3,7 @@
 
 using System.IO;
 
-namespace Pandora.CLI;
+namespace Pandora.Core.CLI;
 
 public sealed record LaunchOptions(
 	DirectoryInfo? OutputDirectory,

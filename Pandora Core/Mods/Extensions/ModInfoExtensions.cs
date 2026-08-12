@@ -4,7 +4,7 @@
 using Pandora.API.Patch;
 using System;
 
-namespace Pandora.Mods.Extensions;
+namespace Pandora.Core.Mods.Extensions;
 
 public static class ModInfoExtensions
 {

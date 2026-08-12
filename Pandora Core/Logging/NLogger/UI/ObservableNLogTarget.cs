@@ -5,7 +5,7 @@ using NLog;
 using NLog.Targets;
 using System;
 
-namespace Pandora.Logging.NLogger.UI;
+namespace Pandora.Core.Logging.NLogger.UI;
 
 [Target("ObservableTarget")]
 public sealed class ObservableNLogTarget(ILogEventStream stream) : TargetWithLayout

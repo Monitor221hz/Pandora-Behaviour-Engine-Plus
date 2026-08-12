@@ -9,7 +9,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 
-namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
+namespace Pandora.Skyrim.Hkx.Packfile;
 
 public class PackFileGraph : PackFile, IEquatable<PackFileGraph>, IPackFileGraph
 {

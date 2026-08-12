@@ -1,18 +1,19 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Pandora.CLI;
-using Pandora.Configuration;
+using Pandora.Core.CLI;
+using Pandora.Core.Configuration;
 using Pandora.Logging.Diagnostics;
-using Pandora.Logging.NLogger;
+using Pandora.Core.Logging.NLogger;
+using Pandora.Core.Engine;
 using Pandora.Models.Engine;
-using Pandora.Models.Patch.Plugins;
-using Pandora.Mods.Abstractions;
-using Pandora.Paths.Abstractions;
+using Pandora.Core.Patch.Plugins;
+using Pandora.Core.Mods.Abstractions;
+using Pandora.Core.Paths.Abstractions;
 using Pandora.Platform.Windows;
-using Pandora.Settings;
+using Pandora.Core.Settings;
 using Pandora.Themes;
-using Pandora.Utils;
+using Pandora.Core.Utils;
 using System;
 using System.Threading.Tasks;
 

@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Pandora.Platform.CreationEngine.Locators;
+namespace Pandora.Core.Platform.CreationEngine.Locators;
 
 public sealed class CompositeGameLocator(IEnumerable<IGameLocator> locators) : IGameLocator
 {

@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Pandora.Models.Extensions;
+namespace Pandora.Core.Extensions;
 
 public class FileCache
 {

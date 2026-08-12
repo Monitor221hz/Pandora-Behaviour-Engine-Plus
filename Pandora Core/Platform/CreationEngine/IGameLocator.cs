@@ -3,7 +3,7 @@
 
 using System.IO;
 
-namespace Pandora.Platform.CreationEngine;
+namespace Pandora.Core.Platform.CreationEngine;
 
 public interface IGameLocator
 {

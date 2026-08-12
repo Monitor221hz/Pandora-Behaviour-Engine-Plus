@@ -4,7 +4,7 @@
 using Pandora.API.Patch;
 using Pandora.API.Patch.Engine.Config;
 
-namespace Pandora.Models.Patch.Skyrim64;
+namespace Pandora.Core.Patch;
 
 public interface IPatcherFactory
 {

@@ -2,11 +2,11 @@
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
 using Pandora.API.Patch;
-using Pandora.Models.Patch.Mod;
+using Pandora.Core.Patch.Mod;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Pandora.Mods.Providers;
+namespace Pandora.Core.Mods.Providers;
 
 public class NemesisModInfoProvider : FileBasedModInfoProvider
 {

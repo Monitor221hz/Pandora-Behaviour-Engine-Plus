@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Pandora.Paths.Abstractions;
+using Pandora.Core.Paths.Abstractions;
 using System;
 using System.IO;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
-namespace Pandora.Paths;
+namespace Pandora.Core.Paths;
 
 public sealed class UserPaths(IApplicationPaths appPaths) : IUserPaths, IDisposable
 {

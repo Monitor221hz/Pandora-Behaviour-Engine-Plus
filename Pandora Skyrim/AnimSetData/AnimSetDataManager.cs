@@ -4,13 +4,13 @@
 using NLog;
 using Pandora.API.Patch.Skyrim64;
 using Pandora.API.Patch.Skyrim64.AnimSetData;
-using Pandora.Models.Extensions;
-using Pandora.Paths.Abstractions;
+using Pandora.Core.Extensions;
+using Pandora.Core.Paths.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Pandora.Models.Patch.Skyrim64.AnimSetData;
+namespace Pandora.Skyrim.AnimSetData;
 
 public class AnimSetDataManager : IAnimSetDataManager
 {

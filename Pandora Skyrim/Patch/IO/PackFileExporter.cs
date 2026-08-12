@@ -4,10 +4,10 @@
 using HKX2E;
 using NLog;
 using Pandora.API.Patch.Skyrim64;
-using Pandora.Paths.Abstractions;
+using Pandora.Core.Paths.Abstractions;
 using System;
 
-namespace Pandora.Models.Patch.IO.Skyrim64;
+namespace Pandora.Skyrim.Patch.IO;
 
 public class PackFileExporter : BasePackFileExporter
 {

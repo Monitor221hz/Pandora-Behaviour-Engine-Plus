@@ -2,16 +2,16 @@
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
 using NLog;
-using Pandora.DTOs;
-using Pandora.Mods.Abstractions;
-using Pandora.Paths.Abstractions;
+using Pandora.Core.DTOs;
+using Pandora.Core.Mods.Abstractions;
+using Pandora.Core.Paths.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Pandora.Mods;
+namespace Pandora.Core.Mods;
 
 public sealed class ModSettingsService : IModSettingsService
 {

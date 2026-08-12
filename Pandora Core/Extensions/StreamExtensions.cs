@@ -4,7 +4,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
-namespace Pandora.Models.Extensions;
+namespace Pandora.Core.Extensions;
 
 public static class StreamExtensions
 {

@@ -7,7 +7,7 @@ using System.Reactive.Subjects;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 
-namespace Pandora.Logging.NLogger.UI;
+namespace Pandora.Core.Logging.NLogger.UI;
 
 public sealed class LogEventStream : ILogEventStream, IDisposable
 {

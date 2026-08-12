@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Pandora.Platform.Avalonia;
-using Pandora.Settings.DTOs;
+using Pandora.Core.Settings;
+using Pandora.Core.Settings.DTOs;
 using System;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
-namespace Pandora.Settings.SubSettings;
+namespace Pandora.Core.Settings.SubSettings;
 
 internal sealed class ThemeSettings : IThemeSettings, IDisposable
 {

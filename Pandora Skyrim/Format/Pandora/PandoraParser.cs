@@ -6,9 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using Pandora.API.Patch.Skyrim64;
-using Pandora.Models.Patch.Skyrim64.Hkx.Changes;
+using Pandora.Skyrim.Hkx.Changes;
 
-namespace Pandora.Models.Patch.Skyrim64.Format.Pandora;
+namespace Pandora.Skyrim.Format.Pandora;
 
 using ChangeType = IPackFileChange.ChangeType;
 

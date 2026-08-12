@@ -2,6 +2,7 @@
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
 using Avalonia.Threading;
+using Pandora.Core.Logging.Diagnostics;
 using ReactiveUI;
 using System;
 using System.Reactive;

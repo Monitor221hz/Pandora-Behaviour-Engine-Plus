@@ -3,12 +3,12 @@
 
 using Pandora.API.Patch.Skyrim64;
 using Pandora.API.Patch.Skyrim64.AnimData;
-using Pandora.Paths.Abstractions;
+using Pandora.Core.Paths.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Pandora.Models.Patch.Skyrim64.AnimData;
+namespace Pandora.Skyrim.AnimData;
 
 public class AnimDataManager : IAnimDataManager
 {

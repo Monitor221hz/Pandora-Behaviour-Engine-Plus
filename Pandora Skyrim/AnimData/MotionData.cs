@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Pandora.Models.Patch.Skyrim64.AnimData;
+namespace Pandora.Skyrim.AnimData;
 
 public class MotionData : IMotionData
 {

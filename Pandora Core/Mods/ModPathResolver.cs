@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Pandora.Mods.Providers;
+using Pandora.Core.Mods.Providers;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Pandora.Mods;
+namespace Pandora.Core.Mods;
 
 public static class ModPathResolver
 {

@@ -13,7 +13,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 
-namespace Pandora.Models.Patch.Skyrim64;
+namespace Pandora.Skyrim;
 
 public class Project : IEquatable<Project>, IProject
 {

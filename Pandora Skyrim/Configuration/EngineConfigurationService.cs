@@ -2,14 +2,15 @@
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
 using Pandora.API.Patch.Config;
-using Pandora.Logging.Extensions;
-using Pandora.Models.Patch.Configs;
-using Pandora.Models.Patch.Plugins;
+using Pandora.Core.Configuration;
+using Pandora.Core.Logging.Extensions;
+using Pandora.Core.Patch.Configs;
+using Pandora.Core.Patch.Plugins;
 using System;
 using System.Collections.Generic;
 using System.Reactive.Subjects;
 
-namespace Pandora.Configuration;
+namespace Pandora.Skyrim.Configuration;
 
 public sealed class EngineConfigurationService : IEngineConfigurationService
 {

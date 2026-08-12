@@ -6,7 +6,7 @@ using Pandora.API.Patch.Engine.Config;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Pandora.Models.Engine;
+namespace Pandora.Core.Engine;
 
 public interface IEngineRunner
 {

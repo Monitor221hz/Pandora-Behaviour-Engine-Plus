@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Pandora.DTOs;
+using Pandora.Core.DTOs;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Pandora.Mods.Abstractions;
+namespace Pandora.Core.Mods.Abstractions;
 
 public interface IModSettingsService
 {

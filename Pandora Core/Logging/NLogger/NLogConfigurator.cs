@@ -4,9 +4,9 @@
 using NLog;
 using NLog.Filters;
 using NLog.Targets;
-using Pandora.Logging.NLogger.Abstractions;
+using Pandora.Core.Logging.NLogger.Abstractions;
 
-namespace Pandora.Logging.NLogger;
+namespace Pandora.Core.Logging.NLogger;
 
 public sealed class NLogConfigurator : INLogConfigurator
 {

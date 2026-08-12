@@ -4,7 +4,7 @@
 using Pandora.API.Patch;
 using Pandora.API.Patch.Plugins;
 using Pandora.API.Patch.Skyrim64;
-using Pandora.Models.Patch.Plugins;
+using Pandora.Core.Patch.Plugins;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,7 +12,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Pandora.Models.Patch.Skyrim64.Format.Pandora;
+namespace Pandora.Skyrim.Format.Pandora;
 
 public class PandoraNativePatchManager
 {

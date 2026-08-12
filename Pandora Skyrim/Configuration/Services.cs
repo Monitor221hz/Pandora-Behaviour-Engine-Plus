@@ -4,10 +4,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using Pandora.API.Patch.Config;
 using Pandora.API.Patch.Engine.Config;
-using Pandora.Models.Patch.Configs;
+using Pandora.Core.Configuration;
+using Pandora.Core.Patch.Configs;
 using System;
 
-namespace Pandora.Configuration;
+namespace Pandora.Skyrim.Configuration;
 
 public static class Services
 {

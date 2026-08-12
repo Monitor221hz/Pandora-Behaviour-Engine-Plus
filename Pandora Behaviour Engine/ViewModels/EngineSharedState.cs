@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Pandora.Models.Engine;
-using Pandora.Paths.Abstractions;
+using Pandora.Core.Engine;
+using Pandora.Core.Paths.Abstractions;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using System;

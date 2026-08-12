@@ -3,7 +3,7 @@
 
 using NLog.Targets;
 
-namespace Pandora.Logging.NLogger.Abstractions;
+namespace Pandora.Core.Logging.NLogger.Abstractions;
 
 public interface INLogTargetsFactory
 {

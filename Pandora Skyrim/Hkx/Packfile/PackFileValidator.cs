@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using XmlCake.Linq;
 
-namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
+namespace Pandora.Skyrim.Hkx.Packfile;
 
 public class PackFileValidator : IPackFileValidator
 {

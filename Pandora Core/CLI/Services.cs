@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
 
-namespace Pandora.CLI;
+namespace Pandora.Core.CLI;
 
 public static class Services
 {

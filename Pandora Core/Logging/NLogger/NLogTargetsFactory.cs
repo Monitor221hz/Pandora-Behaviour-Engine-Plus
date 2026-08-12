@@ -4,11 +4,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using NLog.Targets;
 using NLog.Targets.Wrappers;
-using Pandora.Logging.NLogger.Abstractions;
-using Pandora.Logging.NLogger.UI;
+using Pandora.Core.Logging.NLogger.Abstractions;
+using Pandora.Core.Logging.NLogger.UI;
 using System;
 
-namespace Pandora.Logging.NLogger;
+namespace Pandora.Core.Logging.NLogger;
 
 public class NLogTargetsFactory(IServiceProvider serviceProvider) : INLogTargetsFactory
 {

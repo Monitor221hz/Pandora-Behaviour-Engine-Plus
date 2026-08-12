@@ -3,7 +3,7 @@
 
 using Pandora.API.Patch;
 using Pandora.API.Patch.Skyrim64;
-using Pandora.Models.Patch.Skyrim64.Hkx.Changes;
+using Pandora.Skyrim.Hkx.Changes;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,7 +14,7 @@ using System.Xml.Linq;
 using XmlCake.Linq;
 using XmlCake.Linq.Expressions;
 
-namespace Pandora.Models.Patch.Skyrim64.Format.Nemesis;
+namespace Pandora.Skyrim.Format.Nemesis;
 
 public class NemesisParser
 {

@@ -3,13 +3,13 @@
 
 using HKX2E;
 using Pandora.API.Patch.Skyrim64;
-using Pandora.Paths.Abstractions;
+using Pandora.Core.Paths.Abstractions;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
+namespace Pandora.Skyrim.Format.FNIS;
 
 public partial class BasicAnimation : IFNISAnimation
 {

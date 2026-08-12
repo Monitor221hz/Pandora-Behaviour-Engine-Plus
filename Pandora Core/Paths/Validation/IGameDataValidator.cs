@@ -3,7 +3,7 @@
 
 using System.IO;
 
-namespace Pandora.Paths.Validation;
+namespace Pandora.Core.Paths.Validation;
 
 public interface IGameDataValidator
 {

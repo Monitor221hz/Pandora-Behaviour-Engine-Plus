@@ -5,7 +5,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
 using FluentAvalonia.UI.Controls;
-using Pandora.Settings;
+using Pandora.Core.Settings;
 using Pandora.Views.Pages.DTOs;
 using Pandora.Views.Pages.Factories;
 using ReactiveUI;

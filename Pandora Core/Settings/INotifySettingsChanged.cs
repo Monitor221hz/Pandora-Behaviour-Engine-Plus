@@ -4,7 +4,7 @@
 using System;
 using System.Reactive;
 
-namespace Pandora.Settings;
+namespace Pandora.Core.Settings;
 
 public interface INotifySettingsChanged
 {

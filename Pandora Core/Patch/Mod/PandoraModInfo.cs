@@ -6,7 +6,7 @@ using System;
 using System.IO;
 using System.Xml.Serialization;
 
-namespace Pandora.Models.Patch.Mod;
+namespace Pandora.Core.Patch.Mod;
 
 //<mod>
 //	<name></name>

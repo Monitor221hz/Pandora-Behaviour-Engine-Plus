@@ -3,10 +3,10 @@
 
 using Pandora.API.Patch;
 using Pandora.API.Patch.Skyrim64;
-using Pandora.Models.Patch.Mod;
-using Pandora.Models.Patch.Skyrim64;
-using Pandora.Models.Patch.Skyrim64.Format.FNIS;
-using Pandora.Paths.Abstractions;
+using Pandora.Core.Patch.Mod;
+using Pandora.Skyrim;
+using Pandora.Skyrim.Format.FNIS;
+using Pandora.Core.Paths.Abstractions;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;

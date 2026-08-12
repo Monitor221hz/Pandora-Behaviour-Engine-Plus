@@ -7,7 +7,7 @@ using GameFinder.StoreHandlers.Steam.Models.ValueTypes;
 using NexusMods.Paths;
 using System.IO;
 
-namespace Pandora.Platform.CreationEngine.Locators;
+namespace Pandora.Core.Platform.CreationEngine.Locators;
 
 public sealed class SteamGameLocator(
 	IGameDescriptor gameDescriptor,

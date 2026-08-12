@@ -2,12 +2,12 @@
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
 using NLog;
-using Pandora.Logging.NLogger.Abstractions;
-using Pandora.Logging.NLogger.Environment;
-using Pandora.Paths.Extensions;
+using Pandora.Core.Logging.NLogger.Abstractions;
+using Pandora.Core.Logging.NLogger.Environment;
+using Pandora.Core.Paths.Extensions;
 using System;
 
-namespace Pandora.Logging.NLogger;
+namespace Pandora.Core.Logging.NLogger;
 
 public sealed class LoggingBootstrapper(
 	LogFilePathUpdater updater,

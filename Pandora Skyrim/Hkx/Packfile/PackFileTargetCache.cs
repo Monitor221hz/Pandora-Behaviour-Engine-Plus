@@ -4,12 +4,12 @@
 using HKX2E;
 using Pandora.API.Patch;
 using Pandora.API.Patch.Skyrim64;
-using Pandora.Models.Patch.Skyrim64.Hkx.Changes;
+using Pandora.Skyrim.Hkx.Changes;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Xml.Linq;
 
-namespace Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
+namespace Pandora.Skyrim.Hkx.Packfile;
 
 /// <summary>
 /// Reuses pack file change sets when possible and outputs targets for patching. Thread safe.

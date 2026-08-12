@@ -2,9 +2,9 @@
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
 using Microsoft.Extensions.DependencyInjection;
-using Pandora.Settings.SubSettings;
+using Pandora.Core.Settings.SubSettings;
 
-namespace Pandora.Settings;
+namespace Pandora.Core.Settings;
 
 public static class Services
 {

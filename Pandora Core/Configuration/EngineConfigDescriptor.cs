@@ -3,7 +3,7 @@
 
 using Pandora.API.Patch.Config;
 
-namespace Pandora.Configuration;
+namespace Pandora.Core.Configuration;
 
 public record EngineConfigDescriptor(
 	IEngineConfigurationFactory Factory,

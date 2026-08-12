@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Pandora.Mods.Providers;
+namespace Pandora.Core.Mods.Providers;
 
 public abstract class FileBasedModInfoProvider : IModInfoProvider
 {

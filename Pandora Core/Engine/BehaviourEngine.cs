@@ -3,13 +3,13 @@
 
 using Pandora.API.Patch;
 using Pandora.API.Patch.Engine.Config;
-using Pandora.Logging.Extensions;
+using Pandora.Core.Logging.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Pandora.Models.Engine;
+namespace Pandora.Core.Engine;
 
 public sealed class BehaviourEngine : IBehaviourEngine
 {

@@ -13,11 +13,11 @@ using System.Threading.Tasks;
 using HKX2E;
 using Pandora.API.Patch;
 using Pandora.API.Patch.Skyrim64;
-using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
+using Pandora.Skyrim.Hkx.Packfile;
 using Pandora.Patch.Patchers.Skyrim.FNIS;
-using Pandora.Paths.Abstractions;
+using Pandora.Core.Paths.Abstractions;
 
-namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
+namespace Pandora.Skyrim.Format.FNIS;
 
 public class FNISParser : IFNISParser
 {

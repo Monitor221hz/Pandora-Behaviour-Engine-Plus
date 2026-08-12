@@ -2,8 +2,8 @@
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
 using FluentAvalonia.UI.Controls;
-using Pandora.Logging.NLogger.UI;
-using Pandora.Models.Engine;
+using Pandora.Core.Logging.NLogger.UI;
+using Pandora.Core.Engine;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using System;

@@ -1,18 +1,18 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Pandora.Logging.Extensions;
-using Pandora.Paths.Abstractions;
-using Pandora.Paths.Validation;
-using Pandora.Platform.CreationEngine;
-using Pandora.Settings.DTOs;
+using Pandora.Core.Logging.Extensions;
+using Pandora.Core.Paths.Abstractions;
+using Pandora.Core.Paths.Validation;
+using Pandora.Core.Platform.CreationEngine;
+using Pandora.Core.Settings.DTOs;
 using System;
 using System.IO;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
-namespace Pandora.Settings.SubSettings;
+namespace Pandora.Core.Settings.SubSettings;
 
 internal sealed class PathSettings(
 	IGameLocator gameLocator,

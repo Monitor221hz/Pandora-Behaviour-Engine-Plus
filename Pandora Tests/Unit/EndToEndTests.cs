@@ -4,11 +4,12 @@
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using Pandora.API.Patch.Config;
-using Pandora.Models.Engine;
-using Pandora.Models.Patch.Configs;
-using Pandora.Mods.Abstractions;
-using Pandora.Paths;
-using Pandora.Paths.Abstractions;
+using Pandora.Core.Engine;
+using Pandora.Core.Patch.Configs;
+using Pandora.Core.Mods.Abstractions;
+using Pandora.Core.Paths;
+using Pandora.Core.Paths.Abstractions;
+using Pandora.Skyrim.Configuration;
 using PandoraTests.Utils;
 
 namespace PandoraTests.Unit;

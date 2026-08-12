@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-namespace Pandora.Platform.CreationEngine.Game;
+using Pandora.Core.Platform.CreationEngine;
+
+namespace Pandora.Skyrim.Platform;
 
 public class SkyrimDescriptor : IGameDescriptor
 {
