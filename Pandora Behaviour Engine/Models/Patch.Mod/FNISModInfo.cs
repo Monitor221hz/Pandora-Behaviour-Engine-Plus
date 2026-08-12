@@ -43,7 +43,8 @@ public partial class FNISModInfo : IModInfo
 
 	public FNISModInfo(FileInfo file)
 	{
-		Name = Path.GetFileNameWithoutExtension(file.Name);
+		var fileName = Path.GetFileNameWithoutExtension(file.Name);
+		Name = fileName[5..^5]; // FNIS_<mod name>_List
 		Folder = file.Directory!;
 		Code = WhiteSpaceRegex.Replace(Name, string.Empty);
 	}
