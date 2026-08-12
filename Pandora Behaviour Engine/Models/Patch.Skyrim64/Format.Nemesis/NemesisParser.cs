@@ -330,9 +330,9 @@ public class NemesisParser
 			}
 			catch (XmlException e)
 			{
-				Logger.Error(
-					$"Nemesis Parser > {modInfo.Name} > File {editFile.FullName} > Load > FAILED > {e.Message}"
-				);
+			Logger.Error(
+				$"Nemesis Parser > Mod \"{modInfo.Name}\" > File \"{editFile.FullName}\" > Load > FAILED > {e.Message}"
+			);
 				continue;
 			}
 			string? nodeName = element.FirstAttribute?.Value;
