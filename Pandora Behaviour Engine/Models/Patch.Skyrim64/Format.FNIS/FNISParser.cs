@@ -438,7 +438,7 @@ public class FNISParser : IFNISParser
 		}
 #endif
 		animList.BuildAllBehaviors(project, projectManager);
-		animList.BuildAllAnimations(project, projectManager);
+		animList.BuildAllAnimations(_pathContext.TemplateFolder, project, projectManager);
 
 		lock (ModInfos)
 		{

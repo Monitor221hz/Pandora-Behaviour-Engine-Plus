@@ -11,6 +11,7 @@ using Pandora.API.Patch.Skyrim64;
 using Pandora.Models.Patch.Mod;
 using Pandora.Models.Patch.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.Format.FNIS;
+using Pandora.Paths.Abstractions;
 
 namespace Pandora.Patch.Patchers.Skyrim.FNIS;
 
@@ -96,13 +97,17 @@ public partial class FNISAnimationList
 		return animlist;
 	}
 
-	public void BuildAllAnimations(IProject project, IProjectManager projectManager)
+	public void BuildAllAnimations(
+		DirectoryInfo templateFolder,
+		IProject project,
+		IProjectManager projectManager
+	)
 	{
 		Debug.Assert(
 			project.CharacterPackFile is not null,
 			"Project must have a character pack file."
 		);
-
+		FNISAnimationListBuildContext buildContext = new(project, projectManager, ModInfo);
 		foreach (var item in AlternateAnimations)
 		{
 			project.AlternateAnimations.Add(item);
@@ -113,7 +118,7 @@ public partial class FNISAnimationList
 			foreach (BasicAnimation animation in Animations)
 			{
 				lock (project.CharacterPackFile.GetUniqueAnimationLock())
-					animation.BuildAnimation(project, projectManager);
+					animation.BuildAnimation(templateFolder, buildContext);
 			}
 		}
 		else
@@ -122,8 +127,11 @@ public partial class FNISAnimationList
 			{
 				lock (project.CharacterPackFile.GetUniqueAnimationLock())
 				{
-					animation.BuildAnimation(project, projectManager);
-					animation.BuildAnimation(project.Sibling, projectManager);
+					animation.BuildAnimation(templateFolder, buildContext);
+					animation.BuildAnimation(
+						templateFolder,
+						new FNISAnimationListBuildContext(project.Sibling, projectManager, ModInfo)
+					);
 				}
 			}
 		}

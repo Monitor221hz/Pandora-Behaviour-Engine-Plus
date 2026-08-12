@@ -3,9 +3,11 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Text.RegularExpressions;
 using HKX2E;
 using Pandora.API.Patch.Skyrim64;
+using Pandora.Paths.Abstractions;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
 
@@ -245,8 +247,13 @@ public partial class BasicAnimation : IFNISAnimation
 		}
 	}
 
-	public virtual void BuildAnimation(IProject project, IProjectManager projectManager)
+	public virtual void BuildAnimation(
+		DirectoryInfo templateFolder,
+		IFNISAnimationListBuildContext context
+	)
 	{
+		var project = context.TargetProject;
+		var projectManager = context.ProjectManager;
 		if (project.Sibling != null)
 		{
 			Debug.Assert(

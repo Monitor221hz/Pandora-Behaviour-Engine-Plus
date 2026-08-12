@@ -8,29 +8,9 @@ using Avalonia.Markup.Xaml.Templates;
 using HKX2E;
 using Pandora.API.Patch.Skyrim64;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
+using Pandora.Paths.Abstractions;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.FNIS;
-
-public class PairedAnimation : BasicAnimation
-{
-	public PairedAnimation(Match match)
-		: base(FNISAnimType.Killmove, match) { }
-
-	public PairedAnimation(
-		FNISAnimType templateType,
-		FNISAnimFlags flags,
-		string graphEvent,
-		string animationFilePath,
-		List<string> animationObjectNames
-	)
-		: base(templateType, flags, graphEvent, animationFilePath, animationObjectNames) { }
-
-	public override void BuildAnimation(IProject project, IProjectManager projectManager)
-	{
-		base.BuildAnimation(project, projectManager);
-		throw new NotImplementedException();
-	}
-}
 
 public class FurnitureAnimation : BasicAnimation
 {
