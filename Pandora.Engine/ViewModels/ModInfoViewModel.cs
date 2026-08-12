@@ -28,10 +28,6 @@ public partial class ModInfoViewModel
 	public ModInfoViewModel(IModInfo modInfo)
 	{
 		ModInfo = modInfo;
-
-		// Initialize VM state from the underlying IModInfo so that priorities/active
-		// flags assigned by the loader (which runs before wrapping in VMs) are reflected
-		// in the UI without requiring the UI layer to re-derive them.
 		_active = modInfo.Active;
 		_priority = modInfo.Priority;
 

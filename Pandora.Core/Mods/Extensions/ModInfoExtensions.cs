@@ -18,9 +18,6 @@ public static class ModInfoExtensions
 	public static bool IsPandora(this string? code) =>
 		string.Equals(code, PandoraCode, StringComparison.OrdinalIgnoreCase);
 
-	/// <summary>
-	/// Assigns sequential priorities (1, 2, 3, ...) to the mods in the order they appear.
-	/// </summary>
 	public static void RecalculatePriorities(this IEnumerable<IModInfo> mods)
 	{
 		uint priority = 1;
@@ -30,9 +27,6 @@ public static class ModInfoExtensions
 		}
 	}
 
-	/// <summary>
-	/// Activates or deactivates every non-Pandora mod in the collection.
-	/// </summary>
 	public static void SetAllActive(this IEnumerable<IModInfo> mods, bool isActive)
 	{
 		foreach (var mod in mods.Where(mod => !mod.IsPandora()))
@@ -41,10 +35,6 @@ public static class ModInfoExtensions
 		}
 	}
 
-	/// <summary>
-	/// Activates every non-Pandora mod, sorts alphanumerically by name (Pandora first),
-	/// assigns sequential priorities, and ensures the Pandora mod is active.
-	/// </summary>
 	public static void ResetToAlphanumeric(this IEnumerable<IModInfo> mods)
 	{
 		var list = mods as IList<IModInfo> ?? mods.ToList();
@@ -59,10 +49,6 @@ public static class ModInfoExtensions
 		list.EnsurePandoraActive();
 	}
 
-	/// <summary>
-	/// Sorts the mods by existing priority (Pandora first, then by Priority, then by Name)
-	/// and assigns sequential priorities. Ensures the Pandora mod is active.
-	/// </summary>
 	public static void NormalizePriorities(this IEnumerable<IModInfo> mods)
 	{
 		var list = mods as IList<IModInfo> ?? mods.ToList();
@@ -76,11 +62,6 @@ public static class ModInfoExtensions
 		list.EnsurePandoraActive();
 	}
 
-	/// <summary>
-	/// Moves <paramref name="itemToMove"/> by <paramref name="direction"/> positions (negative for earlier,
-	/// positive for later) and recalculates priorities. Returns false if the move is not allowed
-	/// (e.g. moving the Pandora mod, moving past either end, or landing on the Pandora mod).
-	/// </summary>
 	public static bool TryMoveAndRecalculate(
 		this IEnumerable<IModInfo> mods,
 		IModInfo itemToMove,
@@ -115,9 +96,6 @@ public static class ModInfoExtensions
 		return true;
 	}
 
-	/// <summary>
-	/// Returns active mods sorted by priority (Pandora last), as <see cref="IModInfo"/>.
-	/// </summary>
 	public static List<IModInfo> GetSortedActiveMods(this IEnumerable<IModInfo> mods)
 	{
 		return mods.Where(m => m.Active)
@@ -126,9 +104,6 @@ public static class ModInfoExtensions
 			.ToList();
 	}
 
-	/// <summary>
-	/// Ensures the Pandora mod (if present) is active. Returns the Pandora mod, or null if none.
-	/// </summary>
 	public static IModInfo? EnsurePandoraActive(this IEnumerable<IModInfo> mods)
 	{
 		var pandora = mods.FirstOrDefault(m => m.IsPandora());
@@ -137,12 +112,6 @@ public static class ModInfoExtensions
 		return pandora;
 	}
 
-	/// <summary>
-	/// Returns:
-	/// - <c>false</c> if no non-Pandora mods are active,
-	/// - <c>true</c> if all non-Pandora mods are active,
-	/// - <c>null</c> if some but not all are active.
-	/// </summary>
 	public static bool? AreAllNonPandoraModsSelected(this IReadOnlyCollection<IModInfo> mods)
 	{
 		if (mods.Count == 0)
@@ -159,10 +128,6 @@ public static class ModInfoExtensions
 		};
 	}
 
-	/// <summary>
-	/// Builds a predicate that returns true if a mod's name contains <paramref name="searchText"/>
-	/// (case-insensitive). Returns a "match everything" predicate if searchText is blank.
-	/// </summary>
 	public static Func<IModInfo, bool> BuildNameFilter(string searchText)
 	{
 		if (string.IsNullOrWhiteSpace(searchText))

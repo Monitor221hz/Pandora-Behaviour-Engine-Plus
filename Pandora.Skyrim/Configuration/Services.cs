@@ -23,8 +23,6 @@ public static class Services
 				.AddTransient<SkyrimDebugConfiguration>()
 				.AddSingleton<IEngineConfiguration>(sp =>
 				{
-					// `LaunchOptions` is only registered by the executable host (`AddCLIServices()`).
-					// Tests / other hosts omit it, so fall back to the build-config default.
 					var options = sp.GetService<LaunchOptions>();
 					if (options is { UseSkyrimDebug64: true })
 						return sp.GetRequiredService<SkyrimDebugConfiguration>();

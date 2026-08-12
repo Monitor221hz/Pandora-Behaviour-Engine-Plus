@@ -10,12 +10,6 @@ using System.Linq;
 
 namespace Pandora.Mods.Extensions;
 
-/// <summary>
-/// UI-layer extensions over <see cref="ModInfoViewModel"/>. These mirror the Core-level
-/// <see cref="ModInfoExtensions"/> (which operate on <see cref="IModInfo"/>), but apply the results
-/// to the view models so the UI reflects the changes. Drag-drop / keyboard-move operations that
-/// inherently reorder VMs in a DataGrid are also defined here.
-/// </summary>
 public static class ModViewModelExtensions
 {
 	public static Func<ModInfoViewModel, bool> BuildNameFilter(string searchText)

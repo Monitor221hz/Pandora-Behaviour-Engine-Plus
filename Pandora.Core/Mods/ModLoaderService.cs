@@ -57,8 +57,6 @@ public class ModLoaderService : IModLoaderService
 			modInfos.UnionWith(mods);
 		}
 
-		// Assign sequential priorities (Pandora first, then alphanumeric) so every caller
-		// - including CLI hosts that bypass the UI layer - gets properly prioritized mods.
 		modInfos.NormalizePriorities();
 
 		return modInfos;

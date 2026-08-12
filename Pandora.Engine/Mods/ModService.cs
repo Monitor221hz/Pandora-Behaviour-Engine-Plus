@@ -113,8 +113,6 @@ public class ModService : IModService, IModUIService, IDisposable
 
 	public IReadOnlyList<IModInfo> GetActiveMods()
 	{
-		// Delegate to the Core-level IModInfo extension so the active-mods sorting rule
-		// (priority-ascending, Pandora last) lives in one place across CLI and GUI hosts.
 		return Source
 			.Select(m => m.ModInfo)
 			.GetSortedActiveMods();

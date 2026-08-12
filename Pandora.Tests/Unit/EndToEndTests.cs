@@ -27,8 +27,6 @@ public sealed class DependencyInjectedCluster : IDisposable
 		root.Create();
 
 		_outputDir = new DirectoryInfo(Path.Join(root.FullName, "Output"));
-		// Start from a clean slate so stale files from a previous test run
-		// (or a parallel test class) can't interfere with assertions.
 		if (_outputDir.Exists)
 		{
 			_outputDir.Delete(recursive: true);
@@ -84,7 +82,6 @@ public sealed class DependencyInjectedCluster : IDisposable
 
 	public void Dispose()
 	{
-		// Clean up generated output so the next test run starts fresh.
 		if (_outputDir.Exists)
 		{
 			_outputDir.Delete(recursive: true);

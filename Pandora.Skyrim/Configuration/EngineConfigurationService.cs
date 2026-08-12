@@ -59,7 +59,6 @@ public sealed class EngineConfigurationService : IEngineConfigurationService
 			Logger.UiInfo("Plugins loaded.");
 		}
 
-		// Pick the registered factory whose produced configuration matches the requested startup type.
 		var startupFactory = ResolveFactoryFor(startupConfig);
 		if (startupFactory is not null)
 		{
