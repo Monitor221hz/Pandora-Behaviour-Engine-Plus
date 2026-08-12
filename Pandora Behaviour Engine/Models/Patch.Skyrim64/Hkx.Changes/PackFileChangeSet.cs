@@ -111,9 +111,9 @@ public class PackFileChangeSet : IPackFileChangeOwner
 				IPackFileChange? change = changeList[i];
 				if (!change.Apply(packFile))
 				{
-					Logger.Warn(
-						$"Dispatcher > \"{Origin.Name}\" > {packFile.ParentProject?.Identifier}~{packFile.Name} > {change.Type} > {change.AssociatedType} > {change.Path} > FAILED"
-					);
+				Logger.Warn(
+					$"Dispatcher > Mod \"{Origin.Name}\" > PackFile \"{packFile.ParentProject?.Identifier}~{packFile.Name}\" > Apply > FAILED > {change.Type} {change.AssociatedType} at {change.Path}"
+				);
 				}
 				changeList.RemoveAt(i);
 			}
@@ -129,9 +129,9 @@ public class PackFileChangeSet : IPackFileChangeOwner
 			{
 				if (!change.Apply(packFile))
 				{
-					Logger.Warn(
-						$"Dispatcher > \"{Origin.Name}\" > {packFile.ParentProject?.Identifier}~{packFile.Name} > {change.Type} > {change.AssociatedType} > {change.Path} > FAILED"
-					);
+				Logger.Warn(
+					$"Dispatcher > Mod \"{Origin.Name}\" > PackFile \"{packFile.ParentProject?.Identifier}~{packFile.Name}\" > Apply > FAILED > {change.Type} {change.AssociatedType} at {change.Path}"
+				);
 				}
 			}
 		}
