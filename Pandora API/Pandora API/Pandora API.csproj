@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Pandora.API</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Nito.HashAlgorithms.CRC" Version="1.0.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\HKX2-Enhanced-Library\HKX2\HKX2E.csproj" />
+    <ProjectReference Include="..\..\XML.Cake.NET\XML Cake\XML Cake.csproj" />
+  </ItemGroup>
+</Project>

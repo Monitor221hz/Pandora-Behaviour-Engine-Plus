@@ -1,13 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reactive.Disposables.Fluent;
-using System.Reactive.Linq;
-using System.Threading.Tasks;
 using Pandora.Platform.Avalonia;
 using Pandora.Platform.CreationEngine;
 using Pandora.Settings;
@@ -15,6 +8,13 @@ using Pandora.Views.Pages;
 using Pandora.Views.Pages.DTOs;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reactive.Disposables.Fluent;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace Pandora.ViewModels;
 
