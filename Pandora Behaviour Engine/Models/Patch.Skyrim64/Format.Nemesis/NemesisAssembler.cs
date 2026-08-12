@@ -84,11 +84,14 @@ public class NemesisAssembler : IPatchAssembler
 	public async Task LoadResourcesAsync()
 	{
 		var projectLoadTask = Task.Run(ProjectManager.LoadTrackedProjects);
-		var animSetDataTask = Task.Run(AnimSetDataManager.SplitAnimSetDataSingleFile);
+		await projectLoadTask;
 
-		await Task.WhenAll(projectLoadTask, animSetDataTask);
+		var animSetDataTask = Task.Run(() =>
+			AnimSetDataManager.SplitAnimSetDataSingleFile(ProjectManager)
+		);
+		var animDataTask = Task.Run(() => AnimDataManager.SplitAnimDataSingleFile(ProjectManager));
 
-		await Task.Run(() => AnimDataManager.SplitAnimDataSingleFile(ProjectManager));
+		await Task.WhenAll(animDataTask, animSetDataTask);
 	}
 
 	public void AssemblePatch(IModInfo modInfo)

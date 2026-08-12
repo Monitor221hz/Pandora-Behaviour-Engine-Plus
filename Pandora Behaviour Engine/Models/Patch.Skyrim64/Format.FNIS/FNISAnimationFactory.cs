@@ -82,6 +82,8 @@ public class FNISAnimationFactory
 					animationFilePath,
 					animationObjectNames
 				);
+			case FNISAnimType.Paired:
+				throw new NotImplementedException();
 			case FNISAnimType.Furniture:
 				return new FurnitureAnimation(
 					templateType,

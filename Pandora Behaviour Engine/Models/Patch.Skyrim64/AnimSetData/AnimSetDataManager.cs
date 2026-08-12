@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using NLog;
+using Pandora.API.Patch.Skyrim64;
 using Pandora.API.Patch.Skyrim64.AnimSetData;
 using Pandora.Models.Extensions;
 using Pandora.Paths.Abstractions;
@@ -30,9 +31,7 @@ public class AnimSetDataManager : IAnimSetDataManager
 	);
 
 	private readonly IList<string> _projectPaths = [];
-	private readonly IList<IProjectAnimSetData> _animSetDataList = [];
-
-	public Dictionary<string, IProjectAnimSetData> AnimSetDataMap { get; private set; } = [];
+	internal IList<IProjectAnimSetData> AnimSetDataList { get; set; } = [];
 
 	public AnimSetDataManager(IEnginePathsFacade pathContext)
 	{
@@ -46,7 +45,7 @@ public class AnimSetDataManager : IAnimSetDataManager
 		);
 	}
 
-	public bool SplitAnimSetDataSingleFile()
+	public bool SplitAnimSetDataSingleFile(IProjectManager projectManager)
 	{
 		try
 		{
@@ -66,11 +65,17 @@ public class AnimSetDataManager : IAnimSetDataManager
 						{
 							return false;
 						}
-						_animSetDataList.Add(animSetData);
-						AnimSetDataMap.Add(
-							Path.GetFileNameWithoutExtension(_projectPaths[i]),
-							animSetData
-						);
+						AnimSetDataList.Add(animSetData);
+
+						IProject? activeProject = null;
+						var projectName = Path.GetFileNameWithoutExtension(_projectPaths[i]);
+						if (projectManager.ProjectLoaded(projectName))
+						{
+							activeProject = projectManager.LookupProject(projectName);
+							activeProject.AnimSetData = animSetData;
+						}
+
+						// AnimSetDataMap.Add(projectName, animSetData);
 
 						//#if DEBUG
 						//						FileInfo animDataFile = new FileInfo($"{outputFolder.FullName}\\animsetdata\\{(Path.GetFileName(projectPaths[i]))}");
@@ -138,7 +143,7 @@ public class AnimSetDataManager : IAnimSetDataManager
 					writer.WriteLine(projectPath);
 				}
 
-				foreach (ProjectAnimSetData animSetData in _animSetDataList)
+				foreach (ProjectAnimSetData animSetData in AnimSetDataList)
 				{
 					writer.Write(animSetData);
 				}

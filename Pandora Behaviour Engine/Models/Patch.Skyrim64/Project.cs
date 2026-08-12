@@ -11,6 +11,7 @@ using System.Linq;
 using HKX2E;
 using Pandora.API.Patch.Skyrim64;
 using Pandora.API.Patch.Skyrim64.AnimData;
+using Pandora.API.Patch.Skyrim64.AnimSetData;
 
 namespace Pandora.Models.Patch.Skyrim64;
 
@@ -50,6 +51,7 @@ public class Project : IEquatable<Project>, IProject
 	public IPackFileSkeleton? SkeletonFile { get; private set; }
 	public IPackFileGraph? BehaviorFile { get; private set; }
 	public IProjectAnimData? AnimData { get; set; }
+	public IProjectAnimSetData? AnimSetData { get; set; }
 
 	public Project(IPackFile projectFile)
 	{

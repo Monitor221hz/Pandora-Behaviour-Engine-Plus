@@ -24,22 +24,16 @@ public class PandoraAssembler
 	private readonly IMetaDataExporter<IPackFile> _packFileExporter;
 
 	public IProjectManager ProjectManager { get; private set; }
-	public IAnimDataManager AnimDataManager { get; private set; }
-	public IAnimSetDataManager AnimSetDataManager { get; private set; }
 
 	public PandoraAssembler(
 		IEnginePathsFacade pathContext,
 		IMetaDataExporter<IPackFile> exporter,
-		IProjectManager projectManager,
-		IAnimDataManager animDataManager,
-		IAnimSetDataManager animSetDataManager
+		IProjectManager projectManager
 	)
 	{
 		_pathContext = pathContext;
 		_packFileExporter = exporter;
 		ProjectManager = projectManager;
-		AnimSetDataManager = animSetDataManager;
-		AnimDataManager = animDataManager;
 	}
 
 	//public PandoraAssembler(
@@ -152,12 +146,13 @@ public class PandoraAssembler
 		foreach (DirectoryInfo subDirInfo in directoryInfo.GetDirectories())
 		{
 			if (
-				!AnimSetDataManager.AnimSetDataMap.TryGetValue(
-					subDirInfo.Name,
-					out targetAnimSetData
-				)
+				!ProjectManager.TryGetProject(subDirInfo.Name, out var project)
+				|| project.AnimSetData == null
 			)
+			{
 				continue;
+			}
+			targetAnimSetData = project.AnimSetData;
 			var patchFiles = subDirInfo.GetFiles();
 
 			foreach (var patchFile in patchFiles)
@@ -168,7 +163,9 @@ public class PandoraAssembler
 						out IAnimSet? targetAnimSet
 					)
 				)
+				{
 					continue;
+				}
 
 				using (var readStream = patchFile.OpenRead())
 				{
@@ -192,12 +189,13 @@ public class PandoraAssembler
 		foreach (FileInfo patchFile in directoryInfo.GetFiles("*.txt"))
 		{
 			if (
-				!AnimSetDataManager.AnimSetDataMap.TryGetValue(
-					Path.GetFileNameWithoutExtension(patchFile.Name),
-					out targetAnimSetData
-				)
+				!ProjectManager.TryGetProject(patchFile.Name, out var project)
+				|| project.AnimSetData == null
 			)
+			{
 				continue;
+			}
+			targetAnimSetData = project.AnimSetData;
 			List<ISetCachedAnimInfo> animInfos = [];
 			using (var readStream = patchFile.OpenRead())
 			{
