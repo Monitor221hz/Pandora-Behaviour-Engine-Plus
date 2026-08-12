@@ -25,14 +25,14 @@ runs:
       with:
         path: |
           ${{ github.workspace }}/.nuget/packages
-          ${{ github.workspace }}/Pandora Behaviour Engine/bin
-          ${{ github.workspace }}/Pandora Behaviour Engine/obj
+          ${{ github.workspace }}/Pandora.Engine/bin
+          ${{ github.workspace }}/Pandora.Engine/obj
           ${{ github.workspace }}/HKX2-Enhanced-Library/HKX2/bin
           ${{ github.workspace }}/HKX2-Enhanced-Library/HKX2/obj
           ${{ github.workspace }}/XML.Cake.NET/XML Cake/bin
           ${{ github.workspace }}/XML.Cake.NET/XML Cake/obj
-          ${{ github.workspace }}/Pandora Tests/bin
-          ${{ github.workspace }}/Pandora Tests/obj
+          ${{ github.workspace }}/Pandora.Tests/bin
+          ${{ github.workspace }}/Pandora.Tests/obj
         key: nuget-${{ runner.os }}-${{ inputs.dotnet-version }}-${{ inputs.cache-key-suffix }}
         restore-keys: |
           nuget-${{ runner.os }}-

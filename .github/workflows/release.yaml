@@ -47,7 +47,7 @@ jobs:
         id: set_paths
         shell: pwsh
         run: |
-          $output_dir='${{ github.workspace }}/Pandora Behaviour Engine/bin/${{ env.PROFILE }}/net10.0'
+          $output_dir='${{ github.workspace }}/Pandora.Engine/bin/${{ env.PROFILE }}/net10.0'
           $zip_file_name='Pandora_Behaviour_Engine_${{ github.ref_name }}.zip'
           $zip_dir='${{ github.workspace }}/Output'
 
@@ -120,7 +120,7 @@ jobs:
       - name: Publish Self-Contained
         shell: pwsh
         run: |
-          dotnet publish "./Pandora Behaviour Engine/Pandora Behaviour Engine.csproj" `
+          dotnet publish "./Pandora.Engine/Pandora.Engine.csproj" `
             -c ${{ env.PROFILE }} `
             -r ${{ matrix.rid }} `
             -o "${{ github.workspace }}/${{ matrix.output-dir }}" `

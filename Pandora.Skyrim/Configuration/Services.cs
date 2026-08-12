@@ -1,0 +1,53 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
+
+using Microsoft.Extensions.DependencyInjection;
+using Pandora.API.Patch.Config;
+using Pandora.API.Patch.Engine.Config;
+using Pandora.Core.Configuration;
+using Pandora.Core.Patch.Configs;
+using Pandora.Skyrim.CLI;
+using System;
+
+namespace Pandora.Skyrim.Configuration;
+
+public static class Services
+{
+	extension(IServiceCollection serviceCollection)
+	{
+		public IServiceCollection AddConfigurationServices()
+		{
+			return serviceCollection
+				.AddSingleton<IEngineConfigurationService, EngineConfigurationService>()
+				.AddTransient<SkyrimConfiguration>()
+				.AddTransient<SkyrimDebugConfiguration>()
+				.AddSingleton<IEngineConfiguration>(sp =>
+				{
+					// `LaunchOptions` is only registered by the executable host (`AddCLIServices()`).
+					// Tests / other hosts omit it, so fall back to the build-config default.
+					var options = sp.GetService<LaunchOptions>();
+					if (options is { UseSkyrimDebug64: true })
+						return sp.GetRequiredService<SkyrimDebugConfiguration>();
+#if DEBUG
+					return sp.GetRequiredService<SkyrimDebugConfiguration>();
+#else
+					return sp.GetRequiredService<SkyrimConfiguration>();
+#endif
+				})
+				.AddSingleton<Func<SkyrimDebugConfiguration>>(sp =>
+					() => sp.GetRequiredService<SkyrimDebugConfiguration>()
+				)
+				.AddSingleton<Func<SkyrimConfiguration>>(sp =>
+					() => sp.GetRequiredService<SkyrimConfiguration>()
+				)
+				.AddSingleton<
+					IEngineConfigurationFactory<SkyrimConfiguration>,
+					ConstEngineConfigurationFactory<SkyrimConfiguration>
+				>()
+				.AddSingleton<
+					IEngineConfigurationFactory<SkyrimDebugConfiguration>,
+					ConstEngineConfigurationFactory<SkyrimDebugConfiguration>
+				>();
+		}
+	}
+}
