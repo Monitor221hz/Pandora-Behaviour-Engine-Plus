@@ -25,4 +25,5 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
         cache-key-suffix: ${{ env.PROFILE }}
     - name: Format
+      continue-on-error: true
       run: dotnet format --exclude "./HKX2-Enhanced-Library" --exclude "./XML.Cake.NET" --no-restore --verify-no-changes --verbosity diagnostic

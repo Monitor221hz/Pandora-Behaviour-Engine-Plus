@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace Pandora.API.Patch.Plugins;
 
 public interface IMetaPluginLoader
 {
-    Assembly LoadPlugin(DirectoryInfo directory, IPluginInfo pluginInfo);
+	Assembly LoadPlugin(DirectoryInfo directory, IPluginInfo pluginInfo);
 
-    bool TryLoadMetadata(DirectoryInfo directory, [NotNullWhen(true)] out IPluginInfo? pluginInfo);
+	bool TryLoadMetadata(DirectoryInfo directory, [NotNullWhen(true)] out IPluginInfo? pluginInfo);
 }

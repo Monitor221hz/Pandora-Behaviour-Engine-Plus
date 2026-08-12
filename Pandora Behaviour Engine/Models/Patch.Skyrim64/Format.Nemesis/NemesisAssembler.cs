@@ -1,13 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
 using NLog;
 using Pandora.API.Patch;
 using Pandora.API.Patch.IOManagers;
@@ -18,6 +11,13 @@ using Pandora.Models.Patch.Skyrim64.AnimData;
 using Pandora.Models.Patch.Skyrim64.Format.Pandora;
 using Pandora.Models.Patch.Skyrim64.Hkx.Packfile;
 using Pandora.Paths.Abstractions;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Text;
+using System.Threading.Tasks;
+using System.Xml;
 using XmlCake.Linq.Expressions;
 
 namespace Pandora.Models.Patch.Skyrim64.Format.Nemesis;

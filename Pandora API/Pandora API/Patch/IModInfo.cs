@@ -1,35 +1,35 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-﻿namespace Pandora.API.Patch;
+namespace Pandora.API.Patch;
 
 /// <summary>
 /// Strongly recommended to implement GetHashCode() in addition to IEquatable.
 /// </summary>
 public interface IModInfo : IEquatable<IModInfo>
 {
-    public enum ModFormat
-    {
-        FNIS,
-        Nemesis,
-        Pandora,
-    }
+	public enum ModFormat
+	{
+		FNIS,
+		Nemesis,
+		Pandora,
+	}
 
-    public string Name { get; }
+	public string Name { get; }
 
-    public string Author { get; }
+	public string Author { get; }
 
-    public string URL { get; }
+	public string URL { get; }
 
-    public string Code { get; }
+	public string Code { get; }
 
-    public Version Version { get; }
+	public Version Version { get; }
 
-    public DirectoryInfo Folder { get; }
+	public DirectoryInfo Folder { get; }
 
-    public ModFormat Format { get; }
+	public ModFormat Format { get; }
 
-    public bool Active { get; set; }
+	public bool Active { get; set; }
 
-    public uint Priority { get; set; }
+	public uint Priority { get; set; }
 }

@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using NLog;
 using System;
 using System.IO;
 using System.Reactive.Linq;
-using NLog;
 
 namespace Pandora.Logging.NLogger.Environment;
 
