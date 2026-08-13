@@ -17,7 +17,13 @@ namespace PandoraTests.Unit
 		private const string NodeName = "#0069";
 		private const string Path = "#0069/property";
 
-		private static IPackFile NewPackFile() => Substitute.For<IPackFile>();
+		private static IPackFile NewPackFile()
+		{
+			var packFile = Substitute.For<IPackFile>();
+			packFile.PopObjectAsXml(Arg.Any<string>()).Returns(true);
+			packFile.TargetExists(Arg.Any<string>()).Returns(true);
+			return packFile;
+		}
 
 		private static IPackFileChangeOwner NewChangeSet() =>
 			Substitute.For<IPackFileChangeOwner>();
