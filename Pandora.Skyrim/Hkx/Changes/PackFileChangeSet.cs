@@ -218,6 +218,7 @@ public class PackFileChangeSet : IPackFileChangeOwner
 		FileInfo patchFile = new(
 			Path.Join(modInfo.Folder.FullName, "patches", $"{patchFileName}.xml")
 		);
+		patchFile.Directory?.Create();
 		using (var stream = patchFile.Create())
 		{
 			container.Save(stream);

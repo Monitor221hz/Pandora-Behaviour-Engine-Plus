@@ -83,6 +83,16 @@ public class PandoraParser
 			return;
 		}
 		string nodeName = pathAttribute.Value.Substring(0, slashIndex);
+		lock (packFile)
+		{
+			if (!packFile.PopObjectAsXml(nodeName) && !packFile.TargetExists(nodeName))
+			{
+				Logger.Warn(
+					$"Pandora Parser > Mod \"{changeSet.Origin.Name}\" > Node \"{nodeName}\" > Pop > FAILED > Not found in pack file"
+				);
+				return;
+			}
+		}
 		switch (changeType)
 		{
 			case ChangeType.Remove:

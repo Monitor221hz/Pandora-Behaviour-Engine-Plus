@@ -223,7 +223,7 @@ public class NemesisPandoraConverter : IPatcher
 		StringBuilder failures = new();
 
 		DirectoryInfo newDirectory = new(
-			Path.Combine(_paths.OutputEngineFolder.FullName, "mod", "pandora", modInfo.Code)
+			Path.Combine(_paths.OutputEngineFolder.FullName, "mod", modInfo.Code)
 		);
 		if (newDirectory.Exists)
 		{

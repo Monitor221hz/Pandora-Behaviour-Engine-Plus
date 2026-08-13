@@ -321,7 +321,7 @@ public class ProjectManager : IProjectManager
 		{
 			return false;
 		}
-		return project.TryLookupPackFile(name, out packFile);
+		return project.TryLookupPackFile(sections[1], out packFile);
 	}
 
 	private IPackFile LookupNestedPackFile(string name)
