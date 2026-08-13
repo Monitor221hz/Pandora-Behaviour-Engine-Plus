@@ -7,6 +7,8 @@ using Pandora.Core.Paths.Abstractions;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Hashing;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Pandora.Skyrim.Format.FNIS;
@@ -30,7 +32,8 @@ public partial class BasicAnimation : IFNISAnimation
 		{ "Tn", FNISAnimFlags.TransitionNext },
 	};
 
-	protected static int GetPositiveHash(string name) => name.GetHashCode() & 0xfffffff;
+	protected static int GetPositiveHash(string name) =>
+		(int)(XxHash32.HashToUInt32(Encoding.UTF8.GetBytes(name)) & 0x7FFFFFFF);
 
 	public FNISAnimType TemplateType { get; private set; } = FNISAnimType.Basic;
 	public FNISAnimFlags Flags { get; set; } = FNISAnimFlags.None;

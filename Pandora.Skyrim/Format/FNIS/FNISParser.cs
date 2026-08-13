@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.IO.Hashing;
+using System.Text;
 #pragma warning restore IDE0005
 using System.IO;
 using System.Text.RegularExpressions;
@@ -394,7 +396,7 @@ public class FNISParser : IFNISParser
 			name = "PN_StateInfo",
 			enable = true,
 			probability = 1.0f,
-			stateId = graphPath.GetHashCode() & 0xfffffff,
+			stateId = (int)(XxHash32.HashToUInt32(Encoding.UTF8.GetBytes(graphPath)) & 0x7FFFFFFF),
 			generator = refGenerator,
 		};
 		hkbStateMachine rootState = destPackFile.GetPushedObjectAs<hkbStateMachine>(
