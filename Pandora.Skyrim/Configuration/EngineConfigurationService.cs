@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using System;
+using System.Collections.Generic;
+using System.Reactive.Subjects;
 using Pandora.API.Patch.Config;
 using Pandora.API.Patch.Engine.Config;
 using Pandora.Core.Configuration;
 using Pandora.Core.Logging.Extensions;
 using Pandora.Core.Patch.Configs;
 using Pandora.Core.Patch.Plugins;
-using System;
-using System.Collections.Generic;
-using System.Reactive.Subjects;
 
 namespace Pandora.Skyrim.Configuration;
 
@@ -20,6 +20,7 @@ public sealed class EngineConfigurationService : IEngineConfigurationService
 	private readonly IPluginManager _pluginManager;
 	private readonly IEngineConfigurationFactory<SkyrimConfiguration> _skyrimFactory;
 	private readonly IEngineConfigurationFactory<SkyrimDebugConfiguration> _skyrimDebugFactory;
+	private readonly IEngineConfigurationFactory<NemesisToPandoraConfiguration> _nemesisToPandoraFactory;
 
 	private IEngineConfigurationFactory _currentFactory;
 	private readonly List<EngineConfigDescriptor> _availableConfigs = [];
@@ -32,13 +33,15 @@ public sealed class EngineConfigurationService : IEngineConfigurationService
 	public EngineConfigurationService(
 		IPluginManager pluginManager,
 		IEngineConfigurationFactory<SkyrimConfiguration> skyrimFactory,
-		IEngineConfigurationFactory<SkyrimDebugConfiguration> skyrimDebugFactory
+		IEngineConfigurationFactory<SkyrimDebugConfiguration> skyrimDebugFactory,
+		IEngineConfigurationFactory<NemesisToPandoraConfiguration> nemesisToPandoraFactory
 	)
 	{
 		_pluginManager = pluginManager;
 		_skyrimFactory = skyrimFactory;
 		_skyrimDebugFactory = skyrimDebugFactory;
 		_currentFactory = skyrimFactory;
+		_nemesisToPandoraFactory = nemesisToPandoraFactory;
 		_factorySubject = new BehaviorSubject<IEngineConfigurationFactory>(_currentFactory);
 	}
 
@@ -48,6 +51,7 @@ public sealed class EngineConfigurationService : IEngineConfigurationService
 
 		RegisterConfiguration(_skyrimFactory, "Lean");
 		RegisterConfiguration(_skyrimDebugFactory, "Include Debug");
+		RegisterConfiguration(_nemesisToPandoraFactory, "Nemesis -> Pandora");
 
 		foreach (var plugin in _pluginManager.EngineConfigurationPlugins)
 		{

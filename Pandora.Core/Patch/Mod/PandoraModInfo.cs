@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Pandora.API.Patch;
 using System;
 using System.IO;
 using System.Xml.Serialization;
+using Pandora.API.Patch;
 
 namespace Pandora.Core.Patch.Mod;
 
@@ -58,6 +58,23 @@ public class PandoraModInfo : IModInfo
 	public bool Valid { get; private set; } = true;
 
 	private PandoraModInfo() { }
+
+	public PandoraModInfo(
+		string name,
+		string author,
+		string url,
+		string code,
+		Version version,
+		DirectoryInfo folder
+	)
+	{
+		Name = name;
+		Author = author;
+		URL = url;
+		Code = code;
+		Version = version;
+		Folder = folder;
+	}
 
 	public void FillData(DirectoryInfo folder)
 	{

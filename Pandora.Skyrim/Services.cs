@@ -50,7 +50,8 @@ public static class Services
 				.AddScoped<PandoraAssembler>()
 				.AddScoped<PandoraBridgedAssembler>()
 				.AddScoped<IPatchAssembler>(sp => sp.GetRequiredService<NemesisAssembler>())
-				.AddScoped<SkyrimPatcher>();
+				.AddScoped<SkyrimPatcher>()
+				.AddScoped<NemesisPandoraConverter>();
 		}
 	}
 }
