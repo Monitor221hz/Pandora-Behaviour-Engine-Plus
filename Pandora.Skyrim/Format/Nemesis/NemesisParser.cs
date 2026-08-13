@@ -1,9 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Pandora.API.Patch;
-using Pandora.API.Patch.Skyrim64;
-using Pandora.Skyrim.Hkx.Changes;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,6 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
+using Pandora.API.Patch;
+using Pandora.API.Patch.Skyrim64;
+using Pandora.Skyrim.Hkx.Changes;
 using XmlCake.Linq;
 using XmlCake.Linq.Expressions;
 
@@ -330,9 +330,9 @@ public class NemesisParser
 			}
 			catch (XmlException e)
 			{
-			Logger.Error(
-				$"Nemesis Parser > Mod \"{modInfo.Name}\" > File \"{editFile.FullName}\" > Load > FAILED > {e.Message}"
-			);
+				Logger.Error(
+					$"Nemesis Parser > Mod \"{modInfo.Name}\" > File \"{editFile.FullName}\" > Load > FAILED > {e.Message}"
+				);
 				continue;
 			}
 			string? nodeName = element.FirstAttribute?.Value;
@@ -347,6 +347,53 @@ public class NemesisParser
 				if (!packFile.PopObjectAsXml(nodeName))
 				{
 					packFile.Dispatcher.TrackPotentialNode(packFile, nodeName, element);
+				}
+			}
+			MatchInsertPattern(nodeName, nodes, changeSet, lookup);
+			MatchReplacePattern(nodeName, nodes, changeSet, lookup);
+		}
+		return changeSet;
+	}
+
+	public static PackFileChangeSet ParsePackFileChanges(
+		IPackFile packFile,
+		IModInfo modInfo,
+		DirectoryInfo folder,
+		List<XElement> remainders
+	)
+	{
+		FileInfo[] editFiles = folder.GetFiles("#*.txt");
+
+		var changeSet = new PackFileChangeSet(modInfo);
+		XPathLookup lookup = new();
+		foreach (FileInfo editFile in editFiles)
+		{
+			IEnumerable<XNode> nodes;
+			//string nodeName = Path.GetFileNameWithoutExtension(editFile.Name);
+			XElement element;
+			try
+			{
+				element = XElement.Load(editFile.FullName);
+			}
+			catch (XmlException e)
+			{
+				Logger.Error(
+					$"Nemesis Parser > Mod \"{modInfo.Name}\" > File \"{editFile.FullName}\" > Load > FAILED > {e.Message}"
+				);
+				continue;
+			}
+			string? nodeName = element.FirstAttribute?.Value;
+			if (nodeName == null)
+			{
+				continue;
+			}
+			nodes = lookup.MapFromElement(element);
+
+			lock (packFile)
+			{
+				if (!packFile.PopObjectAsXml(nodeName) && !packFile.TargetExists(nodeName))
+				{
+					remainders.Add(element);
 				}
 			}
 			MatchInsertPattern(nodeName, nodes, changeSet, lookup);

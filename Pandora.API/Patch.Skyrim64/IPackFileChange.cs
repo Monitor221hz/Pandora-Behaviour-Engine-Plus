@@ -5,6 +5,7 @@
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
 using System.Xml;
+using System.Xml.Linq;
 
 namespace Pandora.API.Patch.Skyrim64;
 
@@ -23,4 +24,6 @@ public interface IPackFileChange
 	public XmlNodeType AssociatedType { get; }
 	public string Path { get; }
 	public string Target { get; }
+
+	public XElement AsPandoraEdit();
 }

@@ -1,13 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using NLog;
-using Pandora.API.Patch;
-using Pandora.API.Patch.Skyrim64;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using NLog;
+using Pandora.API.Patch;
+using Pandora.API.Patch.Skyrim64;
+using Pandora.Skyrim.Format.Pandora;
 
 namespace Pandora.Skyrim.Hkx.Changes;
 
@@ -43,7 +44,7 @@ public class PackFileChangeSet : IPackFileChangeOwner
 
 	public void AddElementAsChange(XElement element)
 	{
-		return;
+		throw new NotImplementedException();
 	}
 
 	//public void AddChange(IPackFileChange change) => changes[change.Type].Add(change);
@@ -111,9 +112,9 @@ public class PackFileChangeSet : IPackFileChangeOwner
 				IPackFileChange? change = changeList[i];
 				if (!change.Apply(packFile))
 				{
-				Logger.Warn(
-					$"Dispatcher > Mod \"{Origin.Name}\" > PackFile \"{packFile.ParentProject?.Identifier}~{packFile.Name}\" > Apply > FAILED > {change.Type} {change.AssociatedType} at {change.Path}"
-				);
+					Logger.Warn(
+						$"Dispatcher > Mod \"{Origin.Name}\" > PackFile \"{packFile.ParentProject?.Identifier}~{packFile.Name}\" > Apply > FAILED > {change.Type} {change.AssociatedType} at {change.Path}"
+					);
 				}
 				changeList.RemoveAt(i);
 			}
@@ -129,9 +130,9 @@ public class PackFileChangeSet : IPackFileChangeOwner
 			{
 				if (!change.Apply(packFile))
 				{
-				Logger.Warn(
-					$"Dispatcher > Mod \"{Origin.Name}\" > PackFile \"{packFile.ParentProject?.Identifier}~{packFile.Name}\" > Apply > FAILED > {change.Type} {change.AssociatedType} at {change.Path}"
-				);
+					Logger.Warn(
+						$"Dispatcher > Mod \"{Origin.Name}\" > PackFile \"{packFile.ParentProject?.Identifier}~{packFile.Name}\" > Apply > FAILED > {change.Type} {change.AssociatedType} at {change.Path}"
+					);
 				}
 			}
 		}
@@ -149,7 +150,7 @@ public class PackFileChangeSet : IPackFileChangeOwner
 					if (!change.Apply(packFile))
 					{
 						Logger.Warn(
-							$"Dispatcher > \"{Origin.Name}\" > {packFile.ParentProject?.Identifier}~{packFile.Name} > {change.Type} > {change.AssociatedType} > {change.Path} > FAILED"
+							$"Dispatcher > Mod \"{Origin.Name}\" > PackFile \"{packFile.ParentProject?.Identifier}~{packFile.Name}\" > Apply > FAILED > {change.Type} {change.AssociatedType} at {change.Path}"
 						);
 					}
 				}
@@ -166,5 +167,61 @@ public class PackFileChangeSet : IPackFileChangeOwner
 				validator.Validate(packFile, changeTypedMap[changeType]);
 			}
 		}
+	}
+
+	public bool SerializePandoraEdits(
+		IModInfo modInfo,
+		IPackFile packFile,
+		List<XElement> newElements
+	)
+	{
+		var project = packFile.ParentProject;
+		if (project == null)
+		{
+			return false;
+		}
+		string patchFileName;
+		switch (packFile)
+		{
+			case IPackFileSkeleton:
+				patchFileName = $"{project.Identifier}_skeleton";
+				break;
+			case IPackFileCharacter:
+				patchFileName = $"{project.Identifier}_character";
+				break;
+			default:
+				patchFileName = packFile.UniqueName;
+				break;
+		}
+		var container = new XElement(modInfo.Code);
+		foreach (ChangeType changeType in OrderedChangeTypes)
+		{
+			foreach (var changeTypedMap in _nodeScopedChangeMap.Values)
+			{
+				var changeList = changeTypedMap[changeType];
+				foreach (var change in changeList)
+				{
+					container.Add(change.AsPandoraEdit());
+				}
+			}
+		}
+		if (newElements.Count > 0)
+		{
+			container.Add(
+				new XElement(
+					IPackFileChange.ChangeType.Insert.ToString(),
+					new XAttribute(PandoraParser.PATH, string.Empty),
+					newElements
+				)
+			);
+		}
+		FileInfo patchFile = new(
+			Path.Join(modInfo.Folder.FullName, "patches", $"{patchFileName}.xml")
+		);
+		using (var stream = patchFile.Create())
+		{
+			container.Save(stream);
+		}
+		return true;
 	}
 }

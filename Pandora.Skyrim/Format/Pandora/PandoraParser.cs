@@ -14,10 +14,10 @@ using ChangeType = IPackFileChange.ChangeType;
 
 public class PandoraParser
 {
-	private const string PATH = "path";
-	private const string NAME = "name";
-	private const string SKIP = "skip";
-	private const string INDEX = "index";
+	public const string PATH = "path";
+	public const string NAME = "name";
+	public const string SKIP = "skip";
+	public const string INDEX = "index";
 	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger(); //to do: move logger into inheritable base class
 	private static readonly Dictionary<string, ChangeType> ChangeTypeNameMap = Enum.GetValues(
 			typeof(ChangeType)
@@ -64,9 +64,9 @@ public class PandoraParser
 						}
 						else
 						{
-						Logger.Warn(
-							$"Pandora Parser > Mod \"{changeSet.Origin.Name}\" > Node \"{childNodeName}\" > Track > FAILED > Already exists in pack file"
-						);
+							Logger.Warn(
+								$"Pandora Parser > Mod \"{changeSet.Origin.Name}\" > Node \"{childNodeName}\" > Track > FAILED > Already exists in pack file"
+							);
 						}
 					}
 				}
@@ -77,9 +77,9 @@ public class PandoraParser
 		int slashIndex = pathAttribute.Value.IndexOf('/');
 		if (slashIndex < 1)
 		{
-		Logger.Warn(
-			$"Pandora Parser > Mod \"{changeSet.Origin.Name}\" > Path \"{pathAttribute.Value}\" > Parse > FAILED > Invalid format (missing '/')"
-		);
+			Logger.Warn(
+				$"Pandora Parser > Mod \"{changeSet.Origin.Name}\" > Path \"{pathAttribute.Value}\" > Parse > FAILED > Invalid format (missing '/')"
+			);
 			return;
 		}
 		string nodeName = pathAttribute.Value.Substring(0, slashIndex);

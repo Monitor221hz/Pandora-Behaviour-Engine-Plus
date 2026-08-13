@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Pandora.API.Patch.Skyrim64;
-using Pandora.Skyrim.Hkx.Packfile;
 using System.Xml;
 using System.Xml.Linq;
+using Pandora.API.Patch.Skyrim64;
+using Pandora.Skyrim.Format.Pandora;
+using Pandora.Skyrim.Hkx.Packfile;
 
 namespace Pandora.Skyrim.Hkx.Changes;
 
@@ -37,5 +38,10 @@ public class ReplaceElementChange : IPackFileChange
 	public bool Revert(PackFile packFile)
 	{
 		return Apply(packFile);
+	}
+
+	public XElement AsPandoraEdit()
+	{
+		return new XElement(Type.ToString(), _element, new XAttribute(PandoraParser.PATH, Path));
 	}
 }

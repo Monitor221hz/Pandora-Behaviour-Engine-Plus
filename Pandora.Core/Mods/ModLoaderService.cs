@@ -27,8 +27,6 @@ public class ModLoaderService : IModLoaderService
 
 	public async Task<HashSet<IModInfo>> LoadModsAsync(IEnumerable<DirectoryInfo> directories)
 	{
-		var modInfos = new HashSet<IModInfo>();
-
 		var pathsToScan = ModPathResolver
 			.Resolve(directories, _providers)
 			.DistinctBy(p => p.path, StringComparer.OrdinalIgnoreCase)
@@ -52,10 +50,30 @@ public class ModLoaderService : IModLoaderService
 
 		var results = await Task.WhenAll(searchTasks);
 
+		var merged = new Dictionary<(string Code, Version Version), IModInfo>();
 		foreach (var mods in results)
 		{
-			modInfos.UnionWith(mods);
+			foreach (var mod in mods)
+			{
+				var key = (mod.Code, mod.Version);
+				if (merged.TryGetValue(key, out var existing))
+				{
+					if (mod.Format == IModInfo.ModFormat.Pandora && existing.Format != IModInfo.ModFormat.Pandora)
+					{
+						Logger.Info(
+							$"Mod Loader > Code \"{mod.Code}\" > Preferring Pandora format over {existing.Format} for mod \"{mod.Name}\"."
+						);
+						merged[key] = mod;
+					}
+				}
+				else
+				{
+					merged.Add(key, mod);
+				}
+			}
 		}
+
+		var modInfos = new HashSet<IModInfo>(merged.Values);
 
 		modInfos.NormalizePriorities();
 

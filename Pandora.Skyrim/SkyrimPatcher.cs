@@ -1,65 +1,20 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Pandora.API.Patch;
-using Pandora.API.Patch.IOManagers;
-using Pandora.API.Patch.Skyrim64;
-using Pandora.Skyrim.Format.Nemesis;
-using Pandora.Skyrim.Format.Pandora;
-using Pandora.Core.Utils;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Pandora.API.Patch;
+using Pandora.API.Patch.IOManagers;
+using Pandora.API.Patch.Skyrim64;
+using Pandora.Core.Utils;
+using Pandora.Skyrim.Format.Nemesis;
+using Pandora.Skyrim.Format.Pandora;
 using static Pandora.API.Patch.IPatcher;
 
 namespace Pandora.Skyrim;
-
-public class NemesisPatcher : IPatcher
-{
-	public PatcherFlags Flags => throw new NotImplementedException();
-
-	public string GetFailureMessages()
-	{
-		throw new NotImplementedException();
-	}
-
-	public string GetPostRunMessages()
-	{
-		throw new NotImplementedException();
-	}
-
-	public Version GetVersion()
-	{
-		throw new NotImplementedException();
-	}
-
-	public string GetVersionString()
-	{
-		throw new NotImplementedException();
-	}
-
-	public Task PreloadAsync()
-	{
-		throw new NotImplementedException();
-	}
-
-	public Task<bool> RunAsync()
-	{
-		throw new NotImplementedException();
-	}
-
-	public void SetTarget(List<IModInfo> mods)
-	{
-		throw new NotImplementedException();
-	}
-
-	public Task<bool> UpdateAsync()
-	{
-		throw new NotImplementedException();
-	}
-}
 
 public class SkyrimPatcher : IPatcher
 {

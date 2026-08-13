@@ -10,9 +10,9 @@ using Pandora.API.Patch.IOManagers;
 using Pandora.API.Patch.Skyrim64;
 using Pandora.API.Patch.Skyrim64.AnimData;
 using Pandora.API.Patch.Skyrim64.AnimSetData;
+using Pandora.Core.Paths.Abstractions;
 using Pandora.Skyrim.AnimSetData;
 using Pandora.Skyrim.Hkx.Changes;
-using Pandora.Core.Paths.Abstractions;
 
 namespace Pandora.Skyrim.Format.Pandora;
 
@@ -58,14 +58,13 @@ public class PandoraAssembler
 		}
 		catch (Exception ex)
 		{
-		Logger.Error(
-			$"Pandora Assembler > Mod \"{modInfo.Name}\" > File \"{file.FullName}\" > Load > FAILED > {ex.Message}"
-		);
+			Logger.Error(
+				$"Pandora Assembler > Mod \"{modInfo.Name}\" > File \"{file.FullName}\" > Load > FAILED > {ex.Message}"
+			);
 			return false;
 		}
 
-		var editContainer = container;
-		PandoraParser.ParseEdits(editContainer, targetPackFile, changeSet);
+		PandoraParser.ParseEdits(container, targetPackFile, changeSet);
 
 		targetPackFile.Dispatcher.AddChangeSet(changeSet);
 		return true;
@@ -114,7 +113,9 @@ public class PandoraAssembler
 					out IProject? targetProject
 				)
 			)
+			{
 				continue;
+			}
 
 			using (var readStream = file.OpenRead())
 			{
