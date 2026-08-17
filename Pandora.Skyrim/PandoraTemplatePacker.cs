@@ -141,22 +141,9 @@ public class PandoraTemplatePacker : IPatcher
 	{
 		try
 		{
-			var projects = _projectManager.GetAllProjects();
-			var results = new ProjectPackResult[projects.Count];
-			await Parallel.ForEachAsync(
-				projects.Select((project, i) => (project, i)),
-				async (item, cancellationToken) =>
-				{
-					results[item.i] = await Task.Run(
-						() => PackProject(item.project),
-						cancellationToken
-					);
-				}
-			);
-
-			foreach (var result in results)
+			foreach (var project in _projectManager.GetAllProjects())
 			{
-				_projectResults.Add(result);
+				_projectResults.Add(await Task.Run(() => PackProject(project)));
 			}
 		}
 		catch (Exception ex)

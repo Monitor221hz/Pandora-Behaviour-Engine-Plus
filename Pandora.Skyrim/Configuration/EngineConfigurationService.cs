@@ -22,6 +22,8 @@ public sealed class EngineConfigurationService : IEngineConfigurationService
 	private readonly IEngineConfigurationFactory<SkyrimDebugConfiguration> _skyrimDebugFactory;
 	private readonly IEngineConfigurationFactory<NemesisToPandoraConfiguration> _nemesisToPandoraFactory;
 
+	private readonly IEngineConfigurationFactory<PandoraTemplateConfiguration> _pandoraTemplateFactory;
+
 	private IEngineConfigurationFactory _currentFactory;
 	private readonly List<EngineConfigDescriptor> _availableConfigs = [];
 
@@ -34,7 +36,8 @@ public sealed class EngineConfigurationService : IEngineConfigurationService
 		IPluginManager pluginManager,
 		IEngineConfigurationFactory<SkyrimConfiguration> skyrimFactory,
 		IEngineConfigurationFactory<SkyrimDebugConfiguration> skyrimDebugFactory,
-		IEngineConfigurationFactory<NemesisToPandoraConfiguration> nemesisToPandoraFactory
+		IEngineConfigurationFactory<NemesisToPandoraConfiguration> nemesisToPandoraFactory,
+		IEngineConfigurationFactory<PandoraTemplateConfiguration> pandoraTemplateFactory
 	)
 	{
 		_pluginManager = pluginManager;
@@ -42,6 +45,7 @@ public sealed class EngineConfigurationService : IEngineConfigurationService
 		_skyrimDebugFactory = skyrimDebugFactory;
 		_currentFactory = skyrimFactory;
 		_nemesisToPandoraFactory = nemesisToPandoraFactory;
+		_pandoraTemplateFactory = pandoraTemplateFactory;
 		_factorySubject = new BehaviorSubject<IEngineConfigurationFactory>(_currentFactory);
 	}
 
@@ -51,7 +55,12 @@ public sealed class EngineConfigurationService : IEngineConfigurationService
 
 		RegisterConfiguration(_skyrimFactory, "Lean");
 		RegisterConfiguration(_skyrimDebugFactory, "Include Debug");
-		RegisterConfiguration(_nemesisToPandoraFactory, "Nemesis -> Pandora", "Skyrim64/");
+		RegisterConfiguration(_nemesisToPandoraFactory, "Convert Nemesis to Pandora", "Skyrim64/");
+		RegisterConfiguration(
+			_pandoraTemplateFactory,
+			"Pack/Unpack Pandora Templates",
+			"Skyrim64/"
+		);
 
 		foreach (var plugin in _pluginManager.EngineConfigurationPlugins)
 		{
