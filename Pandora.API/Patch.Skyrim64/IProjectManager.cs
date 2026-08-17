@@ -18,6 +18,7 @@ public interface IProjectManager
 	void GetAnimationInfo(StringBuilder builder);
 	void GetExportInfo(StringBuilder builder);
 	void GetFNISInfo(StringBuilder builder);
+	List<IProject> GetAllProjects();
 	DirectoryInfo GetOutputDirectory();
 	IProject? LoadProject(string projectFilePath);
 	IProject? LoadProjectHeader(string projectFilePath);

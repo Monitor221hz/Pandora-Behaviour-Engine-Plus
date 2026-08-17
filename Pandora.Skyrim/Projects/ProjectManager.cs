@@ -1,12 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using NLog;
-using Pandora.API.Patch;
-using Pandora.API.Patch.Skyrim64;
-using Pandora.Skyrim.Format.FNIS;
-using Pandora.Skyrim.Hkx.Packfile;
-using Pandora.Core.Paths.Abstractions;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -16,6 +10,12 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NLog;
+using Pandora.API.Patch;
+using Pandora.API.Patch.Skyrim64;
+using Pandora.Core.Paths.Abstractions;
+using Pandora.Skyrim.Format.FNIS;
+using Pandora.Skyrim.Hkx.Packfile;
 
 namespace Pandora.Skyrim;
 
@@ -55,6 +55,8 @@ public class ProjectManager : IProjectManager
 		_pathContext = skyrimPathResolver;
 		_fnisParser = new FNISParser(_pathContext, this);
 	}
+
+	public List<IProject> GetAllProjects() => _projectMap.Values.ToList();
 
 	public void GetExportInfo(StringBuilder builder)
 	{

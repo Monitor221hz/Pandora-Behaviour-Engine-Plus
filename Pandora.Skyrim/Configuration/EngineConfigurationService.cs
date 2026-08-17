@@ -51,7 +51,7 @@ public sealed class EngineConfigurationService : IEngineConfigurationService
 
 		RegisterConfiguration(_skyrimFactory, "Lean");
 		RegisterConfiguration(_skyrimDebugFactory, "Include Debug");
-		RegisterConfiguration(_nemesisToPandoraFactory, "Nemesis -> Pandora");
+		RegisterConfiguration(_nemesisToPandoraFactory, "Nemesis -> Pandora", "Skyrim64/");
 
 		foreach (var plugin in _pluginManager.EngineConfigurationPlugins)
 		{
