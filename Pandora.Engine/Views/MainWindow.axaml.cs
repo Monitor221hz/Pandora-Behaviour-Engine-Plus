@@ -53,7 +53,7 @@ public partial class MainWindow : FAAppWindow
 
 		if (e.SelectedItem is NavigationItem item)
 		{
-			ViewModel.NavigateToUriCommand.Execute(item.Route);
+			ViewModel.NavigateToUriCommand.Execute(item.Route).Subscribe();
 		}
 	}
 
