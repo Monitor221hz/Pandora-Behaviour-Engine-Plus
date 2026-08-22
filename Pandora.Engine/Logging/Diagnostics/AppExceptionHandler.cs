@@ -3,7 +3,6 @@
 
 using Avalonia.Threading;
 using Pandora.Core.Logging.Diagnostics;
-using ReactiveUI;
 using System;
 using System.Reactive;
 using System.Threading.Tasks;
@@ -12,15 +11,19 @@ namespace Pandora.Logging.Diagnostics;
 
 public class AppExceptionHandler(CrashReporter reporter) : IDisposable
 {
-	private IObserver<Exception>? _previousRxHandler;
+	private static readonly RouterObserver RxRouter = new();
+
+	/// <summary>
+	/// Observer installed into ReactiveUI during app building. Forwards events to the active handler.
+	/// </summary>
+	public static IObserver<Exception> ReactiveUiExceptionHandler => RxRouter;
 
 	public void Initialize()
 	{
 		AppDomain.CurrentDomain.UnhandledException += OnUnhandled;
 		TaskScheduler.UnobservedTaskException += OnUnobservedTask;
 		Dispatcher.UIThread.UnhandledException += OnUiUnhandled;
-		_previousRxHandler = RxApp.DefaultExceptionHandler;
-		RxApp.DefaultExceptionHandler = Observer.Create<Exception>(OnRxException);
+		RxRouter.Target = Observer.Create<Exception>(OnRxException);
 	}
 
 	/// <summary>
@@ -58,9 +61,19 @@ public class AppExceptionHandler(CrashReporter reporter) : IDisposable
 		AppDomain.CurrentDomain.UnhandledException -= OnUnhandled;
 		TaskScheduler.UnobservedTaskException -= OnUnobservedTask;
 		Dispatcher.UIThread.UnhandledException -= OnUiUnhandled;
-		if (_previousRxHandler is not null)
-			RxApp.DefaultExceptionHandler = _previousRxHandler;
+		RxRouter.Target = null;
 
 		GC.SuppressFinalize(this);
+	}
+
+	private sealed class RouterObserver : IObserver<Exception>
+	{
+		public IObserver<Exception>? Target { get; set; }
+
+		public void OnCompleted() => Target?.OnCompleted();
+
+		public void OnError(Exception error) => Target?.OnError(error);
+
+		public void OnNext(Exception value) => Target?.OnNext(value);
 	}
 }

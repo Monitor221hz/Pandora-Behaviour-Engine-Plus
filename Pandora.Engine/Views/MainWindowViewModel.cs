@@ -9,12 +9,12 @@ using Pandora.Core.Settings;
 using Pandora.Views.Pages.DTOs;
 using Pandora.Views.Pages.Factories;
 using ReactiveUI;
+using ReactiveUI.Primitives;
+using ReactiveUI.Primitives.Extensions;
 using ReactiveUI.SourceGenerators;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Disposables.Fluent;
-using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace Pandora.ViewModels;
@@ -48,12 +48,12 @@ public partial class MainWindowViewModel : ViewModelBase, IScreen, IActivatableV
 		_settingsService = settingsService;
 
 		var engineIcon = GetResource<StreamGeometry>("IconPandoraOutline");
-		var settingsIcon = new SymbolIconSource { Symbol = Symbol.Setting };
-		var infoIcon = GetResource<FontIconSource>("Info") ?? new FontIconSource { Glyph = "i" };
+		var settingsIcon = new FASymbolIconSource { Symbol = FASymbol.Setting };
+		var infoIcon = GetResource<FAFontIconSource>("Info") ?? new FAFontIconSource { Glyph = "i" };
 
 		NavigationItems =
 		[
-			new NavigationItem("Engine", new PathIconSource { Data = engineIcon }, Routes.Engine),
+			new NavigationItem("Engine", new FAPathIconSource { Data = engineIcon }, Routes.Engine),
 		];
 
 		FooterNavigationItems =
@@ -67,16 +67,16 @@ public partial class MainWindowViewModel : ViewModelBase, IScreen, IActivatableV
 		this.WhenActivated(disposables =>
 		{
 			this.WhenAnyValue(x => x.SelectedMenuItem)
-				.WhereNotNull()
+				.WhereIsNotNull()
 				.Select(x => x.Route)
 				.DistinctUntilChanged()
 				.InvokeCommand(NavigateToUriCommand)
 				.DisposeWith(disposables);
 
 			Router
-				.CurrentViewModel.WhereNotNull()
+				.CurrentViewModel.WhereIsNotNull()
 				.Select(vm => FindMenuItemByRoute(vm.UrlPathSegment))
-				.WhereNotNull()
+				.WhereIsNotNull()
 				.BindTo(this, x => x.SelectedMenuItem)
 				.DisposeWith(disposables);
 		});
@@ -130,7 +130,7 @@ public partial class MainWindowViewModel : ViewModelBase, IScreen, IActivatableV
 				return;
 			}
 
-			await Router.Navigate.Execute(viewModel);
+			await Router.Navigate.Execute(viewModel).ToTask();
 		}
 		catch (Exception ex)
 		{

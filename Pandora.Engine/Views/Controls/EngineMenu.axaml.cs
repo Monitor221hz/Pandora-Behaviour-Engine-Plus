@@ -2,10 +2,9 @@
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
 using Avalonia.Controls;
-using Avalonia.Interactivity;
-using FluentAvalonia.UI.Windowing;
 using Pandora.ViewModels;
 using ReactiveUI.Avalonia;
+using System;
 
 namespace Pandora.Views;
 
@@ -16,15 +15,15 @@ public partial class EngineMenu : ReactiveUserControl<EngineMenuViewModel>
 		InitializeComponent();
 	}
 
-	protected override void OnLoaded(RoutedEventArgs e)
+	protected override void OnLoaded(Avalonia.Interactivity.RoutedEventArgs e)
 	{
 		base.OnLoaded(e);
 
-		if (VisualRoot is AppWindow aw)
+		if (OperatingSystem.IsWindows())
 		{
-			TitleBarHost.ColumnDefinitions[2].Width = new GridLength(
-				aw.TitleBar.RightInset,
-				GridUnitType.Pixel
+			Avalonia.Controls.Win32Properties.SetNonClientHitTestResult(
+				TitleBarHost,
+				Avalonia.Controls.Win32Properties.Win32HitTestValue.Caption
 			);
 		}
 	}

@@ -6,8 +6,8 @@ using Avalonia.Xaml.Interactivity;
 using AvaloniaEdit;
 using Pandora.Core.Logging.NLogger.UI;
 using ReactiveUI;
+using ReactiveUI.Primitives;
 using System;
-using System.Reactive.Linq;
 
 namespace Pandora.Behaviors;
 
@@ -54,9 +54,9 @@ public class LogTextEditorBehavior : Behavior<TextEditor>
 
 		AssociatedObject.Document.Text = string.Empty;
 
-		_subscription = LogSource
-			.ObserveOn(RxApp.MainThreadScheduler)
-			.Subscribe(evt =>
+		_subscription = SubscribeExtensions.Subscribe(
+			LogSource.ObserveOn(RxSchedulers.MainThreadScheduler),
+			evt =>
 			{
 				switch (evt)
 				{
@@ -67,7 +67,8 @@ public class LogTextEditorBehavior : Behavior<TextEditor>
 						AssociatedObject.Document.Text = string.Empty;
 						break;
 				}
-			});
+			}
+		);
 	}
 
 	private void AppendText(string text)

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using Avalonia.Controls;
 using Avalonia.Media;
 using FluentAvalonia.UI.Windowing;
 using System;
@@ -12,7 +13,7 @@ public static class WindowsPlatformHelper
 	private static readonly Color DefaultBorderColor = Color.Parse("#FF9370DB");
 	private static readonly Color RunningBorderColor = Color.Parse("#FFFF614D");
 
-	extension(AppWindow window)
+	extension(FAAppWindow window)
 	{
 		public void SetVisualWindowState(WindowVisualState state)
 		{
@@ -24,26 +25,26 @@ public static class WindowsPlatformHelper
 				case WindowVisualState.Idle:
 					window.PlatformFeatures.SetWindowBorderColor(DefaultBorderColor);
 					window.PlatformFeatures.SetTaskBarProgressBarState(
-						TaskBarProgressBarState.None
+						FATaskBarProgressBarState.None
 					);
 					break;
 
 				case WindowVisualState.Running:
 					window.PlatformFeatures.SetWindowBorderColor(RunningBorderColor);
 					window.PlatformFeatures.SetTaskBarProgressBarState(
-						TaskBarProgressBarState.Indeterminate
+						FATaskBarProgressBarState.Indeterminate
 					);
 					break;
 
 				case WindowVisualState.Indeterminate:
 					window.PlatformFeatures.SetTaskBarProgressBarState(
-						TaskBarProgressBarState.Indeterminate
+						FATaskBarProgressBarState.Indeterminate
 					);
 					break;
 
 				case WindowVisualState.Error:
 					window.PlatformFeatures.SetTaskBarProgressBarState(
-						TaskBarProgressBarState.Error
+						FATaskBarProgressBarState.Error
 					);
 					break;
 			}
