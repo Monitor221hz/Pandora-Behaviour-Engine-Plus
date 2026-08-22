@@ -26,7 +26,7 @@
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
 		<vws:EngineMenu Grid.Row="0" DataContext="{Binding EngineMenuVM}" Margin="10 0 0 0" />
-		<ui:NavigationView x:Name="NavPanel"
+		<ui:FANavigationView x:Name="NavPanel"
 											 Grid.Row="1"
 											 MenuItemsSource="{Binding NavigationItems}"
 											 FooterMenuItemsSource="{Binding FooterNavigationItems}"
@@ -35,7 +35,7 @@
 											 IsPaneToggleButtonVisible="False"
                        SelectedItem="{Binding SelectedMenuItem, Mode=TwoWay}"
                        IsSettingsVisible="False">
-			<ui:NavigationView.Content>
+			<ui:FANavigationView.Content>
 				<rxui:RoutedViewHost x:Name="RoutedViewHost"
 				                      Router="{Binding Router}"
                               HorizontalContentAlignment="Stretch"
@@ -44,12 +44,12 @@
 						<TextBlock Text="Loading..." HorizontalAlignment="Center" VerticalAlignment="Center" />
 					</rxui:RoutedViewHost.DefaultContent>
 				</rxui:RoutedViewHost>
-			</ui:NavigationView.Content>
-			<ui:NavigationView.MenuItemTemplate>
+			</ui:FANavigationView.Content>
+			<ui:FANavigationView.MenuItemTemplate>
 				<DataTemplate x:DataType="dto:NavigationItem">
-					<ui:NavigationViewItem Content="{Binding Name}" SelectsOnInvoked="True" IconSource="{Binding Icon}" />
+					<ui:FANavigationViewItem Content="{Binding Name}" SelectsOnInvoked="True" IconSource="{Binding Icon}" />
 				</DataTemplate>
-			</ui:NavigationView.MenuItemTemplate>
-		</ui:NavigationView>
+			</ui:FANavigationView.MenuItemTemplate>
+		</ui:FANavigationView>
   </Grid>
 </Window>

@@ -10,11 +10,10 @@ using Avalonia.Styling;
 using Pandora.ViewModels;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
-using System;
-using System.Reactive.Disposables.Fluent;
-using System.Reactive.Linq;
+using ReactiveUI.Primitives;
 using System.Threading;
 using System.Threading.Tasks;
+using static System.Math;
 
 namespace Pandora.Views;
 
@@ -31,18 +30,18 @@ public partial class EnginePage : ReactiveUserControl<EnginePageViewModel>
 		this.WhenActivated(disposables =>
 		{
 			this.WhenAnyValue(x => x.Bounds, x => x.LogBox.LogExpander.IsExpanded)
-				.ObserveOn(RxApp.MainThreadScheduler)
+				.ObserveOn(RxSchedulers.MainThreadScheduler)
 				.Subscribe(x => UpdateGridLayout(x.Item1.Width, x.Item2))
 				.DisposeWith(disposables);
 
-			Observable
+			System.Reactive.Linq.Observable
 				.FromEventPattern<RoutedEventArgs>(
 					h => LogBox.LogExpander.Expanded += h,
 					h => LogBox.LogExpander.Expanded -= h
 				)
 				.Select(_ => true)
 				.Merge(
-					Observable
+					System.Reactive.Linq.Observable
 						.FromEventPattern<RoutedEventArgs>(
 							h => LogBox.LogExpander.Collapsed += h,
 							h => LogBox.LogExpander.Collapsed -= h
@@ -52,7 +51,7 @@ public partial class EnginePage : ReactiveUserControl<EnginePageViewModel>
 				.Subscribe(async isExpanded => await AnimateLogBox(isExpanded))
 				.DisposeWith(disposables);
 
-			Observable
+			System.Reactive.Linq.Observable
 				.FromEventPattern<VectorEventArgs>(
 					h => MySplitter.DragCompleted += h,
 					h => MySplitter.DragCompleted -= h
@@ -80,9 +79,9 @@ public partial class EnginePage : ReactiveUserControl<EnginePageViewModel>
 		var rowDef = RootGrid.RowDefinitions[3];
 
 		double startHeight = rowDef.ActualHeight;
-		double targetHeight = isExpanded ? Math.Max(_lastLogBoxHeight, 128) : 54;
+		double targetHeight = isExpanded ? Max(_lastLogBoxHeight, 128) : 54;
 
-		if (Math.Abs(startHeight - targetHeight) < 1)
+		if (Abs(startHeight - targetHeight) < 1)
 			return;
 
 		if (isExpanded)
@@ -115,7 +114,7 @@ public partial class EnginePage : ReactiveUserControl<EnginePageViewModel>
 
 			await Task.WhenAll(heightTask, opacityTask);
 		}
-		catch (OperationCanceledException) { }
+		catch (System.OperationCanceledException) { }
 		finally
 		{
 			if (!isExpanded && !token.IsCancellationRequested)

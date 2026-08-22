@@ -14,7 +14,7 @@ using System;
 namespace Pandora.Views;
 
 [IViewFor<MainWindowViewModel>]
-public partial class MainWindow : AppWindow
+public partial class MainWindow : FAAppWindow
 {
 	public MainWindow(IServiceProvider serviceProvider)
 	{
@@ -40,13 +40,12 @@ public partial class MainWindow : AppWindow
 		if (!OperatingSystem.IsWindows())
 			TitleBar.ExtendsContentIntoTitleBar = false;
 
-		TitleBar.TitleBarHitTestType = TitleBarHitTestType.Complex;
 		TitleBar.Height = 32;
 	}
 
 	private void NavPanelOnSelectionChanged(
 		object? sender,
-		NavigationViewSelectionChangedEventArgs e
+		FANavigationViewSelectionChangedEventArgs e
 	)
 	{
 		if (ViewModel is null)

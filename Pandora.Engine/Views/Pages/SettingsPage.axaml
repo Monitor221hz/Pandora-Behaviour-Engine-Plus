@@ -14,24 +14,24 @@
 						 x:DataType="vm:SettingsPageViewModel">
 	<StackPanel Spacing="4" Margin="8">
 		<TextBlock Text="Paths" FontSize="16" FontWeight="Bold" Margin="4" />
-		<ui:SettingsExpander Header="Skyrim Data"
+		<ui:FASettingsExpander Header="Skyrim Data"
 												 IconSource="{StaticResource IconSkyrim}"
 												 Description="{Binding GameDataPath}">
-			<ui:SettingsExpander.Footer>
+			<ui:FASettingsExpander.Footer>
 				<Button Content="Change" Command="{Binding PickGameDirectoryCommand}" />
-			</ui:SettingsExpander.Footer>
-		</ui:SettingsExpander>
+			</ui:FASettingsExpander.Footer>
+		</ui:FASettingsExpander>
 		
-		<ui:SettingsExpander Header="Output Folder"
+		<ui:FASettingsExpander Header="Output Folder"
 												 IconSource="Folder"
 												 Description="{Binding OutputPath}">
-			<ui:SettingsExpander.Footer>
+			<ui:FASettingsExpander.Footer>
 				<Button Content="Change" Command="{Binding PickOutputDirectoryCommand}" />
-			</ui:SettingsExpander.Footer>
-		</ui:SettingsExpander>
+			</ui:FASettingsExpander.Footer>
+		</ui:FASettingsExpander>
 		<TextBlock Text="Theme" FontSize="16" FontWeight="Bold" Margin="4" />
-		<ui:SettingsExpander Header="Application theme" IconSource="DarkTheme">
-			<ui:SettingsExpander.Footer>
+		<ui:FASettingsExpander Header="Application theme" IconSource="DarkTheme">
+			<ui:FASettingsExpander.Footer>
 				<ComboBox ItemsSource="{Binding Themes}"
 									Width="120"
 									SelectedItem="{Binding SelectedTheme}"
@@ -42,7 +42,7 @@
 						</DataTemplate>
 					</ComboBox.ItemTemplate>
 				</ComboBox>
-			</ui:SettingsExpander.Footer>
-		</ui:SettingsExpander>
+			</ui:FASettingsExpander.Footer>
+		</ui:FASettingsExpander>
 	</StackPanel>
 </UserControl>

@@ -35,13 +35,13 @@
 			<Separator Margin="0,10" />
 
 			<StackPanel Spacing="4">
-				<ui:SettingsExpander Header="Check Update"
+				<ui:FASettingsExpander Header="Check Update"
 														 Description="Check for a new version"
 														 IsEnabled="False"
 														 IconSource="Refresh">
-				</ui:SettingsExpander>
+				</ui:FASettingsExpander>
 
-				<ui:SettingsExpander Header="GitHub"
+				<ui:FASettingsExpander Header="GitHub"
 														 Description="Visit GitHub page"
 														 IsClickEnabled="True"
 														 IconSource="{DynamicResource IconGithub}">
@@ -51,12 +51,12 @@
 						</EventTriggerBehavior>
 					</Interaction.Behaviors>
 
-					<ui:SettingsExpander.Footer>
-						<ui:SymbolIcon Symbol="ChevronRight" />
-					</ui:SettingsExpander.Footer>
-				</ui:SettingsExpander>
+					<ui:FASettingsExpander.Footer>
+						<ui:FASymbolIcon Symbol="ChevronRight" />
+					</ui:FASettingsExpander.Footer>
+				</ui:FASettingsExpander>
 
-				<ui:SettingsExpander Header="Discord"
+				<ui:FASettingsExpander Header="Discord"
 														 Description="Join the Discord group"
 														 IsClickEnabled="True"
 														 IconSource="{DynamicResource IconDiscord}">
@@ -66,10 +66,10 @@
 						</EventTriggerBehavior>
 					</Interaction.Behaviors>
 
-					<ui:SettingsExpander.Footer>
-						<ui:SymbolIcon Symbol="ChevronRight" />
-					</ui:SettingsExpander.Footer>
-				</ui:SettingsExpander>
+					<ui:FASettingsExpander.Footer>
+						<ui:FASymbolIcon Symbol="ChevronRight" />
+					</ui:FASettingsExpander.Footer>
+				</ui:FASettingsExpander>
 
 			</StackPanel>
 
