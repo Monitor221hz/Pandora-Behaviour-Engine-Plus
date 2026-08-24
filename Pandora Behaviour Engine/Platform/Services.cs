@@ -27,12 +27,17 @@ public static class Services
 				.AddTransient<SteamGameLocator>()
 				.AddTransient<GogGameLocator>()
 				.AddTransient<RegistryGameLocator>()
-				.AddSingleton<IGameLocator>(sp => new CompositeGameLocator([
-					sp.GetRequiredService<CommandLineGameLocator>(),
-					sp.GetRequiredService<SteamGameLocator>(),
-					sp.GetRequiredService<GogGameLocator>(),
-					sp.GetRequiredService<RegistryGameLocator>(),
-				]));
+				.AddSingleton<IGameLocator>(sp =>
+                    System.OperatingSystem.IsWindows()
+                        ? new CompositeGameLocator([
+                            sp.GetRequiredService<CommandLineGameLocator>(),
+                            sp.GetRequiredService<SteamGameLocator>(),
+                            sp.GetRequiredService<GogGameLocator>(),
+                            sp.GetRequiredService<RegistryGameLocator>(),
+                        ])
+                        : new CompositeGameLocator([
+                            sp.GetRequiredService<CommandLineGameLocator>(),
+                        ]));
 		}
 	}
 }

@@ -88,6 +88,20 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 
 	public PackFile(FileInfo file, IProject? project)
 	{
+		// HKX data stores many relative paths using Windows separators.
+		// On Linux '\' is a normal filename character, so normalize before I/O.
+		if (file.FullName.Contains('\\'))
+		{
+			var normalizedPath =
+				file.FullName.Replace('\\', Path.DirectorySeparatorChar);
+
+			Logger.Info(
+				$"Linux path normalize: {file.FullName} -> {normalizedPath}"
+			);
+
+			file = new FileInfo(normalizedPath);
+		}
+
 		InputHandle = file;
 		OutputHandle = file;
 

@@ -186,6 +186,73 @@ public class Project : IEquatable<Project>, IProject
 
 	//public static Project Load(string projectFilePath) => Load(new PackFile(projectFilePath));
 
+
+	private static string NormalizeRelativePath(string path) =>
+		path.Replace('\\', Path.DirectorySeparatorChar)
+			.Replace('/', Path.DirectorySeparatorChar);
+
+	private const string LinuxPathResolverMarker =
+		"ODIN3_LINUX_CASE_INSENSITIVE_PATH_RESOLVER_V1";
+
+	private static string ResolveRelativePath(string baseDirectory, string relativePath)
+	{
+		var normalized = relativePath
+			.Replace('\\', Path.DirectorySeparatorChar)
+			.Replace('/', Path.DirectorySeparatorChar);
+
+		var directPath = Path.GetFullPath(Path.Combine(baseDirectory, normalized));
+
+		// Fast path: exact spelling already works.
+		if (File.Exists(directPath) || Directory.Exists(directPath))
+			return directPath;
+
+		var current = Path.GetFullPath(baseDirectory);
+
+		foreach (
+			var part in normalized.Split(
+				Path.DirectorySeparatorChar,
+				StringSplitOptions.RemoveEmptyEntries
+			)
+		)
+		{
+			if (part == ".")
+				continue;
+
+			if (part == "..")
+			{
+				current = Directory.GetParent(current)?.FullName ?? current;
+				continue;
+			}
+
+			if (!Directory.Exists(current))
+				return directPath;
+
+			var match = Directory
+				.EnumerateFileSystemEntries(current)
+				.FirstOrDefault(
+					entry => string.Equals(
+						Path.GetFileName(entry),
+						part,
+						StringComparison.OrdinalIgnoreCase
+					)
+				);
+
+			if (match is null)
+				return directPath;
+
+			current = match;
+		}
+
+		if (!string.Equals(current, directPath, StringComparison.Ordinal))
+		{
+			Console.WriteLine(
+				$"{LinuxPathResolverMarker}: {directPath} -> {current}"
+			);
+		}
+
+		return current;
+	}
+
 	private static IPackFileCharacter GetCharacterFile(IPackFile projectFile, IPackFileCache cache)
 	{
 		if (projectFile.Container.namedVariants.Count == 0)
@@ -200,10 +267,13 @@ public class Project : IEquatable<Project>, IProject
 			?? throw new InvalidDataException(
 				$"{nameof(hkbProjectData)} is has null stringData property."
 			);
-		string characterFilePath = projectStringData.characterFilenames.First();
+		string characterFilePath = ResolveRelativePath(
+			projectFile.InputHandle.DirectoryName!,
+			projectStringData.characterFilenames.First()
+		);
 
 		return cache.LoadPackFileCharacter(
-			new FileInfo(Path.Combine(projectFile.InputHandle.DirectoryName!, characterFilePath))
+			new FileInfo(characterFilePath)
 		);
 	}
 
@@ -216,18 +286,18 @@ public class Project : IEquatable<Project>, IProject
 		return (
 			cache.LoadPackFileSkeleton(
 				new FileInfo(
-					Path.Combine(
-						projectFile.InputHandle.DirectoryName!,
-						characterFile.SkeletonFileName
-					)
+					ResolveRelativePath(
+							projectFile.InputHandle.DirectoryName!,
+							characterFile.SkeletonFileName
+						)
 				)
 			),
 			cache.LoadPackFileGraph(
 				new FileInfo(
-					Path.Combine(
-						projectFile.InputHandle.DirectoryName!,
-						characterFile.BehaviorFileName
-					)
+					ResolveRelativePath(
+							projectFile.InputHandle.DirectoryName!,
+							characterFile.BehaviorFileName
+						)
 				)
 			)
 		);

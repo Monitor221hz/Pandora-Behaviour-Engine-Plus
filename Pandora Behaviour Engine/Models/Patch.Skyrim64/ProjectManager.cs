@@ -232,8 +232,12 @@ public class ProjectManager : IProjectManager
 
 		lock (_projectMap)
 		{
+			var normalizedProjectPath = projectFilePath
+				.Replace('\\', Path.DirectorySeparatorChar)
+				.Replace('/', Path.DirectorySeparatorChar);
+
 			var project = Project.Load(
-				new FileInfo(Path.Join(_pathContext.TemplateFolder.FullName, projectFilePath)),
+				new FileInfo(Path.Join(_pathContext.TemplateFolder.FullName, normalizedProjectPath)),
 				_packFileCache
 			);
 
@@ -252,7 +256,14 @@ public class ProjectManager : IProjectManager
 		{
 			var project = new Project(
 				_packFileCache.LoadPackFile(
-					new FileInfo(Path.Join(_pathContext.GameDataFolder.FullName, projectFilePath))
+					new FileInfo(
+						Path.Join(
+							_pathContext.GameDataFolder.FullName,
+							projectFilePath
+								.Replace('\\', Path.DirectorySeparatorChar)
+								.Replace('/', Path.DirectorySeparatorChar)
+						)
+					)
 				)
 			);
 
