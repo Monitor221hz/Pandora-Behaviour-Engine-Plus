@@ -7,6 +7,16 @@ using Pandora.Skyrim;
 
 namespace Pandora.Skyrim.Configuration;
 
+public class PandoraTemplateConfiguration : IEngineConfiguration
+{
+	public string Name { get; } = "Pandora Template";
+
+	public string Description { get; } =
+		@"Engine configuration for packing/unpacking Pandora's template behavior files, which used a customized havok binary format.";
+
+	public Type PatcherType { get; } = typeof(PandoraTemplatePacker);
+}
+
 public class SkyrimConfiguration : IEngineConfiguration
 {
 	public string Name { get; } = "Skyrim SE/AE";

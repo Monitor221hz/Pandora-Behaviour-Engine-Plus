@@ -27,6 +27,7 @@ public interface IProject
 	bool ContainsPackFile(string name);
 	bool Equals(IProject? other);
 	int GetHashCode();
+	public List<IPackFile> GetAllPackFiles();
 	bool Load(IPackFileCache cache);
 	IPackFile LookupPackFile(string name);
 	List<string> MapFiles(IPackFileCache cache);

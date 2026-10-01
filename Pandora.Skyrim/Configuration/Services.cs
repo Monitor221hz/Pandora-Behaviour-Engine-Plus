@@ -13,15 +13,17 @@ namespace Pandora.Skyrim.Configuration;
 
 public static class Services
 {
-	extension(IServiceCollection serviceCollection)
+	public static IServiceCollection AddConfigurationServices(
+		this IServiceCollection serviceCollection
+	)
 	{
-		public IServiceCollection AddConfigurationServices()
 		{
 			return serviceCollection
 				.AddSingleton<IEngineConfigurationService, EngineConfigurationService>()
 				.AddTransient<SkyrimConfiguration>()
 				.AddTransient<SkyrimDebugConfiguration>()
 				.AddTransient<NemesisToPandoraConfiguration>()
+				.AddTransient<PandoraTemplateConfiguration>()
 				.AddSingleton<IEngineConfiguration>(sp =>
 				{
 					var options = sp.GetService<LaunchOptions>();
@@ -42,6 +44,9 @@ public static class Services
 				.AddSingleton<Func<SkyrimConfiguration>>(sp =>
 					() => sp.GetRequiredService<SkyrimConfiguration>()
 				)
+				.AddSingleton<Func<PandoraTemplateConfiguration>>(sp =>
+					() => sp.GetRequiredService<PandoraTemplateConfiguration>()
+				)
 				.AddSingleton<
 					IEngineConfigurationFactory<NemesisToPandoraConfiguration>,
 					ConstEngineConfigurationFactory<NemesisToPandoraConfiguration>
@@ -53,6 +58,10 @@ public static class Services
 				.AddSingleton<
 					IEngineConfigurationFactory<SkyrimDebugConfiguration>,
 					ConstEngineConfigurationFactory<SkyrimDebugConfiguration>
+				>()
+				.AddSingleton<
+					IEngineConfigurationFactory<PandoraTemplateConfiguration>,
+					ConstEngineConfigurationFactory<PandoraTemplateConfiguration>
 				>();
 		}
 	}

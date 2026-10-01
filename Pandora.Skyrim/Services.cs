@@ -22,9 +22,10 @@ namespace Pandora.Skyrim;
 
 public static class Services
 {
-	extension(IServiceCollection serviceCollection)
+	public static IServiceCollection AddSkyrimPatchServices(
+		this IServiceCollection serviceCollection
+	)
 	{
-		public IServiceCollection AddSkyrimPatchServices()
 		{
 			return serviceCollection
 				.AddSingleton<DebugPackFileExporter>()
@@ -51,7 +52,8 @@ public static class Services
 				.AddScoped<PandoraBridgedAssembler>()
 				.AddScoped<IPatchAssembler>(sp => sp.GetRequiredService<NemesisAssembler>())
 				.AddScoped<SkyrimPatcher>()
-				.AddScoped<NemesisPandoraConverter>();
+				.AddScoped<NemesisPandoraConverter>()
+				.AddScoped<PandoraTemplatePacker>();
 		}
 	}
 }
