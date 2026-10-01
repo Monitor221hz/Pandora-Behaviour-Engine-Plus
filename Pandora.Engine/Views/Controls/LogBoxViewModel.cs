@@ -7,7 +7,8 @@ using Pandora.Core.Engine;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using System;
-using System.Reactive.Linq;
+using ReactiveUI.Primitives;
+using ReactiveUI.Primitives.Extensions;
 
 namespace Pandora.ViewModels;
 
@@ -20,7 +21,7 @@ public partial class LogBoxViewModel : ViewModelBase
 	public LaunchElementViewModel LaunchElementVM { get; }
 
 	[ObservableAsProperty]
-	private InfoBarSeverity _infoSeverity;
+	private FAInfoBarSeverity _infoSeverity;
 
 	[ObservableAsProperty]
 	private string _infoTitle = string.Empty;
@@ -42,12 +43,12 @@ public partial class LogBoxViewModel : ViewModelBase
 			.Select(s =>
 				s switch
 				{
-					EngineState.Ready => InfoBarSeverity.Informational,
-					EngineState.Preloading => InfoBarSeverity.Informational,
-					EngineState.Running => InfoBarSeverity.Warning,
-					EngineState.Success => InfoBarSeverity.Success,
-					EngineState.Error => InfoBarSeverity.Error,
-					_ => InfoBarSeverity.Informational,
+					EngineState.Ready => FAInfoBarSeverity.Informational,
+					EngineState.Preloading => FAInfoBarSeverity.Informational,
+					EngineState.Running => FAInfoBarSeverity.Warning,
+					EngineState.Success => FAInfoBarSeverity.Success,
+					EngineState.Error => FAInfoBarSeverity.Error,
+					_ => FAInfoBarSeverity.Informational,
 				}
 			)
 			.ToProperty(this, x => x.InfoSeverity, out _infoSeverityHelper);
@@ -70,12 +71,13 @@ public partial class LogBoxViewModel : ViewModelBase
 			.Select(state =>
 			{
 				if (state != EngineState.Running)
-					return Observable.Return(string.Empty);
+					return Observables.Return(string.Empty);
 
 				var start = DateTimeOffset.UtcNow;
 
-				return Observable
-					.Interval(TimeSpan.FromMilliseconds(100), RxApp.MainThreadScheduler)
+				return System
+					.Reactive.Linq.Observable.Interval(TimeSpan.FromMilliseconds(100))
+					.ObserveOn(RxSchedulers.MainThreadScheduler)
 					.Select(_ =>
 					{
 						var elapsed = DateTimeOffset.UtcNow - start;
@@ -88,11 +90,11 @@ public partial class LogBoxViewModel : ViewModelBase
 			.Select(s =>
 				s switch
 				{
-					EngineState.Preloading => Observable.Return("Preparing resources"),
+					EngineState.Preloading => Observables.Return("Preparing resources"),
 					EngineState.Running => runningTimer,
-					EngineState.Success => Observable.Return("Launch completed successfully"),
-					EngineState.Error => Observable.Return("See log for details"),
-					_ => Observable.Return(string.Empty),
+					EngineState.Success => Observables.Return("Launch completed successfully"),
+					EngineState.Error => Observables.Return("See log for details"),
+					_ => Observables.Return(string.Empty),
 				}
 			)
 			.Switch()

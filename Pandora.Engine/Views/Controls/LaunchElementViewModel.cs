@@ -8,9 +8,8 @@ using Pandora.Core.Mods.Abstractions;
 using Pandora.Platform.Windows;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
+using ReactiveUI.Primitives;
 using Splat;
-using System;
-using System.Reactive.Disposables.Fluent;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 

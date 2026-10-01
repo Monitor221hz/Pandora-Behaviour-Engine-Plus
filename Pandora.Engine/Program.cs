@@ -22,6 +22,9 @@ internal sealed class Program
 			.Configure<App>()
 			.UsePlatformDetect()
 			.WithInterFont()
-			.UseReactiveUI()
+			.UseReactiveUI(builder =>
+				builder.WithExceptionHandler(
+					Logging.Diagnostics.AppExceptionHandler.ReactiveUiExceptionHandler
+				))
 			.LogToTrace();
 }

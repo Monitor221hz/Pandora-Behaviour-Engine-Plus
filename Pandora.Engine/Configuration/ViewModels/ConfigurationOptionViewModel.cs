@@ -43,8 +43,8 @@ public partial class ConfigurationOptionViewModel
 		_configService = configService;
 
 		_isCheckedHelper = _configService
-			.CurrentFactoryChanged.Select(current => current == Factory)
-			.ObserveOn(RxApp.MainThreadScheduler)
+			.CurrentFactoryChanged
+			.Select(current => current == Factory)
 			.ToProperty(this, x => x.IsChecked)
 			.DisposeWith(_disposables);
 	}

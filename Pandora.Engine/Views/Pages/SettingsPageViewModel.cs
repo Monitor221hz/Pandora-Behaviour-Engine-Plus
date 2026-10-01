@@ -8,12 +8,10 @@ using Pandora.Views.Pages;
 using Pandora.Views.Pages.DTOs;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
-using System;
+using ReactiveUI.Primitives;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reactive.Disposables.Fluent;
-using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace Pandora.ViewModels;
@@ -27,7 +25,7 @@ public partial class SettingsPageViewModel : RoutableViewModelBase, IActivatable
 	private readonly IDiskDialogService _diskDialog;
 	private readonly IGameDescriptor _gameDescriptor;
 
-	public IReadOnlyList<AppTheme> Themes { get; } = Enum.GetValues<AppTheme>();
+	public IReadOnlyList<AppTheme> Themes { get; } = System.Enum.GetValues<AppTheme>();
 	public AppTheme SelectedTheme
 	{
 		get => _settings.Theme.Theme;
@@ -64,7 +62,10 @@ public partial class SettingsPageViewModel : RoutableViewModelBase, IActivatable
 		{
 			if (_settings.Paths.NeedsUserSelection)
 			{
-				Observable.StartAsync(PickGameDirectory).Subscribe().DisposeWith(disposables);
+				System.Reactive.Linq.Observable
+					.StartAsync(PickGameDirectory)
+					.Subscribe()
+					.DisposeWith(disposables);
 			}
 		});
 	}

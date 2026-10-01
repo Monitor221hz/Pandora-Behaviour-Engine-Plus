@@ -18,15 +18,15 @@
 	<Grid>
 		<Expander x:Name="LogExpander" Background="Transparent" IsExpanded="True" Theme="{StaticResource ExpandbleInfoBar}" ExpandDirection="Up" Padding="0" VerticalAlignment="Stretch">
 			<Expander.Header>
-				<ui:InfoBar Severity="{Binding InfoSeverity}"
+				<ui:FAInfoBar Severity="{Binding InfoSeverity}"
 										Title="{Binding InfoTitle}"
 										Message="{Binding InfoMessage}"
 										IsOpen="True"
 										IsClosable="False">
-					<ui:InfoBar.ActionButton>
+					<ui:FAInfoBar.ActionButton>
 						<vws:LaunchElement DataContext="{Binding LaunchElementVM}" HorizontalAlignment="Stretch" Margin="0 0 32 0" />
-					</ui:InfoBar.ActionButton>
-				</ui:InfoBar>
+					</ui:FAInfoBar.ActionButton>
+				</ui:FAInfoBar>
 			</Expander.Header>
 			<Border Background="{DynamicResource ControlFillColorDefault}" Padding="8 8 0 8" CornerRadius="4 0">
 				<Grid>
@@ -51,7 +51,7 @@
 										Padding="4"
 										HorizontalAlignment="Right" VerticalAlignment="Bottom"
 										ToolTip.Tip="Open Output Folder">
-							<ui:SymbolIcon Symbol="Folder" FontSize="20" />
+							<ui:FASymbolIcon Symbol="Folder" FontSize="20" />
 							<Interaction.Behaviors>
 								<EventTriggerBehavior EventName="Click">
 									<LaunchUriOrFileAction Path="{Binding State.OutputFolderUri}" />
@@ -63,7 +63,7 @@
 										Padding="4"
 										HorizontalAlignment="Right" VerticalAlignment="Bottom"
 										ToolTip.Tip="Copy text">
-							<ui:SymbolIcon Symbol="ClipboardCode" FontSize="20" />
+							<ui:FASymbolIcon Symbol="ClipboardCode" FontSize="20" />
 							<Interaction.Behaviors>
 								<EventTriggerBehavior EventName="Click" SourceObject="CopyCodeButton">
 									<SetClipboardTextAction Text="{Binding #LogEditor.Document.Text}" />

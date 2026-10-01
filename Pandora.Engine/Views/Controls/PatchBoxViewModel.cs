@@ -10,11 +10,9 @@ using Pandora.Mods.Extensions;
 using Pandora.Utils;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
-using System;
+using ReactiveUI.Primitives;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Reactive.Disposables.Fluent;
-using System.Reactive.Linq;
 
 namespace Pandora.ViewModels;
 
@@ -63,14 +61,13 @@ public partial class PatchBoxViewModel : ViewModelBase, IActivatableViewModel
 
 		this.WhenActivated(disposables =>
 		{
-			_allSelectedHelper = _modService
+			_modService
 				.Connect()
 				.AutoRefresh(x => x.Active)
 				.ToCollection()
 				.Select(items => ModViewModelExtensions.AreAllNonPandoraModsSelected(items))
 				.DistinctUntilChanged()
-				.ToProperty(this, x => x.AllSelected)
-				.DisposeWith(disposables);
+				.ToProperty(this, x => x.AllSelected, out _allSelectedHelper);
 
 			this.WhenAnyValue(x => x.IsSearchVisible)
 				.Where(isVisible => !isVisible)

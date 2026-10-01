@@ -22,7 +22,7 @@
 		<Grid >
       <Viewbox Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" >
         <Grid>
-          <ui:ProgressRing HorizontalAlignment="Left" IsActive="{Binding State.IsEngineRunning}" IsVisible="{Binding State.IsEngineRunning}" />
+          <ui:FAProgressRing HorizontalAlignment="Left" IsActive="{Binding State.IsEngineRunning}" IsVisible="{Binding State.IsEngineRunning}" />
           <PathIcon HorizontalAlignment="Right" Data="{StaticResource IconPlay}" Margin="0 2" Foreground="{DynamicResource SolidBackgroundFillColorQuarternary}" IsVisible="{Binding !State.IsEngineRunning}" />
         </Grid>
       </Viewbox>

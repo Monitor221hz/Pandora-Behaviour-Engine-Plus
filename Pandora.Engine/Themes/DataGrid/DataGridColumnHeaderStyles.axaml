@@ -50,7 +50,7 @@
                     HorizontalAlignment="Right"
                     Margin="0 0 2 0">
 
-                <ui:FontIcon Name="SortIcon"
+                <ui:FAFontIcon Name="SortIcon"
                              HorizontalAlignment="Center"
                              VerticalAlignment="Center"
                              FontSize="16"
@@ -65,7 +65,7 @@
                         Theme="{DynamicResource TransparentButton}"
                         VerticalAlignment="Bottom">
 
-                  <ui:FontIcon Name="OptionsIcon"
+                  <ui:FAFontIcon Name="OptionsIcon"
                                FontSize="18"
                                VerticalAlignment="Center"
                                HorizontalAlignment="Right"
@@ -74,16 +74,16 @@
 
                   <Button.Flyout>
                     <ui:FAMenuFlyout Placement="Bottom">
-                      <ui:MenuFlyoutItem Text="Sort Ascending"
+                      <ui:FAMenuFlyoutItem Text="Sort Ascending"
                                          IconSource="{StaticResource IconArrowDown}"
                                          Command="{Binding $parent[DataGrid].((vm:PatchBoxViewModel)DataContext).SortAscendingCommand}"
                                          CommandParameter="{Binding $parent[DataGridColumnHeader]}" />
-                      <ui:MenuFlyoutItem Text="Sort Descending"
+                      <ui:FAMenuFlyoutItem Text="Sort Descending"
                                          IconSource="{StaticResource IconArrowUp}"
                                          Command="{Binding $parent[DataGrid].((vm:PatchBoxViewModel)DataContext).SortDescendingCommand}"
                                          CommandParameter="{Binding $parent[DataGridColumnHeader]}" />
-                      <ui:MenuFlyoutSeparator />
-                      <ui:MenuFlyoutItem Text="Clear Sorting"
+                      <ui:FAMenuFlyoutSeparator />
+                      <ui:FAMenuFlyoutItem Text="Clear Sorting"
                                          IconSource="Clear"
                                          Command="{Binding $parent[DataGrid].((vm:PatchBoxViewModel)DataContext).ClearSortCommand}"
                                          CommandParameter="{Binding $parent[DataGridColumnHeader]}" />
@@ -140,12 +140,12 @@
       <Setter Property="Opacity" Value="0.5" />
     </Style>
 
-    <Style Selector="^:sortascending /template/ ui|FontIcon#SortIcon">
+    <Style Selector="^:sortascending /template/ ui|FAFontIcon#SortIcon">
       <Setter Property="IsVisible" Value="True" />
       <Setter Property="Glyph" Value="&#xE74B;" />
     </Style>
     
-    <Style Selector="^:sortdescending /template/ ui|FontIcon#SortIcon">
+    <Style Selector="^:sortdescending /template/ ui|FAFontIcon#SortIcon">
       <Setter Property="IsVisible" Value="True" />
       <Setter Property="Glyph" Value="&#xE110;" />
     </Style>
