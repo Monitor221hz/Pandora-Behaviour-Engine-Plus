@@ -16,7 +16,7 @@ These are reusable workflow fragments.
 
 `/p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true` causes some APIs that retrieve the current directory to point to the tmp dir.
 
-- Pandora Behaviour Engine.csproj
+- Pandora.Engine.csproj
 
 ```xml
 <ItemGroup>
