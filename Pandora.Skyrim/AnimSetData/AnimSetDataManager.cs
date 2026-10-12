@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using System;
+using System.Collections.Generic;
+using System.IO;
 using NLog;
 using Pandora.API.Patch.Skyrim64;
 using Pandora.API.Patch.Skyrim64.AnimSetData;
 using Pandora.Core.Extensions;
 using Pandora.Core.Paths.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.IO;
 
 namespace Pandora.Skyrim.AnimSetData;
 
@@ -32,6 +32,8 @@ public class AnimSetDataManager : IAnimSetDataManager
 
 	private readonly IList<string> _projectPaths = [];
 	internal IList<IProjectAnimSetData> AnimSetDataList { get; set; } = [];
+	internal Dictionary<string, IProjectAnimSetData> AnimSetDataMap { get; private set; } =
+		new(StringComparer.OrdinalIgnoreCase);
 
 	public AnimSetDataManager(IEnginePathsFacade pathContext)
 	{
@@ -75,7 +77,7 @@ public class AnimSetDataManager : IAnimSetDataManager
 							activeProject.AnimSetData = animSetData;
 						}
 
-						// AnimSetDataMap.Add(projectName, animSetData);
+						AnimSetDataMap[projectName] = animSetData;
 
 						//#if DEBUG
 						//						FileInfo animDataFile = new FileInfo($"{outputFolder.FullName}\\animsetdata\\{(Path.GetFileName(projectPaths[i]))}");
@@ -113,6 +115,51 @@ public class AnimSetDataManager : IAnimSetDataManager
 				$"Unexpected error while splitting TemplateAnimSetData from {TemplateAnimSetDataSingleFile.Name}"
 			);
 			throw;
+		}
+	}
+
+	internal void AddProject(string projectPath, ProjectAnimSetData animSetData)
+	{
+		_projectPaths.Add(projectPath);
+		AnimSetDataList.Add(animSetData);
+		AnimSetDataMap[Path.GetFileNameWithoutExtension(projectPath)] = animSetData;
+	}
+
+	internal void ReorderProjects(IReadOnlyList<string> projectPaths)
+	{
+		var pending = new Dictionary<string, Queue<IProjectAnimSetData>>(
+			StringComparer.OrdinalIgnoreCase
+		);
+		for (int i = 0; i < _projectPaths.Count; i++)
+		{
+			string key = Path.GetFileNameWithoutExtension(_projectPaths[i]);
+			if (!pending.TryGetValue(key, out Queue<IProjectAnimSetData>? queue))
+			{
+				queue = new Queue<IProjectAnimSetData>();
+				pending[key] = queue;
+			}
+			queue.Enqueue(AnimSetDataList[i]);
+		}
+
+		_projectPaths.Clear();
+		AnimSetDataList.Clear();
+		AnimSetDataMap = [];
+		foreach (string projectPath in projectPaths)
+		{
+			string key = Path.GetFileNameWithoutExtension(projectPath);
+			if (
+				!pending.TryGetValue(key, out Queue<IProjectAnimSetData>? queue)
+				|| queue.Count == 0
+			)
+			{
+				throw new InvalidDataException(
+					$"Animation set project list names {key}, which is not loaded."
+				);
+			}
+			IProjectAnimSetData project = queue.Dequeue();
+			_projectPaths.Add(projectPath);
+			AnimSetDataList.Add(project);
+			AnimSetDataMap[key] = project;
 		}
 	}
 

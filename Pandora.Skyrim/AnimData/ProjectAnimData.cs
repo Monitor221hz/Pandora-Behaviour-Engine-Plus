@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Pandora.API.Patch.Skyrim64.AnimData;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
+using Pandora.API.Patch.Skyrim64.AnimData;
 
 namespace Pandora.Skyrim.AnimData
 {
@@ -34,14 +34,16 @@ namespace Pandora.Skyrim.AnimData
 
 		public IEnumerable<string> GetClipIDs() => _blocks.ConvertAll(b => b.ClipID);
 
-		public void AddClipData(IClipDataBlock dataBlock, IClipMotionDataBlock motionDataBlock)
+		public void AddClipData(IClipDataBlock dataBlock, IClipMotionDataBlock? motionDataBlock)
 		{
 			var id = _manager.GetNextValidID().ToString();
 			dataBlock.ClipID = id;
-			motionDataBlock.ClipID = id;
-
 			AddClipData(dataBlock);
-
+			if (motionDataBlock == null)
+			{
+				return;
+			}
+			motionDataBlock.ClipID = id;
 			BoundMotionDataProject?.AddClipMotionData(motionDataBlock);
 		}
 
@@ -51,6 +53,81 @@ namespace Pandora.Skyrim.AnimData
 			{
 				_blocks.Add(dataBlock);
 			}
+		}
+
+		public void AddResolvedClip(IClipDataBlock dataBlock, IClipMotionDataBlock? motionDataBlock)
+		{
+			AddClipData(dataBlock);
+			if (motionDataBlock != null)
+			{
+				BoundMotionDataProject?.AddClipMotionData(motionDataBlock);
+			}
+		}
+
+		public int MaxNumericClipId()
+		{
+			int max = -1;
+			foreach (string clipId in GetClipIDs())
+			{
+				if (int.TryParse(clipId, out var id) && id > max)
+				{
+					max = id;
+				}
+			}
+			if (BoundMotionDataProject is MotionData motion)
+			{
+				foreach (IClipMotionDataBlock block in motion.Blocks)
+				{
+					if (int.TryParse(block.ClipID, out var id) && id > max)
+					{
+						max = id;
+					}
+				}
+			}
+			return max;
+		}
+
+		public bool TryReplaceClip(string name, string clipId, IClipDataBlock updated)
+		{
+			lock (_blocks)
+			{
+				for (int i = 0; i < _blocks.Count; i++)
+				{
+					if (
+						string.Equals(_blocks[i].Name, name, StringComparison.Ordinal)
+						&& string.Equals(_blocks[i].ClipID, clipId, StringComparison.Ordinal)
+					)
+					{
+						_blocks[i] = updated;
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		public bool TryRemoveClip(string name, string clipId)
+		{
+			lock (_blocks)
+			{
+				for (int i = 0; i < _blocks.Count; i++)
+				{
+					if (
+						!string.Equals(_blocks[i].Name, name, StringComparison.Ordinal)
+						|| !string.Equals(_blocks[i].ClipID, clipId, StringComparison.Ordinal)
+					)
+					{
+						continue;
+					}
+					_blocks.RemoveAt(i);
+					if (BoundMotionDataProject is MotionData motion)
+					{
+						motion.RemoveMotion(clipId);
+					}
+					return true;
+				}
+			}
+			return false;
 		}
 
 		public void AddDummyClipData(string clipName)

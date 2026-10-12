@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Pandora.API.Patch.Skyrim64.AnimData;
-using Pandora.Core.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
+using Pandora.API.Patch.Skyrim64.AnimData;
+using Pandora.Core.Extensions;
 
 namespace Pandora.Skyrim.AnimData
 {
@@ -25,6 +25,21 @@ namespace Pandora.Skyrim.AnimData
 		public ClipMotionDataBlock(string id)
 		{
 			ClipID = id;
+		}
+
+		public ClipMotionDataBlock(
+			string id,
+			float duration,
+			IList<string> translations,
+			IList<string> rotations
+		)
+		{
+			ClipID = id;
+			Duration = duration;
+			Translations = translations;
+			Rotations = rotations;
+			NumTranslations = translations.Count;
+			NumRotations = rotations.Count;
 		}
 
 		public static bool TryReadBlock(
@@ -111,10 +126,16 @@ namespace Pandora.Skyrim.AnimData
 			StringBuilder sb = new StringBuilder();
 			sb.AppendLine(ClipID)
 				.AppendLine(Duration.ToString())
-				.AppendLine(Translations.Count.ToString())
-				.AppendLine(string.Join("\r\n", Translations))
-				.AppendLine(Rotations.Count.ToString())
-				.AppendLine(string.Join("\r\n", Rotations));
+				.AppendLine(Translations.Count.ToString());
+			if (Translations.Count > 0)
+			{
+				sb.AppendLine(string.Join("\r\n", Translations));
+			}
+			sb.AppendLine(Rotations.Count.ToString());
+			if (Rotations.Count > 0)
+			{
+				sb.AppendLine(string.Join("\r\n", Rotations));
+			}
 			return sb.ToString();
 		}
 

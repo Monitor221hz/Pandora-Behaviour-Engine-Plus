@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Pandora.API.Patch.Skyrim64.AnimData;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Pandora.API.Patch.Skyrim64.AnimData;
 
 namespace Pandora.Skyrim.AnimData;
 
@@ -39,7 +39,57 @@ public class MotionData : IMotionData
 		lock (Blocks)
 		{
 			Blocks.Add(block);
+			if (int.TryParse(block.ClipID, out var id))
+			{
+				BlocksByID[id] = block;
+			}
 		}
+	}
+
+	public bool RemoveMotion(string clipId)
+	{
+		lock (Blocks)
+		{
+			for (int i = 0; i < Blocks.Count; i++)
+			{
+				if (!string.Equals(Blocks[i].ClipID, clipId, StringComparison.Ordinal))
+				{
+					continue;
+				}
+				Blocks.RemoveAt(i);
+				if (int.TryParse(clipId, out var id))
+				{
+					BlocksByID.Remove(id);
+				}
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public bool ReplaceMotion(string clipId, IClipMotionDataBlock block)
+	{
+		lock (Blocks)
+		{
+			for (int i = 0; i < Blocks.Count; i++)
+			{
+				if (!string.Equals(Blocks[i].ClipID, clipId, StringComparison.Ordinal))
+				{
+					continue;
+				}
+				Blocks[i] = block;
+				if (int.TryParse(clipId, out var previous) && previous.ToString() != block.ClipID)
+				{
+					BlocksByID.Remove(previous);
+				}
+				if (int.TryParse(block.ClipID, out var id))
+				{
+					BlocksByID[id] = block;
+				}
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public void AddDummyClipMotionData(string id)
