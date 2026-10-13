@@ -57,6 +57,16 @@ public static class ProcessUtils
 				return new ParentProcessInfo(parentPid, detectedManager);
 			}
 
+			if (Pandora.Core.Platform.WineHelper.IsWineRunning)
+			{
+				var envManager = DetectManagerFromEnvironment();
+				if (envManager != ModManager.None)
+				{
+					Logger.Info($"Detected launcher from Wine environment: {envManager}");
+					return new ParentProcessInfo(parentPid, envManager);
+				}
+			}
+
 			if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
 			{
 				if (parentName.Contains("proton"))
@@ -87,6 +97,16 @@ public static class ProcessUtils
 		catch (Exception ex)
 		{
 			Logger.Warn(ex, "Failed to detect parent process.");
+		}
+
+		if (Pandora.Core.Platform.WineHelper.IsWineRunning)
+		{
+			var fallbackManager = DetectManagerFromEnvironment();
+			if (fallbackManager != ModManager.None)
+			{
+				Logger.Info($"Detected launcher from Wine environment fallback: {fallbackManager}");
+				return new ParentProcessInfo(0, fallbackManager);
+			}
 		}
 
 		return new ParentProcessInfo(0, ModManager.None);
@@ -194,6 +214,33 @@ public static class ProcessUtils
 		}
 
 		return ModManager.None;
+	}
+
+	private static ModManager DetectManagerFromEnvironment()
+	{
+		try
+		{
+			// Check standard Mod Organizer environment variables
+			var moInstance = Environment.GetEnvironmentVariable("MO2_INSTANCE")
+				?? Environment.GetEnvironmentVariable("MO2_MODS_DIR")
+				?? Environment.GetEnvironmentVariable("MO_MODS_PATH");
+			if (!string.IsNullOrEmpty(moInstance))
+				return ModManager.ModOrganizer;
+
+			// Check Vortex environment variables
+			var vortexGame = Environment.GetEnvironmentVariable("VORTEX_GAME")
+				?? Environment.GetEnvironmentVariable("VORTEX_MODS_DIR");
+			if (!string.IsNullOrEmpty(vortexGame))
+				return ModManager.Vortex;
+
+			// Check current working directory path for keywords
+			var currentDir = Environment.CurrentDirectory.ToLowerInvariant();
+			return DetectManagerFromText(currentDir);
+		}
+		catch
+		{
+			return ModManager.None;
+		}
 	}
 
 	private static ModManager DetectManagerFromText(string textToSearch)
