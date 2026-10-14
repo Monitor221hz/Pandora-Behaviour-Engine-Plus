@@ -116,11 +116,8 @@ public sealed class NemesisCachePatcher
 
 		insertedNames.TryGetValue(projectName, out List<string>? names);
 		names ??= [];
-		if (tokens.Count > 0 && tokens.Min() != 0)
-		{
-			throw new InvalidDataException($"{projectName} cache tokens do not start at 0.");
-		}
-		if (tokens.Count > 0 && tokens.Max() + 1 != tokens.Count)
+		int tokenOrigin = tokens.Count == 0 ? 0 : tokens.Min();
+		if (tokens.Count > 0 && tokens.Max() - tokenOrigin + 1 != tokens.Count)
 		{
 			throw new InvalidDataException($"{projectName} cache tokens are not contiguous.");
 		}
@@ -180,12 +177,12 @@ public sealed class NemesisCachePatcher
 
 		foreach (PatchFile clip in clips)
 		{
-			ApplyClip(project, clip, motions, modcode, baseIndex);
+			ApplyClip(project, clip, motions, modcode, baseIndex, tokenOrigin);
 		}
 
 		foreach (PatchFile motion in motions.Values)
 		{
-			ApplyLooseMotion(project, motion, modcode, baseIndex);
+			ApplyLooseMotion(project, motion, modcode, baseIndex, tokenOrigin);
 		}
 	}
 
@@ -194,7 +191,8 @@ public sealed class NemesisCachePatcher
 		PatchFile clip,
 		Dictionary<string, PatchFile> motions,
 		string modcode,
-		int baseIndex
+		int baseIndex,
+		int tokenOrigin
 	)
 	{
 		string fileStem = Path.GetFileNameWithoutExtension(clip.Info.Name);
@@ -207,16 +205,17 @@ public sealed class NemesisCachePatcher
 		{
 			if (fileCode.Length > 0)
 			{
-				project.TryRemoveClip(clipName, Resolve(fileCode, modcode, baseIndex));
+				project.TryRemoveClip(clipName, Resolve(fileCode, modcode, baseIndex, tokenOrigin));
 				project.TryRemoveClip(clipName, fileCode);
 			}
 			return;
 		}
 
-		string resolved = Resolve(body[1], modcode, baseIndex);
+		string resolved = Resolve(body[1], modcode, baseIndex, tokenOrigin);
 		body[1] = resolved;
 		ClipDataBlock block = ClipFromLines(body);
-		string originalId = fileCode.Length == 0 ? resolved : Resolve(fileCode, modcode, baseIndex);
+		string originalId =
+			fileCode.Length == 0 ? resolved : Resolve(fileCode, modcode, baseIndex, tokenOrigin);
 		if (
 			!project.TryReplaceClip(block.Name, originalId, block)
 			&& !project.TryReplaceClip(block.Name, fileCode, block)
@@ -227,11 +226,11 @@ public sealed class NemesisCachePatcher
 				motions.Remove(fileCode.Length == 0 ? body[1] : fileCode, out PatchFile? motionFile)
 			)
 			{
-				motion = MotionFromFile(motionFile, resolved, modcode, baseIndex);
+				motion = MotionFromFile(motionFile, resolved, modcode, baseIndex, tokenOrigin);
 			}
 			else if (motions.Remove(resolved, out motionFile))
 			{
-				motion = MotionFromFile(motionFile, resolved, modcode, baseIndex);
+				motion = MotionFromFile(motionFile, resolved, modcode, baseIndex, tokenOrigin);
 			}
 			project.AddClipData(block, motion);
 		}
@@ -240,7 +239,13 @@ public sealed class NemesisCachePatcher
 			|| motions.Remove(resolved, out editedMotion)
 		)
 		{
-			ClipMotionDataBlock motion = MotionFromFile(editedMotion, resolved, modcode, baseIndex);
+			ClipMotionDataBlock motion = MotionFromFile(
+				editedMotion,
+				resolved,
+				modcode,
+				baseIndex,
+				tokenOrigin
+			);
 			if (project.BoundMotionDataProject is MotionData data)
 			{
 				if (!data.ReplaceMotion(originalId, motion))
@@ -259,12 +264,13 @@ public sealed class NemesisCachePatcher
 		ProjectAnimData project,
 		PatchFile motion,
 		string modcode,
-		int baseIndex
+		int baseIndex,
+		int tokenOrigin
 	)
 	{
 		string code = Path.GetFileNameWithoutExtension(motion.Info.Name);
-		string resolved = Resolve(code, modcode, baseIndex);
-		ClipMotionDataBlock block = MotionFromFile(motion, resolved, modcode, baseIndex);
+		string resolved = Resolve(code, modcode, baseIndex, tokenOrigin);
+		ClipMotionDataBlock block = MotionFromFile(motion, resolved, modcode, baseIndex, tokenOrigin);
 		if (project.BoundMotionDataProject is not MotionData data)
 		{
 			data = new MotionData([], []);
@@ -272,7 +278,7 @@ public sealed class NemesisCachePatcher
 			project.Header.HasMotionData = 1;
 		}
 		if (
-			!data.ReplaceMotion(Resolve(code, modcode, baseIndex), block)
+			!data.ReplaceMotion(Resolve(code, modcode, baseIndex, tokenOrigin), block)
 			&& !data.ReplaceMotion(code, block)
 		)
 		{
@@ -938,10 +944,10 @@ public sealed class NemesisCachePatcher
 		return TryToken(code, modcode, out int n) ? n : int.MaxValue;
 	}
 
-	private static string Resolve(string code, string modcode, int baseIndex)
+	private static string Resolve(string code, string modcode, int baseIndex, int tokenOrigin)
 	{
 		return TryToken(code.Trim(), modcode, out int n)
-			? (baseIndex + n).ToString(CultureInfo.InvariantCulture)
+			? (baseIndex + n - tokenOrigin).ToString(CultureInfo.InvariantCulture)
 			: code.Trim();
 	}
 
@@ -984,26 +990,26 @@ public sealed class NemesisCachePatcher
 		PatchFile file,
 		string resolvedId,
 		string modcode,
-		int baseIndex
+		int baseIndex,
+		int tokenOrigin
 	)
 	{
-		List<string> body = file.HasMarkers ? Splice(file.Lines) : file.Lines.ToList();
-		body = TrimBlank(body);
-		if (body.Count > 0)
+		List<string> body = TrimBlank(file.Lines.ToList());
+		if (body.Count > 0 && !IsOpenLine(body[0]))
 		{
-			body[0] = Resolve(body[0], modcode, baseIndex);
-		}
-		if (resolvedId.Length > 0 && body.Count > 0)
-		{
-			body[0] = resolvedId;
+			body[0] =
+				resolvedId.Length > 0
+					? resolvedId
+					: Resolve(body[0], modcode, baseIndex, tokenOrigin);
 		}
 		return MotionFromLines(body);
 	}
 
 	private static ClipMotionDataBlock MotionFromLines(IReadOnlyList<string> lines)
 	{
-		int cursor = 1;
-		string durationLine = lines[cursor++];
+		var cursor = new LineCursor(lines);
+		string id = TakeMotionScalar(cursor);
+		string durationLine = TakeMotionScalar(cursor);
 		if (
 			!float.TryParse(
 				durationLine,
@@ -1015,19 +1021,83 @@ public sealed class NemesisCachePatcher
 		{
 			duration = 0;
 		}
-		int translations = int.Parse(lines[cursor++], CultureInfo.InvariantCulture);
-		var translationLines = new List<string>(translations);
-		for (int i = 0; i < translations; i++)
+		List<string> translationLines = TakeMotionSamples(cursor);
+		List<string> rotationLines = TakeMotionSamples(cursor);
+		return new ClipMotionDataBlock(id, duration, translationLines, rotationLines);
+	}
+
+	private static string TakeMotionScalar(LineCursor cursor)
+	{
+		if (cursor.End)
 		{
-			translationLines.Add(lines[cursor++]);
+			return string.Empty;
 		}
-		int rotations = int.Parse(lines[cursor++], CultureInfo.InvariantCulture);
-		var rotationLines = new List<string>(rotations);
-		for (int i = 0; i < rotations; i++)
+		if (!cursor.IsOpen())
 		{
-			rotationLines.Add(lines[cursor++]);
+			return cursor.Take();
 		}
-		return new ClipMotionDataBlock(lines[0], duration, translationLines, rotationLines);
+		(List<string> edited, _) = cursor.TakeBlock();
+		return edited.Count == 0 ? string.Empty : edited[0];
+	}
+
+	private static List<string> TakeMotionSamples(LineCursor cursor)
+	{
+		var samples = new List<string>();
+		if (cursor.End)
+		{
+			return samples;
+		}
+		int count;
+		int consumed;
+		if (cursor.IsOpen())
+		{
+			(List<string> edited, List<string> original) = cursor.TakeBlock();
+			if (
+				original.Count == 0
+				|| !int.TryParse(
+					original[0],
+					NumberStyles.Integer,
+					CultureInfo.InvariantCulture,
+					out count
+				)
+			)
+			{
+				samples.AddRange(edited);
+				return samples;
+			}
+			if (edited.Count > 0)
+			{
+				samples.AddRange(edited.GetRange(1, edited.Count - 1));
+			}
+			consumed = Math.Max(0, original.Count - 1);
+		}
+		else
+		{
+			count = int.Parse(cursor.Take(), CultureInfo.InvariantCulture);
+			consumed = 0;
+		}
+
+		while (consumed < count || (!cursor.End && cursor.IsOpen()))
+		{
+			if (!cursor.End && cursor.IsOpen())
+			{
+				(List<string> edited, List<string> original) = cursor.TakeBlock();
+				samples.AddRange(edited);
+				consumed += original.Count;
+				continue;
+			}
+			if (consumed >= count || cursor.End)
+			{
+				break;
+			}
+			string line = cursor.Take();
+			if (!IsDelete(line))
+			{
+				samples.Add(line);
+			}
+			consumed++;
+		}
+		return samples;
 	}
 
 	private static List<string> TrimBlank(List<string> lines)

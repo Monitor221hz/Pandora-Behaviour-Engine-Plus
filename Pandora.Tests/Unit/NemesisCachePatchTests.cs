@@ -60,6 +60,33 @@ public class NemesisCachePatchTests : IDisposable
 	}
 
 	[Fact]
+	public void LowestTokenIsTheModBase()
+	{
+		string template = Template("animationdatasinglefile.txt");
+		var anim = LoadAnimData(template);
+		var projects = Substitute.For<IProjectManager>();
+		projects.TryGetProject(Arg.Any<string>(), out Arg.Any<IProject?>()).Returns(false);
+		projects.ActivePackFiles.Returns([]);
+		var sets = new AnimSetDataManager(Paths(Path.GetDirectoryName(template)!));
+		sets.SplitAnimSetDataSingleFile(projects);
+
+		ProjectAnimData male = anim.AnimDataAt(anim.IndexOfProject("DefaultMale"))!;
+		int firstId = male.MaxNumericClipId() + 1;
+		string startsAtOne = MotionOnlyMod("aaaaaa", "DefaultMale", 1);
+		string startsAtZero = MotionOnlyMod("bbbbbb", "DefaultMale", 0);
+
+		var patcher = new NemesisCachePatcher();
+		patcher.Apply(Mod("aaaaaa", 0, startsAtOne), anim, sets, projects);
+		patcher.Apply(Mod("bbbbbb", 1, startsAtZero), anim, sets, projects);
+
+		Assert.Contains(male.BoundMotionDataProject!.Blocks, block => block.ClipID == firstId.ToString());
+		Assert.Contains(
+			male.BoundMotionDataProject.Blocks,
+			block => block.ClipID == (firstId + 1).ToString()
+		);
+	}
+
+	[Fact]
 	public void AnimationNamesWithoutCacheDataDoNotShiftLaterTokens()
 	{
 		string template = Template("animationdatasinglefile.txt");
@@ -92,6 +119,98 @@ public class NemesisCachePatchTests : IDisposable
 		ProjectAnimData male = anim.AnimDataAt(anim.IndexOfProject("DefaultMale"))!;
 		Assert.Contains(male.GetClipIDs(), id => id == "32767");
 		Assert.Contains(male.GetClipIDs(), id => id == "32766");
+	}
+
+	[Fact]
+	public void MotionSampleCountFollowsLinesAddedOrRemoved()
+	{
+		string template = Template("animationdatasinglefile.txt");
+		var anim = LoadAnimData(template);
+		var projects = Substitute.For<IProjectManager>();
+		projects.TryGetProject(Arg.Any<string>(), out Arg.Any<IProject?>()).Returns(false);
+		projects.ActivePackFiles.Returns([]);
+		var sets = new AnimSetDataManager(Paths(Path.GetDirectoryName(template)!));
+		sets.SplitAnimSetDataSingleFile(projects);
+
+		string root = Path.Combine(_output.FullName, "motcnt");
+		string folder = Path.Combine(root, "animationdatasinglefile", "DefaultMale");
+		Directory.CreateDirectory(folder);
+		File.WriteAllLines(
+			Path.Combine(folder, "90001.txt"),
+			[
+				"90001",
+				"1.7",
+				"8",
+				"<!-- MOD_CODE ~motcnt~ OPEN -->",
+				"0.4 0 0 0",
+				"0.6 0 1 0",
+				"//* delete this line *//",
+				"1.0 0 1 0",
+				"//* delete this line *//",
+				"//* delete this line *//",
+				"1.4 0 2 0",
+				"//* delete this line *//",
+				"<!-- ORIGINAL -->",
+				"0.3 0 0 0",
+				"0.5 0 0 0",
+				"0.8 0 0 0",
+				"1.0 0 0 0",
+				"1.1 0 0 0",
+				"1.3 0 0 0",
+				"1.4 0 0 0",
+				"1.7 0 0 0",
+				"<!-- CLOSE -->",
+				"1",
+				"1.7 0 0 0 1",
+			]
+		);
+		File.WriteAllLines(
+			Path.Combine(folder, "90002.txt"),
+			[
+				"90002",
+				"1",
+				"2",
+				"0.1 0 0 0",
+				"0.2 0 0 0",
+				"<!-- MOD_CODE ~motcnt~ OPEN -->",
+				"0.3 0 5 0",
+				"<!-- CLOSE -->",
+				"1",
+				"1 0 0 0 1",
+			]
+		);
+		File.WriteAllLines(
+			Path.Combine(folder, "90003.txt"),
+			[
+				"90003",
+				"1.5",
+				"<!-- MOD_CODE ~motcnt~ OPEN -->",
+				"4",
+				"0.33 0 70 0",
+				"0.56 0 150 0",
+				"0.83 0 150 0",
+				"1.16 0 190 0",
+				"<!-- ORIGINAL -->",
+				"1",
+				"1.5 0 0 0",
+				"<!-- CLOSE -->",
+				"1",
+				"1.5 0 0 0 1",
+			]
+		);
+
+		new NemesisCachePatcher().Apply(Mod("motcnt", 0, root), anim, sets, projects);
+
+		MotionData motion = (MotionData)anim.AnimDataAt(anim.IndexOfProject("DefaultMale"))!.BoundMotionDataProject!;
+		var shorter = motion.Blocks.Last(block => block.ClipID == "90001");
+		var longer = motion.Blocks.Last(block => block.ClipID == "90002");
+		var replaced = motion.Blocks.Last(block => block.ClipID == "90003");
+		Assert.Equal(4, shorter.NumTranslations);
+		Assert.Equal(3, longer.NumTranslations);
+		Assert.Equal(4, replaced.NumTranslations);
+		Assert.Equal("4", shorter.ToString().Split('\n')[2].Trim());
+		Assert.Equal("3", longer.ToString().Split('\n')[2].Trim());
+		Assert.Equal("4", replaced.ToString().Split('\n')[2].Trim());
 	}
 
 	[Fact]
@@ -216,6 +335,19 @@ public class NemesisCachePatchTests : IDisposable
 		paths.TemplateFolder.Returns(new DirectoryInfo(templateFolder));
 		paths.OutputMeshesFolder.Returns(new DirectoryInfo(outputFolder ?? _output.FullName));
 		return paths;
+	}
+
+	private string MotionOnlyMod(string modcode, string project, int token)
+	{
+		string root = Path.Combine(_output.FullName, modcode);
+		string folder = Path.Combine(root, "animationdatasinglefile", project);
+		Directory.CreateDirectory(folder);
+		string code = $"{modcode}${token}";
+		File.WriteAllLines(
+			Path.Combine(folder, $"{code}.txt"),
+			[code, "1", "1", "1 0 0 0", "1", "1 0 0 0 1", ""]
+		);
+		return root;
 	}
 
 	private string ModFolder(
