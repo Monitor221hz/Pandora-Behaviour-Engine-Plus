@@ -28,11 +28,26 @@ public sealed class GameDataValidator(IGameDescriptor descriptor) : IGameDataVal
 
 		foreach (var exe in descriptor.ExecutableNames)
 		{
-			if (File.Exists(gameRoot.FullName / exe))
+			if (FileExistsCaseInsensitive(gameRoot, exe))
 				return true;
 		}
 
 		return false;
+	}
+
+	private static bool FileExistsCaseInsensitive(DirectoryInfo directory, string fileName)
+	{
+		if (File.Exists(directory.FullName / fileName))
+			return true;
+
+		try
+		{
+			return directory.EnumerateFiles().Any(f => f.Name.Equals(fileName, StringComparison.OrdinalIgnoreCase));
+		}
+		catch
+		{
+			return false;
+		}
 	}
 
 	private static DirectoryInfo? GetDataDirectory(DirectoryInfo input)
@@ -44,6 +59,17 @@ public sealed class GameDataValidator(IGameDescriptor descriptor) : IGameDataVal
 			return input;
 
 		var candidate = new DirectoryInfo(input.FullName / "Data");
-		return candidate.Exists ? candidate : null;
+		if (candidate.Exists)
+			return candidate;
+
+		try
+		{
+			return input.EnumerateDirectories()
+				.FirstOrDefault(d => d.Name.Equals("Data", StringComparison.OrdinalIgnoreCase));
+		}
+		catch
+		{
+			return null;
+		}
 	}
 }
