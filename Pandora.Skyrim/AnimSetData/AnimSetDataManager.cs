@@ -135,6 +135,7 @@ public class AnimSetDataManager : IAnimSetDataManager
 			using (var writeStream = outputAnimSetDataSingleFile.Create())
 			using (var writer = new StreamWriter(writeStream))
 			{
+				writer.NewLine = StringBuilderExtensions.Crlf;
 				writer.WriteLine(_projectPaths.Count);
 				Logger.Info($"Merging {_projectPaths.Count} projects into OutputAnimSetData file");
 

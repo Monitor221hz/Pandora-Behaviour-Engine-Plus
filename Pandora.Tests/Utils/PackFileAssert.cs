@@ -22,8 +22,8 @@ public class PackFileAssert
 		for (int i = 0; i < character.AnimationNames.Count; i++)
 		{
 			Assert.Equal(
-				Path.GetFileName(character.AnimationNames[i]),
-				Path.GetFileName(sibling.AnimationNames[i]),
+				Path.GetFileName(character.AnimationNames[i].Replace('\\', '/')),
+				Path.GetFileName(sibling.AnimationNames[i].Replace('\\', '/')),
 				StringComparer.OrdinalIgnoreCase
 			);
 		}

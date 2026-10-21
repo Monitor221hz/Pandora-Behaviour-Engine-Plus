@@ -3,6 +3,7 @@
 
 using Pandora.API.Patch.Skyrim64;
 using Pandora.API.Patch.Skyrim64.AnimData;
+using Pandora.Core.Extensions;
 using Pandora.Core.Paths.Abstractions;
 using System;
 using System.Collections.Generic;
@@ -196,6 +197,7 @@ public class AnimDataManager : IAnimDataManager
 			using (var writeStream = outputAnimDataSingleFile.Create())
 			using (var writer = new StreamWriter(writeStream))
 			{
+				writer.NewLine = StringBuilderExtensions.Crlf;
 				writer.WriteLine(_projectNames.Count);
 				Logger.Info($"Merging {_projectNames.Count} projects into OutputAnimData file");
 

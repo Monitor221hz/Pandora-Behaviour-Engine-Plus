@@ -109,12 +109,12 @@ namespace Pandora.Skyrim.AnimData
 		public override string ToString()
 		{
 			StringBuilder sb = new StringBuilder();
-			sb.AppendLine(ClipID)
-				.AppendLine(Duration.ToString())
-				.AppendLine(Translations.Count.ToString())
-				.AppendLine(string.Join("\r\n", Translations))
-				.AppendLine(Rotations.Count.ToString())
-				.AppendLine(string.Join("\r\n", Rotations));
+			sb.AppendCrlfLine(ClipID)
+				.AppendCrlfLine(Duration.ToString())
+				.AppendCrlfLine(Translations.Count.ToString())
+				.AppendCrlfLine(string.Join("\r\n", Translations))
+				.AppendCrlfLine(Rotations.Count.ToString())
+				.AppendCrlfLine(string.Join("\r\n", Rotations));
 			return sb.ToString();
 		}
 

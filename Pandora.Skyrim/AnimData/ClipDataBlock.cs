@@ -148,16 +148,16 @@ namespace Pandora.Skyrim.AnimData
 		{
 			StringBuilder sb = new StringBuilder();
 
-			sb.AppendLine(Name)
-				.AppendLine(ClipID)
-				.AppendLine(PlaybackSpeed.ToString())
-				.AppendLine(CropStartLocalTime.ToString())
-				.AppendLine(CropEndLocalTime.ToString())
-				.AppendLine(NumClipTriggers.ToString());
+			sb.AppendCrlfLine(Name)
+				.AppendCrlfLine(ClipID)
+				.AppendCrlfLine(PlaybackSpeed.ToString())
+				.AppendCrlfLine(CropStartLocalTime.ToString())
+				.AppendCrlfLine(CropEndLocalTime.ToString())
+				.AppendCrlfLine(NumClipTriggers.ToString());
 
 			if (TriggerNames.Count > 0 && TriggerNames.Count == NumClipTriggers)
 			{
-				sb.AppendJoin("\r\n", TriggerNames).AppendLine();
+				sb.AppendJoin("\r\n", TriggerNames).AppendCrlfLine();
 			}
 			return sb.ToString();
 		}

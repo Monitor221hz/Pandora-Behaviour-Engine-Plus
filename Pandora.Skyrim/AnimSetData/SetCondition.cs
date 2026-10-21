@@ -46,9 +46,9 @@ public class SetCondition : ISetCondition
 	{
 		StringBuilder sb = new();
 
-		sb.AppendLine(VariableName);
-		sb.AppendLine(Value1.ToString());
-		sb.AppendLine(Value2.ToString());
+		sb.AppendCrlfLine(VariableName);
+		sb.AppendCrlfLine(Value1.ToString());
+		sb.AppendCrlfLine(Value2.ToString());
 
 		return sb.ToString();
 	}
