@@ -18,6 +18,7 @@ public abstract class BasePackFileExporter : IMetaDataExporter<IPackFile>
 
 	private readonly IEnginePathsFacade _pathContext;
 	protected FileInfo PreviousOutputFile => _pathContext.OutputPreviousFile;
+	protected DirectoryInfo GameDataDirectory => _pathContext.GameDataFolder;
 
 	protected BasePackFileExporter(IEnginePathsFacade pathContext)
 	{

@@ -29,6 +29,46 @@ public static class PathExtensions
 		string relativePath
 	) => new(Resolve(baseDirectory, relativePath, lastSegmentIsFile: false));
 
+	/// <summary>
+	/// Resolves where to write <paramref name="relativePath"/> under <paramref name="outputDirectory"/>,
+	/// reusing the casing of folders and files that already exist in <paramref name="casingReference"/>
+	/// (e.g. the game Data folder) and then in the output directory. On case-sensitive file systems this
+	/// overwrites an existing file that differs only in case, as Windows does, instead of adding a second one.
+	/// </summary>
+	public static FileInfo ResolveOutputFile(
+		this DirectoryInfo outputDirectory,
+		string relativePath,
+		DirectoryInfo? casingReference = null
+	) =>
+		new(ResolveOutput(outputDirectory, relativePath, casingReference, lastSegmentIsFile: true));
+
+	/// <inheritdoc cref="ResolveOutputFile"/>
+	public static DirectoryInfo ResolveOutputDirectory(
+		this DirectoryInfo outputDirectory,
+		string relativePath,
+		DirectoryInfo? casingReference = null
+	) =>
+		new(
+			ResolveOutput(outputDirectory, relativePath, casingReference, lastSegmentIsFile: false)
+		);
+
+	private static string ResolveOutput(
+		DirectoryInfo outputDirectory,
+		string relativePath,
+		DirectoryInfo? casingReference,
+		bool lastSegmentIsFile
+	)
+	{
+		if (casingReference is not null)
+		{
+			relativePath = Path.GetRelativePath(
+				casingReference.FullName,
+				Resolve(casingReference, relativePath, lastSegmentIsFile)
+			);
+		}
+		return Resolve(outputDirectory, relativePath, lastSegmentIsFile);
+	}
+
 	private static string Resolve(
 		DirectoryInfo baseDirectory,
 		string relativePath,

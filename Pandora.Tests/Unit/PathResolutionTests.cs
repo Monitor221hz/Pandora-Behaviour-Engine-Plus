@@ -49,4 +49,60 @@ public sealed class PathResolutionTests : IDisposable
 		Assert.False(file.Exists);
 		Assert.Equal(Path.Join(_root.FullName, "Meshes", "patches", "new.xml"), file.FullName);
 	}
+
+	[Fact]
+	public void ResolveOutputFile_FileInGameDataWithOtherCase_UsesGameDataCasing()
+	{
+		var gameData = _root.CreateSubdirectory("Data");
+		var characters = gameData.CreateSubdirectory(
+			Path.Join("meshes", "actors", "character", "Characters")
+		);
+		File.WriteAllText(Path.Join(characters.FullName, "DefaultMale.hkx"), "");
+		var output = _root.CreateSubdirectory("Output");
+
+		var file = output.ResolveOutputFile(
+			Path.Join("meshes", "actors", "character", "characters", "defaultmale.hkx"),
+			gameData
+		);
+
+		Assert.Equal(
+			Path.Join(
+				output.FullName,
+				"meshes",
+				"actors",
+				"character",
+				"Characters",
+				"DefaultMale.hkx"
+			),
+			file.FullName
+		);
+	}
+
+	[Fact]
+	public void ResolveOutputFile_FileInOutputWithOtherCase_OverwritesExistingFile()
+	{
+		var output = _root.CreateSubdirectory("Output");
+		var behaviors = output.CreateSubdirectory(Path.Join("meshes", "Behaviors"));
+		File.WriteAllText(Path.Join(behaviors.FullName, "0_Master.hkx"), "");
+
+		var file = output.ResolveOutputFile(
+			Path.Join("meshes", "behaviors", "0_master.hkx"),
+			_root.CreateSubdirectory("Data")
+		);
+
+		Assert.True(file.Exists);
+		Assert.Equal(Path.Join(behaviors.FullName, "0_Master.hkx"), file.FullName);
+	}
+
+	[Fact]
+	public void ResolveOutputDirectory_DirectoryInGameDataWithOtherCase_UsesGameDataCasing()
+	{
+		var gameData = _root.CreateSubdirectory("Data");
+		gameData.CreateSubdirectory(Path.Join("SKSE", "Plugins"));
+		var output = _root.CreateSubdirectory("Output");
+
+		var directory = output.ResolveOutputDirectory(Path.Join("skse", "plugins"), gameData);
+
+		Assert.Equal(Path.Join(output.FullName, "SKSE", "Plugins"), directory.FullName);
+	}
 }

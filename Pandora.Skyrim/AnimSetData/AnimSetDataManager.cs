@@ -6,6 +6,7 @@ using Pandora.API.Patch.Skyrim64;
 using Pandora.API.Patch.Skyrim64.AnimSetData;
 using Pandora.Core.Extensions;
 using Pandora.Core.Paths.Abstractions;
+using Pandora.Core.Paths.Extensions;
 using Pandora.Core.Paths;
 using System;
 using System.Collections.Generic;
@@ -121,8 +122,9 @@ public class AnimSetDataManager : IAnimSetDataManager
 	{
 		try
 		{
-			var outputAnimSetDataSingleFile = new FileInfo(
-				Path.Join(_pathContext.OutputMeshesFolder.FullName, ANIMSETDATA_FILENAME)
+			var outputAnimSetDataSingleFile = _pathContext.OutputMeshesFolder.ResolveOutputFile(
+				ANIMSETDATA_FILENAME,
+				_pathContext.GameDataFolder.ResolveDirectory(_pathContext.OutputMeshesFolder.Name)
 			);
 			if (
 				outputAnimSetDataSingleFile.Directory != null
