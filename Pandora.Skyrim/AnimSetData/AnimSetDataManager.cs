@@ -6,6 +6,7 @@ using Pandora.API.Patch.Skyrim64;
 using Pandora.API.Patch.Skyrim64.AnimSetData;
 using Pandora.Core.Extensions;
 using Pandora.Core.Paths.Abstractions;
+using Pandora.Core.Paths;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -68,7 +69,7 @@ public class AnimSetDataManager : IAnimSetDataManager
 						AnimSetDataList.Add(animSetData);
 
 						IProject? activeProject = null;
-						var projectName = Path.GetFileNameWithoutExtension(_projectPaths[i]);
+						var projectName = GamePath.GetFileNameWithoutExtension(_projectPaths[i]);
 						if (projectManager.ProjectLoaded(projectName))
 						{
 							activeProject = projectManager.LookupProject(projectName);

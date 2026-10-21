@@ -10,6 +10,7 @@ using Pandora.API.Patch.IOManagers;
 using Pandora.API.Patch.Skyrim64;
 using Pandora.API.Patch.Skyrim64.AnimData;
 using Pandora.API.Patch.Skyrim64.AnimSetData;
+using Pandora.Core.Paths;
 using Pandora.Core.Paths.Abstractions;
 using Pandora.Skyrim.AnimSetData;
 using Pandora.Skyrim.Hkx.Changes;
@@ -171,8 +172,10 @@ public class PandoraAssembler
 							if (string.IsNullOrWhiteSpace(expectedPath))
 								continue;
 
-							string animationName = Path.GetFileNameWithoutExtension(expectedPath);
-							string folder = Path.GetDirectoryName(expectedPath)!;
+							string animationName = GamePath.GetFileNameWithoutExtension(
+								expectedPath
+							);
+							string folder = GamePath.GetDirectoryName(expectedPath)!;
 							var animInfo = new SetCachedAnimInfo().Encode(folder, animationName);
 							targetAnimSet.AddAnimInfo(animInfo);
 						}
@@ -201,8 +204,8 @@ public class PandoraAssembler
 						if (string.IsNullOrWhiteSpace(expectedPath))
 							continue;
 
-						string animationName = Path.GetFileNameWithoutExtension(expectedPath);
-						string folder = Path.GetDirectoryName(expectedPath)!;
+						string animationName = GamePath.GetFileNameWithoutExtension(expectedPath);
+						string folder = GamePath.GetDirectoryName(expectedPath)!;
 						var animInfo = new SetCachedAnimInfo().Encode(folder, animationName);
 						animInfos.Add(animInfo);
 					}
