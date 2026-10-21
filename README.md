@@ -44,6 +44,7 @@ Pandora runs on Windows, Linux, and MacOS, but only Windows is extensively teste
     * [Input](#input)
 * [For Developers](#for-developers)
   * [Build Requirements](#build-requirements) 
+  * [Building and Running on Linux](#building-and-running-on-linux)
 
 <br/>
 <br/>
@@ -427,3 +428,21 @@ Dispatcher > "ExampleMod" > defaultfemale~1hm_behavior > Replace > Element > #25
 * [NLog](https://www.nuget.org/packages/NLog/)
 * [XmlCake](https://github.com/Monitor221hz/XML.Cake.NET)
 * [HKX2](https://github.com/Monitor221hz/HKX2-Enhanced-Library) 
+
+### Building and Running on Linux
+Requires the [.NET 10 SDK](https://dotnet.microsoft.com/download). Clone with submodules (or run `git submodule update --init --recursive` in an existing clone), then publish a self-contained build:
+
+```bash
+git clone --recursive https://github.com/Monitor221hz/Pandora-Behaviour-Engine-Plus.git
+cd Pandora-Behaviour-Engine-Plus
+dotnet publish Pandora.Engine/Pandora.Engine.csproj -c Release -r linux-x64 --self-contained true \
+  -o publish/linux-x64 /p:PublishSingleFile=true /p:IncludeAllContentForSelfExtract=true
+```
+
+Run it, passing the game and output folders as described in [Startup Arguments](#startup-arguments):
+
+```bash
+"publish/linux-x64/Pandora Behaviour Engine+" --tesv:"<path to Skyrim Special Edition>" -o "<path to output folder>"
+```
+
+Keep the `Pandora_Engine` and `Nemesis_Engine` folders and `FNIS.esp` next to the executable. For development, `dotnet run --project Pandora.Engine -- <arguments>` runs a debug build directly.

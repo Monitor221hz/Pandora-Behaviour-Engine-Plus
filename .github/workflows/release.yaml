@@ -85,26 +85,33 @@ jobs:
           - rid: win-x64
             runner: windows-latest
             output-dir: Output.Win-x64
+            archive-ext: zip
           - rid: win-x86
             runner: windows-latest
             output-dir: Output.Win-x86
+            archive-ext: zip
           - rid: win-arm64
             runner: windows-latest
             output-dir: Output.Win-Arm64
+            archive-ext: zip
 
-          # Linux targets
-          # - rid: linux-x64
-          #   runner: windows-latest
-          #   output-dir: Output.Linux-x64
+          # Linux targets (tarballs keep the executable bit, which zip archives lose)
+          - rid: linux-x64
+            runner: ubuntu-latest
+            output-dir: Output.Linux-x64
+            archive-ext: tar.gz
           # - rid: linux-arm
-          #   runner: windows-latest
+          #   runner: ubuntu-latest
           #   output-dir: Output.Linux-Arm
+          #   archive-ext: tar.gz
           # - rid: linux-arm64
-          #   runner: windows-latest
+          #   runner: ubuntu-latest
           #   output-dir: Output.Linux-Arm64
+          #   archive-ext: tar.gz
           # - rid: linux-musl-x64
-          #   runner: windows-latest
+          #   runner: ubuntu-latest
           #   output-dir: Output.Linux-Musl-x64
+          #   archive-ext: tar.gz
 
     steps:
       - uses: actions/checkout@v4
@@ -140,7 +147,7 @@ jobs:
           # NOTE: The title is not provided here, so it will append to the existing release.
           tag: ${{ github.ref_name }}
           output-dir: ${{ matrix.output-dir }}
-          zip-path: "${{ matrix.output-dir }}/Pandora_Behaviour_Engine_${{ github.ref_name }}_${{ matrix.rid }}_net.zip"
+          zip-path: "${{ matrix.output-dir }}/Pandora_Behaviour_Engine_${{ github.ref_name }}_${{ matrix.rid }}_net.${{ matrix.archive-ext }}"
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload to NexusMods

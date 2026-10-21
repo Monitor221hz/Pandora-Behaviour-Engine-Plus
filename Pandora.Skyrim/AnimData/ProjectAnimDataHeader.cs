@@ -66,12 +66,12 @@ namespace Pandora.Skyrim.AnimData
 		public override string ToString()
 		{
 			StringBuilder sb = new();
-			sb.AppendLine(LeadInt.ToString())
-				.AppendLine(ProjectAssets.Count.ToString())
-				.AppendLine(string.Join("\r\n", ProjectAssets));
+			sb.AppendCrlfLine(LeadInt.ToString())
+				.AppendCrlfLine(ProjectAssets.Count.ToString())
+				.AppendCrlfLine(string.Join("\r\n", ProjectAssets));
 			if (HasMotionData == 1)
 			{
-				sb.AppendLine(HasMotionData.ToString());
+				sb.AppendCrlfLine(HasMotionData.ToString());
 			}
 			else
 			{

@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using HKX2E;
 using Pandora.API.Patch;
 using Pandora.API.Patch.Skyrim64;
+using Pandora.Core.Paths.Extensions;
 using Pandora.Skyrim.Hkx.Packfile;
 using Pandora.Patch.Patchers.Skyrim.FNIS;
 using Pandora.Core.Paths.Abstractions;
@@ -206,11 +207,8 @@ public class FNISParser : IFNISParser
 		var modAnimationFolders = animationsFolder.GetDirectories();
 
 		Debug.Assert(project.BehaviorFile is not null, "Project must have a behavior file.");
-		var behaviorFolder = new DirectoryInfo(
-			Path.Join(
-				absoluteOutputDirectory.FullName,
-				project.BehaviorFile.InputHandle.Directory!.Name
-			)
+		var behaviorFolder = absoluteOutputDirectory.ResolveDirectory(
+			project.BehaviorFile.InputHandle.Directory!.Name
 		);
 		if (!behaviorFolder.Exists || behaviorFolder.Parent == null)
 		{
@@ -278,11 +276,8 @@ public class FNISParser : IFNISParser
 
 	public void ScanProjectAnimlist(IProject project)
 	{
-		var currentDirectory = new DirectoryInfo(
-			Path.Join(
-				_pathContext.GameDataFolder.FullName,
-				project.ProjectFile.RelativeOutputDirectoryPath
-			)
+		var currentDirectory = _pathContext.GameDataFolder.ResolveDirectory(
+			project.ProjectFile.RelativeOutputDirectoryPath
 		);
 
 		ScanProjectAnimations(project, currentDirectory);

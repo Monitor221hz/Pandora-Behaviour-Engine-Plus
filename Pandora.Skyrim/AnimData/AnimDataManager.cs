@@ -3,7 +3,9 @@
 
 using Pandora.API.Patch.Skyrim64;
 using Pandora.API.Patch.Skyrim64.AnimData;
+using Pandora.Core.Extensions;
 using Pandora.Core.Paths.Abstractions;
+using Pandora.Core.Paths.Extensions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -181,8 +183,9 @@ public class AnimDataManager : IAnimDataManager
 	{
 		try
 		{
-			var outputAnimDataSingleFile = new FileInfo(
-				Path.Join(_pathContext.OutputMeshesFolder.FullName, ANIMDATA_FILENAME)
+			var outputAnimDataSingleFile = _pathContext.OutputMeshesFolder.ResolveOutputFile(
+				ANIMDATA_FILENAME,
+				_pathContext.GameDataFolder.ResolveDirectory(_pathContext.OutputMeshesFolder.Name)
 			);
 			if (
 				outputAnimDataSingleFile.Directory != null
@@ -196,6 +199,7 @@ public class AnimDataManager : IAnimDataManager
 			using (var writeStream = outputAnimDataSingleFile.Create())
 			using (var writer = new StreamWriter(writeStream))
 			{
+				writer.NewLine = StringBuilderExtensions.Crlf;
 				writer.WriteLine(_projectNames.Count);
 				Logger.Info($"Merging {_projectNames.Count} projects into OutputAnimData file");
 

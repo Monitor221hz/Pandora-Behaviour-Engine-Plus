@@ -14,6 +14,7 @@ using NLog;
 using Pandora.API.Patch;
 using Pandora.API.Patch.Skyrim64;
 using Pandora.Core.Paths.Abstractions;
+using Pandora.Core.Paths.Extensions;
 using Pandora.Skyrim.Format.FNIS;
 using Pandora.Skyrim.Hkx.Packfile;
 
@@ -235,7 +236,7 @@ public class ProjectManager : IProjectManager
 		lock (_projectMap)
 		{
 			var project = Project.Load(
-				new FileInfo(Path.Join(_pathContext.TemplateFolder.FullName, projectFilePath)),
+				_pathContext.TemplateFolder.ResolveFile(projectFilePath),
 				_packFileCache
 			);
 

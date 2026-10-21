@@ -12,6 +12,7 @@ using HKX2E;
 using Pandora.API.Patch.Skyrim64;
 using Pandora.API.Patch.Skyrim64.AnimData;
 using Pandora.API.Patch.Skyrim64.AnimSetData;
+using Pandora.Core.Paths.Extensions;
 
 namespace Pandora.Skyrim;
 
@@ -210,7 +211,7 @@ public class Project : IEquatable<Project>, IProject
 		string characterFilePath = projectStringData.characterFilenames.First();
 
 		return cache.LoadPackFileCharacter(
-			new FileInfo(Path.Combine(projectFile.InputHandle.DirectoryName!, characterFilePath))
+			projectFile.InputHandle.Directory!.ResolveFile(characterFilePath)
 		);
 	}
 
@@ -222,20 +223,10 @@ public class Project : IEquatable<Project>, IProject
 	{
 		return (
 			cache.LoadPackFileSkeleton(
-				new FileInfo(
-					Path.Combine(
-						projectFile.InputHandle.DirectoryName!,
-						characterFile.SkeletonFileName
-					)
-				)
+				projectFile.InputHandle.Directory!.ResolveFile(characterFile.SkeletonFileName)
 			),
 			cache.LoadPackFileGraph(
-				new FileInfo(
-					Path.Combine(
-						projectFile.InputHandle.DirectoryName!,
-						characterFile.BehaviorFileName
-					)
-				)
+				projectFile.InputHandle.Directory!.ResolveFile(characterFile.BehaviorFileName)
 			)
 		);
 	}

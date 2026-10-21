@@ -87,10 +87,10 @@ public class ProjectAnimSetData : IProjectAnimSetData
 	{
 		StringBuilder sb = new();
 
-		sb.AppendLine(NumSets.ToString());
+		sb.AppendCrlfLine(NumSets.ToString());
 		if (NumSets > 0)
 		{
-			sb.AppendJoin("\r\n", AnimSetFileNames).AppendLine();
+			sb.AppendJoin("\r\n", AnimSetFileNames).AppendCrlfLine();
 			sb.AppendJoin("", AnimSets);
 		}
 

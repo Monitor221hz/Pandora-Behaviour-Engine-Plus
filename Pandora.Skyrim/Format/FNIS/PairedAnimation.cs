@@ -3,6 +3,7 @@
 
 using HKX2E;
 using Pandora.API.Patch.Skyrim64;
+using Pandora.Core.Paths;
 using Pandora.Skyrim.AnimSetData;
 using Pandora.Skyrim.Hkx.Packfile;
 using System.Collections.Generic;
@@ -45,13 +46,15 @@ public class PairedAnimation : BasicAnimation
 		{
 			return;
 		}
-		var folderPath = Path.Join(
+		var folderPath = GamePath.Join(
 			"meshes",
-			Path.GetRelativePath(templateFolder.FullName, inputDirectory).ToLowerInvariant(),
+			GamePath
+				.FromPlatform(Path.GetRelativePath(templateFolder.FullName, inputDirectory))
+				.ToLowerInvariant(),
 			"animations",
 			context.ModInfo.Name
 		);
-		var animationName = Path.GetFileNameWithoutExtension(AnimationFilePath);
+		var animationName = GamePath.GetFileNameWithoutExtension(AnimationFilePath);
 		foreach (var animset in animSetData.AnimSets)
 		{
 			animset.AddAnimInfo(new SetCachedAnimInfo().Encode(folderPath, animationName));

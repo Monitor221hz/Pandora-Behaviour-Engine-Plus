@@ -2,6 +2,7 @@
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
 using Pandora.API.Patch.Skyrim64.AnimSetData;
+using Pandora.Core.Extensions;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
@@ -60,9 +61,9 @@ public class SetCachedAnimInfo : ISetCachedAnimInfo
 	{
 		StringBuilder sb = new();
 
-		sb.AppendLine(EncodedPath.ToString());
-		sb.AppendLine(EncodedFileName.ToString());
-		sb.AppendLine(EncodedExtension.ToString());
+		sb.AppendCrlfLine(EncodedPath.ToString());
+		sb.AppendCrlfLine(EncodedFileName.ToString());
+		sb.AppendCrlfLine(EncodedExtension.ToString());
 
 		return sb.ToString();
 	}

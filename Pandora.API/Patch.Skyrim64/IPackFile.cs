@@ -50,6 +50,13 @@ public interface IPackFile : IEquatable<IPackFile>
 		where T : IHavokObject;
 	void PushXmlAsObjects();
 	FileInfo RebaseOutput(DirectoryInfo exportDirectory);
+
+	/// <summary>
+	/// Like <see cref="RebaseOutput(DirectoryInfo)"/>, but reuses the casing of matching folders and files
+	/// that already exist in <paramref name="casingReference"/> or the export directory.
+	/// </summary>
+	FileInfo RebaseOutput(DirectoryInfo exportDirectory, DirectoryInfo casingReference) =>
+		RebaseOutput(exportDirectory);
 	bool TargetExists(string nodeName);
 	void TryBuildClassLookup();
 	bool TryGetXMap(string nodeName, [NotNullWhen(true)] out XMapElement? xmap);

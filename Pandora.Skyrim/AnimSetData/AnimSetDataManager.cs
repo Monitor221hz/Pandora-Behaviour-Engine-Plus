@@ -6,6 +6,8 @@ using Pandora.API.Patch.Skyrim64;
 using Pandora.API.Patch.Skyrim64.AnimSetData;
 using Pandora.Core.Extensions;
 using Pandora.Core.Paths.Abstractions;
+using Pandora.Core.Paths.Extensions;
+using Pandora.Core.Paths;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -68,7 +70,7 @@ public class AnimSetDataManager : IAnimSetDataManager
 						AnimSetDataList.Add(animSetData);
 
 						IProject? activeProject = null;
-						var projectName = Path.GetFileNameWithoutExtension(_projectPaths[i]);
+						var projectName = GamePath.GetFileNameWithoutExtension(_projectPaths[i]);
 						if (projectManager.ProjectLoaded(projectName))
 						{
 							activeProject = projectManager.LookupProject(projectName);
@@ -120,8 +122,9 @@ public class AnimSetDataManager : IAnimSetDataManager
 	{
 		try
 		{
-			var outputAnimSetDataSingleFile = new FileInfo(
-				Path.Join(_pathContext.OutputMeshesFolder.FullName, ANIMSETDATA_FILENAME)
+			var outputAnimSetDataSingleFile = _pathContext.OutputMeshesFolder.ResolveOutputFile(
+				ANIMSETDATA_FILENAME,
+				_pathContext.GameDataFolder.ResolveDirectory(_pathContext.OutputMeshesFolder.Name)
 			);
 			if (
 				outputAnimSetDataSingleFile.Directory != null
@@ -135,6 +138,7 @@ public class AnimSetDataManager : IAnimSetDataManager
 			using (var writeStream = outputAnimSetDataSingleFile.Create())
 			using (var writer = new StreamWriter(writeStream))
 			{
+				writer.NewLine = StringBuilderExtensions.Crlf;
 				writer.WriteLine(_projectPaths.Count);
 				Logger.Info($"Merging {_projectPaths.Count} projects into OutputAnimSetData file");
 

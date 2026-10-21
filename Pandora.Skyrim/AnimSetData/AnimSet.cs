@@ -146,27 +146,27 @@ public class AnimSet : IAnimSet
 
 		StringBuilder sb = new();
 
-		sb.AppendLine(VersionName);
+		sb.AppendCrlfLine(VersionName);
 
-		sb.AppendLine(NumTriggers.ToString());
+		sb.AppendCrlfLine(NumTriggers.ToString());
 		if (NumTriggers > 0)
 		{
-			sb.AppendJoin("\r\n", Triggers).AppendLine();
+			sb.AppendJoin("\r\n", Triggers).AppendCrlfLine();
 		}
 
-		sb.AppendLine(NumConditions.ToString());
+		sb.AppendCrlfLine(NumConditions.ToString());
 		if (NumConditions > 0)
 		{
 			sb.AppendJoin("", Conditions);
 		}
 
-		sb.AppendLine(NumAttackEntries.ToString());
+		sb.AppendCrlfLine(NumAttackEntries.ToString());
 		if (NumAttackEntries > 0)
 		{
-			sb.AppendJoin("\r\n", AttackEntries).AppendLine();
+			sb.AppendJoin("\r\n", AttackEntries).AppendCrlfLine();
 		}
 
-		sb.AppendLine(NumAnimationInfos.ToString());
+		sb.AppendCrlfLine(NumAnimationInfos.ToString());
 		if (NumAnimationInfos > 0)
 		{
 			sb.AppendJoin("", AnimInfos);

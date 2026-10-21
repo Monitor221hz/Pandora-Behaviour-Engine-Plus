@@ -77,13 +77,13 @@ public class SetAttackEntry : ISetAttackEntry
 	{
 		StringBuilder sb = new();
 
-		sb.AppendLine(AttackTrigger);
+		sb.AppendCrlfLine(AttackTrigger);
 
-		sb.AppendLine(Unk.ToString());
+		sb.AppendCrlfLine(Unk.ToString());
 
 		if (NumClips > 0)
 		{
-			sb.AppendLine(NumClips.ToString());
+			sb.AppendCrlfLine(NumClips.ToString());
 			sb.AppendJoin("\r\n", ClipNames);
 		}
 		else

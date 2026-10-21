@@ -4,6 +4,7 @@
 using HKX2E;
 using HKX2E.Mapper;
 using Pandora.API.Patch.Skyrim64;
+using Pandora.Core.Paths.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -45,6 +46,12 @@ public class PackFile : IEquatable<PackFile>, IPackFile
 	public FileInfo RebaseOutput(DirectoryInfo exportDirectory)
 	{
 		OutputHandle = new FileInfo(Path.Join(exportDirectory.FullName, _relativeOutputFilePath));
+		return OutputHandle;
+	}
+
+	public FileInfo RebaseOutput(DirectoryInfo exportDirectory, DirectoryInfo casingReference)
+	{
+		OutputHandle = exportDirectory.ResolveOutputFile(_relativeOutputFilePath, casingReference);
 		return OutputHandle;
 	}
 

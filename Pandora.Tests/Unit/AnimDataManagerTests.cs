@@ -33,6 +33,7 @@ public class AnimDataManagerTests : IDisposable
 		_pathContext = Substitute.For<IEnginePathsFacade>();
 		_pathContext.TemplateFolder.Returns(_templateDir);
 		_pathContext.OutputMeshesFolder.Returns(_outputMeshesDir);
+		_pathContext.GameDataFolder.Returns(_outputMeshesDir);
 
 		_projectManager = Substitute.For<IProjectManager>();
 		_projectManager.ProjectLoaded(Arg.Any<string>()).Returns(false);
@@ -192,6 +193,7 @@ public class AnimDataManagerTests : IDisposable
 		var reSplitPathContext = Substitute.For<IEnginePathsFacade>();
 		reSplitPathContext.TemplateFolder.Returns(_outputMeshesDir);
 		reSplitPathContext.OutputMeshesFolder.Returns(_outputMeshesDir);
+		reSplitPathContext.GameDataFolder.Returns(_outputMeshesDir);
 
 		var reSplitManager = new AnimDataManager(reSplitPathContext);
 		var exception = Record.Exception(() =>
@@ -259,6 +261,7 @@ public class AnimDataManagerTests : IDisposable
 		var reSplitPathContext = Substitute.For<IEnginePathsFacade>();
 		reSplitPathContext.TemplateFolder.Returns(_outputMeshesDir);
 		reSplitPathContext.OutputMeshesFolder.Returns(_outputMeshesDir);
+		reSplitPathContext.GameDataFolder.Returns(_outputMeshesDir);
 
 		var reSplitManager = new AnimDataManager(reSplitPathContext);
 		reSplitManager.SplitAnimDataSingleFile(_projectManager);
@@ -295,6 +298,7 @@ public class AnimDataManagerTests : IDisposable
 		var reSplitPathContext = Substitute.For<IEnginePathsFacade>();
 		reSplitPathContext.TemplateFolder.Returns(_outputMeshesDir);
 		reSplitPathContext.OutputMeshesFolder.Returns(_outputMeshesDir);
+		reSplitPathContext.GameDataFolder.Returns(_outputMeshesDir);
 
 		var reSplitManager = new AnimDataManager(reSplitPathContext);
 		reSplitManager.SplitAnimDataSingleFile(_projectManager);
@@ -324,6 +328,7 @@ public class AnimDataManagerTests : IDisposable
 		var reSplitPathContext = Substitute.For<IEnginePathsFacade>();
 		reSplitPathContext.TemplateFolder.Returns(_outputMeshesDir);
 		reSplitPathContext.OutputMeshesFolder.Returns(_outputMeshesDir);
+		reSplitPathContext.GameDataFolder.Returns(_outputMeshesDir);
 
 		var reSplitManager = new AnimDataManager(reSplitPathContext);
 		var exception = Record.Exception(() =>
@@ -367,6 +372,7 @@ public class AnimDataManagerTests : IDisposable
 		var reSplitPathContext = Substitute.For<IEnginePathsFacade>();
 		reSplitPathContext.TemplateFolder.Returns(_outputMeshesDir);
 		reSplitPathContext.OutputMeshesFolder.Returns(_outputMeshesDir);
+		reSplitPathContext.GameDataFolder.Returns(_outputMeshesDir);
 
 		var reSplitManager = new AnimDataManager(reSplitPathContext);
 		reSplitManager.SplitAnimDataSingleFile(_projectManager);

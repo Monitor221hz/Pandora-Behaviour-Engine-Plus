@@ -4,6 +4,7 @@
 using HKX2E;
 using Nito.HashAlgorithms;
 using Pandora.API.Patch.Skyrim64;
+using Pandora.Core.Paths.Extensions;
 using Pandora.Skyrim.Hkx.Packfile;
 using Pandora.Core.Paths.Abstractions;
 using System;
@@ -238,7 +239,9 @@ public class AltAnimToOarBuilder
 					continue;
 				}
 
-				var outNamespaceDir = Path.Combine(_outputRoot, modName); // e.g., `.../OpenAnimationReplacer/XPMSE`
+				var outNamespaceDir = ResolveOutputDirectoryPath(
+					Path.Combine(_outputRoot, modName) // e.g., `.../OpenAnimationReplacer/XPMSE`
+				);
 				Directory.CreateDirectory(outNamespaceDir);
 				WriteNamespaceConfig(outNamespaceDir, modName);
 
@@ -247,7 +250,9 @@ public class AltAnimToOarBuilder
 					slot =>
 					{
 						var dirName = $"{prefix}{group}_{slot + 1}"; // e.g., `xpe_mt_1`
-						var outDir = Path.Combine(outNamespaceDir, dirName);
+						var outDir = ResolveOutputDirectoryPath(
+							Path.Combine(outNamespaceDir, dirName)
+						);
 
 						Directory.CreateDirectory(outDir);
 
@@ -366,8 +371,30 @@ public class AltAnimToOarBuilder
 		}
 	}
 
+	/// <summary>
+	/// Reuses the casing of matching folders/files in the game Data and output folders; see
+	/// <see cref="PathExtensions.ResolveOutputFile"/>.
+	/// </summary>
+	private string ResolveOutputPath(string outputPath) =>
+		_pathContext
+			.OutputFolder.ResolveOutputFile(
+				Path.GetRelativePath(_pathContext.OutputFolder.FullName, outputPath),
+				_pathContext.GameDataFolder
+			)
+			.FullName;
+
+	/// <inheritdoc cref="ResolveOutputPath"/>
+	private string ResolveOutputDirectoryPath(string outputPath) =>
+		_pathContext
+			.OutputFolder.ResolveOutputDirectory(
+				Path.GetRelativePath(_pathContext.OutputFolder.FullName, outputPath),
+				_pathContext.GameDataFolder
+			)
+			.FullName;
+
 	private void CopyIfExists(string inputPath, string outputPath)
 	{
+		outputPath = ResolveOutputPath(outputPath);
 		var dir = Path.GetDirectoryName(outputPath);
 		if (!string.IsNullOrEmpty(dir))
 		{
@@ -402,7 +429,7 @@ public class AltAnimToOarBuilder
 		);
 
 		if (json != null)
-			File.WriteAllText(Path.Combine(outDir, "config.json"), json);
+			File.WriteAllText(ResolveOutputPath(Path.Combine(outDir, "config.json")), json);
 	}
 
 	private void WriteConfig(string group, int slot, int baseValue, string dirName, string outDir, int priority)
@@ -431,7 +458,7 @@ public class AltAnimToOarBuilder
 		);
 
 		if (json != null)
-			File.WriteAllText(Path.Combine(outDir, "config.json"), json);
+			File.WriteAllText(ResolveOutputPath(Path.Combine(outDir, "config.json")), json);
 	}
 
 	/// <summary>
@@ -476,6 +503,7 @@ public class AltAnimToOarBuilder
 			"config.json"
 		);
 
+		path = ResolveOutputPath(path);
 		Directory.CreateDirectory(Path.GetDirectoryName(path)!);
 		File.WriteAllText(path, json, new UTF8Encoding(false)); // no-BOM utf8
 	}

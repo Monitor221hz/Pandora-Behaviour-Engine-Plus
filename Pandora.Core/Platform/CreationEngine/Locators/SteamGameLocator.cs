@@ -11,8 +11,9 @@ namespace Pandora.Core.Platform.CreationEngine.Locators;
 
 public sealed class SteamGameLocator(
 	IGameDescriptor gameDescriptor,
-	IRegistry? registry,
-	IFileSystem fileSystem
+	IFileSystem fileSystem,
+	// Not registered on non-Windows platforms.
+	IRegistry? registry = null
 ) : IGameLocator
 {
 	public DirectoryInfo? TryLocateGameData()
