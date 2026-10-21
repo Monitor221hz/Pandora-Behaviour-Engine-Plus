@@ -1,6 +1,7 @@
 name: Zip & Release
 description: |
   Zips build output and uploads it to GitHub Releases.
+  - A `zip-path` ending in `.tar.gz` creates a tarball instead, which keeps Unix permissions (for Linux builds).
   - If `title` is provided => For new release. (With generated notes)
   - If `title` is none => Append release.
 
@@ -16,7 +17,7 @@ inputs:
     description: Directory containing build output (Src To zip)
     required: true
   zip-path:
-    description: Full path of the zip file to create
+    description: Full path of the archive to create (`.zip`, or `.tar.gz` to keep Unix file permissions)
     required: true
   github-token:
     description: GitHub Token (usually from secrets.GITHUB_TOKEN)
@@ -26,6 +27,7 @@ runs:
   using: "composite"
   steps:
     - name: Create Zip
+      if: ${{ !endsWith(inputs.zip-path, '.tar.gz') }}
       shell: pwsh
       run: |
         $outputDir = Resolve-Path '${{ inputs.output-dir }}'
@@ -37,6 +39,21 @@ runs:
         $zipDir = Split-Path -Path $zipPath -Parent
         New-Item -ItemType Directory -Force -Path $zipDir | Out-Null
         Compress-Archive -Path "$outputDir/*" -DestinationPath "$zipPath"
+
+    - name: Create Tarball
+      if: ${{ endsWith(inputs.zip-path, '.tar.gz') }}
+      shell: bash
+      run: |
+        output_dir='${{ inputs.output-dir }}'
+        archive_path='${{ inputs.zip-path }}'
+
+        echo "Archiving from $output_dir => $archive_path"
+
+        # Write to a temporary file first: the archive may be placed inside the directory being archived.
+        tmp_archive="$RUNNER_TEMP/$(basename "$archive_path")"
+        tar -czf "$tmp_archive" -C "$output_dir" .
+        mkdir -p "$(dirname "$archive_path")"
+        mv "$tmp_archive" "$archive_path"
 
     - name: Create Release & Upload
       shell: pwsh
