@@ -16,27 +16,40 @@ public static class PathExtensions
 
 	/// <summary>
 	/// Resolves a Windows-style relative path (backslash separators, case-insensitive), as found in
-	/// Havok files and the template path lists, against <paramref name="baseDirectory"/>.
+	/// Havok files, template path lists and mod folders, against <paramref name="baseDirectory"/>.
 	/// On case-sensitive file systems, each segment that does not exist exactly is matched
-	/// ignoring case. If nothing matches, the unmatched path is returned as-is.
+	/// ignoring case. Segments from the first one that matches nothing onward are kept as given.
 	/// </summary>
-	public static FileInfo ResolveFile(this DirectoryInfo baseDirectory, string relativePath)
+	public static FileInfo ResolveFile(this DirectoryInfo baseDirectory, string relativePath) =>
+		new(Resolve(baseDirectory, relativePath, lastSegmentIsFile: true));
+
+	/// <inheritdoc cref="ResolveFile"/>
+	public static DirectoryInfo ResolveDirectory(
+		this DirectoryInfo baseDirectory,
+		string relativePath
+	) => new(Resolve(baseDirectory, relativePath, lastSegmentIsFile: false));
+
+	private static string Resolve(
+		DirectoryInfo baseDirectory,
+		string relativePath,
+		bool lastSegmentIsFile
+	)
 	{
 		var segments = relativePath.Split(['\\', '/'], StringSplitOptions.RemoveEmptyEntries);
-		var exact = new FileInfo(Path.Join([baseDirectory.FullName, .. segments]));
-		if (exact.Exists)
+		string exact = Path.Join([baseDirectory.FullName, .. segments]);
+		if (lastSegmentIsFile ? File.Exists(exact) : Directory.Exists(exact))
 			return exact;
 
 		string current = baseDirectory.FullName;
 		for (int i = 0; i < segments.Length; i++)
 		{
+			bool isFile = lastSegmentIsFile && i == segments.Length - 1;
 			string candidate = Path.Join(current, segments[i]);
-			bool isLast = i == segments.Length - 1;
-			if (!(isLast ? File.Exists(candidate) : Directory.Exists(candidate)))
+			if (!(isFile ? File.Exists(candidate) : Directory.Exists(candidate)))
 			{
 				var match = Directory.Exists(current)
 					? (
-						isLast
+						isFile
 							? Directory.EnumerateFiles(current)
 							: Directory.EnumerateDirectories(current)
 					).FirstOrDefault(entry =>
@@ -48,11 +61,11 @@ public static class PathExtensions
 					)
 					: null;
 				if (match is null)
-					return exact;
+					return Path.Join([current, .. segments[i..]]);
 				candidate = match;
 			}
 			current = candidate;
 		}
-		return new FileInfo(current);
+		return current;
 	}
 }
