@@ -1,18 +1,18 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Pandora.Platform.Avalonia;
-using Pandora.Core.Platform.CreationEngine;
-using Pandora.Core.Settings;
-using Pandora.Views.Pages;
-using Pandora.Views.Pages.DTOs;
-using ReactiveUI;
-using ReactiveUI.SourceGenerators;
-using ReactiveUI.Primitives;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Pandora.Core.Platform.CreationEngine;
+using Pandora.Core.Settings;
+using Pandora.Platform.Avalonia;
+using Pandora.Views.Pages;
+using Pandora.Views.Pages.DTOs;
+using ReactiveUI;
+using ReactiveUI.Primitives;
+using ReactiveUI.SourceGenerators;
 
 namespace Pandora.ViewModels;
 
@@ -26,10 +26,17 @@ public partial class SettingsPageViewModel : RoutableViewModelBase, IActivatable
 	private readonly IGameDescriptor _gameDescriptor;
 
 	public IReadOnlyList<AppTheme> Themes { get; } = System.Enum.GetValues<AppTheme>();
+
 	public AppTheme SelectedTheme
 	{
 		get => _settings.Theme.Theme;
 		set => _settings.Theme.Theme = value;
+	}
+
+	public bool MergeAddedEventPropertyArrays
+	{
+		get => _settings.Advanced.MergeAddedEventPropertyArrays;
+		set => _settings.Advanced.MergeAddedEventPropertyArrays = value;
 	}
 
 	[ObservableAsProperty]
@@ -62,8 +69,8 @@ public partial class SettingsPageViewModel : RoutableViewModelBase, IActivatable
 		{
 			if (_settings.Paths.NeedsUserSelection)
 			{
-				System.Reactive.Linq.Observable
-					.StartAsync(PickGameDirectory)
+				System
+					.Reactive.Linq.Observable.StartAsync(PickGameDirectory)
 					.Subscribe()
 					.DisposeWith(disposables);
 			}

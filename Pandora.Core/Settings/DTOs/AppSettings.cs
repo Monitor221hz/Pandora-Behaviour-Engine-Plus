@@ -8,4 +8,6 @@ namespace Pandora.Core.Settings.DTOs;
 public class AppSettings
 {
 	public AppTheme Theme { get; set; } = AppTheme.System;
+
+	public bool MergeAddedEventPropertyArrays { get; set; } = true;
 }

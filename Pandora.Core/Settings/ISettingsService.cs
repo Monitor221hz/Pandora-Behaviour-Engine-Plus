@@ -9,6 +9,7 @@ public interface ISettingsService
 {
 	IThemeSettings Theme { get; }
 	IPathSettings Paths { get; }
+	IAdvancedSettings Advanced { get; }
 
 	void Initialize();
 }

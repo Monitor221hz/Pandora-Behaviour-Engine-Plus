@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using HKX2E;
-using Pandora.API.Patch.Skyrim64;
-using Pandora.Skyrim.Hkx.Changes;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using HKX2E;
+using Pandora.API.Patch.Skyrim64;
+using Pandora.Core.Settings;
+using Pandora.Skyrim.Hkx.Changes;
 
 namespace Pandora.Skyrim.Hkx.Packfile;
 
@@ -21,6 +22,20 @@ public class PackFileDispatcher : IPackFileDispatcher
 	private List<IPackFileChangeOwner> _changeOwners = [];
 
 	private readonly PackFileValidator _packFileValidator = new();
+
+	private readonly HashSet<(string Node, string Parameter)> _notifyEventsAddedFromNull = [];
+
+	public bool MergeAddedEventPropertyArrays { get; set; }
+
+	public void NoteNotifyEventsAddedFromNull(string nodeName, string parameterName)
+	{
+		_notifyEventsAddedFromNull.Add((nodeName, parameterName));
+	}
+
+	public bool WereNotifyEventsAddedFromNull(string nodeName, string parameterName)
+	{
+		return _notifyEventsAddedFromNull.Contains((nodeName, parameterName));
+	}
 
 	public void TrackPotentialNode(IPackFile packFile, string nodeName, XElement element)
 	{
@@ -47,11 +62,13 @@ public class PackFileDispatcher : IPackFileDispatcher
 		{
 			return;
 		}
+
 		PackFileChangeSet.ApplyForNode(nodeName, packFile, _changeOwners);
 	}
 
 	public void ApplyChanges(IPackFile packFile)
 	{
+		MergeAddedEventPropertyArrays = PatchPreferences.MergeAddedEventPropertyArrays;
 		SortChangeSets();
 		packFile.ApplyPriorityChanges(this);
 		packFile.PushPriorityObjects();
@@ -62,6 +79,7 @@ public class PackFileDispatcher : IPackFileDispatcher
 			isGraph = true;
 			_packFileValidator.ValidateEventsAndVariables(graph);
 		}
+
 		PackFileChangeSet.ApplyInOrder(packFile, _changeOwners);
 		_packFileValidator.ValidateTrackedElements();
 		if (isGraph)

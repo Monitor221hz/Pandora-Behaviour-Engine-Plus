@@ -50,6 +50,7 @@ public sealed class NemesisCachePatcher
 			{
 				continue;
 			}
+
 			AppendCharacterNames(projects, project, names, out Dictionary<string, int> pathIndex);
 			AssignBindingIndexes(projects, project, pathIndex);
 		}
@@ -76,6 +77,7 @@ public sealed class NemesisCachePatcher
 						.Where(line => line.EndsWith(".txt", StringComparison.OrdinalIgnoreCase))
 						.ToList();
 				}
+
 				continue;
 			}
 
@@ -157,10 +159,12 @@ public sealed class NemesisCachePatcher
 			{
 				continue;
 			}
+
 			if (file.Info.Name.Equals("$order$.txt", StringComparison.OrdinalIgnoreCase))
 			{
 				continue;
 			}
+
 			if (file.IsClip)
 			{
 				clips.Add(file);
@@ -208,6 +212,7 @@ public sealed class NemesisCachePatcher
 				project.TryRemoveClip(clipName, Resolve(fileCode, modcode, baseIndex, tokenOrigin));
 				project.TryRemoveClip(clipName, fileCode);
 			}
+
 			return;
 		}
 
@@ -232,6 +237,7 @@ public sealed class NemesisCachePatcher
 			{
 				motion = MotionFromFile(motionFile, resolved, modcode, baseIndex, tokenOrigin);
 			}
+
 			project.AddClipData(block, motion);
 		}
 		else if (
@@ -270,13 +276,20 @@ public sealed class NemesisCachePatcher
 	{
 		string code = Path.GetFileNameWithoutExtension(motion.Info.Name);
 		string resolved = Resolve(code, modcode, baseIndex, tokenOrigin);
-		ClipMotionDataBlock block = MotionFromFile(motion, resolved, modcode, baseIndex, tokenOrigin);
+		ClipMotionDataBlock block = MotionFromFile(
+			motion,
+			resolved,
+			modcode,
+			baseIndex,
+			tokenOrigin
+		);
 		if (project.BoundMotionDataProject is not MotionData data)
 		{
 			data = new MotionData([], []);
 			project.BoundMotionDataProject = data;
 			project.Header.HasMotionData = 1;
 		}
+
 		if (
 			!data.ReplaceMotion(Resolve(code, modcode, baseIndex, tokenOrigin), block)
 			&& !data.ReplaceMotion(code, block)
@@ -299,6 +312,7 @@ public sealed class NemesisCachePatcher
 		{
 			cursor = 1;
 		}
+
 		int hasFileList = int.Parse(headerLines[cursor++], CultureInfo.InvariantCulture);
 		int fileCount = int.Parse(headerLines[cursor++], CultureInfo.InvariantCulture);
 		var assets = new List<string>(fileCount);
@@ -306,6 +320,7 @@ public sealed class NemesisCachePatcher
 		{
 			assets.Add(headerLines[cursor++]);
 		}
+
 		int hasCache = int.Parse(headerLines[cursor], CultureInfo.InvariantCulture);
 		var header = new ProjectAnimDataHeader(hasFileList, fileCount, assets, hasCache);
 
@@ -319,6 +334,7 @@ public sealed class NemesisCachePatcher
 			{
 				continue;
 			}
+
 			if (file.IsClip)
 			{
 				List<string> body = TrimBlank(file.Lines.ToList());
@@ -341,6 +357,7 @@ public sealed class NemesisCachePatcher
 		{
 			project.BoundMotionDataProject = new MotionData(motions, byId);
 		}
+
 		return project;
 	}
 
@@ -363,11 +380,13 @@ public sealed class NemesisCachePatcher
 			{
 				continue;
 			}
+
 			if (byName.Remove(line, out PatchFile? file))
 			{
 				ordered.Add(file);
 			}
 		}
+
 		ordered.AddRange(
 			byName.Values.Where(file =>
 				!file.Info.Name.Equals("$header$.txt", StringComparison.OrdinalIgnoreCase)
@@ -406,17 +425,21 @@ public sealed class NemesisCachePatcher
 							ApplyExistingSetProject(folder, existing, modcode);
 							used.Add(folder.Name);
 						}
+
 						continue;
 					}
+
 					if (folder == null)
 					{
 						throw new InvalidDataException(
 							$"Animation set project {projectPath} has no patch folder."
 						);
 					}
+
 					manager.AddProject(projectPath, ReadNewSetProject(folder, modcode));
 					used.Add(folder.Name);
 				}
+
 				manager.ReorderProjects(projectList);
 			}
 		}
@@ -430,6 +453,7 @@ public sealed class NemesisCachePatcher
 			{
 				continue;
 			}
+
 			if (
 				TryGetSetProject(
 					manager,
@@ -472,6 +496,7 @@ public sealed class NemesisCachePatcher
 								$"Animation set {name} in {folder.Name} is not a versioned set."
 							);
 						}
+
 						set = kept;
 					}
 					else
@@ -489,9 +514,11 @@ public sealed class NemesisCachePatcher
 						$"Animation set {name} is listed for {folder.Name} but has no patch file."
 					);
 				}
+
 				names.Add(name);
 				sets.Add(set);
 			}
+
 			project.ReplaceAll(names, sets);
 		}
 
@@ -505,11 +532,13 @@ public sealed class NemesisCachePatcher
 			{
 				continue;
 			}
+
 			string[] lines = File.ReadAllLines(file.FullName);
 			if (!IsSetDocument(lines))
 			{
 				continue;
 			}
+
 			AddOrReplaceSet(project, file.Name, lines);
 		}
 	}
@@ -531,6 +560,7 @@ public sealed class NemesisCachePatcher
 			sets.Add(set);
 			map[name] = set;
 		}
+
 		return new ProjectAnimSetData(names.Count, names, sets, map);
 	}
 
@@ -544,6 +574,7 @@ public sealed class NemesisCachePatcher
 		{
 			lines.RemoveAt(0);
 		}
+
 		return lines;
 	}
 
@@ -587,6 +618,7 @@ public sealed class NemesisCachePatcher
 			);
 			return;
 		}
+
 		project.AddSet(Path.GetFileName(listedName), parsed);
 	}
 
@@ -608,11 +640,13 @@ public sealed class NemesisCachePatcher
 			{
 				continue;
 			}
+
 			string trimmed = line.Trim();
 			return trimmed.Length > 1
 				&& (trimmed[0] == 'V' || trimmed[0] == 'v')
 				&& char.IsDigit(trimmed[1]);
 		}
+
 		return false;
 	}
 
@@ -625,6 +659,7 @@ public sealed class NemesisCachePatcher
 		{
 			throw new InvalidDataException("Could not read an animation set patch.");
 		}
+
 		return animSet;
 	}
 
@@ -635,6 +670,7 @@ public sealed class NemesisCachePatcher
 		{
 			return exact;
 		}
+
 		string stem = Path.GetFileNameWithoutExtension(listedName);
 		FileInfo prefixed = new(Path.Combine(folder.FullName, $"{modcode}${stem}.txt"));
 		return prefixed.Exists ? prefixed : null;
@@ -655,6 +691,7 @@ public sealed class NemesisCachePatcher
 			project = typed;
 			return true;
 		}
+
 		foreach (var pair in manager.AnimSetDataMap)
 		{
 			if (
@@ -666,6 +703,7 @@ public sealed class NemesisCachePatcher
 				return true;
 			}
 		}
+
 		return false;
 	}
 
@@ -675,6 +713,7 @@ public sealed class NemesisCachePatcher
 		{
 			return stored;
 		}
+
 		return project.MaxNumericClipId() + 1;
 	}
 
@@ -691,6 +730,7 @@ public sealed class NemesisCachePatcher
 		{
 			return;
 		}
+
 		int index = character.AnimationNames.Count;
 		foreach (string name in names)
 		{
@@ -721,6 +761,7 @@ public sealed class NemesisCachePatcher
 			{
 				continue;
 			}
+
 			foreach (XElement element in pack.XmlDeserializer.Context.ElementNameMap.Values)
 			{
 				if (
@@ -733,6 +774,7 @@ public sealed class NemesisCachePatcher
 				{
 					continue;
 				}
+
 				XElement? binding = element
 					.Elements("hkparam")
 					.FirstOrDefault(param =>
@@ -745,6 +787,7 @@ public sealed class NemesisCachePatcher
 				{
 					continue;
 				}
+
 				if (pathIndex.TryGetValue(animation.Value.Trim(), out int index))
 				{
 					binding.Value = index.ToString(CultureInfo.InvariantCulture);
@@ -759,6 +802,7 @@ public sealed class NemesisCachePatcher
 		{
 			projects.TryGetProject(projectName.ToLowerInvariant(), out project);
 		}
+
 		return project?.CharacterPackFile;
 	}
 
@@ -772,6 +816,7 @@ public sealed class NemesisCachePatcher
 			{
 				continue;
 			}
+
 			// Each creature project has its own character behavior. DefaultMale,
 			// DefaultFemale, and FirstPerson are the human and player projects.
 			string project = file.Directory.Name;
@@ -780,8 +825,10 @@ public sealed class NemesisCachePatcher
 				list = [];
 				names[project] = list;
 			}
+
 			list.AddRange(inserted);
 		}
+
 		return names;
 	}
 
@@ -791,12 +838,14 @@ public sealed class NemesisCachePatcher
 		{
 			yield return file;
 		}
+
 		foreach (DirectoryInfo directory in root.EnumerateDirectories())
 		{
 			if (IsAnimDataDirectory(directory) || IsAnimSetDirectory(directory))
 			{
 				continue;
 			}
+
 			foreach (FileInfo file in EnumerateBehaviorFiles(directory))
 			{
 				yield return file;
@@ -815,21 +864,25 @@ public sealed class NemesisCachePatcher
 				start = i;
 				continue;
 			}
+
 			if (start >= 0 && lines[i].Contains("</hkparam>", StringComparison.Ordinal))
 			{
 				end = i;
 				break;
 			}
 		}
+
 		if (start < 0)
 		{
 			return [];
 		}
+
 		var span = new List<string>(end - start);
 		for (int i = start; i < end; i++)
 		{
 			span.Add(lines[i]);
 		}
+
 		var names = new List<string>();
 		var cursor = new LineCursor(span);
 		while (!cursor.End)
@@ -839,6 +892,7 @@ public sealed class NemesisCachePatcher
 				cursor.Take();
 				continue;
 			}
+
 			(List<string> edited, _) = cursor.TakeBlock();
 			foreach (string line in edited)
 			{
@@ -849,6 +903,7 @@ public sealed class NemesisCachePatcher
 				}
 			}
 		}
+
 		return names;
 	}
 
@@ -861,6 +916,7 @@ public sealed class NemesisCachePatcher
 		{
 			return null;
 		}
+
 		start += open.Length;
 		int end = line.IndexOf(close, start, StringComparison.OrdinalIgnoreCase);
 		return end < 0 ? null : line[start..end];
@@ -873,6 +929,7 @@ public sealed class NemesisCachePatcher
 		{
 			return;
 		}
+
 		int hasFileList = int.Parse(cursor.Take(), CultureInfo.InvariantCulture);
 		List<string> assets = ReadCounted(cursor);
 		int hasCache = cursor.End
@@ -901,13 +958,16 @@ public sealed class NemesisCachePatcher
 				consumed += original.Count;
 				continue;
 			}
+
 			if (consumed >= count || cursor.End)
 			{
 				break;
 			}
+
 			items.Add(cursor.Take());
 			consumed++;
 		}
+
 		return items;
 	}
 
@@ -917,16 +977,19 @@ public sealed class NemesisCachePatcher
 		{
 			return;
 		}
+
 		string stem = Path.GetFileNameWithoutExtension(file.Info.Name);
 		int split = stem.LastIndexOf('~');
 		if (split >= 0 && TryToken(stem[(split + 1)..], modcode, out int fromName))
 		{
 			tokens.Add(fromName);
 		}
+
 		if (TryToken(stem, modcode, out int fromMotion))
 		{
 			tokens.Add(fromMotion);
 		}
+
 		foreach (string line in file.Lines)
 		{
 			if (TryToken(line.Trim(), modcode, out int fromLine))
@@ -959,6 +1022,7 @@ public sealed class NemesisCachePatcher
 		{
 			return false;
 		}
+
 		return int.TryParse(
 			text.AsSpan(prefix.Length),
 			NumberStyles.Integer,
@@ -975,6 +1039,7 @@ public sealed class NemesisCachePatcher
 		{
 			triggers.Add(lines[6 + i]);
 		}
+
 		return new ClipDataBlock(
 			lines[0],
 			lines[1],
@@ -1002,6 +1067,7 @@ public sealed class NemesisCachePatcher
 					? resolvedId
 					: Resolve(body[0], modcode, baseIndex, tokenOrigin);
 		}
+
 		return MotionFromLines(body);
 	}
 
@@ -1021,6 +1087,7 @@ public sealed class NemesisCachePatcher
 		{
 			duration = 0;
 		}
+
 		List<string> translationLines = TakeMotionSamples(cursor);
 		List<string> rotationLines = TakeMotionSamples(cursor);
 		return new ClipMotionDataBlock(id, duration, translationLines, rotationLines);
@@ -1032,10 +1099,12 @@ public sealed class NemesisCachePatcher
 		{
 			return string.Empty;
 		}
+
 		if (!cursor.IsOpen())
 		{
 			return cursor.Take();
 		}
+
 		(List<string> edited, _) = cursor.TakeBlock();
 		return edited.Count == 0 ? string.Empty : edited[0];
 	}
@@ -1047,6 +1116,7 @@ public sealed class NemesisCachePatcher
 		{
 			return samples;
 		}
+
 		int count;
 		int consumed;
 		if (cursor.IsOpen())
@@ -1065,10 +1135,12 @@ public sealed class NemesisCachePatcher
 				samples.AddRange(edited);
 				return samples;
 			}
+
 			if (edited.Count > 0)
 			{
 				samples.AddRange(edited.GetRange(1, edited.Count - 1));
 			}
+
 			consumed = Math.Max(0, original.Count - 1);
 		}
 		else
@@ -1086,17 +1158,21 @@ public sealed class NemesisCachePatcher
 				consumed += original.Count;
 				continue;
 			}
+
 			if (consumed >= count || cursor.End)
 			{
 				break;
 			}
+
 			string line = cursor.Take();
 			if (!IsDelete(line))
 			{
 				samples.Add(line);
 			}
+
 			consumed++;
 		}
+
 		return samples;
 	}
 
@@ -1106,6 +1182,7 @@ public sealed class NemesisCachePatcher
 		{
 			lines.RemoveAt(lines.Count - 1);
 		}
+
 		return lines;
 	}
 
@@ -1118,9 +1195,11 @@ public sealed class NemesisCachePatcher
 			{
 				continue;
 			}
+
 			string[] lines = File.ReadAllLines(info.FullName);
 			files.Add(new PatchFile(info, lines, lines.Any(IsOpenLine) || lines.Any(IsCloseLine)));
 		}
+
 		return files;
 	}
 
@@ -1133,6 +1212,7 @@ public sealed class NemesisCachePatcher
 				return true;
 			}
 		}
+
 		return false;
 	}
 
@@ -1178,12 +1258,14 @@ public sealed class NemesisCachePatcher
 				result.AddRange(edited);
 				continue;
 			}
+
 			string line = cursor.Take();
 			if (!IsDelete(line))
 			{
 				result.Add(line);
 			}
 		}
+
 		return result;
 	}
 
@@ -1242,18 +1324,22 @@ public sealed class NemesisCachePatcher
 				consumed += original.Count / width;
 				continue;
 			}
+
 			if (consumed >= count || cursor.End)
 			{
 				break;
 			}
+
 			var group = new string[width];
 			for (int i = 0; i < width; i++)
 			{
 				group[i] = cursor.Take();
 			}
+
 			items.Add(parse(group));
 			consumed++;
 		}
+
 		return items;
 	}
 
@@ -1271,13 +1357,16 @@ public sealed class NemesisCachePatcher
 				consumed += ParseAttackLines(original).Count;
 				continue;
 			}
+
 			if (consumed >= count || cursor.End)
 			{
 				break;
 			}
+
 			items.Add(ReadOneAttack(cursor));
 			consumed++;
 		}
+
 		return items;
 	}
 
@@ -1289,6 +1378,7 @@ public sealed class NemesisCachePatcher
 		{
 			attacks.Add(ReadOneAttack(cursor));
 		}
+
 		return attacks;
 	}
 
@@ -1302,6 +1392,7 @@ public sealed class NemesisCachePatcher
 		{
 			clips[i] = cursor.Take();
 		}
+
 		return new SetAttackEntry(trigger, flag, clipCount, clips);
 	}
 
@@ -1314,6 +1405,7 @@ public sealed class NemesisCachePatcher
 			{
 				group[j] = lines[i + j];
 			}
+
 			yield return group;
 		}
 	}
@@ -1365,10 +1457,12 @@ public sealed class NemesisCachePatcher
 				{
 					return true;
 				}
+
 				if (Lines.Length < 6 || HasMarkers)
 				{
 					return Info.Name.Contains('~', StringComparison.Ordinal);
 				}
+
 				return int.TryParse(
 						Lines[5],
 						NumberStyles.Integer,
@@ -1428,10 +1522,12 @@ public sealed class NemesisCachePatcher
 					inOriginal = true;
 					continue;
 				}
+
 				if (IsDelete(line))
 				{
 					continue;
 				}
+
 				if (inOriginal)
 				{
 					original.Add(line);
@@ -1441,10 +1537,12 @@ public sealed class NemesisCachePatcher
 					edited.Add(line);
 				}
 			}
+
 			if (!End && IsCloseLine(_lines[_index]))
 			{
 				Take();
 			}
+
 			return (edited, original);
 		}
 	}
