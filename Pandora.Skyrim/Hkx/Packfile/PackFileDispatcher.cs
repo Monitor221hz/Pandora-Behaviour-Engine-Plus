@@ -23,18 +23,22 @@ public class PackFileDispatcher : IPackFileDispatcher
 
 	private readonly PackFileValidator _packFileValidator = new();
 
-	private readonly HashSet<(string Node, string Parameter)> _notifyEventsAddedFromNull = [];
+	private sealed record NotifyEventsAddedFromNull(string Node, string Parameter);
+
+	private readonly HashSet<NotifyEventsAddedFromNull> _notifyEventsAddedFromNull = [];
 
 	public bool MergeAddedEventPropertyArrays { get; set; }
 
 	public void NoteNotifyEventsAddedFromNull(string nodeName, string parameterName)
 	{
-		_notifyEventsAddedFromNull.Add((nodeName, parameterName));
+		_notifyEventsAddedFromNull.Add(new NotifyEventsAddedFromNull(nodeName, parameterName));
 	}
 
 	public bool WereNotifyEventsAddedFromNull(string nodeName, string parameterName)
 	{
-		return _notifyEventsAddedFromNull.Contains((nodeName, parameterName));
+		return _notifyEventsAddedFromNull.Contains(
+			new NotifyEventsAddedFromNull(nodeName, parameterName)
+		);
 	}
 
 	public void TrackPotentialNode(IPackFile packFile, string nodeName, XElement element)

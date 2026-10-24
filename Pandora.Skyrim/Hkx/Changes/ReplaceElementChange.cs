@@ -102,15 +102,11 @@ public class ReplaceElementChange : IPackFileChange
 			return false;
 		}
 
-		foreach (XElement child in addedEvents.Elements().ToList())
+		foreach (XElement child in addedEvents.Elements())
 		{
 			existingEvents.Add(new XElement(child));
 		}
 
-		existingEvents.SetAttributeValue(
-			"numelements",
-			existingEvents.Elements().Count().ToString()
-		);
 		return true;
 	}
 
@@ -122,8 +118,18 @@ public class ReplaceElementChange : IPackFileChange
 	{
 		parameterName = element.Attribute("name")?.Value ?? string.Empty;
 		reference = element.Value.Trim();
-		return (parameterName == "enterNotifyEvents" || parameterName == "exitNotifyEvents")
-			&& reference.StartsWith('#');
+		return (
+				string.Equals(
+					parameterName,
+					"enterNotifyEvents",
+					StringComparison.OrdinalIgnoreCase
+				)
+				|| string.Equals(
+					parameterName,
+					"exitNotifyEvents",
+					StringComparison.OrdinalIgnoreCase
+				)
+			) && reference.StartsWith('#');
 	}
 
 	private static bool IsNullPointer(string value)
