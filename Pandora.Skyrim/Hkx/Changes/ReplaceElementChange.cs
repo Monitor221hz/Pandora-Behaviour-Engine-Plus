@@ -1,11 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using System;
+using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 using Pandora.API.Patch.Skyrim64;
 using Pandora.Skyrim.Format.Pandora;
 using Pandora.Skyrim.Hkx.Packfile;
+using XmlCake.Linq;
 
 namespace Pandora.Skyrim.Hkx.Changes;
 
@@ -31,8 +34,119 @@ public class ReplaceElementChange : IPackFileChange
 		{
 			return false;
 		}
+
+		if (
+			packFile.Dispatcher.MergeAddedEventPropertyArrays
+			&& TryMergeAddedNotifyEvents(packFile, xmap!)
+		)
+		{
+			return true;
+		}
+
 		_element = PackFileEditor.ReplaceElement(xmap!, Path, _element);
 		return _element != null && _element.Parent != null;
+	}
+
+	private bool TryMergeAddedNotifyEvents(IPackFile packFile, IXMap xmap)
+	{
+		if (!IsAddedNotifyPointer(_element, out string parameterName, out string incomingRef))
+		{
+			return false;
+		}
+
+		if (!xmap.TryLookup(Path, out XElement current))
+		{
+			return false;
+		}
+
+		string currentRef = current.Value.Trim();
+		if (IsNullPointer(currentRef))
+		{
+			_element = PackFileEditor.ReplaceElement(xmap, Path, _element);
+			if (_element == null || _element.Parent == null)
+			{
+				return false;
+			}
+
+			packFile.Dispatcher.NoteNotifyEventsAddedFromNull(Target, parameterName);
+			return true;
+		}
+
+		if (
+			!packFile.Dispatcher.WereNotifyEventsAddedFromNull(Target, parameterName)
+			|| !TryAppendEvents(packFile, currentRef, incomingRef)
+		)
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	private static bool TryAppendEvents(IPackFile packFile, string currentRef, string incomingRef)
+	{
+		if (
+			!packFile.XmlDeserializer.TryGetCollectedElement(currentRef, out XElement? existing)
+			|| !packFile.XmlDeserializer.TryGetCollectedElement(incomingRef, out XElement? added)
+			|| !IsEventPropertyArray(existing)
+			|| !IsEventPropertyArray(added)
+		)
+		{
+			return false;
+		}
+
+		XElement? existingEvents = FindEvents(existing);
+		XElement? addedEvents = FindEvents(added);
+		if (existingEvents == null || addedEvents == null)
+		{
+			return false;
+		}
+
+		foreach (XElement child in addedEvents.Elements())
+		{
+			existingEvents.Add(new XElement(child));
+		}
+
+		return true;
+	}
+
+	private static bool IsAddedNotifyPointer(
+		XElement element,
+		out string parameterName,
+		out string reference
+	)
+	{
+		parameterName = element.Attribute("name")?.Value ?? string.Empty;
+		reference = element.Value.Trim();
+		return (
+				string.Equals(
+					parameterName,
+					"enterNotifyEvents",
+					StringComparison.OrdinalIgnoreCase
+				)
+				|| string.Equals(
+					parameterName,
+					"exitNotifyEvents",
+					StringComparison.OrdinalIgnoreCase
+				)
+			) && reference.StartsWith('#');
+	}
+
+	private static bool IsNullPointer(string value)
+	{
+		return value.Length == 0 || value.Equals("null", StringComparison.OrdinalIgnoreCase);
+	}
+
+	private static bool IsEventPropertyArray(XElement element)
+	{
+		return element.Attribute("class")?.Value == "hkbStateMachineEventPropertyArray";
+	}
+
+	private static XElement? FindEvents(XElement array)
+	{
+		return array
+			.Elements()
+			.FirstOrDefault(element => element.Attribute("name")?.Value == "events");
 	}
 
 	public bool Revert(PackFile packFile)

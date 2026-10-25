@@ -52,10 +52,7 @@ public class NemesisCachePatchTests : IDisposable
 		ProjectAnimData male = anim.AnimDataAt(anim.IndexOfProject("DefaultMale"))!;
 		Assert.Contains(male.GetClipIDs(), id => id == "32767");
 		Assert.Contains(male.GetClipIDs(), id => id == "32766");
-		Assert.Equal(
-			"32767",
-			male.BoundMotionDataProject!.Blocks[^2].ClipID
-		);
+		Assert.Equal("32767", male.BoundMotionDataProject!.Blocks[^2].ClipID);
 		Assert.Equal("32766", male.BoundMotionDataProject.Blocks[^1].ClipID);
 	}
 
@@ -79,7 +76,10 @@ public class NemesisCachePatchTests : IDisposable
 		patcher.Apply(Mod("aaaaaa", 0, startsAtOne), anim, sets, projects);
 		patcher.Apply(Mod("bbbbbb", 1, startsAtZero), anim, sets, projects);
 
-		Assert.Contains(male.BoundMotionDataProject!.Blocks, block => block.ClipID == firstId.ToString());
+		Assert.Contains(
+			male.BoundMotionDataProject!.Blocks,
+			block => block.ClipID == firstId.ToString()
+		);
 		Assert.Contains(
 			male.BoundMotionDataProject.Blocks,
 			block => block.ClipID == (firstId + 1).ToString()
@@ -201,7 +201,8 @@ public class NemesisCachePatchTests : IDisposable
 
 		new NemesisCachePatcher().Apply(Mod("motcnt", 0, root), anim, sets, projects);
 
-		MotionData motion = (MotionData)anim.AnimDataAt(anim.IndexOfProject("DefaultMale"))!.BoundMotionDataProject!;
+		MotionData motion = (MotionData)
+			anim.AnimDataAt(anim.IndexOfProject("DefaultMale"))!.BoundMotionDataProject!;
 		var shorter = motion.Blocks.Last(block => block.ClipID == "90001");
 		var longer = motion.Blocks.Last(block => block.ClipID == "90002");
 		var replaced = motion.Blocks.Last(block => block.ClipID == "90003");
@@ -251,6 +252,7 @@ public class NemesisCachePatchTests : IDisposable
 			setLines.Add("2");
 			setLines.Add("7891816");
 		}
+
 		setLines.Add("<!-- MOD_CODE ~hpmhr~ OPEN -->");
 		setLines.Add("2682081315");
 		setLines.Add("3020992181");
@@ -295,6 +297,7 @@ public class NemesisCachePatchTests : IDisposable
 			setLines.Add("2");
 			setLines.Add("7891816");
 		}
+
 		setLines.Add("<!-- MOD_CODE ~dummyy~ OPEN -->");
 		setLines.Add("111000111");
 		setLines.Add("222000222");
@@ -372,6 +375,7 @@ public class NemesisCachePatchTests : IDisposable
 				[code, "1", "1", "1 0 0 0", "1", "1 0 0 0 1", ""]
 			);
 		}
+
 		return root;
 	}
 
