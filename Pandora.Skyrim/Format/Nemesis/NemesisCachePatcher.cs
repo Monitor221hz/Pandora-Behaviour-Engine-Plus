@@ -118,11 +118,7 @@ public sealed class NemesisCachePatcher
 
 		insertedNames.TryGetValue(projectName, out List<string>? names);
 		names ??= [];
-		int tokenOrigin = tokens.Count == 0 ? 0 : tokens.Min();
-		if (tokens.Count > 0 && tokens.Max() - tokenOrigin + 1 != tokens.Count)
-		{
-			throw new InvalidDataException($"{projectName} cache tokens are not contiguous.");
-		}
+		Dictionary<int, int> tokenIndex = IndexTokens(tokens);
 
 		int baseIndex = BaseFor(projectName, project);
 		if (tokens.Count > 0)
@@ -181,12 +177,12 @@ public sealed class NemesisCachePatcher
 
 		foreach (PatchFile clip in clips)
 		{
-			ApplyClip(project, clip, motions, modcode, baseIndex, tokenOrigin);
+			ApplyClip(project, clip, motions, modcode, baseIndex, tokenIndex);
 		}
 
 		foreach (PatchFile motion in motions.Values)
 		{
-			ApplyLooseMotion(project, motion, modcode, baseIndex, tokenOrigin);
+			ApplyLooseMotion(project, motion, modcode, baseIndex, tokenIndex);
 		}
 	}
 
@@ -196,7 +192,7 @@ public sealed class NemesisCachePatcher
 		Dictionary<string, PatchFile> motions,
 		string modcode,
 		int baseIndex,
-		int tokenOrigin
+		IReadOnlyDictionary<int, int> tokenIndex
 	)
 	{
 		string fileStem = Path.GetFileNameWithoutExtension(clip.Info.Name);
@@ -209,18 +205,18 @@ public sealed class NemesisCachePatcher
 		{
 			if (fileCode.Length > 0)
 			{
-				project.TryRemoveClip(clipName, Resolve(fileCode, modcode, baseIndex, tokenOrigin));
+				project.TryRemoveClip(clipName, Resolve(fileCode, modcode, baseIndex, tokenIndex));
 				project.TryRemoveClip(clipName, fileCode);
 			}
 
 			return;
 		}
 
-		string resolved = Resolve(body[1], modcode, baseIndex, tokenOrigin);
+		string resolved = Resolve(body[1], modcode, baseIndex, tokenIndex);
 		body[1] = resolved;
 		ClipDataBlock block = ClipFromLines(body);
 		string originalId =
-			fileCode.Length == 0 ? resolved : Resolve(fileCode, modcode, baseIndex, tokenOrigin);
+			fileCode.Length == 0 ? resolved : Resolve(fileCode, modcode, baseIndex, tokenIndex);
 		if (
 			!project.TryReplaceClip(block.Name, originalId, block)
 			&& !project.TryReplaceClip(block.Name, fileCode, block)
@@ -231,11 +227,11 @@ public sealed class NemesisCachePatcher
 				motions.Remove(fileCode.Length == 0 ? body[1] : fileCode, out PatchFile? motionFile)
 			)
 			{
-				motion = MotionFromFile(motionFile, resolved, modcode, baseIndex, tokenOrigin);
+				motion = MotionFromFile(motionFile, resolved, modcode, baseIndex, tokenIndex);
 			}
 			else if (motions.Remove(resolved, out motionFile))
 			{
-				motion = MotionFromFile(motionFile, resolved, modcode, baseIndex, tokenOrigin);
+				motion = MotionFromFile(motionFile, resolved, modcode, baseIndex, tokenIndex);
 			}
 
 			project.AddClipData(block, motion);
@@ -250,7 +246,7 @@ public sealed class NemesisCachePatcher
 				resolved,
 				modcode,
 				baseIndex,
-				tokenOrigin
+				tokenIndex
 			);
 			if (project.BoundMotionDataProject is MotionData data)
 			{
@@ -271,17 +267,17 @@ public sealed class NemesisCachePatcher
 		PatchFile motion,
 		string modcode,
 		int baseIndex,
-		int tokenOrigin
+		IReadOnlyDictionary<int, int> tokenIndex
 	)
 	{
 		string code = Path.GetFileNameWithoutExtension(motion.Info.Name);
-		string resolved = Resolve(code, modcode, baseIndex, tokenOrigin);
+		string resolved = Resolve(code, modcode, baseIndex, tokenIndex);
 		ClipMotionDataBlock block = MotionFromFile(
 			motion,
 			resolved,
 			modcode,
 			baseIndex,
-			tokenOrigin
+			tokenIndex
 		);
 		if (project.BoundMotionDataProject is not MotionData data)
 		{
@@ -291,7 +287,7 @@ public sealed class NemesisCachePatcher
 		}
 
 		if (
-			!data.ReplaceMotion(Resolve(code, modcode, baseIndex, tokenOrigin), block)
+			!data.ReplaceMotion(Resolve(code, modcode, baseIndex, tokenIndex), block)
 			&& !data.ReplaceMotion(code, block)
 		)
 		{
@@ -1007,10 +1003,29 @@ public sealed class NemesisCachePatcher
 		return TryToken(code, modcode, out int n) ? n : int.MaxValue;
 	}
 
-	private static string Resolve(string code, string modcode, int baseIndex, int tokenOrigin)
+	private static Dictionary<int, int> IndexTokens(HashSet<int> tokens)
 	{
-		return TryToken(code.Trim(), modcode, out int n)
-			? (baseIndex + n - tokenOrigin).ToString(CultureInfo.InvariantCulture)
+		var index = new Dictionary<int, int>(tokens.Count);
+		int offset = 0;
+		foreach (int token in tokens.OrderBy(token => token))
+		{
+			index[token] = offset;
+			offset++;
+		}
+
+		return index;
+	}
+
+	private static string Resolve(
+		string code,
+		string modcode,
+		int baseIndex,
+		IReadOnlyDictionary<int, int> tokenIndex
+	)
+	{
+		return
+			TryToken(code.Trim(), modcode, out int n) && tokenIndex.TryGetValue(n, out int offset)
+			? (baseIndex + offset).ToString(CultureInfo.InvariantCulture)
 			: code.Trim();
 	}
 
@@ -1033,22 +1048,39 @@ public sealed class NemesisCachePatcher
 
 	private static ClipDataBlock ClipFromLines(IReadOnlyList<string> lines)
 	{
-		int events = int.Parse(lines[5], CultureInfo.InvariantCulture);
-		var triggers = new List<string>(events);
-		for (int i = 0; i < events; i++)
+		var triggers = new List<string>();
+		for (int i = 6; i < lines.Count; i++)
 		{
-			triggers.Add(lines[6 + i]);
+			if (lines[i].Length == 0)
+			{
+				break;
+			}
+
+			triggers.Add(lines[i]);
 		}
 
 		return new ClipDataBlock(
-			lines[0],
-			lines[1],
-			float.Parse(lines[2], CultureInfo.InvariantCulture),
-			float.Parse(lines[3], CultureInfo.InvariantCulture),
-			float.Parse(lines[4], CultureInfo.InvariantCulture),
-			events,
+			LineAt(lines, 0),
+			LineAt(lines, 1),
+			FloatAt(lines, 2, 1f),
+			FloatAt(lines, 3, 0f),
+			FloatAt(lines, 4, 0f),
+			triggers.Count,
 			triggers
 		);
+	}
+
+	private static string LineAt(IReadOnlyList<string> lines, int index) =>
+		index < lines.Count ? lines[index] : string.Empty;
+
+	private static float FloatAt(IReadOnlyList<string> lines, int index, float fallback)
+	{
+		if (index >= lines.Count)
+		{
+			return fallback;
+		}
+
+		return float.Parse(lines[index], CultureInfo.InvariantCulture);
 	}
 
 	private static ClipMotionDataBlock MotionFromFile(
@@ -1056,7 +1088,7 @@ public sealed class NemesisCachePatcher
 		string resolvedId,
 		string modcode,
 		int baseIndex,
-		int tokenOrigin
+		IReadOnlyDictionary<int, int> tokenIndex
 	)
 	{
 		List<string> body = TrimBlank(file.Lines.ToList());
@@ -1065,7 +1097,7 @@ public sealed class NemesisCachePatcher
 			body[0] =
 				resolvedId.Length > 0
 					? resolvedId
-					: Resolve(body[0], modcode, baseIndex, tokenOrigin);
+					: Resolve(body[0], modcode, baseIndex, tokenIndex);
 		}
 
 		return MotionFromLines(body);

@@ -87,6 +87,67 @@ public class NemesisCachePatchTests : IDisposable
 	}
 
 	[Fact]
+	public void GappedTokensAreReindexedBeforeTheNextMod()
+	{
+		string template = Template("animationdatasinglefile.txt");
+		var anim = LoadAnimData(template);
+		var projects = Substitute.For<IProjectManager>();
+		projects.TryGetProject(Arg.Any<string>(), out Arg.Any<IProject?>()).Returns(false);
+		projects.ActivePackFiles.Returns([]);
+		var sets = new AnimSetDataManager(Paths(Path.GetDirectoryName(template)!));
+		sets.SplitAnimSetDataSingleFile(projects);
+
+		ProjectAnimData male = anim.AnimDataAt(anim.IndexOfProject("DefaultMale"))!;
+		int firstId = male.MaxNumericClipId() + 1;
+		string gapped = MotionTokens("aaaaaa", "DefaultMale", 1, 3);
+		string following = MotionOnlyMod("bbbbbb", "DefaultMale", 0);
+
+		var patcher = new NemesisCachePatcher();
+		patcher.Apply(Mod("aaaaaa", 0, gapped), anim, sets, projects);
+		patcher.Apply(Mod("bbbbbb", 1, following), anim, sets, projects);
+
+		Assert.Contains(
+			male.BoundMotionDataProject!.Blocks,
+			block => block.ClipID == firstId.ToString()
+		);
+		Assert.Contains(
+			male.BoundMotionDataProject.Blocks,
+			block => block.ClipID == (firstId + 1).ToString()
+		);
+		Assert.Contains(
+			male.BoundMotionDataProject.Blocks,
+			block => block.ClipID == (firstId + 2).ToString()
+		);
+	}
+
+	[Fact]
+	public void DeclaredEventCountWithoutEventLinesDoesNotReadPastTheFile()
+	{
+		string template = Template("animationdatasinglefile.txt");
+		var anim = LoadAnimData(template);
+		var projects = Substitute.For<IProjectManager>();
+		projects.TryGetProject(Arg.Any<string>(), out Arg.Any<IProject?>()).Returns(false);
+		projects.ActivePackFiles.Returns([]);
+		var sets = new AnimSetDataManager(Paths(Path.GetDirectoryName(template)!));
+		sets.SplitAnimSetDataSingleFile(projects);
+
+		ProjectAnimData male = anim.AnimDataAt(anim.IndexOfProject("DefaultMale"))!;
+		int before = male.GetLineCount();
+		string root = Path.Combine(_output.FullName, "oldclip");
+		string folder = Path.Combine(root, "animationdatasinglefile", "DefaultMale");
+		Directory.CreateDirectory(folder);
+		File.WriteAllLines(
+			Path.Combine(folder, "PowerClip~oldclip$0.txt"),
+			["PowerClip", "oldclip$0", "1", "0", "0", "7", "Hit:0.2"]
+		);
+
+		new NemesisCachePatcher().Apply(Mod("oldclip", 0, root), anim, sets, projects);
+
+		Assert.Equal(before + 8, male.GetLineCount());
+		Assert.Contains("Hit:0.2", male.ToString());
+	}
+
+	[Fact]
 	public void AnimationNamesWithoutCacheDataDoNotShiftLaterTokens()
 	{
 		string template = Template("animationdatasinglefile.txt");
@@ -338,6 +399,23 @@ public class NemesisCachePatchTests : IDisposable
 		paths.TemplateFolder.Returns(new DirectoryInfo(templateFolder));
 		paths.OutputMeshesFolder.Returns(new DirectoryInfo(outputFolder ?? _output.FullName));
 		return paths;
+	}
+
+	private string MotionTokens(string modcode, string project, params int[] tokens)
+	{
+		string root = Path.Combine(_output.FullName, modcode);
+		string folder = Path.Combine(root, "animationdatasinglefile", project);
+		Directory.CreateDirectory(folder);
+		foreach (int token in tokens)
+		{
+			string code = $"{modcode}${token}";
+			File.WriteAllLines(
+				Path.Combine(folder, $"{code}.txt"),
+				[code, "1", "1", "1 0 0 0", "1", "1 0 0 0 1", ""]
+			);
+		}
+
+		return root;
 	}
 
 	private string MotionOnlyMod(string modcode, string project, int token)
