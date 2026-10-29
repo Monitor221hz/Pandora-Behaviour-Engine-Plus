@@ -15,7 +15,7 @@ public static partial class TaskbarFlasher
 	{
 		public void FlashUntilFocused()
 		{
-			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || Pandora.Core.Platform.WineHelper.IsWineRunning)
 				return;
 
 			var handle = GetWindowHandle(window);
@@ -41,7 +41,7 @@ public static partial class TaskbarFlasher
 
 		public void StopFlashing()
 		{
-			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || Pandora.Core.Platform.WineHelper.IsWineRunning)
 				return;
 
 			var handle = GetWindowHandle(window);

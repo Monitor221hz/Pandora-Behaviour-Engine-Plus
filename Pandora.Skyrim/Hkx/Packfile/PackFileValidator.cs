@@ -75,6 +75,21 @@ public class PackFileValidator : IPackFileValidator
 		var initialVariableValues = graph.VariableValueSet.wordVariableValues.ToArray();
 		var initialVariableInfos = graph.Data.variableInfos.ToArray();
 
+		if (
+			initialEventNames.Length != initialEventInfos.Length
+			|| initialVariableNames.Length != initialVariableValues.Length
+			|| initialVariableNames.Length != initialVariableInfos.Length
+		)
+		{
+			throw new InvalidOperationException(
+				$"Validator > {graph.ParentProject?.Identifier}~{graph.Name} > Event/variable table mismatch > "
+					+ $"eventNames={initialEventNames.Length} eventInfos={initialEventInfos.Length} "
+					+ $"variableNames={initialVariableNames.Length} variableValues={initialVariableValues.Length} "
+					+ $"variableInfos={initialVariableInfos.Length} "
+					+ $"(initial events={graph.InitialEventCount} variables={graph.InitialVariableCount})"
+			);
+		}
+
 		int eventLowerBound = (int)graph.InitialEventCount;
 		int variableLowerBound = (int)graph.InitialVariableCount;
 

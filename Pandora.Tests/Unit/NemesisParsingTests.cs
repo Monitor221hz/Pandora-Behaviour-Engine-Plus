@@ -378,6 +378,73 @@ namespace PandoraTests.Unit
 		}
 
 		[Fact]
+		public void MatchReplacePattern_WhenSameTokenReplacedTwiceInOneText_BothApply()
+		{
+			// Staff Blocking blockbehavior #0226: #0231 is replaced at its first and third occurrence only.
+			var edit = XElement.Parse(
+				"""
+				<hkobject name="#0226">
+					<hkparam name="generators" numelements="5">
+				<!-- MOD_CODE ~test~ OPEN -->
+						#test$2
+				<!-- ORIGINAL -->
+						#0231
+				<!-- CLOSE -->
+						#0239
+						#0231
+				<!-- MOD_CODE ~test~ OPEN -->
+						#test$2
+				<!-- ORIGINAL -->
+						#0231
+				<!-- CLOSE -->
+						#0227
+					</hkparam>
+				</hkobject>
+				"""
+			);
+			var lookup = new XPathLookup();
+			var changes = new List<IPackFileChange>();
+			IPackFileChangeOwner changeSet = Substitute.For<IPackFileChangeOwner>();
+			changeSet
+				.When(c => c.AddChange(Arg.Any<IPackFileChange>()))
+				.Do(c => changes.Add(c.Arg<IPackFileChange>()));
+			NemesisParser.MatchReplacePattern("#0226", lookup.MapFromElement(edit), changeSet, lookup);
+
+			// the parsed paths start at the node name, so the node sits under a root
+			XMapElement mapElement = new(
+				new XElement(
+					"root",
+					new XElement(
+						"hkobject",
+						new XAttribute("name", "#0226"),
+						new XElement(
+							"hkparam",
+							new XAttribute("name", "generators"),
+							new XAttribute("numelements", "5"),
+							new XText("#0231 #0239 #0231 #0231 #0227")
+						)
+					)
+				)
+			);
+			mapElement.MapAll();
+			var packFile = Substitute.For<IPackFile>();
+			packFile
+				.TryGetXMap(Arg.Any<string>(), out Arg.Any<XMapElement?>())
+				.Returns(s =>
+				{
+					s[1] = mapElement;
+					return true;
+				});
+
+			Assert.Equal(2, changes.Count);
+			Assert.All(changes, change => Assert.True(change.Apply(packFile)));
+			Assert.Equal(
+				"#test$2 #0239 #0231 #test$2 #0227",
+				mapElement.NavigateTo("#0226/generators").Value
+			);
+		}
+
+		[Fact]
 		public void ParsePackFileChanges_UsesFileNameWhenObjectNameDiffers()
 		{
 			var directory = Directory.CreateDirectory(

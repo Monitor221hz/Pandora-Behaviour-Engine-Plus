@@ -19,7 +19,7 @@ public partial class EngineMenu : ReactiveUserControl<EngineMenuViewModel>
 	{
 		base.OnLoaded(e);
 
-		if (OperatingSystem.IsWindows())
+		if (OperatingSystem.IsWindows() && !Pandora.Core.Platform.WineHelper.IsWineRunning)
 		{
 			Avalonia.Controls.Win32Properties.SetNonClientHitTestResult(
 				TitleBarHost,

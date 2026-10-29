@@ -14,7 +14,7 @@ using System;
 namespace Pandora.Views;
 
 [IViewFor<MainWindowViewModel>]
-public partial class MainWindow : FAAppWindow
+public partial class MainWindow : Avalonia.Controls.Window
 {
 	public MainWindow(IServiceProvider serviceProvider)
 	{
@@ -23,8 +23,6 @@ public partial class MainWindow : FAAppWindow
 		RoutedViewHost.ViewLocator = new DIViewLocator(serviceProvider);
 		NavPanel.SelectionChanged += NavPanelOnSelectionChanged;
 		Closed += MainWindow_Closed;
-
-		ConfigureTitleBar();
 	}
 
 	private void MainWindow_Closed(object? sender, EventArgs e)
@@ -32,16 +30,16 @@ public partial class MainWindow : FAAppWindow
 		Properties.GUISettings.Default.WindowHeight = Height;
 		Properties.GUISettings.Default.WindowWidth = Width;
 		Properties.GUISettings.Default.Save();
+
+		if (Pandora.Core.Platform.WineHelper.IsWineRunning)
+		{
+			if (Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop)
+			{
+				desktop.Shutdown(0);
+			}
+		}
 	}
 
-	private void ConfigureTitleBar()
-	{
-		TitleBar.ExtendsContentIntoTitleBar = true;
-		if (!OperatingSystem.IsWindows())
-			TitleBar.ExtendsContentIntoTitleBar = false;
-
-		TitleBar.Height = 32;
-	}
 
 	private void NavPanelOnSelectionChanged(
 		object? sender,
