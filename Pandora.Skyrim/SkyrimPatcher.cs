@@ -2,6 +2,7 @@
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -22,6 +23,7 @@ public class SkyrimPatcher : IPatcher
 	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
 	private List<IModInfo> _activeMods = [];
+	private readonly ConcurrentDictionary<string, byte> _failedMods = new();
 
 	private readonly NemesisAssembler _nemesisAssembler;
 	private readonly PandoraAssembler _pandoraAssembler;
@@ -86,6 +88,7 @@ public class SkyrimPatcher : IPatcher
 	public async Task<bool> UpdateAsync()
 	{
 		Logger.Info($"Skyrim Patcher {GetVersionString()}");
+		_failedMods.Clear();
 
 		try
 		{
@@ -93,25 +96,42 @@ public class SkyrimPatcher : IPatcher
 				_activeMods,
 				mod =>
 				{
-					switch (mod.Format)
+					try
 					{
-						case IModInfo.ModFormat.Nemesis:
-							_nemesisAssembler.AssemblePatch(mod);
-							break;
-						case IModInfo.ModFormat.Pandora:
-							_pandoraAssembler.AssemblePatch(mod);
-							break;
-						default:
-							break;
+						switch (mod.Format)
+						{
+							case IModInfo.ModFormat.Nemesis:
+								_nemesisAssembler.AssemblePatch(mod);
+								break;
+							case IModInfo.ModFormat.Pandora:
+								_pandoraAssembler.AssemblePatch(mod);
+								break;
+							default:
+								break;
+						}
+					}
+					catch (Exception ex)
+					{
+						// One broken mod must not abort the others.
+						_failedMods.TryAdd(mod.Code, 0);
+						Logger.Error($"Skyrim Patcher > Mod \"{mod.Code}\" > Assemble > SKIPPED > {ex}");
 					}
 				}
 			);
 
 			foreach (IModInfo mod in _activeMods.OrderBy(mod => mod.Priority))
 			{
-				if (mod.Format == IModInfo.ModFormat.Nemesis)
+				if (mod.Format == IModInfo.ModFormat.Nemesis && !_failedMods.ContainsKey(mod.Code))
 				{
-					_nemesisAssembler.ApplyCachePatches(mod);
+					try
+					{
+						_nemesisAssembler.ApplyCachePatches(mod);
+					}
+					catch (Exception ex)
+					{
+						_failedMods.TryAdd(mod.Code, 0);
+						Logger.Error($"Skyrim Patcher > Mod \"{mod.Code}\" > Cache patch > SKIPPED > {ex}");
+					}
 				}
 			}
 		}
