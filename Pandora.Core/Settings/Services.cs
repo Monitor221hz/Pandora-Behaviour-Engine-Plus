@@ -15,6 +15,7 @@ public static class Services
 			return serviceCollection
 				.AddSingleton<IPathSettings, PathSettings>()
 				.AddSingleton<IThemeSettings, ThemeSettings>()
+				.AddSingleton<IAdvancedSettings, AdvancedSettings>()
 				.AddSingleton<ISettingsRepository, SettingsRepository>()
 				.AddSingleton<ISettingsService, SettingsService>();
 		}

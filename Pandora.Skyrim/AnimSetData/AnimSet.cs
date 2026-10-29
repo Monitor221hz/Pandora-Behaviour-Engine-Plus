@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Pandora.API.Patch.Skyrim64.AnimSetData;
-using Pandora.Core.Extensions;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
+using Pandora.API.Patch.Skyrim64.AnimSetData;
+using Pandora.Core.Extensions;
 
 namespace Pandora.Skyrim.AnimSetData;
 
@@ -53,6 +53,20 @@ public class AnimSet : IAnimSet
 	public IList<ISetCachedAnimInfo> AnimInfos { get; private set; } = [];
 
 	public void AddAnimInfo(ISetCachedAnimInfo animInfo) => AnimInfos.Add(animInfo);
+
+	public void ReplaceContents(
+		IList<string> triggers,
+		IList<ISetCondition> conditions,
+		IList<ISetAttackEntry> attackEntries,
+		IList<ISetCachedAnimInfo> animInfos
+	)
+	{
+		Triggers = triggers;
+		Conditions = conditions;
+		AttackEntries = attackEntries;
+		AnimInfos = animInfos;
+		SyncCounts();
+	}
 
 	public static bool TryRead(StreamReader reader, [NotNullWhen(true)] out IAnimSet? animSet)
 	{

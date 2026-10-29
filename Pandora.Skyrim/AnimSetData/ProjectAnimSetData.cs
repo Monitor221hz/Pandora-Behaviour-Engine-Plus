@@ -1,13 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Pandora.API.Patch.Skyrim64.AnimSetData;
-using Pandora.Core.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using System.Text;
+using Pandora.API.Patch.Skyrim64.AnimSetData;
+using Pandora.Core.Extensions;
 
 namespace Pandora.Skyrim.AnimSetData;
 
@@ -83,10 +84,41 @@ public class ProjectAnimSetData : IProjectAnimSetData
 		return true;
 	}
 
+	public void AddSet(string fileName, IAnimSet animSet)
+	{
+		if (AnimSetFileNames is not List<string> names)
+		{
+			names = AnimSetFileNames.ToList();
+			AnimSetFileNames = names;
+			AnimSets = AnimSets.ToList();
+		}
+		names.Add(fileName);
+		AnimSets.Add(animSet);
+		AnimSetsByName[fileName] = animSet;
+		NumSets = names.Count;
+	}
+
+	public void ReplaceAll(IList<string> fileNames, IList<IAnimSet> animSets)
+	{
+		var map = new Dictionary<string, IAnimSet>(
+			fileNames.Count,
+			StringComparer.OrdinalIgnoreCase
+		);
+		for (int i = 0; i < fileNames.Count; i++)
+		{
+			map[fileNames[i]] = animSets[i];
+		}
+		AnimSetFileNames = fileNames.ToList();
+		AnimSets = animSets.ToList();
+		AnimSetsByName = map;
+		NumSets = AnimSetFileNames.Count;
+	}
+
 	public override string ToString()
 	{
 		StringBuilder sb = new();
 
+		NumSets = AnimSetFileNames.Count;
 		sb.AppendLine(NumSets.ToString());
 		if (NumSets > 0)
 		{

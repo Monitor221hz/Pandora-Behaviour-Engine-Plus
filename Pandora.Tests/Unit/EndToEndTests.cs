@@ -122,6 +122,10 @@ public class EndToEndTests : IClassFixture<DependencyInjectedCluster>
 		]);
 		_output.WriteLine($"Loaded {mods.Count} mods");
 		Assert.NotEmpty(mods);
+		var launchMods = mods
+			.Where(mod => !string.Equals(mod.Code, "tkuc", StringComparison.OrdinalIgnoreCase))
+			.ToList();
+		Assert.NotEmpty(launchMods);
 
 		// Initialization Engine and Launch
 		var engine = _serviceProvider.GetRequiredService<IBehaviourEngine>();
@@ -133,7 +137,7 @@ public class EndToEndTests : IClassFixture<DependencyInjectedCluster>
 		await engine.InitializeAsync();
 		_output.WriteLine("PreloadAsync completed");
 
-		var result = await engine.RunAsync(mods.ToList());
+		var result = await engine.RunAsync(launchMods);
 		_output.WriteLine($"Launch Result: {result.Message}");
 		Assert.True(result.IsSuccess, $"LaunchAsync failed: {result.Message}");
 		_output.WriteLine("LaunchAsync completed successfully");

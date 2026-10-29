@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -105,6 +106,14 @@ public class SkyrimPatcher : IPatcher
 					}
 				}
 			);
+
+			foreach (IModInfo mod in _activeMods.OrderBy(mod => mod.Priority))
+			{
+				if (mod.Format == IModInfo.ModFormat.Nemesis)
+				{
+					_nemesisAssembler.ApplyCachePatches(mod);
+				}
+			}
 		}
 		catch (Exception ex)
 		{

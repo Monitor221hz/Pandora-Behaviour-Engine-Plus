@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Pandora.Core.Platform.CreationEngine;
-using Pandora.Core.Settings.DTOs;
-using Pandora.Core.Settings.SubSettings;
 using System;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
+using Pandora.Core.Platform.CreationEngine;
+using Pandora.Core.Settings.DTOs;
+using Pandora.Core.Settings.SubSettings;
 
 namespace Pandora.Core.Settings;
 
@@ -15,6 +15,7 @@ public sealed class SettingsService(
 	ISettingsRepository repository,
 	IThemeSettings themeSettings,
 	IPathSettings pathSettings,
+	IAdvancedSettings advancedSettings,
 	IGameDescriptor descriptor
 ) : ISettingsService, IDisposable
 {
@@ -24,6 +25,7 @@ public sealed class SettingsService(
 
 	public IThemeSettings Theme => themeSettings;
 	public IPathSettings Paths => pathSettings;
+	public IAdvancedSettings Advanced => advancedSettings;
 
 	public void Initialize()
 	{
@@ -31,6 +33,7 @@ public sealed class SettingsService(
 
 		_root.App ??= new AppSettings();
 		themeSettings.Initialize(_root.App);
+		advancedSettings.Initialize(_root.App);
 
 		if (!_root.Games.TryGetValue(descriptor.Id, out var gameSettings))
 		{
@@ -38,7 +41,11 @@ public sealed class SettingsService(
 			_root.Games[descriptor.Id] = gameSettings;
 		}
 
-		var saveSignals = Observable.Merge(themeSettings.SaveRequired, pathSettings.SaveRequired);
+		var saveSignals = Observable.Merge(
+			themeSettings.SaveRequired,
+			pathSettings.SaveRequired,
+			advancedSettings.SaveRequired
+		);
 
 		_saveSubscription = saveSignals
 			.Throttle(TimeSpan.FromMilliseconds(500))
@@ -60,6 +67,7 @@ public sealed class SettingsService(
 	{
 		(themeSettings as IDisposable)?.Dispose();
 		(pathSettings as IDisposable)?.Dispose();
+		(advancedSettings as IDisposable)?.Dispose();
 		_saveSubscription?.Dispose();
 	}
 }

@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2025 Pandora Behaviour Engine Contributors
 
+using System.IO;
 using System.Xml;
 using System.Xml.Linq;
 using NSubstitute;
@@ -374,6 +375,45 @@ namespace PandoraTests.Unit
 			var lookup = Substitute.For<IXPathLookup>();
 			bool result = NemesisParser.MatchInsertPattern(nodeName, nodes, changeSet, lookup);
 			Assert.False(result);
+		}
+
+		[Fact]
+		public void ParsePackFileChanges_UsesFileNameWhenObjectNameDiffers()
+		{
+			var directory = Directory.CreateDirectory(
+				Path.Combine(Path.GetTempPath(), "pandora-node-id-" + Guid.NewGuid().ToString("N"))
+			);
+			try
+			{
+				File.WriteAllText(
+					Path.Combine(directory.FullName, "#sominr$71.txt"),
+					"""
+					<hkobject name="#4878" class="hkbModifierGenerator" signature="0x1f81fae6">
+						<hkparam name="generator">#0094</hkparam>
+					</hkobject>
+					"""
+				);
+
+				var packFile = Substitute.For<IPackFile>();
+				var dispatcher = Substitute.For<IPackFileDispatcher>();
+				packFile.Dispatcher.Returns(dispatcher);
+				packFile.PopObjectAsXml(Arg.Any<string>()).Returns(false);
+				var mod = Substitute.For<IModInfo>();
+				mod.Name.Returns("sominr");
+
+				NemesisParser.ParsePackFileChanges(packFile, mod, directory);
+
+				dispatcher
+					.Received(1)
+					.TrackPotentialNode(packFile, "#sominr$71", Arg.Any<XElement>());
+				dispatcher
+					.DidNotReceive()
+					.TrackPotentialNode(packFile, "#4878", Arg.Any<XElement>());
+			}
+			finally
+			{
+				directory.Delete(true);
+			}
 		}
 	}
 }

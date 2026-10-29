@@ -322,7 +322,6 @@ public class NemesisParser
 		foreach (FileInfo editFile in editFiles)
 		{
 			IEnumerable<XNode> nodes;
-			//string nodeName = Path.GetFileNameWithoutExtension(editFile.Name);
 			XElement element;
 			try
 			{
@@ -335,11 +334,13 @@ public class NemesisParser
 				);
 				continue;
 			}
-			string? nodeName = element.FirstAttribute?.Value;
-			if (nodeName == null)
-			{
-				continue;
-			}
+			string nodeName = Path.GetFileNameWithoutExtension(editFile.Name);
+			// string? nodeName = element.FirstAttribute?.Value;
+			// if (nodeName == null)
+			// {
+			// 	continue;
+			// }
+
 			nodes = lookup.MapFromElement(element);
 
 			lock (packFile)
@@ -369,7 +370,6 @@ public class NemesisParser
 		foreach (FileInfo editFile in editFiles)
 		{
 			IEnumerable<XNode> nodes;
-			//string nodeName = Path.GetFileNameWithoutExtension(editFile.Name);
 			XElement element;
 			try
 			{
@@ -382,11 +382,13 @@ public class NemesisParser
 				);
 				continue;
 			}
-			string? nodeName = element.FirstAttribute?.Value;
-			if (nodeName == null)
-			{
-				continue;
-			}
+			string nodeName = Path.GetFileNameWithoutExtension(editFile.Name);
+			// string? nodeName = element.FirstAttribute?.Value;
+			// if (nodeName == null)
+			// {
+			// 	continue;
+			// }
+			
 			nodes = lookup.MapFromElement(element);
 
 			lock (packFile)
