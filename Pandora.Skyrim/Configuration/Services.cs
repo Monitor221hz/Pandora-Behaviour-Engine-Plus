@@ -23,6 +23,7 @@ public static class Services
 				.AddTransient<SkyrimConfiguration>()
 				.AddTransient<SkyrimDebugConfiguration>()
 				.AddTransient<NemesisToPandoraConfiguration>()
+				.AddTransient<NemesisAnimDataConfiguration>()
 				.AddTransient<PandoraTemplateConfiguration>()
 				.AddSingleton<IEngineConfiguration>(sp =>
 				{
@@ -38,6 +39,9 @@ public static class Services
 				.AddSingleton<Func<NemesisToPandoraConfiguration>>(sp =>
 					() => sp.GetRequiredService<NemesisToPandoraConfiguration>()
 				)
+				.AddSingleton<Func<NemesisAnimDataConfiguration>>(sp =>
+					() => sp.GetRequiredService<NemesisAnimDataConfiguration>()
+				)
 				.AddSingleton<Func<SkyrimDebugConfiguration>>(sp =>
 					() => sp.GetRequiredService<SkyrimDebugConfiguration>()
 				)
@@ -50,6 +54,10 @@ public static class Services
 				.AddSingleton<
 					IEngineConfigurationFactory<NemesisToPandoraConfiguration>,
 					ConstEngineConfigurationFactory<NemesisToPandoraConfiguration>
+				>()
+				.AddSingleton<
+					IEngineConfigurationFactory<NemesisAnimDataConfiguration>,
+					ConstEngineConfigurationFactory<NemesisAnimDataConfiguration>
 				>()
 				.AddSingleton<
 					IEngineConfigurationFactory<SkyrimConfiguration>,

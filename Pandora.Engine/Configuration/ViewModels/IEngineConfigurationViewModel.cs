@@ -10,7 +10,6 @@ public interface IEngineConfigurationViewModel
 {
 	string Name { get; }
 	bool IsChecked { get; }
-	bool IsCheckable { get; }
 	IReactiveCommand? SelectCommand { get; }
 	ObservableCollection<IEngineConfigurationViewModel> Children { get; }
 }

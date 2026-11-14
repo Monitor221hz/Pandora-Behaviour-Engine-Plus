@@ -13,7 +13,6 @@ public class ConfigurationCategoryViewModel(string name)
 {
 	public string Name { get; } = name;
 	public bool IsChecked => false;
-	public bool IsCheckable => false;
 	public IReactiveCommand? SelectCommand => null;
 	public ObservableCollection<IEngineConfigurationViewModel> Children { get; } = [];
 }

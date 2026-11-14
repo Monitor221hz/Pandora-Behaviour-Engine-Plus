@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
+using Pandora.API.Patch;
+using Pandora.Core.Patch.Mod;
 using Pandora.Models.Patch.Skyrim64.Format.Nemesis;
+using Pandora.Skyrim;
 
 namespace PandoraTests.Unit;
 
@@ -153,6 +156,49 @@ public class NemesisSetConditionFormatterTests
 			Assert.Contains("<!-- MOD_CODE ~xfdda~ OPEN -->\niRightHandType\n1\n2\n", text);
 			Assert.Contains("<!-- ORIGINAL -->\niRightHandType\n1\n1\n", text);
 			Assert.Equal(0, NemesisSetConditionFormatter.ReformatMod(root));
+		}
+		finally
+		{
+			root.Delete(recursive: true);
+		}
+	}
+
+	[Fact]
+	public async Task SelectedNemesisModIsReformattedByThePatcher()
+	{
+		var root = new DirectoryInfo(
+			Path.Combine(Path.GetTempPath(), $"PandoraReformatPatcher_{Guid.NewGuid():N}")
+		);
+		var set = new DirectoryInfo(
+			Path.Combine(
+				root.FullName,
+				"animationsetdatasinglefile",
+				"DraugrProjectData~DraugrProject"
+			)
+		);
+		set.Create();
+		string path = Path.Combine(set.FullName, "Draugr_1HMSword.txt");
+		File.WriteAllText(
+			path,
+			"V3\n1\nweapEquip\n1\niRightHandType\n1\n<!-- MOD_CODE ~xfdda~ OPEN -->\n2\n<!-- ORIGINAL -->\n1\n<!-- CLOSE -->\n0\n"
+		);
+
+		try
+		{
+			var patcher = new NemesisAnimDataReformatter();
+			IModInfo mod = new NemesisModInfo(
+				root,
+				"Fix Draugr Dagger Animation",
+				"Xing",
+				"https://example",
+				true,
+				[]
+			);
+			patcher.SetTarget([mod]);
+
+			Assert.True(await patcher.RunAsync());
+			Assert.Contains("iRightHandType\n1\n2\n", File.ReadAllText(path));
+			Assert.Contains("Reformatted 1 animation set file", patcher.GetPostRunMessages());
 		}
 		finally
 		{

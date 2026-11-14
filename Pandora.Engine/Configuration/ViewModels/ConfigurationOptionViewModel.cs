@@ -25,7 +25,6 @@ public partial class ConfigurationOptionViewModel
 
 	public string Name { get; }
 	public IEngineConfigurationFactory Factory { get; }
-	public bool IsCheckable => true;
 	public IReactiveCommand? SelectCommand => ExecuteSelectCommand;
 
 	[ObservableAsProperty]
