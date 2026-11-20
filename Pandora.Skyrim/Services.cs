@@ -53,6 +53,7 @@ public static class Services
 				.AddScoped<IPatchAssembler>(sp => sp.GetRequiredService<NemesisAssembler>())
 				.AddScoped<SkyrimPatcher>()
 				.AddScoped<NemesisPandoraConverter>()
+				.AddScoped<NemesisAnimDataReformatter>()
 				.AddScoped<PandoraTemplatePacker>();
 		}
 	}

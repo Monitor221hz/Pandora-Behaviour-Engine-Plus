@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2023-2026 Pandora Behaviour Engine Contributors
 
-using Pandora.Core.Configuration;
+using System.Collections.ObjectModel;
 using Pandora.Configuration;
 using Pandora.Configuration.ViewModels;
+using Pandora.Core.Configuration;
 using Pandora.Views.Pages;
 using Pandora.Views.Pages.DTOs;
 using ReactiveUI;
-using System.Collections.ObjectModel;
 
 namespace Pandora.ViewModels;
 
