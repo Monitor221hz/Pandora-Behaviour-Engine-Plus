@@ -58,6 +58,65 @@ public class NemesisParser
 		return count;
 	}
 
+	/// <summary>
+	/// Length of the text before an edit as it reads when that edit is applied. An earlier edit block in the
+	/// same text counts as applied or not by change order (Remove, Insert, Replace), never as both its old
+	/// and its new text.
+	/// </summary>
+	private static int CountSkipChars(XNode? node, IPackFileChange.ChangeType current)
+	{
+		int count = 0;
+		int? blockText = null; // inside an earlier edit block, walking backwards
+		int? blockOld = null;
+		while (node != null && node.NodeType != XmlNodeType.Element)
+		{
+			if (node is XText text)
+			{
+				int length = CountNormalizedWhitespace(text.Value);
+				if (blockText.HasValue)
+					blockText += length;
+				else
+					count += length;
+			}
+			else if (node is XComment comment)
+			{
+				string marker = comment.Value.Trim();
+				if (marker == "CLOSE")
+				{
+					blockText = 0;
+					blockOld = null;
+				}
+				else if (marker == "ORIGINAL" && blockText.HasValue)
+				{
+					blockOld = blockText;
+					blockText = 0;
+				}
+				else if (marker.EndsWith("OPEN", StringComparison.Ordinal) && blockText.HasValue)
+				{
+					count += BlockLength(blockText.Value, blockOld, current);
+					blockText = null;
+					blockOld = null;
+				}
+			}
+			node = node.PreviousNode;
+		}
+		return count;
+	}
+
+	// An insert has no ORIGINAL text, a remove has no new text.
+	private static int BlockLength(
+		int newLength,
+		int? originalLength,
+		IPackFileChange.ChangeType current
+	)
+	{
+		if (originalLength is null)
+			return current == IPackFileChange.ChangeType.Remove ? 0 : newLength;
+		if (newLength == 0)
+			return 0;
+		return current == IPackFileChange.ChangeType.Replace ? newLength : originalLength.Value;
+	}
+
 	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger(); //to do: move logger into inheritable base class
 
 	private static readonly XSkipWrapExpression ReplacePattern = new(
@@ -115,22 +174,10 @@ public class NemesisParser
 				switch (node.NodeType)
 				{
 					case XmlNodeType.Text:
-						previousNode = newNode.PreviousNode?.PreviousNode;
-						int skipCharCount = 0;
-						while (previousNode != null)
-						{
-							if (previousNode.NodeType == XmlNodeType.Text)
-							{
-								skipCharCount += CountNormalizedWhitespace(
-									((XText)previousNode).Value
-								);
-							}
-							if (previousNode.NodeType == XmlNodeType.Element)
-							{
-								break;
-							}
-							previousNode = previousNode.PreviousNode;
-						}
+						int skipCharCount = CountSkipChars(
+							newNode.PreviousNode?.PreviousNode,
+							IPackFileChange.ChangeType.Replace
+						);
 						string oldText = ((XText)node).Value;
 						string newText = ((XText)newNode).Value;
 						//packFile.Editor.QueueReplaceText(lookup.LookupPath(node), ((XText)node).Value, ((XText)newNodes[i - separatorIndex - 1]).Value);
@@ -170,19 +217,11 @@ public class NemesisParser
 			switch (node.NodeType)
 			{
 				case XmlNodeType.Text:
-					int skipCharCount = 0;
-					while (previousNode != null)
-					{
-						if (previousNode.NodeType == XmlNodeType.Text)
-						{
-							skipCharCount += CountNormalizedWhitespace(((XText)previousNode).Value);
-						}
-						if (previousNode.NodeType == XmlNodeType.Element)
-						{
-							break;
-						}
-						previousNode = previousNode.PreviousNode;
-					}
+					int skipCharCount = CountSkipChars(
+						previousNode,
+						IPackFileChange.ChangeType.Remove
+					);
+					previousNode = null;
 					var targetText = ((XText)node).Value;
 					changeSet.AddChange(
 						new RemoveTextChange(
@@ -233,20 +272,10 @@ public class NemesisParser
 						);
 						break;
 					}
-					previousNode = node.PreviousNode?.PreviousNode;
-					int skipCharCount = 0;
-					while (previousNode != null)
-					{
-						if (previousNode.NodeType == XmlNodeType.Text)
-						{
-							skipCharCount += CountNormalizedWhitespace(((XText)previousNode).Value);
-						}
-						if (previousNode.NodeType == XmlNodeType.Element)
-						{
-							break;
-						}
-						previousNode = previousNode.PreviousNode;
-					}
+					int skipCharCount = CountSkipChars(
+						node.PreviousNode?.PreviousNode,
+						IPackFileChange.ChangeType.Insert
+					);
 					changeSet.AddChange(
 						new InsertTextChange(nodeName, nodePath, skipCharCount, ((XText)node).Value)
 					);

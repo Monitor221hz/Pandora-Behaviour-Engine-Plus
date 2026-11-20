@@ -14,6 +14,8 @@ namespace Pandora.Core.Engine;
 
 public sealed class EngineRunner : IEngineRunner
 {
+	private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
 	private readonly IPatcherFactory _patcherFactory;
 	private IPatcher? _patcher;
 
@@ -56,6 +58,7 @@ public sealed class EngineRunner : IEngineRunner
 		catch (Exception ex)
 		{
 			timer.Stop();
+			Logger.Error(ex, "Engine Runner > Critical error");
 			return EngineResult.Fail($"Critical error: {ex.Message}", timer.Elapsed);
 		}
 	}
